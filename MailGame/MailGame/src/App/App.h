@@ -13,5 +13,7 @@ public:
 
 private:
 	sf::RenderWindow window;
+	// Used to calculate delta time
+	float lastTime;
 };
 
