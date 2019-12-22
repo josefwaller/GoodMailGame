@@ -66,7 +66,7 @@
 	<SubTexture name="landscapeTiles_064.png" x="0" y="1057" width="133" height="99"/>
 	<SubTexture name="landscapeTiles_065.png" x="398" y="447" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_066.png" x="398" y="364" width="132" height="83"/>
-	<SubTexture name="landscapeTiles_067.png" x="398" y="265" width="132" height="99"/>
+	<SubTexture name="empty" x="398" y="265" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_068.png" x="398" y="166" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_069.png" x="398" y="83" width="132" height="83"/>
 	<SubTexture name="landscapeTiles_070.png" x="398" y="0" width="132" height="83"/>

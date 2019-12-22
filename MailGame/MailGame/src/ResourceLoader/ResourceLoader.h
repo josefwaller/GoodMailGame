@@ -8,17 +8,21 @@ struct Spritesheet {
 	// The texture of the spritesheet
 	sf::Texture texture;
 	// The sprites on the sheet, by name
-	std::map<std::string, sf::Rect<unsigned int>> sprites;
+	std::map<std::string, sf::Rect<int>> sprites;
 };
 /*
  * Singleton which is responsible for only loading every resource once
  */
 class ResourceLoader {
 private:
-	ResourceLoader();
+	// Instance of ResourceLoader
+	static ResourceLoader inst;
+	// Map of spritesheet names to spritesheets
 	std::map<std::string, Spritesheet> spritesheets;
-	void ensureSpritesheetLoaded(std::string sheetName);
+	// Loads the spritesheet if not already loaded
+	void ensureSpritesheetIsLoaded(std::string sheetName);
 public:
-	static ResourceLoader get();
+	static ResourceLoader* get();
+	// Gets a single sprite from a spritesheet, loading the sheet if neccessary
 	sf::Sprite getSprite(std::string sheetName, std::string spriteName);
 };

@@ -1,4 +1,5 @@
 #include "GameMap\GameMap.h"
+#include "ResourceLoader\ResourceLoader.h"
 #include <SFML/Graphics.hpp>
 
 GameMap::GameMap(Game* g) {
@@ -12,7 +13,8 @@ GameMap::GameMap(Game* g) {
 }
 
 void GameMap::render(sf::RenderWindow* window) {
-	// TBA
+	sf::Sprite s = ResourceLoader::get()->getSprite("tiles/tiles", "empty");
+	window->draw(s);
 }
 
 Tile GameMap::getTileAt(size_t x, size_t y) {
