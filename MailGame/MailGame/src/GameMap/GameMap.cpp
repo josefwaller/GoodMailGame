@@ -2,6 +2,9 @@
 #include "ResourceLoader\ResourceLoader.h"
 #include <SFML/Graphics.hpp>
 
+const size_t GameMap::MAP_HEIGHT = 50;
+const size_t GameMap::MAP_WIDTH = 50;
+
 GameMap::GameMap(Game* g) {
 	// Initialize a 20x20 grid of nothing
 	for (size_t i = 0; i < MAP_WIDTH; i++) {
