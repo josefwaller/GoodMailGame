@@ -89,7 +89,7 @@
 	<SubTexture name="landscapeTiles_087.png" x="133" y="281" width="133" height="99"/>
 	<SubTexture name="landscapeTiles_088.png" x="530" y="659" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_089.png" x="530" y="560" width="132" height="99"/>
-	<SubTexture name="landscapeTiles_090.png" x="266" y="0" width="132" height="99"/>
+	<SubTexture name="road" x="266" y="0" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_091.png" x="529" y="1933" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_092.png" x="530" y="0" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_093.png" x="133" y="958" width="133" height="99"/>

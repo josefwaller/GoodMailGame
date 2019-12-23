@@ -16,9 +16,17 @@ GameMap::GameMap(Game* g) {
 }
 
 void GameMap::render(sf::RenderWindow* window) {
-	sf::Sprite s = ResourceLoader::get()->getSprite("tiles/tiles", "empty");
-	for (int x = 0; x < 20; x++) {
-		for (int y = 0; y < 20; y++) {
+	for (int x = 0; x < MAP_WIDTH; x++) {
+		for (int y = 0; y < MAP_HEIGHT; y++) {
+			sf::Sprite s;
+			switch (tiles[x][y].type) {
+			case TileType::Empty:
+				s = ResourceLoader::get()->getSprite("tiles/tiles", "empty");
+				break;
+			case TileType::Road:
+				s = ResourceLoader::get()->getSprite("tiles/tiles", "road");
+				break;
+			}
 			// Scale of image
 			float scale = 0.3f;
 			// How much to move the file over and down for each x, y coordinate increase
