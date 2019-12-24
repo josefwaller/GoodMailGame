@@ -33,5 +33,5 @@ bool Line::rangesOverlap(unsigned startOne, unsigned endOne, unsigned startTwo, 
 	return numInRange(startTwo, startOne, endOne) || numInRange(endTwo, startOne, endOne);
 }
 bool Line::isDirectlyBeside(unsigned one, unsigned two) {
-	return abs((int)(one - two));
+	return abs((int)(one - two)) <= 1;
 }

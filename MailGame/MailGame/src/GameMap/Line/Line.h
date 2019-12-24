@@ -12,7 +12,10 @@ public:
 	// i.e. they are parallel and touch
 	// This creates weird roads we don't want
 	bool isNextTo(Line other);
-
+	// Get values
+	sf::Vector2i getStart() { return start; }
+	unsigned getLength() { return len; }
+	bool getIsVertical() { return isVertical; }
 private:
 	// The start and length of the line
 	sf::Vector2i start;

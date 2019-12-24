@@ -14,5 +14,6 @@ public:
 
 	void render(sf::RenderWindow* window);
 private:
+	void generateCityAt(sf::Vector2i pos);
 	std::vector<std::vector<Tile>> tiles;
 };
