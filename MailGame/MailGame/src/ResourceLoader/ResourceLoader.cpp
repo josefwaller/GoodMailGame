@@ -3,9 +3,9 @@
 #include <rapidxml_utils.hpp>
 #include <stdlib.h>
 
-ResourceLoader ResourceLoader::inst = ResourceLoader();
 ResourceLoader* ResourceLoader::get() {
-	return &ResourceLoader::inst;
+	static ResourceLoader inst;
+	return &inst;
 }
 
 void ResourceLoader::ensureSpritesheetIsLoaded(std::string sheetName) {

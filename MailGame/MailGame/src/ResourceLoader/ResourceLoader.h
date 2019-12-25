@@ -15,8 +15,6 @@ struct Spritesheet {
  */
 class ResourceLoader {
 private:
-	// Instance of ResourceLoader
-	static ResourceLoader inst;
 	// Map of spritesheet names to spritesheets
 	std::map<std::string, Spritesheet> spritesheets;
 	// Loads the spritesheet if not already loaded
