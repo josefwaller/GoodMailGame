@@ -7,11 +7,17 @@ class App;
 
 class Game {
 public:
+	// How fast the camera goes
 	static const float CAMERA_SPEED;
+	// The width/height of a single tile on the map
+	static const float TILE_WIDTH;
+	static const float TILE_HEIGHT;
 	Game(App * a);
 	void update(float delta);
 	void onEvent(sf::Event e);
 	void render(sf::RenderWindow* window);
+
+	sf::Vector2f getScreenPosition(sf::Vector2f pos);
 private:
 	GameMap gameMap;
 	// The view of the game

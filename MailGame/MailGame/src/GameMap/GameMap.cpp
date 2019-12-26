@@ -1,4 +1,5 @@
 #include "GameMap\GameMap.h"
+#include "Game\Game.h"
 #include "ResourceLoader\ResourceLoader.h"
 #include "Line/Line.h"
 #include <SFML/Graphics.hpp>
@@ -12,7 +13,7 @@ const size_t GameMap::MAP_WIDTH = 50;
 sf::Sprite GameMap::EMPTY_SPRITE = ResourceLoader::get()->getSprite("tiles/tiles", "empty");
 sf::Sprite GameMap::ROAD_SPRITE = ResourceLoader::get()->getSprite("tiles/tiles", "road");
 
-GameMap::GameMap(Game* g) {
+GameMap::GameMap(Game* g): game(g) {
 	// Initialize a 20x20 grid of nothing
 	for (size_t i = 0; i < MAP_WIDTH; i++) {
 		tiles.push_back(std::vector<Tile>());
@@ -35,12 +36,9 @@ void GameMap::render(sf::RenderWindow* window) {
 				s = ROAD_SPRITE;
 				break;
 			}
-			// How much to move the file over and down for each x, y coordinate increase
-			// Basically the distance from the center of the tile to the side or bottom,
-			// but not quite since the tile image has extra stuff at the bottom
-			const float X_OFFSET = 64.0f;
-			const float Y_OFFSET = 32.0f;
-			s.setPosition(sf::Vector2f(X_OFFSET * (x - y), Y_OFFSET * (x + y)));
+			sf::Vector2f pos((float)x, (float)y);
+			sf::Vector2f screenPos = this->game->getScreenPosition(pos);
+			s.setPosition(screenPos);
 			window->draw(s);
 		}
 	}

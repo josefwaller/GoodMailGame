@@ -22,6 +22,7 @@ public:
 
 	void render(sf::RenderWindow* window);
 private:
+	Game* game;
 	void generateCityAt(sf::Vector2i pos);
 	std::vector<std::vector<Tile>> tiles;
 };

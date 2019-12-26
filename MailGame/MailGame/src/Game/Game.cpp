@@ -3,6 +3,8 @@
 #include <SFML/Graphics.hpp>
 
 const float Game::CAMERA_SPEED = 600.0f;
+const float Game::TILE_WIDTH = 64.0f;
+const float Game::TILE_HEIGHT = 32.0f;
 Game::Game(App* a): gameMap(this) {
 }
 
@@ -22,6 +24,9 @@ void Game::update(float delta) {
 		offset.x = CAMERA_SPEED;
 	}
 	this->gameView.setCenter(this->gameView.getCenter() + offset * delta);
+}
+sf::Vector2f Game::getScreenPosition(sf::Vector2f pos) {
+	return sf::Vector2f(TILE_WIDTH * (pos.x - pos.y), TILE_HEIGHT * (pos.x + pos.y));
 }
 
 void Game::onEvent(sf::Event e) {
