@@ -23,6 +23,15 @@ void Game::update(float delta) {
 	this->gameView.setCenter(this->gameView.getCenter() + offset * delta);
 }
 
+void Game::onEvent(sf::Event e) {
+	const float SCROLL_SPEED = 0.1f;
+	switch (e.type) {
+	case sf::Event::MouseWheelMoved:
+		int delta = e.mouseWheel.delta;
+		gameView.zoom(1 - SCROLL_SPEED * delta);
+	}
+}
+
 void Game::render(sf::RenderWindow* w) {
 	w->setView(this->gameView);
 	this->gameMap.render(w);

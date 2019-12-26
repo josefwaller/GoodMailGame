@@ -9,6 +9,7 @@ class Game {
 public:
 	Game(App * a);
 	void update(float delta);
+	void onEvent(sf::Event e);
 	void render(sf::RenderWindow* window);
 private:
 	GameMap gameMap;

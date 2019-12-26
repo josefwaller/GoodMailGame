@@ -35,15 +35,12 @@ void GameMap::render(sf::RenderWindow* window) {
 				s = ROAD_SPRITE;
 				break;
 			}
-			// Scale of image
-			float scale = 0.2f;
 			// How much to move the file over and down for each x, y coordinate increase
 			// Basically the distance from the center of the tile to the side or bottom,
 			// but not quite since the tile image has extra stuff at the bottom
 			const float X_OFFSET = 64.0f;
 			const float Y_OFFSET = 32.0f;
-			s.setScale(scale, scale);
-			s.setPosition(sf::Vector2f(scale * X_OFFSET * (x - y), scale * Y_OFFSET * (x + y)));
+			s.setPosition(sf::Vector2f(X_OFFSET * (x - y), Y_OFFSET * (x + y)));
 			window->draw(s);
 		}
 	}

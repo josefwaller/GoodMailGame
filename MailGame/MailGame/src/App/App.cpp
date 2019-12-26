@@ -21,6 +21,9 @@ void App::run() {
 			if (e.type == sf::Event::Closed) {
 				window.close();
 			}
+			else {
+				game.onEvent(e);
+			}
 		}
 			
 		// Set up delta time and update last time
