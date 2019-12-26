@@ -7,6 +7,7 @@ class App;
 
 class Game {
 public:
+	static const float CAMERA_SPEED;
 	Game(App * a);
 	void update(float delta);
 	void onEvent(sf::Event e);

@@ -2,6 +2,7 @@
 #include "GameMap/GameMap.h"
 #include <SFML/Graphics.hpp>
 
+const float Game::CAMERA_SPEED = 600.0f;
 Game::Game(App* a): gameMap(this) {
 }
 
@@ -9,16 +10,16 @@ void Game::update(float delta) {
 	// Move the camera
 	sf::Vector2f offset;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
-		offset.y = -100;
+		offset.y = -CAMERA_SPEED;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
-		offset.y = 100;
+		offset.y = CAMERA_SPEED;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
-		offset.x = -100;
+		offset.x = -CAMERA_SPEED;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
-		offset.x = 100;
+		offset.x = CAMERA_SPEED;
 	}
 	this->gameView.setCenter(this->gameView.getCenter() + offset * delta);
 }
