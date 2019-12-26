@@ -6,7 +6,6 @@ const float Game::CAMERA_SPEED = 600.0f;
 const float Game::TILE_WIDTH = 64.0f;
 const float Game::TILE_HEIGHT = 32.0f;
 Game::Game(App* a): gameMap(this) {
-	this->rotation = 1;
 }
 
 void Game::update(float delta) {
@@ -29,6 +28,9 @@ void Game::update(float delta) {
 	// Rotate (TBA, this should be in a button);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R)) {
 		this->rotation = (this->rotation + 1) % 4;
+		sf::Transform t;
+		t.rotate(90.0f);
+		this->gameView.setCenter(t.transformPoint(this->gameView.getCenter()));
 	}
 }
 sf::Vector2f Game::worldToScreenPos(sf::Vector2f pos) {
