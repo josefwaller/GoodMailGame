@@ -8,6 +8,10 @@
 const size_t GameMap::MAP_HEIGHT = 50;
 const size_t GameMap::MAP_WIDTH = 50;
 
+// Load the sprites
+sf::Sprite GameMap::EMPTY_SPRITE = ResourceLoader::get()->getSprite("tiles/tiles", "empty");
+sf::Sprite GameMap::ROAD_SPRITE = ResourceLoader::get()->getSprite("tiles/tiles", "road");
+
 GameMap::GameMap(Game* g) {
 	// Initialize a 20x20 grid of nothing
 	for (size_t i = 0; i < MAP_WIDTH; i++) {
@@ -25,10 +29,10 @@ void GameMap::render(sf::RenderWindow* window) {
 			sf::Sprite s;
 			switch (tiles[x][y].type) {
 			case TileType::Empty:
-				s = ResourceLoader::get()->getSprite("tiles/tiles", "empty");
+				s = EMPTY_SPRITE;
 				break;
 			case TileType::Road:
-				s = ResourceLoader::get()->getSprite("tiles/tiles", "road");
+				s = ROAD_SPRITE;
 				break;
 			}
 			// Scale of image

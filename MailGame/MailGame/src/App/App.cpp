@@ -27,7 +27,6 @@ void App::run() {
 		std::clock_t nowTime = std::clock();
 		float delta = (float)(nowTime - lastTime) / 1000.0f;
 		lastTime = nowTime;
-		std::cout << delta << std::endl;
 
 		// Update game
 		game.update(delta);
