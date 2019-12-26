@@ -37,8 +37,7 @@ void GameMap::render(sf::RenderWindow* window) {
 				break;
 			}
 			sf::Vector2f pos((float)x, (float)y);
-			sf::Vector2f screenPos = this->game->getScreenPosition(pos);
-			s.setPosition(screenPos);
+			s.setPosition(this->game->worldToScreenPos(pos));
 			window->draw(s);
 		}
 	}

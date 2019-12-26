@@ -25,7 +25,7 @@ void Game::update(float delta) {
 	}
 	this->gameView.setCenter(this->gameView.getCenter() + offset * delta);
 }
-sf::Vector2f Game::getScreenPosition(sf::Vector2f pos) {
+sf::Vector2f Game::worldToScreenPos(sf::Vector2f pos) {
 	return sf::Vector2f(TILE_WIDTH * (pos.x - pos.y), TILE_HEIGHT * (pos.x + pos.y));
 }
 

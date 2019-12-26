@@ -17,7 +17,7 @@ public:
 	void onEvent(sf::Event e);
 	void render(sf::RenderWindow* window);
 
-	sf::Vector2f getScreenPosition(sf::Vector2f pos);
+	sf::Vector2f worldToScreenPos(sf::Vector2f pos);
 private:
 	GameMap gameMap;
 	// The view of the game
