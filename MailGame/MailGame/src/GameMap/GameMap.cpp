@@ -25,22 +25,50 @@ GameMap::GameMap(Game* g): game(g) {
 }
 
 void GameMap::render(sf::RenderWindow* window) {
-	for (int x = 0; x < MAP_WIDTH; x++) {
-		for (int y = 0; y < MAP_HEIGHT; y++) {
-			sf::Sprite s;
-			switch (tiles[x][y].type) {
-			case TileType::Empty:
-				s = EMPTY_SPRITE;
-				break;
-			case TileType::Road:
-				s = ROAD_SPRITE;
-				break;
+	int rotation = this->game->getRotation();
+	switch(rotation) {
+	case 0:
+		for (size_t x = 0; x < MAP_WIDTH; x++) {
+			for (size_t y = 0; y < MAP_HEIGHT; y++) {
+				renderTile(window, x, y);
 			}
-			sf::Vector2f pos((float)x, (float)y);
-			s.setPosition(this->game->worldToScreenPos(pos));
-			window->draw(s);
+		}
+		break;
+	case 1:
+		for (size_t x = 0; x < MAP_WIDTH; x++) {
+			for (int y = MAP_HEIGHT - 1; y >= 0; y--) {
+				renderTile(window, x, (size_t)y);
+			}
+		}
+		break;
+	case 2:
+		for (int x = MAP_WIDTH - 1; x >= 0; x--) {
+			for (int y = MAP_HEIGHT - 1; y >= 0; y--) {
+				renderTile(window, (size_t)x, (size_t)y);
+			}
+		}
+		break;
+	case 3:
+		for (int x = MAP_WIDTH - 1; x >= 0; x--) {
+			for (size_t y = 0; y < MAP_HEIGHT; y++) {
+				renderTile(window, (size_t)x, y);
+			}
 		}
 	}
+}
+void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
+	sf::Sprite s;
+	switch (tiles[x][y].type) {
+	case TileType::Empty:
+		s = EMPTY_SPRITE;
+		break;
+	case TileType::Road:
+		s = ROAD_SPRITE;
+		break;
+	}
+	sf::Vector2f pos((float)x, (float)y);
+	s.setPosition(this->game->worldToScreenPos(pos));
+	window->draw(s);
 }
 /*
  * A very simple algorithm which just generates n roads criss-crossing

@@ -17,10 +17,13 @@ public:
 	void onEvent(sf::Event e);
 	void render(sf::RenderWindow* window);
 
+	int getRotation();
 	sf::Vector2f worldToScreenPos(sf::Vector2f pos);
 private:
 	GameMap gameMap;
 	// The view of the game
 	// Includes camera position
 	sf::View gameView;
+	// The rotation, where each increase is a 90 degree turn
+	int rotation;
 };
