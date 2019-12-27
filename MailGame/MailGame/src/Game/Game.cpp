@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "GameMap/GameMap.h"
 #include <SFML/Graphics.hpp>
+#include <imgui.h>
 
 const float Game::CAMERA_SPEED = 600.0f;
 const float Game::TILE_WIDTH = 64.0f;
@@ -25,13 +26,13 @@ void Game::update(float delta) {
 	}
 	this->gameView.setCenter(this->gameView.getCenter() + offset * delta);
 
-	// Rotate (TBA, this should be in a button);
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R)) {
+	ImGui::Begin("Game Controls");
+	if (ImGui::Button("Rotate")) {
 		this->rotation = (this->rotation + 1) % 4;
-		sf::Transform t;
-		t.rotate(90.0f);
-		this->gameView.setCenter(t.transformPoint(this->gameView.getCenter()));
+		sf::Vector2f center = this->gameView.getCenter();
+		this->gameView.setCenter(-center.y, center.x);
 	}
+	ImGui::End();
 }
 sf::Vector2f Game::worldToScreenPos(sf::Vector2f pos) {
 	switch (this->rotation) {

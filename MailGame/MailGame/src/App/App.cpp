@@ -1,7 +1,9 @@
 #include "App.h"
 #include "Game\Game.h"
 #include <SFML/Window/Event.hpp>
-#include <ctime>
+#include <SFML/System/Clock.hpp>
+#include <imgui-SFML.h>
+#include <imgui.h>
 
 
 App::App() : window(sf::VideoMode(500, 600), "Hello World")
@@ -12,11 +14,13 @@ App::App() : window(sf::VideoMode(500, 600), "Hello World")
 void App::run() {
 	// Create game
 	Game game(this);
-	std::clock_t lastTime = std::clock();
+	sf::Clock deltaClock;
+	ImGui::SFML::Init(window);
 
 	while (window.isOpen()) {
 		sf::Event e;
 		while (window.pollEvent(e)) {
+			ImGui::SFML::ProcessEvent(e);
 			// Poll for events
 			if (e.type == sf::Event::Closed) {
 				window.close();
@@ -27,9 +31,11 @@ void App::run() {
 		}
 			
 		// Set up delta time and update last time
-		std::clock_t nowTime = std::clock();
-		float delta = (float)(nowTime - lastTime) / 1000.0f;
-		lastTime = nowTime;
+		sf::Time nowTime = deltaClock.restart();
+		float delta = nowTime.asMilliseconds() / 1000.0f;
+
+		// Update ImGui
+		ImGui::SFML::Update(window, nowTime);
 
 		// Update game
 		game.update(delta);
@@ -37,6 +43,8 @@ void App::run() {
 		// Display game
 		window.clear();
 		game.render(&window);
+		ImGui::SFML::Render(window);
 		window.display();
 	}
+	ImGui::SFML::Shutdown();
 }

@@ -355,3 +355,9 @@ MigrationBackup/
 # Additional things to ignore
 # SFML folder
 MailGame/SFML-2.5.1
+# ImGui folders
+MailGame/imgui
+MailGame/imgui-sfml
+MailGame/MailGame/imgui.ini
+# Opengl lib
+MailGame/opengl
