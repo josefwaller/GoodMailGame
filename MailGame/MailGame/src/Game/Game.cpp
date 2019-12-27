@@ -30,7 +30,7 @@ void Game::update(float delta) {
 	if (ImGui::Button("Rotate")) {
 		this->rotation = (this->rotation + 1) % 4;
 		sf::Vector2f center = this->gameView.getCenter();
-		this->gameView.setCenter(-center.y, center.x);
+		this->gameView.setCenter(-center.y / TILE_HEIGHT * TILE_WIDTH, center.x / TILE_WIDTH * TILE_HEIGHT);
 	}
 	ImGui::End();
 }

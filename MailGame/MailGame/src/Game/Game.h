@@ -19,6 +19,7 @@ public:
 
 	int getRotation();
 	sf::Vector2f worldToScreenPos(sf::Vector2f pos);
+	sf::Vector2f screenToWorldPos(sf::Vector2f pos);
 private:
 	GameMap gameMap;
 	// The view of the game
