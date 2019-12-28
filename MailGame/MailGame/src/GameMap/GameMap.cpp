@@ -5,15 +5,20 @@
 #include <SFML/Graphics.hpp>
 #include <queue>
 #include <stdlib.h>
+#include <bitset>
 
 const size_t GameMap::MAP_HEIGHT = 50;
 const size_t GameMap::MAP_WIDTH = 50;
 
 // Load the sprites
-sf::Sprite GameMap::EMPTY_SPRITE = ResourceLoader::get()->getSprite("tiles/tiles", "empty");
-sf::Sprite GameMap::ROAD_SPRITE = ResourceLoader::get()->getSprite("tiles/tiles", "road");
+const sf::Sprite GameMap::EMPTY_SPRITE = ResourceLoader::get()->getSprite("tiles/tiles", "empty");
+std::vector<sf::Sprite> GameMap::ROAD_SPRITES;
 
 GameMap::GameMap(Game* g): game(g) {
+	for (int i = 0; i < 16; i++) {
+		GameMap::ROAD_SPRITES.push_back(ResourceLoader::get()->getSprite("tiles/tiles", "road-" + std::bitset<4>(i).to_string()));
+	}
+
 	// Initialize a 20x20 grid of nothing
 	for (size_t i = 0; i < MAP_WIDTH; i++) {
 		tiles.push_back(std::vector<Tile>());
@@ -63,7 +68,21 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 		s = EMPTY_SPRITE;
 		break;
 	case TileType::Road:
-		s = ROAD_SPRITE;
+		int index = 0;
+		if (getTileAt(x, y - 1).type == TileType::Road) {
+			index |= 0b1000;
+		}
+		if (getTileAt(x + 1, y).type == TileType::Road) {
+			index |= 0b0100;
+		}
+		if (getTileAt(x, y + 1).type == TileType::Road) {
+			index |= 0b0010;
+		}
+		if (getTileAt(x - 1, y).type == TileType::Road) {
+			index |= 0b0001;
+		}
+		index = 0b1111 & ((index >> game->getRotation()) | (index << (4 - game->getRotation())));
+		s = ROAD_SPRITES[index];
 		break;
 	}
 	sf::Vector2f pos((float)x, (float)y);

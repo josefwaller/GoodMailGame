@@ -13,8 +13,8 @@ public:
 	static const size_t MAP_HEIGHT;
 
 	// The tiles used to render the map
-	static sf::Sprite ROAD_SPRITE;
-	static sf::Sprite EMPTY_SPRITE;
+	static std::vector<sf::Sprite> ROAD_SPRITES;
+	static const sf::Sprite EMPTY_SPRITE;
 
 	GameMap(Game* g);
 
