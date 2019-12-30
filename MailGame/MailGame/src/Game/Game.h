@@ -1,9 +1,11 @@
 #pragma once
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/View.hpp>
+#include <memory>
 #include "GameMap/GameMap.h"
 
 class App;
+class Entity;
 
 class Game {
 public:
@@ -19,7 +21,9 @@ public:
 
 	int getRotation();
 	sf::Vector2f worldToScreenPos(sf::Vector2f pos);
-	sf::Vector2f screenToWorldPos(sf::Vector2f pos);
+	// Add/Remove entities
+	void addEntity(std::shared_ptr<Entity> e);
+	void removeEntity(std::shared_ptr<Entity> e);
 private:
 	GameMap gameMap;
 	// The view of the game
@@ -27,4 +31,6 @@ private:
 	sf::View gameView;
 	// The rotation, where each increase is a 90 degree turn
 	int rotation;
+	// The entities
+	std::vector<std::shared_ptr<Entity>> entities;
 };

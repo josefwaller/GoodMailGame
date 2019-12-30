@@ -124,6 +124,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\App\App.cpp" />
+    <ClCompile Include="src\Component\Component.cpp" />
+    <ClCompile Include="src\Component\Transform\Transform.cpp" />
+    <ClCompile Include="src\Entity\Entity.cpp" />
     <ClCompile Include="src\GameMap\GameMap.cpp" />
     <ClCompile Include="src\GameMap\Line\Line.cpp" />
     <ClCompile Include="src\Game\Game.cpp" />
@@ -136,6 +139,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h" />
+    <ClInclude Include="src\Component\Component.h" />
+    <ClInclude Include="src\Component\Transform\Transform.h" />
+    <ClInclude Include="src\Entity\Entity.h" />
     <ClInclude Include="src\GameMap\GameMap.h" />
     <ClInclude Include="src\GameMap\Line\Line.h" />
     <ClInclude Include="src\Game\Game.h" />

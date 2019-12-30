@@ -51,6 +51,13 @@ sf::Vector2f Game::worldToScreenPos(sf::Vector2f pos) {
 	return sf::Vector2f(TILE_WIDTH * (pos.x - pos.y), TILE_HEIGHT * (pos.x + pos.y));
 }
 
+void Game::addEntity(std::shared_ptr<Entity> e) {
+	this->entities.push_back(e);
+}
+void Game::removeEntity(std::shared_ptr<Entity> e) {
+	// TBA
+}
+
 void Game::onEvent(sf::Event e) {
 	const float SCROLL_SPEED = 0.1f;
 	switch (e.type) {
