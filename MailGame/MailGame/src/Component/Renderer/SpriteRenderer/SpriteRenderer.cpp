@@ -2,7 +2,7 @@
 #include "Entity\Entity.h"
 #include "Component\Transform\Transform.h"
 
-SpriteRenderer::SpriteRenderer(std::weak_ptr<Entity> e, sf::Sprite spr) : Component(e), sprite(spr) {
+SpriteRenderer::SpriteRenderer(sf::Sprite spr) : sprite(spr) {
 
 }
 

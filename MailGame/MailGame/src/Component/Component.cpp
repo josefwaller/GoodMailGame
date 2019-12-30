@@ -1,6 +1,10 @@
 #include "Component/Component.h"
+#include <stdexcept>
 
-Component::Component(std::weak_ptr<Entity> e) {
+void Component::setEntity(std::shared_ptr<Entity> e) {
+	if (this->entity.lock()) {
+		throw std::invalid_argument("Cannot set the entity of a component which already has an entity");
+	}
 	this->entity = e;
 }
 std::shared_ptr<Entity> Component::getEntity() {

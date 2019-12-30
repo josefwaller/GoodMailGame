@@ -4,6 +4,5 @@
 
 class Renderer : public Component {
 public:
-	Renderer(std::weak_ptr<Entity>);
 	virtual void render(sf::RenderWindow* w) = 0;
 };

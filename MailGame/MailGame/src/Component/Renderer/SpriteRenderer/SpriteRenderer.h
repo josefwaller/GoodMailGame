@@ -4,7 +4,7 @@
 
 class SpriteRenderer : public Renderer {
 public:
-	SpriteRenderer(std::weak_ptr<Entity> e, sf::Sprite spr);
+	SpriteRenderer(sf::Sprite spr);
 	virtual void render(sf::RenderWindow* window) override;
 private:
 	sf::Sprite sprite;

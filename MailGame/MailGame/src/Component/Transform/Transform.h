@@ -4,7 +4,7 @@
 
 class Transform: public Component {
 public:
-	Transform(std::weak_ptr<Entity> e, sf::Vector2f initPos);
+	Transform(sf::Vector2f initPos);
 	sf::Vector2f getPosition();
 	void setPosition(sf::Vector2f pos);
 

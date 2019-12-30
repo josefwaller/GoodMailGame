@@ -1,6 +1,6 @@
 #include "Transform.h"
 
-Transform::Transform(std::weak_ptr<Entity> e, sf::Vector2f pos) : Component(e) {
+Transform::Transform(sf::Vector2f pos) {
 	this->position = pos;
 }
 sf::Vector2f Transform::getPosition() {

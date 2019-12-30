@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClCompile Include="src\App\App.cpp" />
     <ClCompile Include="src\Component\Component.cpp" />
+    <ClCompile Include="src\Component\Renderer\SpriteRenderer\SpriteRenderer.cpp" />
     <ClCompile Include="src\Component\Transform\Transform.cpp" />
     <ClCompile Include="src\Entity\Entity.cpp" />
     <ClCompile Include="src\GameMap\GameMap.cpp" />
@@ -140,6 +141,8 @@
   <ItemGroup>
     <ClInclude Include="src\App\App.h" />
     <ClInclude Include="src\Component\Component.h" />
+    <ClInclude Include="src\Component\Renderer\Renderer.h" />
+    <ClInclude Include="src\Component\Renderer\SpriteRenderer\SpriteRenderer.h" />
     <ClInclude Include="src\Component\Transform\Transform.h" />
     <ClInclude Include="src\Entity\Entity.h" />
     <ClInclude Include="src\GameMap\GameMap.h" />
