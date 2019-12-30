@@ -1,5 +1,10 @@
 #include "Game.h"
 #include "GameMap/GameMap.h"
+#include "Entity/Entity.h"
+#include "Component/Transform/Transform.h"
+#include "ResourceLoader/ResourceLoader.h"
+#include "Component/Renderer/Renderer.h"
+#include "Component/Renderer/SpriteRenderer/SpriteRenderer.h"
 #include <SFML/Graphics.hpp>
 #include <imgui.h>
 
@@ -7,6 +12,12 @@ const float Game::CAMERA_SPEED = 600.0f;
 const float Game::TILE_WIDTH = 64.0f;
 const float Game::TILE_HEIGHT = 32.0f;
 Game::Game(App* a): gameMap(this) {
+	std::shared_ptr<Entity> e = std::shared_ptr<Entity>(new Entity(this));
+	e->transform = std::shared_ptr<Transform>(new Transform({ 20.0f, 32.0f }));
+	e->transform->setEntity(e);
+	e->renderer = std::shared_ptr<Renderer>(new SpriteRenderer(ResourceLoader::get()->getSprite("buildings/buildings", "building-SE-3")));
+	e->renderer->setEntity(e);
+	this->addEntity(e);
 }
 
 void Game::update(float delta) {
@@ -70,6 +81,13 @@ void Game::onEvent(sf::Event e) {
 void Game::render(sf::RenderWindow* w) {
 	w->setView(this->gameView);
 	this->gameMap.render(w);
+
+	for (auto it = this->entities.begin(); it != this->entities.end(); it++) {
+		std::shared_ptr<Entity> e = *it;
+		if (e->renderer) {
+			e->renderer->render(w);
+		}
+	}
 }
 int Game::getRotation() {
 	return rotation;
