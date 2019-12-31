@@ -2,9 +2,8 @@
 #include "GameMap/GameMap.h"
 #include "Entity/Entity.h"
 #include "Component/Transform/Transform.h"
-#include "ResourceLoader/ResourceLoader.h"
 #include "Component/Renderer/Renderer.h"
-#include "Component/Renderer/SpriteRenderer/SpriteRenderer.h"
+#include "Entity/EntityPresets/EntityPresets.h"
 #include <SFML/Graphics.hpp>
 #include <imgui.h>
 
@@ -12,10 +11,7 @@ const float Game::CAMERA_SPEED = 600.0f;
 const float Game::TILE_WIDTH = 64.0f;
 const float Game::TILE_HEIGHT = 32.0f;
 Game::Game(App* a): gameMap(this) {
-	this->addEntity(Entity::createEntity(this,
-		new Transform({ 32.0f, 32.0f }),
-		new SpriteRenderer(ResourceLoader::get()->getSprite("buildings/buildings", "building-SE-3"))
-	));
+	this->addEntity(EntityPresets::building(this, { 32.0f, 32.0f }, 0.0f));
 }
 
 void Game::update(float delta) {

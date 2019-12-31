@@ -57,6 +57,9 @@
     <ClCompile Include="src\Component\Renderer\SpriteRenderer\SpriteRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Entity\EntityPresets\EntityPresets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h">
@@ -87,6 +90,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Component\Renderer\SpriteRenderer\SpriteRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Entity\EntityPresets\EntityPresets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
