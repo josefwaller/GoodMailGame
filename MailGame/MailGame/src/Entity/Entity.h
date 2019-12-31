@@ -7,12 +7,17 @@ class Game;
 
 class Entity {
 public:
-	Entity(Game* g);
+	static std::shared_ptr<Entity> createEntity(
+		Game* g,
+		Transform* t = nullptr,
+		Renderer* r = nullptr
+	);
 	// Components
 	std::shared_ptr<Transform> transform;
-	std::shared_ptr <Renderer> renderer;
+	std::shared_ptr<Renderer> renderer;
 	
 	Game* getGame();
 private:
+	Entity(Game* g);
 	Game* game;
 };

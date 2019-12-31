@@ -12,12 +12,10 @@ const float Game::CAMERA_SPEED = 600.0f;
 const float Game::TILE_WIDTH = 64.0f;
 const float Game::TILE_HEIGHT = 32.0f;
 Game::Game(App* a): gameMap(this) {
-	std::shared_ptr<Entity> e = std::shared_ptr<Entity>(new Entity(this));
-	e->transform = std::shared_ptr<Transform>(new Transform({ 20.0f, 32.0f }));
-	e->transform->setEntity(e);
-	e->renderer = std::shared_ptr<Renderer>(new SpriteRenderer(ResourceLoader::get()->getSprite("buildings/buildings", "building-SE-3")));
-	e->renderer->setEntity(e);
-	this->addEntity(e);
+	this->addEntity(Entity::createEntity(this,
+		new Transform({ 32.0f, 32.0f }),
+		new SpriteRenderer(ResourceLoader::get()->getSprite("buildings/buildings", "building-SE-3"))
+	));
 }
 
 void Game::update(float delta) {
