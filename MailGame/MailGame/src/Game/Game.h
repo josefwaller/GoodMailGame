@@ -3,6 +3,7 @@
 #include <SFML/Graphics/View.hpp>
 #include <memory>
 #include "GameMap/GameMap.h"
+#include "System/IsoRotation/IsoRotation.h"
 
 class App;
 class Entity;
@@ -19,7 +20,7 @@ public:
 	void onEvent(sf::Event e);
 	void render(sf::RenderWindow* window);
 
-	int getRotation();
+	IsoRotation getRotation();
 	sf::Vector2f worldToScreenPos(sf::Vector2f pos);
 	// Add/Remove entities
 	void addEntity(std::shared_ptr<Entity> e);
@@ -30,7 +31,7 @@ private:
 	// Includes camera position
 	sf::View gameView;
 	// The rotation, where each increase is a 90 degree turn
-	int rotation;
+	IsoRotation rotation;
 	// The entities
 	std::vector<std::shared_ptr<Entity>> entities;
 };

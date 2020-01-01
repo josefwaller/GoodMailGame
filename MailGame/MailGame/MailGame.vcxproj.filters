@@ -95,6 +95,9 @@
     <ClInclude Include="src\Entity\EntityPresets\EntityPresets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\System\IsoRotation\IsoRotation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\GameMap\Tile.h" />

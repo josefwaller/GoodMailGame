@@ -33,14 +33,14 @@ void Game::update(float delta) {
 
 	ImGui::Begin("Game Controls");
 	if (ImGui::Button("Rotate")) {
-		this->rotation = (this->rotation + 1) % 4;
+		this->rotation++;
 		sf::Vector2f center = this->gameView.getCenter();
 		this->gameView.setCenter(-center.y / TILE_HEIGHT * TILE_WIDTH, center.x / TILE_WIDTH * TILE_HEIGHT);
 	}
 	ImGui::End();
 }
 sf::Vector2f Game::worldToScreenPos(sf::Vector2f pos) {
-	switch (this->rotation) {
+	switch (this->rotation.getRotation()) {
 	case 0:
 		break;
 	case 1:
@@ -83,6 +83,6 @@ void Game::render(sf::RenderWindow* w) {
 		}
 	}
 }
-int Game::getRotation() {
+IsoRotation Game::getRotation() {
 	return rotation;
 }

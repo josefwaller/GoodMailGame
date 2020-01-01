@@ -151,6 +151,7 @@
     <ClInclude Include="src\GameMap\Line\Line.h" />
     <ClInclude Include="src\Game\Game.h" />
     <ClInclude Include="src\ResourceLoader\ResourceLoader.h" />
+    <ClInclude Include="src\System\IsoRotation\IsoRotation.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\GameMap\Tile.h" />

@@ -30,7 +30,7 @@ GameMap::GameMap(Game* g): game(g) {
 }
 
 void GameMap::render(sf::RenderWindow* window) {
-	int rotation = this->game->getRotation();
+	int rotation = this->game->getRotation().getRotation();
 	switch(rotation) {
 	case 0:
 		for (size_t x = 0; x < MAP_WIDTH; x++) {
@@ -81,7 +81,8 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 		if (getTileAt(x - 1, y).type == TileType::Road) {
 			index |= 0b0001;
 		}
-		index = 0b1111 & ((index >> game->getRotation()) | (index << (4 - game->getRotation())));
+		unsigned int rotation = game->getRotation().getRotation();
+		index = 0b1111 & ((index >> rotation) | (index << (4 - rotation)));
 		s = ROAD_SPRITES[index];
 		break;
 	}
