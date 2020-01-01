@@ -41,15 +41,15 @@ void Game::update(float delta) {
 }
 sf::Vector2f Game::worldToScreenPos(sf::Vector2f pos) {
 	switch (this->rotation.getRotation()) {
-	case 0:
+	case IsoRotation::NORTH:
 		break;
-	case 1:
+	case IsoRotation::EAST:
 		pos = sf::Vector2f(-pos.y, pos.x);
 		break;
-	case 2:
+	case IsoRotation::SOUTH:
 		pos = sf::Vector2f(-pos.x, -pos.y);
 		break;
-	case 3:
+	case IsoRotation::WEST:
 		pos = sf::Vector2f(pos.y, -pos.x);
 		break;
 	}

@@ -32,28 +32,28 @@ GameMap::GameMap(Game* g): game(g) {
 void GameMap::render(sf::RenderWindow* window) {
 	int rotation = this->game->getRotation().getRotation();
 	switch(rotation) {
-	case 0:
+	case IsoRotation::NORTH:
 		for (size_t x = 0; x < MAP_WIDTH; x++) {
 			for (size_t y = 0; y < MAP_HEIGHT; y++) {
 				renderTile(window, x, y);
 			}
 		}
 		break;
-	case 1:
+	case IsoRotation::EAST:
 		for (size_t x = 0; x < MAP_WIDTH; x++) {
 			for (int y = MAP_HEIGHT - 1; y >= 0; y--) {
 				renderTile(window, x, (size_t)y);
 			}
 		}
 		break;
-	case 2:
+	case IsoRotation::SOUTH:
 		for (int x = MAP_WIDTH - 1; x >= 0; x--) {
 			for (int y = MAP_HEIGHT - 1; y >= 0; y--) {
 				renderTile(window, (size_t)x, (size_t)y);
 			}
 		}
 		break;
-	case 3:
+	case IsoRotation::WEST:
 		for (int x = MAP_WIDTH - 1; x >= 0; x--) {
 			for (size_t y = 0; y < MAP_HEIGHT; y++) {
 				renderTile(window, (size_t)x, y);
