@@ -10,6 +10,7 @@
 std::shared_ptr<Entity> EntityPresets::building(Game* g, sf::Vector2f pos, IsoRotation rot) {
 	return Entity::createEntity(
 		g,
+		EntityTag::Building,
 		new Transform(pos, rot),
 		new IsoSpriteRenderer(
 			ResourceLoader::get()->getSprite("buildings/buildings", "building-NE-3"),

@@ -6,11 +6,12 @@
 
 std::shared_ptr<Entity> Entity::createEntity(
 	Game* g,
+	EntityTag tag,
 	Transform* t,
 	Renderer* r) {
 
 	// Create the entity
-	std::shared_ptr<Entity> e(new Entity(g));
+	std::shared_ptr<Entity> e(new Entity(g, tag));
 	// Set components
 	e->transform = std::shared_ptr<Transform>(t);
 	t->setEntity(e);
@@ -21,7 +22,7 @@ std::shared_ptr<Entity> Entity::createEntity(
 	return e;
 
 }
-Entity::Entity(Game* g) {
+Entity::Entity(Game* g, EntityTag tag) {
 	this->game = g;
 }
 
