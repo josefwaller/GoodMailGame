@@ -77,7 +77,7 @@ void Game::render(sf::RenderWindow* w) {
 
 	for (auto it = this->entities.begin(); it != this->entities.end(); it++) {
 		std::shared_ptr<Entity> e = *it;
-		if (e->renderer) {
+		if (e->renderer && e->tag != EntityTag::Building) {
 			e->renderer->render(w);
 		}
 	}

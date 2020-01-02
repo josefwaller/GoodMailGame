@@ -1,5 +1,7 @@
 #include "GameMap\GameMap.h"
 #include "Game\Game.h"
+#include "Entity/Entity.h"
+#include "Component/Renderer/Renderer.h"
 #include "ResourceLoader\ResourceLoader.h"
 #include "Line/Line.h"
 #include "Entity/EntityPresets/EntityPresets.h"
@@ -63,6 +65,10 @@ void GameMap::render(sf::RenderWindow* window) {
 	}
 }
 void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
+	if (auto e = this->tiles[x][y].building.lock()) {
+		e->renderer->render(window);
+		return;
+	}
 	sf::Sprite s;
 	switch (tiles[x][y].type) {
 	case TileType::Empty:
@@ -178,9 +184,11 @@ void GameMap::generateCityAt(sf::Vector2i pos) {
 									rot = yOff == 1 ? IsoRotation::NORTH: IsoRotation::SOUTH;
 								}
 								this->tiles[x + xOff][y + yOff].type = TileType::House;
+								std::shared_ptr<Entity> e = EntityPresets::building(this->game, sf::Vector2f(x + xOff, y + yOff), rot);
 								this->game->addEntity(
-									EntityPresets::building(this->game, sf::Vector2f(x + xOff, y + yOff), rot)
+									e
 								);
+								this->tiles[x + xOff][y + yOff].building = e;
 							}
 						}
 					}

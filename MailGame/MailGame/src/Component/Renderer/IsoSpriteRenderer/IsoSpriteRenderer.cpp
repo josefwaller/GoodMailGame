@@ -17,7 +17,7 @@ void IsoSpriteRenderer::render(sf::RenderWindow* window) {
 	sf::Sprite toRender = this->sprites[rot.getRotation()];
 	// Set sprite origin to bottom-center
 	Game* game = this->getEntity()->getGame();
-	toRender.setOrigin(toRender.getLocalBounds().width / 2, toRender.getLocalBounds().height);
+	toRender.setOrigin(toRender.getLocalBounds().width / 2, toRender.getLocalBounds().height - 32);
 	toRender.setPosition(game->worldToScreenPos(position));
 	window->draw(toRender);
 }
