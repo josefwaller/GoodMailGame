@@ -2,6 +2,7 @@
 #include "Game\Game.h"
 #include "ResourceLoader\ResourceLoader.h"
 #include "Line/Line.h"
+#include "Entity/EntityPresets/EntityPresets.h"
 #include <SFML/Graphics.hpp>
 #include <queue>
 #include <stdlib.h>
@@ -157,11 +158,41 @@ void GameMap::generateCityAt(sf::Vector2i pos) {
 			}
 		}
 	}
+	// Just add buildings along all the roads for now
+	for (size_t x = 0; x < MAP_WIDTH; x++) {
+		for (size_t y = 0; y < MAP_HEIGHT; y++) {
+			if (this->tiles[x][y].type == TileType::Road) {
+				for (int xOff = -1; xOff < 2; xOff++) {
+					for (int yOff = -1; yOff < 2; yOff++) {
+						if (xOff == 0 || yOff == 0) {
+							if (this->getTileAt(x + xOff, y + yOff).type == TileType::Empty) {
+								IsoRotation rot;
+								switch (xOff) {
+								case -1:
+									rot = IsoRotation::EAST;
+									break;
+								case 1:
+									rot = IsoRotation::WEST;
+									break;
+								case 0:
+									rot = yOff == 1 ? IsoRotation::NORTH: IsoRotation::SOUTH;
+								}
+								this->tiles[x + xOff][y + yOff].type = TileType::House;
+								this->game->addEntity(
+									EntityPresets::building(this->game, sf::Vector2f(x + xOff, y + yOff), rot)
+								);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 Tile GameMap::getTileAt(size_t x, size_t y) {
 	if (x <= tiles.size() && y <= tiles[0].size()) {
 		return tiles[x][y];
 	}
-	return Tile(TileType::Empty);
+	return Tile(TileType::OffMap);
 }

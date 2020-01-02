@@ -26,12 +26,14 @@ public:
 	void addEntity(std::shared_ptr<Entity> e);
 	void removeEntity(std::shared_ptr<Entity> e);
 private:
+	// The entities
+	// Please keep above gameMap
+	std::vector<std::shared_ptr<Entity>> entities;
+	// The game map
 	GameMap gameMap;
 	// The view of the game
 	// Includes camera position
 	sf::View gameView;
 	// The rotation, where each increase is a 90 degree turn
 	IsoRotation rotation;
-	// The entities
-	std::vector<std::shared_ptr<Entity>> entities;
 };

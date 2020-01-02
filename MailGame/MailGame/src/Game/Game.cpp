@@ -11,7 +11,6 @@ const float Game::CAMERA_SPEED = 600.0f;
 const float Game::TILE_WIDTH = 64.0f;
 const float Game::TILE_HEIGHT = 32.0f;
 Game::Game(App* a): gameMap(this) {
-	this->addEntity(EntityPresets::building(this, { 15.0f, 15.0f }, 0.0f));
 }
 
 void Game::update(float delta) {

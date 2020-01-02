@@ -4,6 +4,7 @@ enum TileType {
 	Empty,
 	Road,
 	House,
+	OffMap
 };
 
 struct Tile {
