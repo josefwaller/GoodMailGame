@@ -6,7 +6,7 @@
 #include <imgui.h>
 
 
-App::App() : window(sf::VideoMode(500, 600), "Hello World")
+App::App() : window(sf::VideoMode(500, 600), "Hello World"), lastTime()
 {
 	// Initialize the window
 }

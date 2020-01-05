@@ -4,7 +4,7 @@
 // Forward declaration
 class Entity;
 
-enum TileType {
+enum class TileType {
 	Empty,
 	Road,
 	House,

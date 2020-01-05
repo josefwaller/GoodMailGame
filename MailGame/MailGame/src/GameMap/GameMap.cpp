@@ -184,7 +184,7 @@ void GameMap::generateCityAt(sf::Vector2i pos) {
 									rot = yOff == 1 ? IsoRotation::NORTH: IsoRotation::SOUTH;
 								}
 								this->tiles[x + xOff][y + yOff].type = TileType::House;
-								std::shared_ptr<Entity> e = EntityPresets::building(this->game, sf::Vector2f(x + xOff, y + yOff), rot);
+								std::shared_ptr<Entity> e = EntityPresets::building(this->game, sf::Vector2f((float)(x + xOff), (float)(y + yOff)), rot);
 								this->game->addEntity(
 									e
 								);
