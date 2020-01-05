@@ -4,6 +4,7 @@
 #include <memory>
 #include "GameMap/GameMap.h"
 #include "System/IsoRotation/IsoRotation.h"
+#include "Ui/UiHandler/UiHandler.h"
 
 class App;
 class Entity;
@@ -15,12 +16,18 @@ public:
 	// The width/height of a single tile on the map
 	static const float TILE_WIDTH;
 	static const float TILE_HEIGHT;
+
+	// Initialize game
 	Game(App * a);
+	// Update game
 	void update(float delta);
+	// On an event such as a keyboard click
 	void onEvent(sf::Event e);
+	// Render the game, including UI
 	void render(sf::RenderWindow* window);
 
 	IsoRotation getRotation();
+	void rotateCamera();
 	sf::Vector2f worldToScreenPos(sf::Vector2f pos);
 	// Add/Remove entities
 	void addEntity(std::shared_ptr<Entity> e);
@@ -31,6 +38,8 @@ private:
 	std::vector<std::shared_ptr<Entity>> entities;
 	// The game map
 	GameMap gameMap;
+	// The Ui Handler
+	UiHandler uiHandler;
 	// The view of the game
 	// Includes camera position
 	sf::View gameView;

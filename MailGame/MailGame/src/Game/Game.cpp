@@ -10,7 +10,7 @@
 const float Game::CAMERA_SPEED = 600.0f;
 const float Game::TILE_WIDTH = 64.0f;
 const float Game::TILE_HEIGHT = 32.0f;
-Game::Game(App* a): gameMap(this) {
+Game::Game(App* a): gameMap(this), uiHandler(this) {
 }
 
 void Game::update(float delta) {
@@ -30,13 +30,7 @@ void Game::update(float delta) {
 	}
 	this->gameView.setCenter(this->gameView.getCenter() + offset * delta);
 
-	ImGui::Begin("Game Controls");
-	if (ImGui::Button("Rotate")) {
-		this->rotation++;
-		sf::Vector2f center = this->gameView.getCenter();
-		this->gameView.setCenter(-center.y / TILE_HEIGHT * TILE_WIDTH, center.x / TILE_WIDTH * TILE_HEIGHT);
-	}
-	ImGui::End();
+	this->uiHandler.update();
 }
 sf::Vector2f Game::worldToScreenPos(sf::Vector2f pos) {
 	switch (this->rotation.getRotation()) {
@@ -81,6 +75,13 @@ void Game::render(sf::RenderWindow* w) {
 			e->renderer->render(w);
 		}
 	}
+	// Render Ui
+	this->uiHandler.render(w);
+}
+void Game::rotateCamera() {
+	this->rotation++;
+	sf::Vector2f center = this->gameView.getCenter();
+	this->gameView.setCenter(-center.y / TILE_HEIGHT * TILE_WIDTH, center.x / TILE_WIDTH * TILE_HEIGHT);
 }
 IsoRotation Game::getRotation() {
 	return rotation;
