@@ -24,6 +24,7 @@ std::shared_ptr<Entity> Entity::createEntity(
 }
 Entity::Entity(Game* g, EntityTag tag) {
 	this->game = g;
+	this->tag = tag;
 }
 
 Game* Entity::getGame() {
