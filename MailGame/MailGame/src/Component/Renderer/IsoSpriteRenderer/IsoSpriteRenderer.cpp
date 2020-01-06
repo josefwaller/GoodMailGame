@@ -3,6 +3,7 @@
 #include "Game/Game.h"
 #include "Component/Transform/Transform.h"
 #include <SFML/Graphics/CircleShape.hpp>
+#include "System/Utils/Utils.h"
 
 IsoSpriteRenderer::IsoSpriteRenderer(sf::Sprite n, sf::Sprite e, sf::Sprite s, sf::Sprite w) {
 	this->sprites.push_back(n);
@@ -17,7 +18,7 @@ void IsoSpriteRenderer::render(sf::RenderWindow* window) {
 	sf::Sprite toRender = this->sprites[rot.getRotation()];
 	// Set sprite origin to bottom-center
 	Game* game = this->getEntity()->getGame();
-	toRender.setOrigin(toRender.getLocalBounds().width / 2, toRender.getLocalBounds().height - 32);
+	toRender = Utils::setupBuildingSprite(toRender);
 	toRender.setPosition(game->worldToScreenPos(position));
 	window->draw(toRender);
 }
