@@ -97,7 +97,6 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 	s.setPosition(this->game->worldToScreenPos(pos));
 	s.setOrigin(68, 66);
 	window->draw(s);
-
 }
 /*
  * A very simple algorithm which just generates n roads criss-crossing

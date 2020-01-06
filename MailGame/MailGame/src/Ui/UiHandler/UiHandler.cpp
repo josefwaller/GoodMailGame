@@ -43,5 +43,7 @@ void UiHandler::update() {
 }
 
 void UiHandler::render(sf::RenderWindow* w) {
-
+	if (this->isBuilding) {
+		w->draw(this->recipe.getRenderSprite(this->game, this->game->getMousePosition(), IsoRotation::NORTH));
+	}
 }
