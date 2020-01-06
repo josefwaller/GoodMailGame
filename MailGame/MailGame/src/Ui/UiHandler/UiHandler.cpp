@@ -8,7 +8,7 @@ UiHandler::UiHandler(Game* g): game(g), isBuilding(false) {}
 bool UiHandler::handleEvent(sf::Event e) {
 	if (e.type == sf::Event::MouseButtonPressed) {
 		if (ImGui::GetIO().WantCaptureMouse) {
-			return false;
+			return true;
 		}
 		if (isBuilding) {
 			sf::Vector2f mousePos = this->game->getMousePosition();
@@ -18,10 +18,11 @@ bool UiHandler::handleEvent(sf::Event e) {
 				);
 			}
 			this->isBuilding = false;
+			return true;
 		}
 	} else {
 		if (ImGui::GetIO().WantCaptureKeyboard) {
-			return false;
+			return true;
 		}
 	}
 	return false;
