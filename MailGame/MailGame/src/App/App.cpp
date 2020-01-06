@@ -13,7 +13,7 @@ App::App() : window(sf::VideoMode(500, 600), "Hello World"), lastTime()
 
 void App::run() {
 	// Create game
-	Game game(this);
+	Game game(this, &this->window);
 	sf::Clock deltaClock;
 	ImGui::SFML::Init(window);
 

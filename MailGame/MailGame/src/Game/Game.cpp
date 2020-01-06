@@ -10,7 +10,7 @@
 const float Game::CAMERA_SPEED = 600.0f;
 const float Game::TILE_WIDTH = 64.0f;
 const float Game::TILE_HEIGHT = 32.0f;
-Game::Game(App* a): gameMap(this), uiHandler(this) {
+Game::Game(App* a, sf::RenderWindow* w): gameMap(this), uiHandler(this), window(w) {
 }
 
 void Game::update(float delta) {
@@ -77,6 +77,9 @@ void Game::render(sf::RenderWindow* w) {
 	}
 	// Render Ui
 	this->uiHandler.render(w);
+}
+sf::Vector2f Game::getMousePosition() {
+	return sf::Vector2f(sf::Mouse::getPosition(*(this->window)));
 }
 void Game::rotateCamera() {
 	this->rotation++;

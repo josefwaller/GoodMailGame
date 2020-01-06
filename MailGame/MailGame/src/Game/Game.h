@@ -18,7 +18,7 @@ public:
 	static const float TILE_HEIGHT;
 
 	// Initialize game
-	Game(App * a);
+	Game(App * a, sf::RenderWindow* window);
 	// Update game
 	void update(float delta);
 	// On an event such as a keyboard click
@@ -26,6 +26,9 @@ public:
 	// Render the game, including UI
 	void render(sf::RenderWindow* window);
 
+	// Get mouse position in game coordinates
+	sf::Vector2f getMousePosition();
+	// Get the rotation of the camera
 	IsoRotation getRotation();
 	void rotateCamera();
 	sf::Vector2f worldToScreenPos(sf::Vector2f pos);
@@ -33,6 +36,8 @@ public:
 	void addEntity(std::shared_ptr<Entity> e);
 	void removeEntity(std::shared_ptr<Entity> e);
 private:
+	// The window for the game
+	sf::RenderWindow* window;
 	// The entities
 	// Please keep above gameMap
 	std::vector<std::shared_ptr<Entity>> entities;
