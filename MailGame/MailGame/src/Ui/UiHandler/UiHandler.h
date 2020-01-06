@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include "Ui/Construction/Construction.h"
 
 class Game;
 
@@ -13,4 +14,8 @@ public:
 	void onClick();
 private:
 	Game* game;
+	// Whether the player is building something
+	bool isBuilding;
+	// Current recipe the player is building, if anything
+	Construction::Recipe recipe;
 };

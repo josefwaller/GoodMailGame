@@ -4,6 +4,7 @@
 #include <memory>
 #include <SFML/System/Vector2.hpp>
 #include "Entity/EntityTag/EntityTag.h"
+#include "System/IsoRotation/IsoRotation.h"
 
 class Entity;
 class Game;
@@ -13,7 +14,8 @@ class Game;
 class Construction {
 public:
 	struct Recipe {
-		std::function<std::shared_ptr<Entity>(sf::Vector2f pos, Game* g)> createFunction;
+		std::function<std::shared_ptr<Entity>(Game* g, sf::Vector2f pos, IsoRotation rot)> createFunction;
+		std::function<bool(Game* g, sf::Vector2f pos, IsoRotation rot)> positionIsValid;
 	};
-	const static std::map<EntityTag, Recipe> recipes;
+	static std::map<EntityTag, Recipe> recipes;
 };

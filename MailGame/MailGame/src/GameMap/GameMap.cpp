@@ -198,6 +198,13 @@ void GameMap::generateCityAt(sf::Vector2i pos) {
 	}
 }
 
+void GameMap::setBuildingForTile(size_t x, size_t y, std::weak_ptr<Entity> building) {
+	if (this->getTileAt(x, y).type != TileType::OffMap) {
+		this->tiles[x][y].building = building;
+		this->tiles[x][y].type = TileType::House;
+	}
+}
+
 Tile GameMap::getTileAt(size_t x, size_t y) {
 	if (x <= tiles.size() && y <= tiles[0].size()) {
 		return tiles[x][y];

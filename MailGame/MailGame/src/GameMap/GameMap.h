@@ -21,6 +21,9 @@ public:
 	Tile getTileAt(size_t x, size_t y);
 
 	void render(sf::RenderWindow* window);
+
+	// Set the building for a specific tile
+	void setBuildingForTile(size_t x, size_t y, std::weak_ptr<Entity> building);
 private:
 	Game* game;
 	std::vector<std::vector<Tile>> tiles;

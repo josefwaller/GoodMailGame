@@ -57,6 +57,9 @@ void Game::removeEntity(std::shared_ptr<Entity> e) {
 }
 
 void Game::onEvent(sf::Event e) {
+	if (this->uiHandler.handleEvent(e)) {
+		return;
+	}
 	const float SCROLL_SPEED = 0.1f;
 	switch (e.type) {
 	case sf::Event::MouseWheelMoved:
@@ -71,7 +74,7 @@ void Game::render(sf::RenderWindow* w) {
 
 	for (auto it = this->entities.begin(); it != this->entities.end(); it++) {
 		std::shared_ptr<Entity> e = *it;
-		if (e->renderer && e->tag != EntityTag::Building) {
+		if (e->renderer && e->tag != EntityTag::Building && e->tag != EntityTag::PostOffice) {
 			e->renderer->render(w);
 		}
 	}

@@ -32,6 +32,7 @@ public:
 	sf::Vector2f getMousePosition();
 	// Get the rotation of the camera
 	IsoRotation getRotation();
+	// Rotate the camera
 	void rotateCamera();
 	sf::Vector2f worldToScreenPos(sf::Vector2f pos);
 	// Add/Remove entities
