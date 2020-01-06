@@ -10,7 +10,7 @@
 const float Game::CAMERA_SPEED = 600.0f;
 const float Game::TILE_WIDTH = 64.0f;
 const float Game::TILE_HEIGHT = 32.0f;
-Game::Game(App* a, sf::RenderWindow* w): gameMap(this), uiHandler(this), window(w) {
+Game::Game(App* a, sf::RenderWindow* w): gameMap(this), uiHandler(this), window(w), rotation(IsoRotation::NORTH) {
 }
 
 void Game::update(float delta) {
@@ -82,7 +82,33 @@ void Game::render(sf::RenderWindow* w) {
 	this->uiHandler.render(w);
 }
 sf::Vector2f Game::getMousePosition() {
-	return sf::Vector2f(sf::Mouse::getPosition(*(this->window)));
+	// Get mouse position
+	sf::Vector2f pos(
+		this->window->mapPixelToCoords(sf::Vector2i(sf::Mouse::getPosition(*(this->window))), this->gameView)
+	);
+	// Cancel out tile dimensions
+	pos.x /= TILE_WIDTH;
+	pos.y /= TILE_HEIGHT;
+	// Convert to game coords from isometric
+	sf::Vector2f gameCoords(
+		(pos.x + pos.y) / 2,
+		(pos.y - pos.x) / 2
+	);
+	// Cancel out rotation
+	switch (this->rotation.getRotation()) {
+	case IsoRotation::NORTH:
+		break;
+	case IsoRotation::EAST:
+		gameCoords = sf::Vector2f(gameCoords.y, -gameCoords.x);
+		break;
+	case IsoRotation::SOUTH:
+		gameCoords = sf::Vector2f(-gameCoords.x, -gameCoords.y);
+		break;
+	case IsoRotation::WEST:
+		gameCoords = sf::Vector2f(-gameCoords.y, gameCoords.x);
+		break;
+	}
+	return gameCoords;
 }
 void Game::rotateCamera() {
 	this->rotation++;
