@@ -26,6 +26,8 @@ public:
 	// Render the game, including UI
 	void render(sf::RenderWindow* window);
 
+	// Get the game map
+	GameMap* getGameMap();
 	// Get mouse position in game coordinates
 	sf::Vector2f getMousePosition();
 	// Get the rotation of the camera

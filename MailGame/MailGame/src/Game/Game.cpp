@@ -89,3 +89,6 @@ void Game::rotateCamera() {
 IsoRotation Game::getRotation() {
 	return rotation;
 }
+GameMap* Game::getGameMap() {
+	return &this->gameMap;
+}
