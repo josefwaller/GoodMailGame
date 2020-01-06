@@ -1,5 +1,6 @@
 #pragma once
 
 enum EntityTag {
-	Building
+	Building,
+	PostOffice
 };

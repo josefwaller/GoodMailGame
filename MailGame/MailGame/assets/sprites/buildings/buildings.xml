@@ -17,22 +17,22 @@
 	<SubTexture name="buildingTiles_015.png" x="596" y="618" width="99" height="85"/>
 	<SubTexture name="buildingTiles_016.png" x="596" y="533" width="99" height="85"/>
 	<SubTexture name="buildingTiles_017.png" x="265" y="1659" width="132" height="127"/>
-	<SubTexture name="buildingTiles_018.png" x="265" y="639" width="132" height="127"/>
+	<SubTexture name="postOffice-S" x="265" y="639" width="132" height="127"/>
 	<SubTexture name="building-NE-3" x="265" y="381" width="132" height="128"/>
 	<SubTexture name="buildingTiles_020.png" x="133" y="639" width="132" height="127"/>
 	<SubTexture name="buildingTiles_021.png" x="133" y="385" width="132" height="127"/>
 	<SubTexture name="buildingTiles_022.png" x="0" y="1397" width="133" height="127"/>
 	<SubTexture name="buildingTiles_023.png" x="596" y="0" width="99" height="85"/>
 	<SubTexture name="buildingTiles_024.png" x="595" y="1641" width="99" height="85"/>
-	<SubTexture name="building-NW-2" x="133" y="0" width="132" height="128"/>
-	<SubTexture name="buildingTiles_026.png" x="133" y="128" width="132" height="127"/>
+	<SubTexture name="postOffice-W" x="133" y="0" width="132" height="128"/>
+	<SubTexture name="postOffice-E" x="133" y="128" width="132" height="127"/>
 	<SubTexture name="building-NW-3" x="133" y="255" width="132" height="130"/>
 	<SubTexture name="buildingTiles_028.png" x="133" y="1659" width="132" height="127"/>
 	<SubTexture name="buildingTiles_029.png" x="265" y="254" width="132" height="127"/>
 	<SubTexture name="buildingTiles_030.png" x="0" y="254" width="133" height="127"/>
 	<SubTexture name="buildingTiles_031.png" x="595" y="1230" width="99" height="85"/>
 	<SubTexture name="buildingTiles_032.png" x="595" y="1145" width="99" height="85"/>
-	<SubTexture name="building-NE-0" x="265" y="1020" width="132" height="128"/>
+	<SubTexture name="postOffice-N" x="265" y="1020" width="132" height="128"/>
 	<SubTexture name="buildingTiles_034.png" x="133" y="1402" width="132" height="127"/>
 	<SubTexture name="building-NE-1" x="133" y="1529" width="132" height="130"/>
 	<SubTexture name="buildingTiles_036.png" x="0" y="762" width="133" height="127"/>
@@ -84,7 +84,7 @@
 	<SubTexture name="buildingTiles_082.png" x="397" y="1270" width="99" height="61"/>
 	<SubTexture name="buildingTiles_083.png" x="397" y="1637" width="99" height="61"/>
 	<SubTexture name="buildingTiles_084.png" x="497" y="206" width="99" height="63"/>
-	<SubTexture name="buildingTiles_085.png" x="0" y="127" width="133" height="127"/>
+	<SubTexture name="building-back" x="0" y="127" width="133" height="127"/>
 	<SubTexture name="buildingTiles_086.png" x="397" y="172" width="100" height="55"/>
 	<SubTexture name="buildingTiles_087.png" x="397" y="110" width="100" height="62"/>
 	<SubTexture name="buildingTiles_088.png" x="497" y="145" width="99" height="61"/>
