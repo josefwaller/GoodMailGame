@@ -3,7 +3,7 @@
 #include <imgui-SFML.h>
 #include "Game/Game.h"
 
-UiHandler::UiHandler(Game* g): game(g) {}
+UiHandler::UiHandler(Game* g): game(g), isBuilding(false) {}
 
 bool UiHandler::handleEvent(sf::Event e) {
 	if (e.type == sf::Event::MouseButtonPressed) {
@@ -24,6 +24,7 @@ bool UiHandler::handleEvent(sf::Event e) {
 			return false;
 		}
 	}
+	return false;
 }
 
 void UiHandler::update() {
