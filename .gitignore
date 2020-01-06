@@ -361,3 +361,5 @@ MailGame/imgui-sfml
 MailGame/MailGame/imgui.ini
 # Opengl lib
 MailGame/opengl
+# Unify Line endings file
+*.leu
