@@ -14,6 +14,35 @@ std::map<EntityTag, Construction::Recipe> Construction::recipes = {
 			return e;
 		},
 		[](Game* g, sf::Vector2f pos, IsoRotation rot) {
+			// Check the post office is not on a road
+			sf::Vector2i intPos((int)round(pos.x), (int)round(pos.y));
+			GameMap* gMap = g->getGameMap();
+			TileType tile = gMap->getTileAt(intPos.x, intPos.y).type;
+			if (tile == TileType::Road || tile == TileType::OffMap) {
+				return false;
+			}
+
+			// Check it is connected to a road
+			size_t x = intPos.x;
+			size_t y = intPos.y;
+			switch (rot.getRotation()) {
+			case IsoRotation::NORTH:
+				y -= 1;
+				break;
+			case IsoRotation::SOUTH:
+				y += 1;
+				break;
+			case IsoRotation::EAST:
+				x += 1;
+				break;
+			default:
+				x -= 1;
+				break;
+			}
+			if (gMap->getTileAt(x, y).type != TileType::Road) {
+				return false;
+			}
+
 			return true;
 		},
 		[](Game* g, sf::Vector2f pos, IsoRotation rot) {
