@@ -38,6 +38,8 @@ public:
 	// Add/Remove entities
 	void addEntity(std::shared_ptr<Entity> e);
 	void removeEntity(std::weak_ptr<Entity> e);
+	// Get the size of the window
+	sf::Vector2i getWindowSize();
 private:
 	// The window for the game
 	sf::RenderWindow* window;

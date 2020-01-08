@@ -9,6 +9,10 @@ public:
 	sf::Vector2f getPosition();
 	void setPosition(sf::Vector2f pos);
 
+	// Check if the entity is on screen
+	// Mainly used to check whether the UI should be drawn for ImGui
+	bool isOnScreen();
+
 	IsoRotation getRotation();
 	void setRotation(IsoRotation rot);
 private:

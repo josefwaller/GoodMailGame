@@ -66,6 +66,10 @@ void Game::removeEntity(std::weak_ptr<Entity> e) {
 	this->toRemove.push_back(e);
 }
 
+sf::Vector2i Game::getWindowSize() {
+	return sf::Vector2i(this->window->getSize());
+}
+
 void Game::onEvent(sf::Event e) {
 	if (this->uiHandler.handleEvent(e)) {
 		return;
