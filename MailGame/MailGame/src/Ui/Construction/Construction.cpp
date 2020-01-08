@@ -46,8 +46,23 @@ std::map<EntityTag, Construction::Recipe> Construction::recipes = {
 			return true;
 		},
 		[](Game* g, sf::Vector2f pos, IsoRotation rot) {
+			std::string spriteName;
+			switch (rot.getRotation()) {
+			case IsoRotation::NORTH:
+				spriteName = "postOffice-N";
+				break;
+			case IsoRotation::SOUTH:
+				spriteName = "postOffice-S";
+				break;
+			case IsoRotation::EAST:
+				spriteName = "postOffice-E";
+				break;
+			default:
+				spriteName = "postOffice-W";
+				break;
+			}
 			pos = sf::Vector2f(round(pos.x), round(pos.y));
-			sf::Sprite toReturn = ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-N");
+			sf::Sprite toReturn = ResourceLoader::get()->getSprite("buildings/buildings", spriteName);
 			toReturn = Utils::setupBuildingSprite(toReturn);
 			pos = g->worldToScreenPos(pos);
 			toReturn.setPosition(pos);

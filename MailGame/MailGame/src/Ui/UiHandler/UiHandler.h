@@ -18,4 +18,6 @@ private:
 	bool isBuilding;
 	// Current recipe the player is building, if anything
 	Construction::Recipe recipe;
+	// The rotation of the current building
+	IsoRotation currentRotation;
 };
