@@ -3,6 +3,7 @@
 #include "Entity/Entity.h"
 #include "Component/Transform/Transform.h"
 #include "Component/Renderer/Renderer.h"
+#include "Component/Controller/Controller.h"
 #include "Entity/EntityPresets/EntityPresets.h"
 #include <SFML/Graphics.hpp>
 #include <imgui.h>
@@ -33,6 +34,12 @@ void Game::update(float delta) {
 	// Update UI
 	this->uiHandler.update();
 
+	// Update entities
+	for (auto it = this->entities.begin(); it != this->entities.end(); it++) {
+		if ((*it)->controller) {
+			(*it)->controller->update(delta);
+		}
+	}
 
 	// Remove entities
 	for (auto it = this->toRemove.begin(); it != this->toRemove.end(); ++it) {
