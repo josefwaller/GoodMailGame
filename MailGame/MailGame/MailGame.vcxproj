@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClInclude Include="src\App\App.h" />
     <ClInclude Include="src\Component\Component.h" />
+    <ClInclude Include="src\Component\Controller\Controller.h" />
     <ClInclude Include="src\Component\Renderer\IsoSpriteRenderer\IsoSpriteRenderer.h" />
     <ClInclude Include="src\Component\Renderer\Renderer.h" />
     <ClInclude Include="src\Component\Renderer\SpriteRenderer\SpriteRenderer.h" />
