@@ -37,13 +37,15 @@ public:
 	sf::Vector2f worldToScreenPos(sf::Vector2f pos);
 	// Add/Remove entities
 	void addEntity(std::shared_ptr<Entity> e);
-	void removeEntity(std::shared_ptr<Entity> e);
+	void removeEntity(std::weak_ptr<Entity> e);
 private:
 	// The window for the game
 	sf::RenderWindow* window;
 	// The entities
 	// Please keep above gameMap
 	std::vector<std::shared_ptr<Entity>> entities;
+	// The entities to be removed at the end of the next frame
+	std::vector<std::weak_ptr<Entity>> toRemove;
 	// The game map
 	GameMap gameMap;
 	// The Ui Handler

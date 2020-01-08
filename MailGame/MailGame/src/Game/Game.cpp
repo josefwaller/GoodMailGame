@@ -30,7 +30,17 @@ void Game::update(float delta) {
 	}
 	this->gameView.setCenter(this->gameView.getCenter() + offset * delta);
 
+	// Update UI
 	this->uiHandler.update();
+
+
+	// Remove entities
+	for (auto it = this->toRemove.begin(); it != this->toRemove.end(); ++it) {
+		this->entities.erase(
+			std::remove(this->entities.begin(), this->entities.end(), it->lock())
+		);
+	}
+	this->toRemove.clear();
 }
 sf::Vector2f Game::worldToScreenPos(sf::Vector2f pos) {
 	switch (this->rotation.getRotation()) {
@@ -52,8 +62,8 @@ sf::Vector2f Game::worldToScreenPos(sf::Vector2f pos) {
 void Game::addEntity(std::shared_ptr<Entity> e) {
 	this->entities.push_back(e);
 }
-void Game::removeEntity(std::shared_ptr<Entity> e) {
-	// TBA
+void Game::removeEntity(std::weak_ptr<Entity> e) {
+	this->toRemove.push_back(e);
 }
 
 void Game::onEvent(sf::Event e) {

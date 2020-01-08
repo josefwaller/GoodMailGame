@@ -10,6 +10,12 @@ std::map<EntityTag, Construction::Recipe> Construction::recipes = {
 		[](Game* g, sf::Vector2f pos, IsoRotation rot) {
 			sf::Vector2i tilesPos((int)round(pos.x), (int)round(pos.y));
 			std::shared_ptr<Entity> e = EntityPresets::postOffice(g, sf::Vector2f(tilesPos), rot);
+			// Destroy the building there if there is one
+			// ToDo: Figure out how this would work if the building is more than one square in size
+			std::weak_ptr<Entity> building = g->getGameMap()->getTileAt(tilesPos.x, tilesPos.y).building;
+			if (building.lock()) {
+				g->removeEntity(building);
+			}
 			g->getGameMap()->setBuildingForTile(tilesPos.x, tilesPos.y, e);
 			return e;
 		},
