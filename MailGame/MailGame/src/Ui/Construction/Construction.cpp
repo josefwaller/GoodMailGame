@@ -45,7 +45,7 @@ std::map<EntityTag, Construction::Recipe> Construction::recipes = {
 
 			return true;
 		},
-		[](Game* g, sf::Vector2f pos, IsoRotation rot) {
+		[](Game* g, sf::Vector2f pos, IsoRotation rot, bool isValid) {
 			std::string spriteName;
 			switch (rot.getRotation()) {
 			case IsoRotation::NORTH:
@@ -64,6 +64,13 @@ std::map<EntityTag, Construction::Recipe> Construction::recipes = {
 			pos = sf::Vector2f(round(pos.x), round(pos.y));
 			sf::Sprite toReturn = ResourceLoader::get()->getSprite("buildings/buildings", spriteName);
 			toReturn = Utils::setupBuildingSprite(toReturn);
+			// Make sprite red if it is invalid
+			if (isValid) {
+				toReturn.setColor(sf::Color::Green);
+			}
+			else {
+				toReturn.setColor(sf::Color::Red);
+			}
 			pos = g->worldToScreenPos(pos);
 			toReturn.setPosition(pos);
 			return toReturn;

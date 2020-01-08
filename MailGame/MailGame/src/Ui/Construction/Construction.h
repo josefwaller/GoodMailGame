@@ -20,8 +20,10 @@ public:
 		// Method to check if the entity position is valid
 		std::function<bool(Game* g, sf::Vector2f pos, IsoRotation rot)> positionIsValid;
 		// Method to draw the hovering sprite when building something
+		// isValid is whether the sprite is valid or not, as determined by positionIsValid
+		// in case the sprite should be drawn red or something
 		// Here is where it would snap to grid, etc
-		std::function<sf::Sprite(Game* g, sf::Vector2f pos, IsoRotation rot)> getRenderSprite;
+		std::function<sf::Sprite(Game* g, sf::Vector2f pos, IsoRotation rot, bool isValid)> getRenderSprite;
 
 	};
 	static std::map<EntityTag, Recipe> recipes;
