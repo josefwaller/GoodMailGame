@@ -66,8 +66,15 @@ void Game::removeEntity(std::weak_ptr<Entity> e) {
 	this->toRemove.push_back(e);
 }
 
-sf::Vector2i Game::getWindowSize() {
-	return sf::Vector2i(this->window->getSize());
+sf::FloatRect Game::getViewport() {
+	sf::Vector2f size  = this->gameView.getSize();
+	sf::Vector2f pos = this->gameView.getCenter() - size / 2.0f;
+	return sf::FloatRect(
+		pos.x,
+		pos.y,
+		size.x,
+		size.y
+	);
 }
 
 void Game::onEvent(sf::Event e) {
