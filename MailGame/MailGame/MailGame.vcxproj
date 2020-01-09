@@ -161,6 +161,7 @@
     <ClInclude Include="src\GameMap\Line\Line.h" />
     <ClInclude Include="src\Game\Game.h" />
     <ClInclude Include="src\ResourceLoader\ResourceLoader.h" />
+    <ClInclude Include="src\Routes\MailTruckRoute\MailTruckRoute.h" />
     <ClInclude Include="src\System\IsoRotation\IsoRotation.h" />
     <ClInclude Include="src\System\Utils\Utils.h" />
     <ClInclude Include="src\Ui\Construction\Construction.h" />
