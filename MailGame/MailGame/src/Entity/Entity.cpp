@@ -4,6 +4,7 @@
 #include "Component/Renderer/Renderer.h"
 #include "Component/Controller/Controller.h"
 
+size_t Entity::entityId = 0;
 
 std::shared_ptr<Entity> Entity::createEntity(
 	Game* g,
@@ -32,8 +33,12 @@ std::shared_ptr<Entity> Entity::createEntity(
 	return e;
 
 }
-Entity::Entity(Game* g, EntityTag t): tag(t) {
+Entity::Entity(Game* g, EntityTag t): tag(t), id(entityId++) {
 	this->game = g;
+}
+
+size_t Entity::getId() {
+	return this->id;
 }
 
 Game* Entity::getGame() {
