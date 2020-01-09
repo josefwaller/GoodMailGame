@@ -53,7 +53,7 @@ std::map<EntityTag, Construction::Recipe> Construction::recipes = {
 		},
 		[](Game* g, sf::Vector2f pos, IsoRotation rot, bool isValid) {
 			std::string spriteName;
-			switch (rot.getRotation()) {
+			switch (rot.getRotation() + g->getRotation().getRotation()) {
 			case IsoRotation::NORTH:
 				spriteName = "postOffice-N";
 				break;
