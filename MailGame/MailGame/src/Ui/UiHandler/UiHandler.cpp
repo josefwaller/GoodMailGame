@@ -3,21 +3,22 @@
 #include <imgui-SFML.h>
 #include "Game/Game.h"
 
-UiHandler::UiHandler(Game* g): game(g), isBuilding(false) {}
+UiHandler::UiHandler(Game* g): game(g), currentState(UiState::Default) {}
 
 bool UiHandler::handleEvent(sf::Event e) {
 	if (e.type == sf::Event::MouseButtonPressed) {
 		if (ImGui::GetIO().WantCaptureMouse) {
 			return true;
 		}
-		if (isBuilding) {
+		switch(this->currentState) {
+		case UiState::Building:
 			sf::Vector2f mousePos = this->game->getMousePosition();
 			if (this->recipe.positionIsValid(this->game, mousePos, this->currentRotation)) {
 				this->game->addEntity(
 					this->recipe.createFunction(this->game, mousePos, this->currentRotation)
 				);
 			}
-			this->isBuilding = false;
+			this->changeState(UiState::Default);
 			return true;
 		}
 	} else {
@@ -37,10 +38,10 @@ void UiHandler::update() {
 	if (ImGui::CollapsingHeader("Build")) {
 		if (ImGui::Button("Post Office")) {
 			this->recipe = Construction::recipes[EntityTag::PostOffice];
-			this->isBuilding = true;
+			this->changeState(UiState::Building);
 		}
 
-		if (this->isBuilding) {
+		if (this->currentState == UiState::Building) {
 			if (ImGui::Button("Rotate Building")) {
 				this->currentRotation++;
 			}
@@ -51,8 +52,12 @@ void UiHandler::update() {
 }
 
 void UiHandler::render(sf::RenderWindow* w) {
-	if (this->isBuilding) {
+	if (this->currentState == UiState::Building) {
 		bool isValid = this->recipe.positionIsValid(this->game, this->game->getMousePosition(), this->currentRotation);
 		w->draw(this->recipe.getRenderSprite(this->game, this->game->getMousePosition(), this->currentRotation, isValid));
 	}
+}
+
+void UiHandler::changeState(UiState state) {
+	this->currentState = state;
 }
