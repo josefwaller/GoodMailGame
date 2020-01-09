@@ -45,6 +45,9 @@ void UiHandler::update() {
 			if (ImGui::Button("Rotate Building")) {
 				this->currentRotation++;
 			}
+			if (ImGui::Button("Cancel")) {
+				this->changeState(UiState::Default);
+			}
 		}
 	}
 
