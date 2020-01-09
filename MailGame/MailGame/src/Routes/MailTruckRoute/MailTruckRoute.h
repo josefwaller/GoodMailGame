@@ -16,6 +16,9 @@ struct MailTruckRoute {
 	std::vector<MailTruckRouteStop> stop;
 	// The time of departure
 	int departTime;
+	// Unique Id
+	size_t id;
+	static size_t ROUTE_ID;
 	// Constructor
-	MailTruckRoute(bool isDeliv, int time) : isDelivering(isDeliv), departTime(time) {};
+	MailTruckRoute(bool isDeliv, int time) : isDelivering(isDeliv), departTime(time), id(ROUTE_ID++) {};
 };

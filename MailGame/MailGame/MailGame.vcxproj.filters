@@ -78,6 +78,9 @@
     <ClCompile Include="src\Component\Controller\PostOfficeController\PostOfficeController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Routes\MailTruckRoute\MailTruckRoute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h">

@@ -141,6 +141,7 @@
     <ClCompile Include="src\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ResourceLoader\ResourceLoader.cpp" />
+    <ClCompile Include="src\Routes\MailTruckRoute\MailTruckRoute.cpp" />
     <ClCompile Include="src\System\Utils\Utils.cpp" />
     <ClCompile Include="src\Ui\Construction\Construction.cpp" />
     <ClCompile Include="src\Ui\UiHandler\UiHandler.cpp" />
