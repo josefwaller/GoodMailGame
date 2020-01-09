@@ -7,7 +7,7 @@
 void PostOfficeController::update(float delta) {
 	if (this->getEntity()->transform->isOnScreen()) {
 		ImGui::PushID(this->getEntity()->getId());
-		ImGui::Begin("Post Office");
+		ImGui::Begin(std::string("Post Office " + std::to_string(this->getEntity()->getId())).c_str());
 		for (auto it = this->routes.begin(); it != this->routes.end(); it++) {
 			// Get the route index
 			size_t index = (size_t)(it - this->routes.begin());
