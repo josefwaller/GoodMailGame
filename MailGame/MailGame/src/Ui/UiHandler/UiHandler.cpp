@@ -20,6 +20,7 @@ bool UiHandler::handleEvent(sf::Event e) {
 			}
 			this->changeState(UiState::Default);
 			return true;
+		case UiState::Selecting:
 		}
 	} else {
 		if (ImGui::GetIO().WantCaptureKeyboard) {
@@ -29,6 +30,10 @@ bool UiHandler::handleEvent(sf::Event e) {
 	return false;
 }
 
+void UiHandler::selectEntity(std::function<void(std::weak_ptr<Entity>)> callback) {
+	this->changeState(UiState::Selecting);
+	this->selectCallback = callback;
+}
 void UiHandler::update() {
 	ImGui::Begin("Game Controls");
 

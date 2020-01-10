@@ -18,7 +18,8 @@ public:
 	bool handleEvent(sf::Event e);
 	void update();
 	void render(sf::RenderWindow* w);
-
+	// Select an entity and call the callback method
+	void selectEntity(std::function<void(std::weak_ptr<Entity>)> callback);
 	// Change the state
 	// Also will deal with leaving the state it is currently in
 	void changeState(UiState state);
@@ -30,4 +31,6 @@ private:
 	Construction::Recipe recipe;
 	// The rotation of the current building
 	IsoRotation currentRotation;
+	// Callback when selecting entity
+	std::function<void(std::weak_ptr<Entity> e)> selectCallback;
 };
