@@ -20,7 +20,6 @@ bool UiHandler::handleEvent(sf::Event e) {
 			}
 			this->changeState(UiState::Default);
 			return true;
-		case UiState::Selecting:
 		}
 	} else {
 		if (ImGui::GetIO().WantCaptureKeyboard) {

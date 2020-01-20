@@ -4,6 +4,7 @@
 #include "Component/Transform/Transform.h"
 #include "Component/Renderer/Renderer.h"
 #include "Component/Controller/Controller.h"
+#include "Component/ClickBox/ClickBox.h"
 #include "Entity/EntityPresets/EntityPresets.h"
 #include <SFML/Graphics.hpp>
 #include <imgui.h>
@@ -89,10 +90,21 @@ void Game::onEvent(sf::Event e) {
 		return;
 	}
 	const float SCROLL_SPEED = 0.1f;
+	// Variables used in switch statement
+	int delta;
 	switch (e.type) {
 	case sf::Event::MouseWheelMoved:
-		int delta = e.mouseWheel.delta;
+		delta = e.mouseWheel.delta;
 		gameView.zoom(1 - SCROLL_SPEED * delta);
+		break;
+	case sf::Event::MouseButtonPressed:
+		for (auto it = this->entities.begin(); it != this->entities.end(); it++) {
+			if (auto cb = (*it)->clickBox) {
+				if (cb->checkIfClicked(this->getMousePosition())) {
+					auto x = 0;
+				}
+			}
+		}
 	}
 }
 
@@ -106,6 +118,15 @@ void Game::render(sf::RenderWindow* w) {
 			e->renderer->render(w);
 		}
 	}
+#ifdef _DEBUG
+	// Render clickboxes
+	for (auto it = this->entities.begin(); it != this->entities.end(); it++) {
+		std::shared_ptr<Entity> e = *it;
+		if (e->clickBox) {
+			e->clickBox->renderClickBox(w);
+		}
+	}
+#endif
 	// Render Ui
 	this->uiHandler.render(w);
 }

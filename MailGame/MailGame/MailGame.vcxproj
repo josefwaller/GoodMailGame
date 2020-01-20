@@ -124,6 +124,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\App\App.cpp" />
+    <ClCompile Include="src\Component\ClickBox\RectClickBox\RectClickBox.cpp" />
     <ClCompile Include="src\Component\Component.cpp" />
     <ClCompile Include="src\Component\Controller\PostOfficeController\PostOfficeController.cpp" />
     <ClCompile Include="src\Component\Renderer\IsoSpriteRenderer\IsoSpriteRenderer.cpp" />
@@ -148,6 +149,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h" />
+    <ClInclude Include="src\Component\ClickBox\ClickBox.h" />
+    <ClInclude Include="src\Component\ClickBox\RectClickBox\RectClickBox.h" />
     <ClInclude Include="src\Component\Component.h" />
     <ClInclude Include="src\Component\Controller\Controller.h" />
     <ClInclude Include="src\Component\Controller\PostOfficeController\PostOfficeController.h" />

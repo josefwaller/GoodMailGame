@@ -5,6 +5,7 @@
 class Transform;
 class Renderer;
 class Controller;
+class ClickBox;
 class Game;
 
 class Entity {
@@ -14,7 +15,8 @@ public:
 		EntityTag tag,
 		Transform* t = nullptr,
 		Renderer* r = nullptr,
-		Controller* c = nullptr
+		Controller* c = nullptr,
+		ClickBox* cb = nullptr
 	);
 	// The tag of the entity
 	EntityTag tag;
@@ -22,6 +24,7 @@ public:
 	std::shared_ptr<Transform> transform;
 	std::shared_ptr<Renderer> renderer;
 	std::shared_ptr<Controller> controller;
+	std::shared_ptr<ClickBox> clickBox;
 	// Get the id
 	size_t getId();
 	// Get the game

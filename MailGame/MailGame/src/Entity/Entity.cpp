@@ -3,6 +3,7 @@
 #include "Component/Transform/Transform.h"
 #include "Component/Renderer/Renderer.h"
 #include "Component/Controller/Controller.h"
+#include "Component/ClickBox/ClickBox.h"
 
 size_t Entity::entityId = 0;
 
@@ -11,7 +12,8 @@ std::shared_ptr<Entity> Entity::createEntity(
 	EntityTag tag,
 	Transform* t,
 	Renderer* r,
-	Controller* c) {
+	Controller* c,
+	ClickBox* cb) {
 
 	// Create the entity
 	std::shared_ptr<Entity> e(new Entity(g, tag));
@@ -27,6 +29,10 @@ std::shared_ptr<Entity> Entity::createEntity(
 	if (c) {
 		e->controller = std::shared_ptr<Controller>(c);
 		c->setEntity(e);
+	}
+	if (cb) {
+		e->clickBox = std::shared_ptr<ClickBox>(cb);
+		cb->setEntity(e);
 	}
 
 	// Return built entity

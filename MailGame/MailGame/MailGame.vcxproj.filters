@@ -81,6 +81,9 @@
     <ClCompile Include="src\Routes\MailTruckRoute\MailTruckRoute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Component\ClickBox\RectClickBox\RectClickBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h">
@@ -141,6 +144,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Routes\MailTruckRoute\MailTruckRoute.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\ClickBox\ClickBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\ClickBox\RectClickBox\RectClickBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
