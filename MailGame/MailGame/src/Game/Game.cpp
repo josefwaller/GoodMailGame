@@ -170,3 +170,7 @@ IsoRotation Game::getRotation() {
 GameMap* Game::getGameMap() {
 	return &this->gameMap;
 }
+
+UiHandler* Game::getUi() {
+	return &this->uiHandler;
+}

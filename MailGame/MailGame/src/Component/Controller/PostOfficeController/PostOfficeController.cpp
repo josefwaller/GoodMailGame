@@ -1,6 +1,8 @@
 #include "PostOfficeController.h"
 #include "Entity/Entity.h"
 #include "Component/Transform/Transform.h"
+#include "Game/Game.h"
+#include "Ui/UiHandler/UiHandler.h"
 #include <string>
 #include <imgui.h>
 
@@ -32,9 +34,16 @@ void PostOfficeController::update(float delta) {
 				for (size_t i = 0; i < it->stops.size(); i++) {
 					if (ImGui::CollapsingHeader(std::string("Stop " + std::to_string(i)).c_str())) {
 						ImGui::PushID(i);
-						// Add select entity button
-						if (ImGui::Button("Select target")) {
-
+						// Add select target button
+						std::string btnText = "Select Target";
+						if (it->stops[i].target) {
+							sf::Vector2i target = it->stops[i].target.value();
+							btnText = "Target at (" + std::to_string(target.x) + ", " + std::to_string(target.y) + ")";
+						}
+						if (ImGui::Button(btnText.c_str())) {
+							this->getEntity()->getGame()->getUi()->selectTile([this, index, i](sf::Vector2i pos) {
+								this->setStopTile(index, i, pos);
+							});
 						}
 						// Add Delete stop button
 						if (ImGui::Button("Delete Stop")) {
@@ -70,6 +79,10 @@ void PostOfficeController::update(float delta) {
 	this->routesToDelete.clear();
 }
 
+void PostOfficeController::setStopTile(size_t routeIndex, size_t stopIndex, sf::Vector2i pos) {
+	// Todo: Make sure this is safe?
+	this->routes[routeIndex].stops[stopIndex].target = pos;
+}
 void PostOfficeController::addStop(size_t routeIndex, MailTruckRouteStop stop) {
 	this->routes[routeIndex].stops.push_back(stop);
 }

@@ -10,9 +10,10 @@ bool UiHandler::handleEvent(sf::Event e) {
 		if (ImGui::GetIO().WantCaptureMouse) {
 			return true;
 		}
+		sf::Vector2f mousePos;
 		switch(this->currentState) {
 		case UiState::Building:
-			sf::Vector2f mousePos = this->game->getMousePosition();
+			mousePos = this->game->getMousePosition();
 			if (this->recipe.positionIsValid(this->game, mousePos, this->currentRotation)) {
 				this->game->addEntity(
 					this->recipe.createFunction(this->game, mousePos, this->currentRotation)
@@ -20,6 +21,14 @@ bool UiHandler::handleEvent(sf::Event e) {
 			}
 			this->changeState(UiState::Default);
 			return true;
+		case UiState::SelectingEntity:
+			// tba
+			break;
+		case UiState::SelectingTile:
+			mousePos = this->game->getMousePosition();
+			// Call the callback
+			this->selectTileCallback(sf::Vector2i((int)round(mousePos.x), (int)round(mousePos.y)));
+			break;
 		}
 	} else {
 		if (ImGui::GetIO().WantCaptureKeyboard) {
@@ -29,9 +38,14 @@ bool UiHandler::handleEvent(sf::Event e) {
 	return false;
 }
 
+void UiHandler::selectTile(std::function<void(sf::Vector2i pos)> callback) {
+	this->changeState(UiState::SelectingTile);
+	this->selectTileCallback = callback;
+}
+
 void UiHandler::selectEntity(std::function<void(std::weak_ptr<Entity>)> callback) {
-	this->changeState(UiState::Selecting);
-	this->selectCallback = callback;
+	this->changeState(UiState::SelectingEntity);
+	this->selectEntityCallback = callback;
 }
 void UiHandler::update() {
 	ImGui::Begin("Game Controls");

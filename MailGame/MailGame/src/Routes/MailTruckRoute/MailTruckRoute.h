@@ -1,11 +1,13 @@
 #pragma once
 #include <vector>
+#include <SFML/System/Vector2.hpp>
+#include <optional>
 
 class Entity;
 
 // The individual stop of a route
 struct MailTruckRouteStop {
-	sf::Vector2i stopCoords;
+	std::optional<sf::Vector2i> target;
 };
 
 // A route, with a list of stops and a depart time

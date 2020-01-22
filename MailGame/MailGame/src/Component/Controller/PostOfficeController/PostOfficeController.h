@@ -9,6 +9,7 @@ public:
 	
 	// Update the attributes from the Ui
 	void addStop(size_t routeIndex, MailTruckRouteStop stop);
+	void setStopTile(size_t routeIndex, size_t stopIndex, sf::Vector2i tilePos);
 	void deleteStop(size_t routeIndex, size_t stopIndex);
 	void setRouteTime(size_t routeIndex, int departTime);
 	void setRouteType(size_t routeIndex, bool isDelivering);

@@ -28,6 +28,8 @@ public:
 
 	// Get the game map
 	GameMap* getGameMap();
+	// Get the UI
+	UiHandler* getUi();
 	// Get mouse position in game coordinates
 	sf::Vector2f getMousePosition();
 	// Get the rotation of the camera
