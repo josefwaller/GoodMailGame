@@ -82,7 +82,7 @@
 	<SubTexture name="buildingTiles_080.png" x="397" y="604" width="100" height="60"/>
 	<SubTexture name="buildingTiles_081.png" x="397" y="1517" width="99" height="60"/>
 	<SubTexture name="buildingTiles_082.png" x="397" y="1270" width="99" height="61"/>
-	<SubTexture name="buildingTiles_083.png" x="397" y="1637" width="99" height="61"/>
+	<SubTexture name="mailbox" x="397" y="1637" width="99" height="61"/>
 	<SubTexture name="buildingTiles_084.png" x="497" y="206" width="99" height="63"/>
 	<SubTexture name="building-back" x="0" y="127" width="133" height="127"/>
 	<SubTexture name="buildingTiles_086.png" x="397" y="172" width="100" height="55"/>

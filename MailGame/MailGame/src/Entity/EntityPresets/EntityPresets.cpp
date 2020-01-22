@@ -45,3 +45,15 @@ std::shared_ptr<Entity> EntityPresets::postOffice(Game* g, sf::Vector2f pos, Iso
 		new PostOfficeController()
 	);
 }
+
+std::shared_ptr<Entity> EntityPresets::mailBox(Game* g, sf::Vector2f pos, IsoRotation rot) {
+	return Entity::createEntity(
+		g,
+		EntityTag::MailBox,
+		new Transform(pos, rot),
+		new SpriteRenderer(
+			ResourceLoader::get()->getSprite("buildings/buildings", "mailbox")
+		),
+		nullptr
+	);
+}

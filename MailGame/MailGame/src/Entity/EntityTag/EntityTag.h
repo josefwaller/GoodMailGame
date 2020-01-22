@@ -2,5 +2,6 @@
 
 enum EntityTag {
 	Building,
-	PostOffice
+	PostOffice,
+	MailBox
 };

@@ -58,6 +58,10 @@ void UiHandler::update() {
 			this->recipe = Construction::recipes[EntityTag::PostOffice];
 			this->changeState(UiState::Building);
 		}
+		if (ImGui::Button("MailBox")) {
+			this->recipe = Construction::recipes[EntityTag::MailBox];
+			this->changeState(UiState::Building);
+		}
 
 		if (this->currentState == UiState::Building) {
 			if (ImGui::Button("Rotate Building")) {

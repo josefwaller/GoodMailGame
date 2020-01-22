@@ -81,6 +81,37 @@ std::map<EntityTag, Construction::Recipe> Construction::recipes = {
 			toReturn.setPosition(pos);
 			return toReturn;
 		}
-	}}
+	}},
+	{ EntityTag::MailBox, {
+		[](Game* g, sf::Vector2f pos, IsoRotation rot) {
+			sf::Vector2i tilePos((int)floor(pos.x), (int)floor(pos.y));
+			// Add the mailbox
+			std::shared_ptr<Entity> mailBox = EntityPresets::mailBox(g, sf::Vector2f(tilePos), rot);
+			// Set as building on the road
+			g->getGameMap()->getTileAt(tilePos.x, tilePos.y).building = mailBox;
+			return mailBox;
+		},
+		[](Game* g, sf::Vector2f pos, IsoRotation rot) {
+			// Just check if the tile is a road and doesn't have a building
+			Tile t = g->getGameMap()->getTileAt((int)floor(pos.x), (int)floor(pos.y));
+			if (t.building.lock())
+				return false;
+			else if (t.type != TileType::Road)
+				return false;
+			else
+				return true;
+		},
+		[](Game* g, sf::Vector2f pos, IsoRotation rot, bool isValid) {
+			sf::Sprite s = ResourceLoader::get()->getSprite("buildings/buildings", "mailbox");
+			if (isValid)
+				s.setColor(sf::Color::Green);
+			else
+				s.setColor(sf::Color::Red);
+			s.setPosition(g->worldToScreenPos({ floor(pos.x), floor(pos.y) }));
+			// Set origin to bottom center
+			s.setOrigin(s.getLocalBounds().width / 2, s.getLocalBounds().height);
+			return s;
+		}
+	} }
 };
 
