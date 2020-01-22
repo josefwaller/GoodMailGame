@@ -28,6 +28,25 @@ void PostOfficeController::update(float delta) {
 					}
 					ImGui::EndCombo();
 				}
+				// Add the stops
+				for (size_t i = 0; i < it->stops.size(); i++) {
+					if (ImGui::CollapsingHeader(std::string("Stop " + std::to_string(i)).c_str())) {
+						ImGui::PushID(i);
+						// Add select entity button
+						if (ImGui::Button("Select target")) {
+
+						}
+						// Add Delete stop button
+						if (ImGui::Button("Delete Stop")) {
+							this->deleteStop(index, i);
+						}
+						ImGui::PopID();
+					}
+				}
+				// Add stop button
+				if (ImGui::Button("Add New Stop")) {
+					this->addStop(index, MailTruckRouteStop());
+				}
 				if (ImGui::Button("Delete")) {
 					this->deleteRoute(index);
 				}
@@ -51,6 +70,13 @@ void PostOfficeController::update(float delta) {
 	this->routesToDelete.clear();
 }
 
+void PostOfficeController::addStop(size_t routeIndex, MailTruckRouteStop stop) {
+	this->routes[routeIndex].stops.push_back(stop);
+}
+void PostOfficeController::deleteStop(size_t routeIndex, size_t stopIndex) {
+	std::vector<MailTruckRouteStop>* stops = &this->routes[routeIndex].stops;
+	stops->erase(stops->begin() + stopIndex);
+}
 void PostOfficeController::setRouteTime(size_t routeIndex, int time) {
 	this->routes[routeIndex].departTime = time;
 }

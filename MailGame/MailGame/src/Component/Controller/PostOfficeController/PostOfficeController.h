@@ -8,6 +8,8 @@ public:
 	virtual void update(float delta) override;
 	
 	// Update the attributes from the Ui
+	void addStop(size_t routeIndex, MailTruckRouteStop stop);
+	void deleteStop(size_t routeIndex, size_t stopIndex);
 	void setRouteTime(size_t routeIndex, int departTime);
 	void setRouteType(size_t routeIndex, bool isDelivering);
 	void deleteRoute(size_t routeIndex);
