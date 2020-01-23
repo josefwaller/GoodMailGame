@@ -17,6 +17,10 @@ public:
 	static const float TILE_WIDTH;
 	static const float TILE_HEIGHT;
 
+	// To be removed
+	// Whitelist of entity tags which are interlaid with the map and must be drawn instead of the tile they're on
+	static const std::vector<EntityTag> WHITELIST_ENTITY_TAG;
+
 	// Initialize game
 	Game(App * a, sf::RenderWindow* window);
 	// Update game

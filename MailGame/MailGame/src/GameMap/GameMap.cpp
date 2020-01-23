@@ -9,6 +9,7 @@
 #include <queue>
 #include <stdlib.h>
 #include <bitset>
+#include <algorithm>
 
 const size_t GameMap::MAP_HEIGHT = 50;
 const size_t GameMap::MAP_WIDTH = 50;
@@ -66,8 +67,14 @@ void GameMap::render(sf::RenderWindow* window) {
 }
 void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 	if (auto e = this->tiles[x][y].building.lock()) {
-		e->renderer->render(window);
-		return;
+		// A bit messy, but hopefully this will be removed before the final product
+		// Basically use a whitelist of entity tags which should be drawn instead of tiles
+		// as opposed to over them
+		const std::vector<EntityTag> v = Game::WHITELIST_ENTITY_TAG;
+		if (std::find(v.begin(), v.end(), e->tag) != v.end()) {
+			e->renderer->render(window);
+			return;
+		}
 	}
 	sf::Sprite s;
 	switch (tiles[x][y].type) {

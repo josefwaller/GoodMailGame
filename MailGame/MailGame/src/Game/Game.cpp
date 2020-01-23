@@ -12,6 +12,10 @@
 const float Game::CAMERA_SPEED = 600.0f;
 const float Game::TILE_WIDTH = 64.0f;
 const float Game::TILE_HEIGHT = 32.0f;
+const std::vector<EntityTag> Game::WHITELIST_ENTITY_TAG = {
+	EntityTag::Building,
+	EntityTag::PostOffice
+};
 Game::Game(App* a, sf::RenderWindow* w): gameMap(this), uiHandler(this), window(w), rotation(IsoRotation::NORTH) {
 }
 
@@ -114,7 +118,11 @@ void Game::render(sf::RenderWindow* w) {
 
 	for (auto it = this->entities.begin(); it != this->entities.end(); it++) {
 		std::shared_ptr<Entity> e = *it;
-		if (e->renderer && e->tag != EntityTag::Building && e->tag != EntityTag::PostOffice) {
+		const std::vector<EntityTag> v = WHITELIST_ENTITY_TAG;
+		if (std::find(v.begin(), v.end(), e->tag) != v.end()) {
+			continue;
+		}
+		if (e->renderer) {
 			e->renderer->render(w);
 		}
 	}
