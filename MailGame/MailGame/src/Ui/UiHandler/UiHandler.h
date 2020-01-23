@@ -2,6 +2,8 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include "Ui/Construction/Construction.h"
+#include "Ui/Construction//ConstructionRecipe/ConstructionRecipe.h"
+#include <optional>
 
 class Game;
 
@@ -31,7 +33,7 @@ private:
 	// Current state of the Ui
 	UiState currentState;
 	// Current recipe the player is building, if anything
-	Construction::Recipe recipe;
+	std::optional<ConstructionRecipe> recipe;
 	// The rotation of the current building
 	IsoRotation currentRotation;
 	// Callback when selecting entity

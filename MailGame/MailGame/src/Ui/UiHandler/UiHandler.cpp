@@ -3,7 +3,7 @@
 #include <imgui-SFML.h>
 #include "Game/Game.h"
 
-UiHandler::UiHandler(Game* g): game(g), currentState(UiState::Default) {}
+UiHandler::UiHandler(Game* g): game(g), currentState(UiState::Default), recipe() {}
 
 bool UiHandler::handleEvent(sf::Event e) {
 	if (e.type == sf::Event::MouseButtonPressed) {
@@ -13,10 +13,13 @@ bool UiHandler::handleEvent(sf::Event e) {
 		sf::Vector2f mousePos;
 		switch(this->currentState) {
 		case UiState::Building:
+			if (!this->recipe) {
+				throw std::runtime_error("Building but with no ConstructionRecipe!");
+			}
 			mousePos = this->game->getMousePosition();
-			if (this->recipe.positionIsValid(this->game, mousePos, this->currentRotation)) {
+			if (this->recipe.value().isValid(this->game, mousePos, this->currentRotation)) {
 				this->game->addEntity(
-					this->recipe.createFunction(this->game, mousePos, this->currentRotation)
+					this->recipe.value().buildRecipe(this->game, mousePos, this->currentRotation)
 				);
 			}
 			this->changeState(UiState::Default);
@@ -78,8 +81,15 @@ void UiHandler::update() {
 
 void UiHandler::render(sf::RenderWindow* w) {
 	if (this->currentState == UiState::Building) {
-		bool isValid = this->recipe.positionIsValid(this->game, this->game->getMousePosition(), this->currentRotation);
-		w->draw(this->recipe.getRenderSprite(this->game, this->game->getMousePosition(), this->currentRotation, isValid));
+		if (!this->recipe) {
+			throw std::runtime_error("Tried to draw a construction sprite with no recipe!");
+		}
+		bool isValid = this->recipe.value().isValid(this->game, this->game->getMousePosition(), this->currentRotation);
+		this->recipe.value().renderConstructionSprite(
+			this->game,
+			this->game->getMousePosition(),
+			this->currentRotation,
+			w);
 	}
 }
 

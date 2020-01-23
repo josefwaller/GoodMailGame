@@ -84,6 +84,9 @@
     <ClCompile Include="src\Component\ClickBox\RectClickBox\RectClickBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Ui\Construction\ConstructionRecipe\ConstructionRecipe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h">
@@ -150,6 +153,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Component\ClickBox\RectClickBox\RectClickBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ui\Construction\ConstructionRecipe\ConstructionRecipe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
