@@ -20,5 +20,19 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 				{ TileType::Empty, TileType::Road }
 			})
 			)
+	},
+	{ EntityTag::MailBox,
+		ConstructionRecipe(
+			&EntityPresets::mailBox,
+			{
+				ResourceLoader::get()->getSprite("buildings/buildings", "mailbox"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "mailbox"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "mailbox"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "mailbox")
+			},
+			ConstructionLayout({
+				{ TileType::Road }
+			})
+		)
 	}
 };
