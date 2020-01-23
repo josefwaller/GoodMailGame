@@ -87,6 +87,9 @@
     <ClCompile Include="src\Ui\Construction\ConstructionRecipe\ConstructionRecipe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Ui\Construction\ConstructionRecipe\ConstructionLayout\ConstructionLayout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h">
@@ -156,6 +159,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Ui\Construction\ConstructionRecipe\ConstructionRecipe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ui\Construction\ConstructionRecipe\ConstructionLayout\ConstructionLayout.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

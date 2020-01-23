@@ -2,18 +2,38 @@
 #include "System/Utils/Utils.h"
 #include "Game/Game.h"
 
-ConstructionRecipe::ConstructionRecipe() {}
+ConstructionRecipe::ConstructionRecipe() : layout({}) {}
 ConstructionRecipe::ConstructionRecipe(
 	std::function<std::shared_ptr<Entity>(Game* g, sf::Vector2f pos, IsoRotation rot)> func,
-	std::vector<sf::Sprite> sprs 
-) {
+	std::vector<sf::Sprite> sprs,
+	ConstructionLayout l
+): layout(l) {
 	this->buildFunction = func;
 	this->displaySprites = sprs;
 }
 
 bool ConstructionRecipe::isValid(Game* g, sf::Vector2f pos, IsoRotation rot) {
-	// TBA
-	return true;
+	// Rotate
+	sf::Vector2i posToCheck = roundCoords(pos);
+	ConstructionLayout l = this->layout;
+	switch (rot.getRotation()) {
+	case IsoRotation::SOUTH:
+		break;
+	case IsoRotation::WEST:
+		l = ConstructionLayout::rotate(l, 1);
+		posToCheck.x -= l.getSize().x - 1;
+		break;
+	case IsoRotation::NORTH:
+		l = ConstructionLayout::rotate(l, 2);
+		posToCheck -= l.getSize() - sf::Vector2i(1, 1);
+		break;
+	case IsoRotation::EAST:
+		l = ConstructionLayout::rotate(l, 3);
+		posToCheck.y -= l.getSize().y - 1;
+		break;
+	}
+	// Return if it fits
+	return l.fits(g->getGameMap(), posToCheck);
 }
 
 void ConstructionRecipe::renderConstructionSprite(Game* g, sf::Vector2f pos, IsoRotation rot, sf::RenderWindow* w) {

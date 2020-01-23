@@ -7,10 +7,18 @@
 #include "System/Utils/Utils.h"
 
 std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
-	{ EntityTag::PostOffice, ConstructionRecipe(&EntityPresets::postOffice, {
-		ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-N"),
-		ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-E"),
-		ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-S"),
-		ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-W")
-	}) }
+	{ EntityTag::PostOffice,
+		ConstructionRecipe(
+			&EntityPresets::postOffice,
+			{
+				ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-N"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-E"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-S"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-W")
+			},
+			ConstructionLayout({
+				{ TileType::Empty, TileType::Road }
+			})
+			)
+	}
 };
