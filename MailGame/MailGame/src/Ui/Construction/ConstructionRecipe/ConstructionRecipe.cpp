@@ -39,11 +39,12 @@ bool ConstructionRecipe::isValid(Game* g, sf::Vector2f pos, IsoRotation rot) {
 void ConstructionRecipe::renderConstructionSprite(Game* g, sf::Vector2f pos, IsoRotation rot, sf::RenderWindow* w) {
 	// Get the index of the sprite it should draw
 	size_t i = 0;
-	while (rot.getRotation() != 0) {
-		rot--;
+	IsoRotation r = rot + g->getRotation();
+	while (r.getRotation() != 0) {
+		r--;
 		i++;
 	}
-	sf::Sprite displaySprite = this->displaySprites[i];
+	sf::Sprite displaySprite = this->displaySprites[i % 4];
 	// Set up for building
 	displaySprite = Utils::setupBuildingSprite(displaySprite);
 	// Set pos
