@@ -163,7 +163,7 @@ void GameMap::generateCityAt(sf::Vector2i pos) {
 			}
 		}
 	}
-	// Just add buildings along all the roads for now
+	// Have a 90% change that there is a building on each tile adjacent to a road
 	for (size_t x = 0; x < MAP_WIDTH; x++) {
 		for (size_t y = 0; y < MAP_HEIGHT; y++) {
 			if (this->tiles[x][y].type == TileType::Road) {
@@ -171,6 +171,8 @@ void GameMap::generateCityAt(sf::Vector2i pos) {
 					for (int yOff = -1; yOff < 2; yOff++) {
 						if (xOff == 0 || yOff == 0) {
 							if (this->getTileAt(x + xOff, y + yOff).type == TileType::Empty) {
+								if (rand() % 10 == 9)
+									continue;
 								IsoRotation rot;
 								switch (xOff) {
 								case -1:
