@@ -58,7 +58,7 @@ std::shared_ptr<Entity> EntityPresets::mailBox(Game* g, sf::Vector2f pos, IsoRot
 	);
 }
 
-std::shared_ptr<Entity> EntityPresets::mailTruck(Game* g, sf::Vector2f pos, IsoRotation rot) {
+std::shared_ptr<Entity> EntityPresets::mailTruck(Game* g, sf::Vector2f pos, IsoRotation rot, MailTruckRoute route) {
 	return Entity::createEntity(
 		g,
 		EntityTag::MailTruck,

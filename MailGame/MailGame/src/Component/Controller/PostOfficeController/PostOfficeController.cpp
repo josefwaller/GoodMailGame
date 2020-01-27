@@ -80,14 +80,20 @@ void PostOfficeController::update(float delta) {
 	this->routesToDelete.clear();
 }
 void PostOfficeController::onHourChange(size_t newHour) {
-	// Todo: spawn a truck if there is a route departing at this hour
-	Game* game = this->getEntity()->getGame();
-	auto trans = this->getEntity()->transform;
-	game->addEntity(EntityPresets::mailTruck(
-		game,
-		trans->getPosition() + trans->getRotation().getUnitVector(),
-		IsoRotation::NORTH
-	));
+	// Check if any of the routes depart
+	for (auto it = this->routes.begin(); it != this->routes.end(); it++) {
+		if (it->departTime == newHour) {
+			// Spawn a new truck for that route
+			Game* game = this->getEntity()->getGame();
+			auto trans = this->getEntity()->transform;
+			game->addEntity(EntityPresets::mailTruck(
+				game,
+				trans->getPosition() + trans->getRotation().getUnitVector(),
+				IsoRotation::NORTH,
+				*it
+			));
+		}
+	}
 }
 
 void PostOfficeController::setStopTile(size_t routeIndex, size_t stopIndex, sf::Vector2i pos) {
