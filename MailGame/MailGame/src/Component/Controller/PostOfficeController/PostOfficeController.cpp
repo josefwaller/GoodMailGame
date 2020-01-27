@@ -78,6 +78,9 @@ void PostOfficeController::update(float delta) {
 	}
 	this->routesToDelete.clear();
 }
+void PostOfficeController::onHourChange(size_t newHour) {
+	// Todo: spawn a truck if there is a route departing at this hour
+}
 
 void PostOfficeController::setStopTile(size_t routeIndex, size_t stopIndex, sf::Vector2i pos) {
 	// Todo: Make sure this is safe?

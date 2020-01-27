@@ -185,4 +185,9 @@ UiHandler* Game::getUi() {
 size_t Game::getTime() { return this->time; }
 void Game::advanceTime() {
 	this->time = (this->time + 1) % 24;
+	for (auto it = this->entities.begin(); it != this->entities.end(); it++) {
+		if ((*it)->controller) {
+			(*it)->controller->onHourChange(this->time);
+		}
+	}
 }
