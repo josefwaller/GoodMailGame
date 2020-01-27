@@ -3,6 +3,7 @@
 #include "Component/Transform/Transform.h"
 #include "Game/Game.h"
 #include "Ui/UiHandler/UiHandler.h"
+#include "Entity/EntityPresets/EntityPresets.h"
 #include <string>
 #include <imgui.h>
 
@@ -80,6 +81,8 @@ void PostOfficeController::update(float delta) {
 }
 void PostOfficeController::onHourChange(size_t newHour) {
 	// Todo: spawn a truck if there is a route departing at this hour
+	Game* game = this->getEntity()->getGame();
+	game->addEntity(EntityPresets::mailTruck(game, this->getEntity()->transform->getPosition(), IsoRotation::NORTH));
 }
 
 void PostOfficeController::setStopTile(size_t routeIndex, size_t stopIndex, sf::Vector2i pos) {

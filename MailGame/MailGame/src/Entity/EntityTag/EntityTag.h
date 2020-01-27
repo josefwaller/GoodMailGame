@@ -3,5 +3,6 @@
 enum EntityTag {
 	Building,
 	PostOffice,
-	MailBox
+	MailBox,
+	MailTruck
 };

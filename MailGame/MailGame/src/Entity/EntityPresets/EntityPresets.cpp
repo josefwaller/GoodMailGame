@@ -57,3 +57,18 @@ std::shared_ptr<Entity> EntityPresets::mailBox(Game* g, sf::Vector2f pos, IsoRot
 		nullptr
 	);
 }
+
+std::shared_ptr<Entity> EntityPresets::mailTruck(Game* g, sf::Vector2f pos, IsoRotation rot) {
+	return Entity::createEntity(
+		g,
+		EntityTag::MailTruck,
+		new Transform(pos, rot),
+		new IsoSpriteRenderer(
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-N"),
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-E"),
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-S"),
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-W")
+		),
+		nullptr
+	);
+}
