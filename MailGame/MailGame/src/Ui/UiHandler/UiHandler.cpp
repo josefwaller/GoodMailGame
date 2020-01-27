@@ -56,6 +56,10 @@ void UiHandler::update() {
 	if (ImGui::Button("Rotate Camera")) {
 		this->game->rotateCamera();
 	}
+	ImGui::Text((std::to_string(this->game->getTime()) + ":00").c_str());
+	if (ImGui::Button("Next Hour")) {
+		this->game->advanceTime();
+	}
 	if (ImGui::CollapsingHeader("Build")) {
 		if (ImGui::Button("Post Office")) {
 			this->recipe = Construction::recipes[EntityTag::PostOffice];

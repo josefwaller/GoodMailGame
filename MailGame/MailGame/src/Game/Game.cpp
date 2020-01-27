@@ -182,3 +182,7 @@ GameMap* Game::getGameMap() {
 UiHandler* Game::getUi() {
 	return &this->uiHandler;
 }
+size_t Game::getTime() { return this->time; }
+void Game::advanceTime() {
+	this->time = (this->time + 1) % 24;
+}

@@ -46,6 +46,10 @@ public:
 	void removeEntity(std::weak_ptr<Entity> e);
 	// Get the dimensions of the view
 	sf::FloatRect getViewport();
+	// Get the time
+	size_t getTime();
+	// Go to next hour
+	void advanceTime();
 private:
 	// The window for the game
 	sf::RenderWindow* window;
@@ -63,4 +67,6 @@ private:
 	sf::View gameView;
 	// The rotation, where each increase is a 90 degree turn
 	IsoRotation rotation;
+	// The time, in hours, between 0-23
+	size_t time;
 };
