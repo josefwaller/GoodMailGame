@@ -82,7 +82,12 @@ void PostOfficeController::update(float delta) {
 void PostOfficeController::onHourChange(size_t newHour) {
 	// Todo: spawn a truck if there is a route departing at this hour
 	Game* game = this->getEntity()->getGame();
-	game->addEntity(EntityPresets::mailTruck(game, this->getEntity()->transform->getPosition(), IsoRotation::NORTH));
+	auto trans = this->getEntity()->transform;
+	game->addEntity(EntityPresets::mailTruck(
+		game,
+		trans->getPosition() + trans->getRotation().getUnitVector(),
+		IsoRotation::NORTH
+	));
 }
 
 void PostOfficeController::setStopTile(size_t routeIndex, size_t stopIndex, sf::Vector2i pos) {
