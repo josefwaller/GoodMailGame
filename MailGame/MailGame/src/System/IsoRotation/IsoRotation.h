@@ -1,4 +1,6 @@
 #pragma once
+#include <SFML/System/Vector2.hpp>
+#include <stdexcept>
 
 // Simple struct which just loops a number over 4 values
 // Used to represent the rotation of buildings/camera, etc
@@ -45,5 +47,20 @@ public:
 	IsoRotation& operator--(int x) {
 		rotation = (rotation - 1) % 4;
 		return *this;
+	}
+	// Get unit vector
+	sf::Vector2f getUnitVector() {
+		switch (this->getRotation()) {
+		case IsoRotation::NORTH:
+			return { 0, -1.0f };
+		case IsoRotation::SOUTH:
+			return { 0, 1.0f };
+		case IsoRotation::EAST:
+			return { -1.0f, 0 };
+		case IsoRotation::WEST:
+			return { 1.0f, 0 };
+		default:
+			throw std::runtime_error("getUnitVector called on an invalid IsoRotation!");
+		}
 	}
 };
