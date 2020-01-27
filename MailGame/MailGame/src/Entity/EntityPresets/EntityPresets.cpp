@@ -8,6 +8,7 @@
 #include "Component/Renderer/SpriteRenderer/SpriteRenderer.h"
 #include "Component/Renderer/IsoSpriteRenderer/IsoSpriteRenderer.h"
 #include "Component/Controller/PostOfficeController/PostOfficeController.h"
+#include "Component/Controller/MailTruckController/MailTruckController.h"
 #include "Component/ClickBox/RectClickBox/RectClickBox.h"
 
 std::shared_ptr<Entity> EntityPresets::building(Game* g, sf::Vector2f pos, IsoRotation rot) {
@@ -69,6 +70,6 @@ std::shared_ptr<Entity> EntityPresets::mailTruck(Game* g, sf::Vector2f pos, IsoR
 			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-S"),
 			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-W")
 		),
-		nullptr
+		new MailTruckController(route)
 	);
 }
