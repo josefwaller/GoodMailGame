@@ -9,13 +9,13 @@
 
 void PostOfficeController::update(float delta) {
 	if (this->getEntity()->transform->isOnScreen()) {
-		ImGui::PushID(this->getEntity()->getId());
+		ImGui::PushID((int)this->getEntity()->getId());
 		ImGui::Begin(std::string("Post Office " + std::to_string(this->getEntity()->getId())).c_str());
 		for (auto it = this->routes.begin(); it != this->routes.end(); it++) {
 			// Get the route index
 			size_t index = (size_t)(it - this->routes.begin());
 			// Get the ID as a string, for labels
-			ImGui::PushID(it->id);
+			ImGui::PushID((int)it->id);
 			// Create a collapsing header
 			std::string routeName = "Route " + std::to_string(it->id);
 			if (ImGui::CollapsingHeader(routeName.c_str())) {
@@ -34,7 +34,7 @@ void PostOfficeController::update(float delta) {
 				// Add the stops
 				for (size_t i = 0; i < it->stops.size(); i++) {
 					if (ImGui::CollapsingHeader(std::string("Stop " + std::to_string(i)).c_str())) {
-						ImGui::PushID(i);
+						ImGui::PushID((int)i);
 						// Add select target button
 						std::string btnText = "Select Target";
 						if (it->stops[i].target) {
