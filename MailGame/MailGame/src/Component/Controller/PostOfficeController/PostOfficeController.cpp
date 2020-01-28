@@ -64,7 +64,7 @@ void PostOfficeController::update(float delta) {
 			ImGui::PopID();
 		}
 		if (ImGui::Button("Create Route")) {
-			this->routes.push_back(MailTruckRoute(true, 0));
+			this->addRoute(MailTruckRoute(true, 0));
 		}
 		ImGui::End();
 		ImGui::PopID();
@@ -113,6 +113,9 @@ void PostOfficeController::setRouteTime(size_t routeIndex, int time) {
 }
 void PostOfficeController::setRouteType(size_t routeIndex, bool isDelivering) {
 	this->routes[routeIndex].isDelivering = isDelivering;
+}
+void PostOfficeController::addRoute(MailTruckRoute route) {
+	this->routes.push_back(route);
 }
 void PostOfficeController::deleteRoute(size_t routeIndex) {
 	routesToDelete.push_back(routeIndex);

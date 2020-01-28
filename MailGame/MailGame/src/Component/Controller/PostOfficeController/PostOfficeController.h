@@ -14,6 +14,7 @@ public:
 	void deleteStop(size_t routeIndex, size_t stopIndex);
 	void setRouteTime(size_t routeIndex, int departTime);
 	void setRouteType(size_t routeIndex, bool isDelivering);
+	void addRoute(MailTruckRoute r);
 	void deleteRoute(size_t routeIndex);
 private:
 	// The routes that the post office will spawn trucks for

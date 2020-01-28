@@ -4,8 +4,10 @@
 #include "Component/Transform/Transform.h"
 #include "Component/Renderer/Renderer.h"
 #include "Component/Controller/Controller.h"
+#include "Component/Controller/PostOfficeController/PostOfficeController.h"
 #include "Component/ClickBox/ClickBox.h"
 #include "Entity/EntityPresets/EntityPresets.h"
+#include "Ui/Construction/Construction.h"
 #include <SFML/Graphics.hpp>
 #include <imgui.h>
 
@@ -16,7 +18,20 @@ const std::vector<EntityTag> Game::WHITELIST_ENTITY_TAG = {
 	EntityTag::Building,
 	EntityTag::PostOffice
 };
-Game::Game(App* a, sf::RenderWindow* w): gameMap(this), uiHandler(this), window(w), rotation(IsoRotation::NORTH) {
+Game::Game(App* a, sf::RenderWindow* w): time(0), gameMap(this), uiHandler(this), window(w), rotation(IsoRotation::NORTH), entities() {
+	// For testing: Create a post office and a simple route for it
+	auto pO = Construction::recipes[EntityTag::PostOffice].buildRecipe(
+		this,
+		sf::Vector2f(13.0f, 12.0f),
+		IsoRotation::NORTH
+	);
+	this->addEntity(pO);
+	auto pOCont = std::dynamic_pointer_cast<PostOfficeController>(pO->controller);
+	pOCont->addRoute(MailTruckRoute(true, 1));
+	pOCont->addStop(0, MailTruckRouteStop());
+	pOCont->setStopTile(0, 0, { 12, 11 });
+	pOCont->addStop(0, MailTruckRouteStop());
+	pOCont->setStopTile(0, 1, { 22, 10 });
 }
 
 void Game::update(float delta) {
