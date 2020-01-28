@@ -5,11 +5,12 @@
 #include <SFML/Graphics/CircleShape.hpp>
 #include "System/Utils/Utils.h"
 
-IsoSpriteRenderer::IsoSpriteRenderer(sf::Sprite n, sf::Sprite e, sf::Sprite s, sf::Sprite w) {
+IsoSpriteRenderer::IsoSpriteRenderer(sf::Sprite n, sf::Sprite e, sf::Sprite s, sf::Sprite w, sf::Vector2f off) {
 	this->sprites.push_back(n);
 	this->sprites.push_back(e);
 	this->sprites.push_back(s);
 	this->sprites.push_back(w);
+	this->offset = off;
 }
 
 void IsoSpriteRenderer::render(sf::RenderWindow* window) {
@@ -19,6 +20,6 @@ void IsoSpriteRenderer::render(sf::RenderWindow* window) {
 	// Set sprite origin to bottom-center
 	Game* game = this->getEntity()->getGame();
 	toRender = Utils::setupBuildingSprite(toRender);
-	toRender.setPosition(game->worldToScreenPos(position));
+	toRender.setPosition(game->worldToScreenPos(position + this->offset));
 	window->draw(toRender);
 }

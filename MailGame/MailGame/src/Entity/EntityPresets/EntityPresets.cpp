@@ -68,7 +68,8 @@ std::shared_ptr<Entity> EntityPresets::mailTruck(Game* g, sf::Vector2f pos, IsoR
 			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-N"),
 			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-E"),
 			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-S"),
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-W")
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-W"),
+			-sf::Vector2f(0.5f, 0.5f)
 		),
 		new MailTruckController(route)
 	);
