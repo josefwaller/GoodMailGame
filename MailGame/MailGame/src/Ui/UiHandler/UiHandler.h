@@ -40,4 +40,6 @@ private:
 	std::function<void(std::weak_ptr<Entity> e)> selectEntityCallback;
 	// Callback when selecting tile
 	std::function<void(sf::Vector2i)> selectTileCallback;
+	// Get the tile the mouse is currently hovering over
+	sf::Vector2i getHoveredTile();
 };

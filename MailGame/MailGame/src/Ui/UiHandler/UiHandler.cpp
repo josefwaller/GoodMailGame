@@ -1,6 +1,7 @@
 #include "UiHandler.h"
 #include <imgui.h>
 #include <imgui-SFML.h>
+#include <SFML/Graphics/VertexArray.hpp>
 #include "Game/Game.h"
 
 UiHandler::UiHandler(Game* g): game(g), currentState(UiState::Default), recipe() {}
@@ -28,9 +29,8 @@ bool UiHandler::handleEvent(sf::Event e) {
 			// tba
 			break;
 		case UiState::SelectingTile:
-			mousePos = this->game->getMousePosition();
 			// Call the callback
-			this->selectTileCallback(sf::Vector2i((int)round(mousePos.x), (int)round(mousePos.y)));
+			this->selectTileCallback(this->getHoveredTile());
 			break;
 		}
 	} else {
@@ -39,6 +39,11 @@ bool UiHandler::handleEvent(sf::Event e) {
 		}
 	}
 	return false;
+}
+
+sf::Vector2i UiHandler::getHoveredTile() {
+	sf::Vector2f mousePos = this->game->getMousePosition();
+	return sf::Vector2i((int)round(mousePos.x), (int)round(mousePos.y));
 }
 
 void UiHandler::selectTile(std::function<void(sf::Vector2i pos)> callback) {
@@ -95,6 +100,16 @@ void UiHandler::render(sf::RenderWindow* w) {
 			this->currentRotation,
 			w);
 	}
+	// Outline the sprite currently being hovered
+	sf::VertexArray vArr(sf::LinesStrip, 5);
+	sf::Vector2f pos(this->getHoveredTile());
+	Game* g = this->game;
+	vArr[0] = sf::Vertex(g->worldToScreenPos(pos), sf::Color::White);
+	vArr[1] = sf::Vertex(g->worldToScreenPos(pos + sf::Vector2f(1.0f, 0)), sf::Color::White);
+	vArr[2] = sf::Vertex(g->worldToScreenPos(pos + sf::Vector2f(1.0f, 1.0f)), sf::Color::White);
+	vArr[3] = sf::Vertex(g->worldToScreenPos(pos + sf::Vector2f(0, 1.0f)), sf::Color::White);
+	vArr[4] = vArr[0];
+	w->draw(vArr);
 }
 
 void UiHandler::changeState(UiState state) {
