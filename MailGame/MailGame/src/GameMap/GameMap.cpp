@@ -103,7 +103,7 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 	}
 	sf::Vector2f pos((float)x, (float)y);
 	s.setPosition(this->game->worldToScreenPos(pos));
-	s = Utils::setupBuildingSprite(s);
+	s = Utils::setupBuildingSprite(s, false);
 	window->draw(s);
 }
 /*

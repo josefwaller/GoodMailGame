@@ -24,8 +24,8 @@ std::shared_ptr<Entity> EntityPresets::building(Game* g, sf::Vector2f pos, IsoRo
 		),
 		nullptr,
 		new RectClickBox(sf::FloatRect(
-			-1,
-			-1,
+			0,
+			0,
 			1,
 			1)
 		)

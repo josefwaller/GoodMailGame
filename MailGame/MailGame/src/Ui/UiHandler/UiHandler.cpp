@@ -43,7 +43,7 @@ bool UiHandler::handleEvent(sf::Event e) {
 
 sf::Vector2i UiHandler::getHoveredTile() {
 	sf::Vector2f mousePos = this->game->getMousePosition();
-	return sf::Vector2i((int)round(mousePos.x), (int)round(mousePos.y));
+	return sf::Vector2i((int)floor(mousePos.x), (int)floor(mousePos.y));
 }
 
 void UiHandler::selectTile(std::function<void(sf::Vector2i pos)> callback) {
@@ -84,6 +84,12 @@ void UiHandler::update() {
 			}
 		}
 	}
+	// Print mouse position
+	sf::Vector2f mousePos = this->game->getMousePosition();
+	sf::Vector2i tile = this->getHoveredTile();
+	char buf[200];
+	sprintf_s(buf, "Mouse position is (%.2f,%.2f), tile is (%d, %d)", mousePos.x, mousePos.y, tile.x, tile.y);
+	ImGui::Text(buf);
 
 	ImGui::End();
 }
