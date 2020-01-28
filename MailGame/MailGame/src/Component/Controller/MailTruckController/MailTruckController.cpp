@@ -27,12 +27,30 @@ void MailTruckController::update(float delta) {
 		if (pow(pos.x - point.x, 2) + pow(pos.y - point.y, 2) <= pow(0.1f, 2)) {
 			// Go to the next point
 			this->pointIndex++;
+			// Set position to point to avoid being a bit off
+			trans->setPosition(point);
 		}
 		else {
 			// Move closer to stop
 			sf::Vector2f diff = point - pos;
 			float magDiff = sqrt(pow(diff.x, 2) + pow(diff.y, 2));
 			trans->setPosition(trans->getPosition() + (diff / magDiff) * SPEED * delta);
+			// Set rotation accordingly
+			if (diff.x < 0.01 && diff.x > -0.01) {
+				if (diff.y < 0) {
+					trans->setRotation(IsoRotation::NORTH);
+				}
+				else {
+					trans->setRotation(IsoRotation::SOUTH);
+				}
+			} else {
+				if (diff.x < 0) {
+					trans->setRotation(IsoRotation::WEST);
+				}
+				else {
+					trans->setRotation(IsoRotation::EAST);
+				}
+			}
 		}
 	}
 }
