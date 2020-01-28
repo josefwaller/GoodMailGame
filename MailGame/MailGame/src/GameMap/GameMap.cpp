@@ -3,6 +3,7 @@
 #include "Entity/Entity.h"
 #include "Component/Renderer/Renderer.h"
 #include "ResourceLoader\ResourceLoader.h"
+#include "System/Utils/Utils.h"
 #include "Line/Line.h"
 #include "Entity/EntityPresets/EntityPresets.h"
 #include <SFML/Graphics.hpp>
@@ -102,7 +103,7 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 	}
 	sf::Vector2f pos((float)x, (float)y);
 	s.setPosition(this->game->worldToScreenPos(pos));
-	s.setOrigin(68, 66);
+	s = Utils::setupBuildingSprite(s);
 	window->draw(s);
 }
 /*
