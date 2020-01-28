@@ -14,7 +14,7 @@ public:
 		sf::Sprite west,
 		sf::Vector2f offset = { 0.0f, 0.0f });
 	virtual void render(sf::RenderWindow* w) override;
-private:
+protected:
 	std::vector<sf::Sprite> sprites;
 	// The offset with which to draw the sprite
 	sf::Vector2f offset;

@@ -7,6 +7,7 @@
 #include "Component/Transform/Transform.h"
 #include "Component/Renderer/SpriteRenderer/SpriteRenderer.h"
 #include "Component/Renderer/IsoSpriteRenderer/IsoSpriteRenderer.h"
+#include "Component/Renderer/IsoSpriteRenderer/IsoBuildingRenderer/IsoBuildingRenderer.h"
 #include "Component/Controller/PostOfficeController/PostOfficeController.h"
 #include "Component/Controller/MailTruckController/MailTruckController.h"
 #include "Component/ClickBox/RectClickBox/RectClickBox.h"
@@ -16,7 +17,7 @@ std::shared_ptr<Entity> EntityPresets::building(Game* g, sf::Vector2f pos, IsoRo
 		g,
 		EntityTag::Building,
 		new Transform(pos, rot),
-		new IsoSpriteRenderer(
+		new IsoBuildingRenderer(
 			ResourceLoader::get()->getSprite("buildings/buildings", "building-NE-3"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "building-SE-3"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "building-SW-3"),
@@ -37,7 +38,7 @@ std::shared_ptr<Entity> EntityPresets::postOffice(Game* g, sf::Vector2f pos, Iso
 		g,
 		EntityTag::PostOffice,
 		new Transform(pos, rot),
-		new IsoSpriteRenderer(
+		new IsoBuildingRenderer(
 			ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-N"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-E"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-S"),
@@ -68,8 +69,7 @@ std::shared_ptr<Entity> EntityPresets::mailTruck(Game* g, sf::Vector2f pos, IsoR
 			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-N"),
 			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-E"),
 			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-S"),
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-W"),
-			-sf::Vector2f(0.5f, 0.5f)
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-W")
 		),
 		new MailTruckController(route)
 	);
