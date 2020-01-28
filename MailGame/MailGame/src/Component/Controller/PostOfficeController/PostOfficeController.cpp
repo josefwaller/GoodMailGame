@@ -97,8 +97,9 @@ void PostOfficeController::onHourChange(size_t newHour) {
 }
 
 void PostOfficeController::setStopTile(size_t routeIndex, size_t stopIndex, sf::Vector2i pos) {
-	// Todo: Make sure this is safe?
-	this->routes[routeIndex].stops[stopIndex].target = pos;
+	// Make sure the tile is a road
+	if (this->getEntity()->getGame()->getGameMap()->getTileAt(pos.x, pos.y).type == TileType::Road)
+		this->routes[routeIndex].stops[stopIndex].target = pos;
 }
 void PostOfficeController::addStop(size_t routeIndex, MailTruckRouteStop stop) {
 	this->routes[routeIndex].stops.push_back(stop);
