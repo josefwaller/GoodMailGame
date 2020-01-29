@@ -18,4 +18,7 @@ protected:
 	std::vector<sf::Sprite> sprites;
 	// The offset with which to draw the sprite
 	sf::Vector2f offset;
+	// Get the sprite, properly positioned and stuff
+	// For use by subclasses so that they don't have to redo everything
+	sf::Sprite getSpriteToRender();
 };

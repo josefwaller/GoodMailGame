@@ -101,7 +101,7 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 		s = ROAD_SPRITES[index];
 		break;
 	}
-	sf::Vector2f pos((float)x, (float)y);
+	sf::Vector2f pos((float)x + 0.5f, (float)y + 0.5f);
 	s.setPosition(this->game->worldToScreenPos(pos));
 	s = Utils::setupBuildingSprite(s, false);
 	window->draw(s);
