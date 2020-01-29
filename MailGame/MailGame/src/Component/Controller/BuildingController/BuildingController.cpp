@@ -26,5 +26,6 @@ void BuildingController::update(float time) {
 }
 
 void BuildingController::generateLetter() {
-	this->getEntity()->mailContainer->addMail({ Letter() });
+	sf::Vector2i pos(this->getEntity()->transform->getPosition());
+	this->getEntity()->mailContainer->addMail({ Letter(pos, pos) });
 }

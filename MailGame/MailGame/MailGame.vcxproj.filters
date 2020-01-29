@@ -102,6 +102,9 @@
     <ClCompile Include="src\Component\Controller\BuildingController\BuildingController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mail\Letter\Letter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h">
