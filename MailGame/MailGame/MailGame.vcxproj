@@ -129,6 +129,7 @@
     <ClCompile Include="src\Component\Component.cpp" />
     <ClCompile Include="src\Component\Controller\MailTruckController\MailTruckController.cpp" />
     <ClCompile Include="src\Component\Controller\PostOfficeController\PostOfficeController.cpp" />
+    <ClCompile Include="src\Component\MailContainer\MailContainer.cpp" />
     <ClCompile Include="src\Component\Renderer\IsoSpriteRenderer\IsoBuildingRenderer\IsoBuildingRenderer.cpp" />
     <ClCompile Include="src\Component\Renderer\IsoSpriteRenderer\IsoSpriteRenderer.cpp" />
     <ClCompile Include="src\Component\Renderer\SpriteRenderer\SpriteRenderer.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="src\Component\Controller\Controller.h" />
     <ClInclude Include="src\Component\Controller\MailTruckController\MailTruckController.h" />
     <ClInclude Include="src\Component\Controller\PostOfficeController\PostOfficeController.h" />
+    <ClInclude Include="src\Component\MailContainer\MailContainer.h" />
     <ClInclude Include="src\Component\Renderer\IsoSpriteRenderer\IsoBuildingRenderer\IsoBuildingRenderer.h" />
     <ClInclude Include="src\Component\Renderer\IsoSpriteRenderer\IsoSpriteRenderer.h" />
     <ClInclude Include="src\Component\Renderer\Renderer.h" />
@@ -171,6 +173,7 @@
     <ClInclude Include="src\GameMap\GameMap.h" />
     <ClInclude Include="src\GameMap\Line\Line.h" />
     <ClInclude Include="src\Game\Game.h" />
+    <ClInclude Include="src\Mail\Mail.h" />
     <ClInclude Include="src\ResourceLoader\ResourceLoader.h" />
     <ClInclude Include="src\Routes\MailTruckRoute\MailTruckRoute.h" />
     <ClInclude Include="src\System\IsoRotation\IsoRotation.h" />
