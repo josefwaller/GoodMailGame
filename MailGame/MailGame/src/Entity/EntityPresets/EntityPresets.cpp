@@ -11,6 +11,7 @@
 #include "Component/Controller/PostOfficeController/PostOfficeController.h"
 #include "Component/Controller/MailTruckController/MailTruckController.h"
 #include "Component/ClickBox/RectClickBox/RectClickBox.h"
+#include "Component/MailContainer/MailContainer.h"
 
 std::shared_ptr<Entity> EntityPresets::building(Game* g, sf::Vector2f pos, IsoRotation rot) {
 	return Entity::createEntity(
@@ -56,7 +57,9 @@ std::shared_ptr<Entity> EntityPresets::mailBox(Game* g, sf::Vector2f pos, IsoRot
 		new SpriteRenderer(
 			ResourceLoader::get()->getSprite("buildings/buildings", "mailbox")
 		),
-		nullptr
+		nullptr,
+		nullptr,
+		new MailContainer()
 	);
 }
 
