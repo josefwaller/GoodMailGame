@@ -11,6 +11,8 @@ public:
 	void addMail(std::vector<Mail> mail);
 	// Give all the letters to another container
 	void transferAllMailTo(std::shared_ptr<MailContainer> other);
+	// Get number of letters
+	size_t getNumLetters();
 private:
 	// The mail in the entity right now
 	std::vector<Mail> mail;

@@ -127,6 +127,7 @@
     <ClCompile Include="src\App\App.cpp" />
     <ClCompile Include="src\Component\ClickBox\RectClickBox\RectClickBox.cpp" />
     <ClCompile Include="src\Component\Component.cpp" />
+    <ClCompile Include="src\Component\Controller\BuildingController\BuildingController.cpp" />
     <ClCompile Include="src\Component\Controller\MailTruckController\MailTruckController.cpp" />
     <ClCompile Include="src\Component\Controller\PostOfficeController\PostOfficeController.cpp" />
     <ClCompile Include="src\Component\MailContainer\MailContainer.cpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="src\Component\ClickBox\ClickBox.h" />
     <ClInclude Include="src\Component\ClickBox\RectClickBox\RectClickBox.h" />
     <ClInclude Include="src\Component\Component.h" />
+    <ClInclude Include="src\Component\Controller\BuildingController\BuildingController.h" />
     <ClInclude Include="src\Component\Controller\Controller.h" />
     <ClInclude Include="src\Component\Controller\MailTruckController\MailTruckController.h" />
     <ClInclude Include="src\Component\Controller\PostOfficeController\PostOfficeController.h" />
@@ -173,6 +175,7 @@
     <ClInclude Include="src\GameMap\GameMap.h" />
     <ClInclude Include="src\GameMap\Line\Line.h" />
     <ClInclude Include="src\Game\Game.h" />
+    <ClInclude Include="src\Mail\Letter\Letter.h" />
     <ClInclude Include="src\Mail\Mail.h" />
     <ClInclude Include="src\ResourceLoader\ResourceLoader.h" />
     <ClInclude Include="src\Routes\MailTruckRoute\MailTruckRoute.h" />

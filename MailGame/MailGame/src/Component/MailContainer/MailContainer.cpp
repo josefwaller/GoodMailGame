@@ -8,3 +8,6 @@ void MailContainer::transferAllMailTo(std::shared_ptr<MailContainer> other) {
 	other->addMail(this->mail);
 	this->mail = {};
 }
+size_t MailContainer::getNumLetters() {
+	return this->mail.size();
+}

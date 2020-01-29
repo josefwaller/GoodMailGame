@@ -99,6 +99,9 @@
     <ClCompile Include="src\Component\MailContainer\MailContainer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Component\Controller\BuildingController\BuildingController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h">
@@ -183,6 +186,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Mail\Mail.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\Controller\BuildingController\BuildingController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mail\Letter\Letter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

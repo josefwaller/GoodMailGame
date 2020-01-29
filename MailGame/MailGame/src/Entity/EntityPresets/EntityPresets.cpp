@@ -10,6 +10,7 @@
 #include "Component/Renderer/IsoSpriteRenderer/IsoBuildingRenderer/IsoBuildingRenderer.h"
 #include "Component/Controller/PostOfficeController/PostOfficeController.h"
 #include "Component/Controller/MailTruckController/MailTruckController.h"
+#include "Component/Controller/BuildingController/BuildingController.h"
 #include "Component/ClickBox/RectClickBox/RectClickBox.h"
 #include "Component/MailContainer/MailContainer.h"
 
@@ -24,13 +25,14 @@ std::shared_ptr<Entity> EntityPresets::building(Game* g, sf::Vector2f pos, IsoRo
 			ResourceLoader::get()->getSprite("buildings/buildings", "building-SW-3"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "building-NW-3")
 		),
-		nullptr,
+		new BuildingController(),
 		new RectClickBox(sf::FloatRect(
 			0,
 			0,
 			1,
 			1)
-		)
+		),
+		new MailContainer()
 	);
 }
 
