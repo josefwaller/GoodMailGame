@@ -206,3 +206,4 @@ void Game::advanceTime() {
 		}
 	}
 }
+std::vector<std::shared_ptr<Entity>> Game::getEntities() { return this->entities; }

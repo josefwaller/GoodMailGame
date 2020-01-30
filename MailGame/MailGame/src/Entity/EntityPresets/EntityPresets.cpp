@@ -31,8 +31,7 @@ std::shared_ptr<Entity> EntityPresets::building(Game* g, sf::Vector2f pos, IsoRo
 			0,
 			1,
 			1)
-		),
-		new MailContainer()
+		)
 	);
 }
 

@@ -50,6 +50,8 @@ public:
 	size_t getTime();
 	// Go to next hour
 	void advanceTime();
+	// Get a list of the entities in game
+	std::vector<std::shared_ptr<Entity>> getEntities();
 private:
 	// The window for the game
 	sf::RenderWindow* window;
