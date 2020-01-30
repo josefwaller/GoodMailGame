@@ -12,15 +12,17 @@
 
 const float MailTruckController::SPEED = 1.0f;
 
-MailTruckController::MailTruckController(MailTruckRoute r): route(r), pointIndex(0), stopIndex(0) {
+// Set stop to -1 to avoid skipping the first stop
+MailTruckController::MailTruckController(MailTruckRoute r, std::weak_ptr<Entity> o)
+	: route(r), pointIndex(0), stopIndex(-1), office(o), isGoingToOffice(false) {
+
 }
 
 void MailTruckController::update(float delta) {
 	// If the truck has gone through all the points
 	if (this->pointIndex >= this->points.size()) {
 		// Go to the next stop
-		stopIndex = (stopIndex + 1) % this->route.stops.size();
-		pathfindToNextStop();
+		this->goToNextStop();
 	}
 	else {
 		// Check if the truck is close enough to the point
@@ -103,11 +105,39 @@ void MailTruckController::dropOffMail(sf::Vector2i pos) {
 		}
 	}
 }
-void MailTruckController::pathfindToNextStop() {
-	// Need to pathfind from current position to the stop
+void MailTruckController::goToNextStop() {
+	// If we were going back to the office, just delete yourself
+	if (this->isGoingToOffice) {
+		// Give all the letters back to the post office
+		if (auto o = this->office.lock()) {
+			this->getEntity()->mailContainer->transferAllMailTo(o->mailContainer);
+		}
+		this->getEntity()->getGame()->removeEntity(this->getEntity());
+		return;
+	}
+	sf::Vector2i stop;
+	// Go to next stop
+	this->stopIndex++;
+	if (this->stopIndex >= this->route.stops.size()) {
+		this->isGoingToOffice = true;
+		if (auto o = this->office.lock()) {
+			stop = sf::Vector2i(o->transform->getPosition() + o->transform->getRotation().getUnitVector());
+		}
+		else {
+			// TBA: What happens if a post office is deleted after it sends out a truck
+			throw std::runtime_error("Not yet implemented");
+		}
+	}
+	else {
+		stop = this->route.stops[stopIndex].target.value();
+	}
+	// Go to the stop
+	this->pathfindToPoint(stop);
+}
+void MailTruckController::pathfindToPoint(sf::Vector2i dest) {
+	// Need to pathfind from current position to the destination
 	GameMap* gMap = this->getEntity()->getGame()->getGameMap();
 	sf::Vector2i pos(this->getEntity()->transform->getPosition());
-	sf::Vector2i stop = this->route.stops[stopIndex].target.value();
 	// Find a path along only road from pos to stop
 	std::queue<sf::Vector2i> potentialPoints;
 	std::vector<sf::Vector2i> visitedPoints;
@@ -124,7 +154,7 @@ void MailTruckController::pathfindToNextStop() {
 		sf::Vector2i point = potentialPoints.front();
 		potentialPoints.pop();
 		// Check if it is the correct one
-		if (point == stop) {
+		if (point == dest) {
 			// Set points
 			this->points.clear();
 			while (point != pos) {

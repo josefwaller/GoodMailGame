@@ -4,6 +4,7 @@
 #include "Game/Game.h"
 #include "Ui/UiHandler/UiHandler.h"
 #include "Entity/EntityPresets/EntityPresets.h"
+#include "Component/MailContainer/MailContainer.h"
 #include <string>
 #include <imgui.h>
 
@@ -11,6 +12,10 @@ void PostOfficeController::update(float delta) {
 	if (this->getEntity()->transform->isOnScreen()) {
 		ImGui::PushID((int)this->getEntity()->getId());
 		ImGui::Begin(std::string("Post Office " + std::to_string(this->getEntity()->getId())).c_str());
+		// Print num letters
+		char buf[200];
+		sprintf_s(buf, "%zu mail objects", this->getEntity()->mailContainer->getNumLetters());
+		ImGui::Text(buf);
 		for (auto it = this->routes.begin(); it != this->routes.end(); it++) {
 			// Get the route index
 			size_t index = (size_t)(it - this->routes.begin());
@@ -99,7 +104,8 @@ void PostOfficeController::onHourChange(size_t newHour) {
 				game,
 				trans->getPosition() + trans->getRotation().getUnitVector(),
 				IsoRotation::NORTH,
-				*it
+				*it,
+				this->getEntity()
 			));
 		}
 	}
