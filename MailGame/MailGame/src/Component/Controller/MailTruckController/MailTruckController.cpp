@@ -29,11 +29,13 @@ void MailTruckController::update(float delta) {
 		sf::Vector2f pos = trans->getPosition();
 		if (pow(pos.x - point.x, 2) + pow(pos.y - point.y, 2) <= pow(0.1f, 2)) {
 			// Pick up letters if a mailbox is on the point
-			auto entities = this->getEntity()->getGame()->getEntities();
-			for (auto it = entities.begin(); it != entities.end(); it++) {
-				if ((*it)->tag == EntityTag::MailBox && (*it)->transform->getPosition() == point) {
-					// Take all the letters
-					(*it)->mailContainer->transferAllMailTo(this->getEntity()->mailContainer);
+			if (!this->route.isDelivering) {
+				auto entities = this->getEntity()->getGame()->getEntities();
+				for (auto it = entities.begin(); it != entities.end(); it++) {
+					if ((*it)->tag == EntityTag::MailBox && (*it)->transform->getPosition() == point) {
+						// Take all the letters
+						(*it)->mailContainer->transferAllMailTo(this->getEntity()->mailContainer);
+					}
 				}
 			}
 			// Go to the next point
@@ -69,7 +71,9 @@ void MailTruckController::update(float delta) {
 				// Set lastPoint
 				this->lastPoint = posI;
 				// Check for dropping off mail
-				this->dropOffMail(posI);
+				if (this->route.isDelivering) {
+					this->dropOffMail(posI);
+				}
 			}
 		}
 	}

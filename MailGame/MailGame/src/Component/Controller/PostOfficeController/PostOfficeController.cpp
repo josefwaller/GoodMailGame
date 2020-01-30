@@ -31,6 +31,15 @@ void PostOfficeController::update(float delta) {
 					}
 					ImGui::EndCombo();
 				}
+				if (ImGui::BeginCombo("Type", it->isDelivering ? "Delivering" : "Picking Up")) {
+					if (ImGui::Selectable("Delivering")) {
+						this->setRouteType(index, true);
+					}
+					if (ImGui::Selectable("Picking Up")) {
+						this->setRouteType(index, false);
+					}
+					ImGui::EndCombo();
+				}
 				// Add the stops
 				for (size_t i = 0; i < it->stops.size(); i++) {
 					if (ImGui::CollapsingHeader(std::string("Stop " + std::to_string(i)).c_str())) {
