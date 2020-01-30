@@ -70,5 +70,5 @@ std::shared_ptr<Entity> ConstructionRecipe::buildRecipe(Game* g, sf::Vector2f po
 }
 
 sf::Vector2i ConstructionRecipe::roundCoords(sf::Vector2f pos) {
-	return { (int)round(pos.x), (int)round(pos.y) };
+	return { (int)floor(pos.x), (int)floor(pos.y) };
 }

@@ -3,9 +3,11 @@
 #include <stdexcept>
 #include "Entity/Entity.h"
 #include "Component/Transform/Transform.h"
+#include "Component/MailContainer/MailContainer.h"
 #include "GameMap/GameMap.h"
 #include <cmath>
 #include <queue>
+#include <imgui.h>
 
 const float MailTruckController::SPEED = 1.0f;
 
@@ -25,6 +27,14 @@ void MailTruckController::update(float delta) {
 		auto trans = this->getEntity()->transform;
 		sf::Vector2f pos = trans->getPosition();
 		if (pow(pos.x - point.x, 2) + pow(pos.y - point.y, 2) <= pow(0.1f, 2)) {
+			// Pick up letters if a mailbox is on the point
+			auto entities = this->getEntity()->getGame()->getEntities();
+			for (auto it = entities.begin(); it != entities.end(); it++) {
+				if ((*it)->tag == EntityTag::MailBox && (*it)->transform->getPosition() == point) {
+					// Take all the letters
+					(*it)->mailContainer->transferAllMailTo(this->getEntity()->mailContainer);
+				}
+			}
 			// Go to the next point
 			this->pointIndex++;
 			// Set position to point to avoid being a bit off
@@ -53,6 +63,16 @@ void MailTruckController::update(float delta) {
 			}
 		}
 	}
+	// Draw GUI
+	ImGui::Begin("Mail Trucks");
+	char buf[200];
+	sprintf_s(buf, "Truck %lu has %lu letters",
+		this->getEntity()->getId(),
+		this->getEntity()->mailContainer->getNumLetters()
+	);
+	ImGui::Text(buf);
+	ImGui::End();
+
 }
 void MailTruckController::pathfindToNextStop() {
 	// Need to pathfind from current position to the stop
