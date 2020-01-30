@@ -11,3 +11,11 @@ void MailContainer::transferAllMailTo(std::shared_ptr<MailContainer> other) {
 size_t MailContainer::getNumLetters() {
 	return this->mail.size();
 }
+void MailContainer::removeMail(std::vector<Mail> mList) {
+	for (auto m : mList) {
+		this->mail.erase(std::remove(this->mail.begin(), this->mail.end(), m), this->mail.end());
+	}
+}
+std::vector<Mail> MailContainer::getMail() {
+	return this->mail;
+}

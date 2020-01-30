@@ -9,10 +9,14 @@ class MailContainer : public Component {
 public:
 	// Add some mail
 	void addMail(std::vector<Mail> mail);
+	// Remove some mail
+	void removeMail(std::vector<Mail> mail);
 	// Give all the letters to another container
 	void transferAllMailTo(std::shared_ptr<MailContainer> other);
 	// Get number of letters
 	size_t getNumLetters();
+	// Get the mail
+	std::vector<Mail> getMail();
 private:
 	// The mail in the entity right now
 	std::vector<Mail> mail;

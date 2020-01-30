@@ -5,6 +5,4 @@
 class Letter : public Mail {
 public:
 	Letter(sf::Vector2i dest, sf::Vector2i src);
-	sf::Vector2i dest;
-	sf::Vector2i src;
 };

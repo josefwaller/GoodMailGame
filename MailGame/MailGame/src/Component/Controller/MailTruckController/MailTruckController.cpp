@@ -5,6 +5,7 @@
 #include "Component/Transform/Transform.h"
 #include "Component/MailContainer/MailContainer.h"
 #include "GameMap/GameMap.h"
+#include "Mail/Mail.h"
 #include <cmath>
 #include <queue>
 #include <imgui.h>
@@ -61,18 +62,42 @@ void MailTruckController::update(float delta) {
 					trans->setRotation(IsoRotation::EAST);
 				}
 			}
+			// Check for dropping off mail
+			sf::Vector2f pos = trans->getPosition();
+			sf::Vector2i posI = sf::Vector2i((int)floor(pos.x), (int)floor(pos.y));
+			if (posI != this->lastPoint) {
+				// Set lastPoint
+				this->lastPoint = posI;
+				// Check for dropping off mail
+				this->dropOffMail(posI);
+			}
 		}
 	}
 	// Draw GUI
 	ImGui::Begin("Mail Trucks");
 	char buf[200];
-	sprintf_s(buf, "Truck %lu has %lu letters",
+	sprintf_s(buf, "Truck %zu has %zu letters",
 		this->getEntity()->getId(),
 		this->getEntity()->mailContainer->getNumLetters()
 	);
 	ImGui::Text(buf);
 	ImGui::End();
 
+}
+void MailTruckController::dropOffMail(sf::Vector2i pos) {
+	for (int x = -1; x < 2; x++) {
+		for (int y = -1; y < 2; y++) {
+			if ((x == 0 || y == 0) && x != y) {
+				// Go through mail
+				for (Mail l : this->getEntity()->mailContainer->getMail()) {
+					if (l.dest == pos + sf::Vector2i(x, y)) {
+						// Deliver the letter
+						this->getEntity()->mailContainer->removeMail({ l });
+					}
+				}
+			}
+		}
+	}
 }
 void MailTruckController::pathfindToNextStop() {
 	// Need to pathfind from current position to the stop
