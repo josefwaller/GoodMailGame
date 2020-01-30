@@ -2,7 +2,7 @@
 #include "Entity/Entity.h"
 #include "Component/MailContainer/MailContainer.h"
 #include "Component/Transform/Transform.h"
-#include "Mail/Letter/Letter.h"
+#include "Mail/Mail.h"
 #include "Game/Game.h"
 #include <imgui.h>
 
@@ -20,7 +20,7 @@ void BuildingController::update(float time) {
 void BuildingController::generateLetter() {
 	// Create a new letter addressed to self (tba)
 	sf::Vector2i pos(this->getEntity()->transform->getPosition());
-	Letter l(pos, pos);
+	Mail letter(pos, pos);
 	// Check if there is a mailbox close enough to get it
 	auto entities = this->getEntity()->getGame()->getEntities();
 	for (auto it = entities.begin(); it != entities.end(); it++) {
@@ -36,7 +36,7 @@ void BuildingController::generateLetter() {
 					throw std::runtime_error("Mailbox does not have mailContainer");
 				}
 #endif
-				(*it)->mailContainer->addMail({ l });
+				(*it)->mailContainer->addMail({ letter });
 			}
 		}
 	}

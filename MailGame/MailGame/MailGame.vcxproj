@@ -145,7 +145,6 @@
     <ClCompile Include="src\imgui\imgui_demo.cpp" />
     <ClCompile Include="src\imgui\imgui_draw.cpp" />
     <ClCompile Include="src\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="src\Mail\Letter\Letter.cpp" />
     <ClCompile Include="src\Mail\Mail.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ResourceLoader\ResourceLoader.cpp" />
@@ -177,7 +176,6 @@
     <ClInclude Include="src\GameMap\GameMap.h" />
     <ClInclude Include="src\GameMap\Line\Line.h" />
     <ClInclude Include="src\Game\Game.h" />
-    <ClInclude Include="src\Mail\Letter\Letter.h" />
     <ClInclude Include="src\Mail\Mail.h" />
     <ClInclude Include="src\ResourceLoader\ResourceLoader.h" />
     <ClInclude Include="src\Routes\MailTruckRoute\MailTruckRoute.h" />

@@ -102,9 +102,6 @@
     <ClCompile Include="src\Component\Controller\BuildingController\BuildingController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mail\Letter\Letter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Mail\Mail.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -195,9 +192,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Component\Controller\BuildingController\BuildingController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mail\Letter\Letter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

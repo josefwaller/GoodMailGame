@@ -6,5 +6,6 @@ class Mail {
 public:
 	sf::Vector2i dest;
 	sf::Vector2i src;
+	Mail(sf::Vector2i dest, sf::Vector2i src);
 	bool operator==(Mail other);
 };
