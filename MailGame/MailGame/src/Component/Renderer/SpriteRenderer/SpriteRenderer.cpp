@@ -12,7 +12,5 @@ void SpriteRenderer::render(sf::RenderWindow* window) {
 	if (trans) {
 		this->sprite.setPosition(this->getEntity()->getGame()->worldToScreenPos(trans->getPosition()));
 	}
-	// Center the sprite on the bottom center
-	this->sprite.setOrigin(this->sprite.getLocalBounds().width / 2, this->sprite.getLocalBounds().height);
 	window->draw(this->sprite);
 }

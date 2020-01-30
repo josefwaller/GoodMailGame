@@ -42,12 +42,16 @@ void ResourceLoader::ensureSpritesheetIsLoaded(std::string sheetName) {
 		}
 	}
 }
-sf::Sprite ResourceLoader::getSprite(std::string sheetName, std::string spriteName) {
+sf::Sprite ResourceLoader::getSprite(std::string sheetName, std::string spriteName, bool center) {
 	// Load the sheet if neccessary
 	this->ensureSpritesheetIsLoaded(sheetName);
 	Spritesheet* s = &this->spritesheets[sheetName];
 	// Get the sprite's rect
 	sf::Rect<int> spriteRect = s->sprites[spriteName];
 	// Build the sprite object
-	return sf::Sprite(s->texture, spriteRect);
+	sf::Sprite spr(s->texture, spriteRect);
+	if (center) {
+		spr.setOrigin(spr.getLocalBounds().width / 2.0f, spr.getLocalBounds().height / 2.0f);
+	}
+	return spr;
 }

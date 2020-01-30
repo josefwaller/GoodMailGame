@@ -22,5 +22,6 @@ private:
 public:
 	static ResourceLoader* get();
 	// Gets a single sprite from a spritesheet, loading the sheet if neccessary
-	sf::Sprite getSprite(std::string sheetName, std::string spriteName);
+	// Optional parameter to center it
+	sf::Sprite getSprite(std::string sheetName, std::string spriteName, bool center = false);
 };

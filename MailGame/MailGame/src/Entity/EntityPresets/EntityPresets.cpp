@@ -55,8 +55,12 @@ std::shared_ptr<Entity> EntityPresets::mailBox(Game* g, sf::Vector2f pos, IsoRot
 		g,
 		EntityTag::MailBox,
 		new Transform(pos, rot),
-		new SpriteRenderer(
-			ResourceLoader::get()->getSprite("buildings/buildings", "mailbox")
+		new IsoSpriteRenderer(
+			ResourceLoader::get()->getSprite("buildings/buildings", "mailbox", true),
+			ResourceLoader::get()->getSprite("buildings/buildings", "mailbox", true),
+			ResourceLoader::get()->getSprite("buildings/buildings", "mailbox", true),
+			ResourceLoader::get()->getSprite("buildings/buildings", "mailbox", true),
+			sf::Vector2f(0.5f, 0.5f)
 		),
 		nullptr,
 		nullptr,
