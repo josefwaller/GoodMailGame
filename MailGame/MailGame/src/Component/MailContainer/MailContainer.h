@@ -13,6 +13,8 @@ public:
 	void removeMail(std::vector<Mail> mail);
 	// Give all the letters to another container
 	void transferAllMailTo(std::shared_ptr<MailContainer> other);
+	// Give the letters given to the container given
+	void transferSomeMailTo(std::vector<Mail> toGive, std::shared_ptr<MailContainer> other);
 	// Get number of letters
 	size_t getNumLetters();
 	// Get the mail

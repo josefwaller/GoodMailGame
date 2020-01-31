@@ -11,6 +11,8 @@ public:
 	MailTruckController(MailTruckRoute route, std::weak_ptr<Entity> office);
 	static const float SPEED;
 	virtual void update(float delta) override;
+	// Get the tiles on the path between two points
+	static std::vector<sf::Vector2i> getPathBetween(sf::Vector2i from, sf::Vector2i to, GameMap* gMap);
 private:
 	// The points the truck is currently going through on its route
 	std::vector<sf::Vector2i> points;
@@ -30,8 +32,6 @@ private:
 	void goToNextStop();
 	// Set points as the path from its current position to the point given
 	void pathfindToPoint(sf::Vector2i point);
-	// Get the tiles on the path between two points
-	static std::vector<sf::Vector2i> getPathBetween(sf::Vector2i from, sf::Vector2i to, GameMap* gMap);
 	// Drop off any mail it has for the tiles around the given position
 	void dropOffMail(sf::Vector2i pos);
 };

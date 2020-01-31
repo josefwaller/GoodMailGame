@@ -39,7 +39,15 @@ void MailTruckController::update(float delta) {
 						(*it)->mailContainer->transferAllMailTo(this->getEntity()->mailContainer);
 					}
 				}
+			} else {
+				// Check for dropping off mail
+				sf::Vector2f pos = trans->getPosition();
+				// Check for dropping off mail
+				if (this->route.isDelivering) {
+					this->dropOffMail(sf::Vector2i(point));
+				}
 			}
+
 			// Go to the next point
 			this->pointIndex++;
 			// Set position to point to avoid being a bit off
@@ -64,17 +72,6 @@ void MailTruckController::update(float delta) {
 				}
 				else {
 					trans->setRotation(IsoRotation::EAST);
-				}
-			}
-			// Check for dropping off mail
-			sf::Vector2f pos = trans->getPosition();
-			sf::Vector2i posI = sf::Vector2i((int)floor(pos.x), (int)floor(pos.y));
-			if (posI != this->lastPoint) {
-				// Set lastPoint
-				this->lastPoint = posI;
-				// Check for dropping off mail
-				if (this->route.isDelivering) {
-					this->dropOffMail(posI);
 				}
 			}
 		}
