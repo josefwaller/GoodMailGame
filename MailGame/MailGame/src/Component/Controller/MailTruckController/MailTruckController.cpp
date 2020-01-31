@@ -134,10 +134,15 @@ void MailTruckController::goToNextStop() {
 	// Go to the stop
 	this->pathfindToPoint(stop);
 }
-void MailTruckController::pathfindToPoint(sf::Vector2i dest) {
-	// Need to pathfind from current position to the destination
-	GameMap* gMap = this->getEntity()->getGame()->getGameMap();
+void MailTruckController::pathfindToPoint(sf::Vector2i point){
+	// Get the path to the point
 	sf::Vector2i pos(this->getEntity()->transform->getPosition());
+	this->points = this->getPathBetween(pos, point, this->getEntity()->getGame()->getGameMap());
+	// Reset pathIndex
+	this->pointIndex = 0;
+}
+std::vector<sf::Vector2i> MailTruckController::getPathBetween(sf::Vector2i from, sf::Vector2i to, GameMap* gMap) {
+	// Need to pathfind from current position to the destination
 	// Find a path along only road from pos to stop
 	std::queue<sf::Vector2i> potentialPoints;
 	std::vector<sf::Vector2i> visitedPoints;
@@ -147,23 +152,22 @@ void MailTruckController::pathfindToPoint(sf::Vector2i dest) {
 			return 1000 * one.x + one.y > 1000 * two.x + two.y;
 		}
 	};
-	potentialPoints.push(pos);
-	visitedPoints.push_back(pos);
+	potentialPoints.push(from);
+	visitedPoints.push_back(from);
 	while (!potentialPoints.empty()) {
 		// Get the first point
 		sf::Vector2i point = potentialPoints.front();
 		potentialPoints.pop();
 		// Check if it is the correct one
-		if (point == dest) {
-			// Set points
-			this->points.clear();
-			while (point != pos) {
-				this->points.push_back(point);
+		if (point == to) {
+			// Gather points along the path
+			std::vector<sf::Vector2i> pathPoints;
+			while (point != from) {
+				pathPoints.push_back(point);
 				point = previous[point];
 			}
-			std::reverse(this->points.begin(), this->points.end());
-			this->pointIndex = 0;
-			return;
+			std::reverse(pathPoints.begin(), pathPoints.end());
+			return pathPoints;
 		}
 		// Add the points around it
 		for (int x = -1; x < 2; x++) {

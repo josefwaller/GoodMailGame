@@ -4,6 +4,8 @@
 #include "Routes/MailTruckRoute/MailTruckRoute.h"
 #include <vector>
 
+class GameMap;
+
 class MailTruckController : public Controller {
 public:
 	MailTruckController(MailTruckRoute route, std::weak_ptr<Entity> office);
@@ -26,8 +28,10 @@ private:
 	// Go to the next stop
 	// Increments stopIndex, checks if it should go back to the office, etc
 	void goToNextStop();
-	// Set the points to go to the point given
+	// Set points as the path from its current position to the point given
 	void pathfindToPoint(sf::Vector2i point);
+	// Get the tiles on the path between two points
+	static std::vector<sf::Vector2i> getPathBetween(sf::Vector2i from, sf::Vector2i to, GameMap* gMap);
 	// Drop off any mail it has for the tiles around the given position
 	void dropOffMail(sf::Vector2i pos);
 };

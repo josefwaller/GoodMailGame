@@ -7,7 +7,7 @@ class PostOfficeController : public Controller {
 public:
 	virtual void update(float delta) override;
 	virtual void onHourChange(size_t newHour) override;
-	
+
 	// Update the attributes from the Ui
 	void addStop(size_t routeIndex, MailTruckRouteStop stop);
 	void setStopTile(size_t routeIndex, size_t stopIndex, sf::Vector2i tilePos);
