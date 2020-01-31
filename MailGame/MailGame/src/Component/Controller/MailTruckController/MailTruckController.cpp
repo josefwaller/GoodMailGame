@@ -96,7 +96,7 @@ void MailTruckController::dropOffMail(sf::Vector2i pos) {
 			if ((x == 0 || y == 0) && x != y) {
 				// Go through mail
 				for (Mail l : this->getEntity()->mailContainer->getMail()) {
-					if (l.dest == pos + sf::Vector2i(x, y)) {
+					if (l.getDest() == pos + sf::Vector2i(x, y)) {
 						// Deliver the letter
 						this->getEntity()->mailContainer->removeMail({ l });
 					}
