@@ -6,6 +6,7 @@
 #include "Component/Controller/Controller.h"
 #include "Component/Controller/PostOfficeController/PostOfficeController.h"
 #include "Component/ClickBox/ClickBox.h"
+#include "Constants.h"
 #include "Entity/EntityPresets/EntityPresets.h"
 #include "Ui/Construction/Construction.h"
 #include <SFML/Graphics.hpp>
@@ -26,6 +27,7 @@ Game::Game(App* a, sf::RenderWindow* w): time(0), gameMap(this), uiHandler(this)
 		sf::Vector2f(13.0f, 12.0f),
 		IsoRotation::NORTH
 	);
+	this->gameView.setSize(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT));
 	this->addEntity(pO);
 	auto pOCont = std::dynamic_pointer_cast<PostOfficeController>(pO->controller);
 	pOCont->addRoute(MailTruckRoute(true, 1));

@@ -170,6 +170,7 @@
     <ClInclude Include="src\Component\Renderer\Renderer.h" />
     <ClInclude Include="src\Component\Renderer\SpriteRenderer\SpriteRenderer.h" />
     <ClInclude Include="src\Component\Transform\Transform.h" />
+    <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\Entity\Entity.h" />
     <ClInclude Include="src\Entity\EntityPresets\EntityPresets.h" />
     <ClInclude Include="src\Entity\EntityTag\EntityTag.h" />

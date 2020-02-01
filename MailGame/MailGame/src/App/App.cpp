@@ -1,12 +1,13 @@
 #include "App.h"
 #include "Game\Game.h"
+#include "Constants.h"
 #include <SFML/Window/Event.hpp>
 #include <SFML/System/Clock.hpp>
 #include <imgui-SFML.h>
 #include <imgui.h>
 
 
-App::App() : window(sf::VideoMode(500, 600), "Hello World"), lastTime()
+App::App() : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Hello World"), lastTime()
 {
 	// Initialize the window
 }
