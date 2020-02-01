@@ -48,7 +48,7 @@ void ConstructionRecipe::renderConstructionSprite(Game* g, sf::Vector2f pos, Iso
 	// Set up for building
 	displaySprite = Utils::setupBuildingSprite(displaySprite);
 	// Set pos
-	displaySprite.setPosition(g->worldToScreenPos(sf::Vector2f(roundCoords(pos))));
+	displaySprite.setPosition(g->worldToScreenPos(sf::Vector2f(roundCoords(pos)) + sf::Vector2f(0.5f, 0.5f)));
 	// Set color
 	if (isValid(g, pos, rot)) {
 		displaySprite.setColor(sf::Color::Green);
