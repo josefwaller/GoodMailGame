@@ -33,19 +33,19 @@
 	<SubTexture name="buildingTiles_031.png" x="595" y="1230" width="99" height="85"/>
 	<SubTexture name="buildingTiles_032.png" x="595" y="1145" width="99" height="85"/>
 	<SubTexture name="postOffice-N" x="265" y="1020" width="132" height="128"/>
-	<SubTexture name="buildingTiles_034.png" x="133" y="1402" width="132" height="127"/>
+	<SubTexture name="cargoTruckDepot-S" x="133" y="1402" width="132" height="127"/>
 	<SubTexture name="building-NE-1" x="133" y="1529" width="132" height="130"/>
 	<SubTexture name="buildingTiles_036.png" x="0" y="762" width="133" height="127"/>
 	<SubTexture name="buildingTiles_037.png" x="0" y="1016" width="133" height="127"/>
 	<SubTexture name="buildingTiles_038.png" x="397" y="434" width="100" height="85"/>
 	<SubTexture name="buildingTiles_039.png" x="497" y="945" width="99" height="85"/>
-	<SubTexture name="building-NW-1" x="265" y="509" width="132" height="130"/>
-	<SubTexture name="buildingTiles_041.png" x="265" y="1148" width="132" height="127"/>
+	<SubTexture name="cargoTruckDepot-W" x="265" y="509" width="132" height="130"/>
+	<SubTexture name="cargoTruckDepot-E" x="265" y="1148" width="132" height="127"/>
 	<SubTexture name="buildingTiles_042.png" x="0" y="635" width="133" height="127"/>
 	<SubTexture name="buildingTiles_043.png" x="497" y="681" width="99" height="85"/>
 	<SubTexture name="buildingTiles_044.png" x="397" y="519" width="100" height="85"/>
 	<SubTexture name="buildingTiles_045.png" x="497" y="536" width="99" height="85"/>
-	<SubTexture name="building-NE-2" x="265" y="1402" width="132" height="130"/>
+	<SubTexture name="cargoTruckDepot-N" x="265" y="1402" width="132" height="130"/>
 	<SubTexture name="buildingTiles_047.png" x="397" y="664" width="100" height="85"/>
 	<SubTexture name="buildingTiles_048.png" x="497" y="329" width="99" height="85"/>
 	<SubTexture name="buildingTiles_049.png" x="397" y="894" width="100" height="85"/>

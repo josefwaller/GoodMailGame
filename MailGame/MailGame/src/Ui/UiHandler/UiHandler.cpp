@@ -74,6 +74,10 @@ void UiHandler::update() {
 			this->recipe = Construction::recipes[EntityTag::MailBox];
 			this->changeState(UiState::Building);
 		}
+		if (ImGui::Button("Cargo Truck Depot")) {
+			this->recipe = Construction::recipes[EntityTag::CargoTruckDepot];
+			this->changeState(UiState::Building);
+		}
 
 		if (this->currentState == UiState::Building) {
 			if (ImGui::Button("Rotate Building")) {

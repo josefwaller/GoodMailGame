@@ -34,5 +34,19 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 				{ TileType::Road }
 			})
 		)
+	},
+	{ EntityTag::CargoTruckDepot,
+		ConstructionRecipe(
+			&EntityPresets::cargoTruckDepot,
+			{
+				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-N"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-E"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-S"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-W")
+			},
+			ConstructionLayout({
+				{TileType::Empty, TileType::Road}
+			})
+		)
 	}
 };

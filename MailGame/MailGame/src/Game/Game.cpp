@@ -16,7 +16,8 @@ const float Game::TILE_WIDTH = 64.0f;
 const float Game::TILE_HEIGHT = 32.0f;
 const std::vector<EntityTag> Game::WHITELIST_ENTITY_TAG = {
 	EntityTag::Building,
-	EntityTag::PostOffice
+	EntityTag::PostOffice,
+	EntityTag::CargoTruckDepot
 };
 Game::Game(App* a, sf::RenderWindow* w): time(0), gameMap(this), uiHandler(this), window(w), rotation(IsoRotation::NORTH), entities() {
 	// For testing: Create a post office and a simple route for it

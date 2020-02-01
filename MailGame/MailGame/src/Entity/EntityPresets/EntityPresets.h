@@ -15,4 +15,5 @@ public:
 	static std::shared_ptr<Entity> mailTruck(
 		Game* g, sf::Vector2f pos, IsoRotation rot, MailTruckRoute route, std::weak_ptr<Entity> office
 	);
+	static std::shared_ptr<Entity> cargoTruckDepot(Game* g, sf::Vector2f pos, IsoRotation rot);
 };

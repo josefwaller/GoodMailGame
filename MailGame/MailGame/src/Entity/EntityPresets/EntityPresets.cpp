@@ -92,3 +92,20 @@ std::shared_ptr<Entity> EntityPresets::mailTruck(
 		new MailContainer()
 	);
 }
+
+std::shared_ptr<Entity> EntityPresets::cargoTruckDepot(Game* g, sf::Vector2f pos, IsoRotation rot) {
+	return Entity::createEntity(
+		g,
+		EntityTag::CargoTruckDepot,
+		new Transform(pos, rot),
+		new IsoBuildingRenderer(
+			ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-N"),
+			ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-E"),
+			ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-S"),
+			ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-W")
+		),
+		nullptr,
+		nullptr,
+		new MailContainer()
+	);
+}
