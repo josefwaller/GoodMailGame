@@ -11,6 +11,7 @@
 #include "Component/Controller/PostOfficeController/PostOfficeController.h"
 #include "Component/Controller/MailTruckController/MailTruckController.h"
 #include "Component/Controller/BuildingController/BuildingController.h"
+#include "Component/Controller/TruckDepotController/TruckDepotController.h"
 #include "Component/ClickBox/RectClickBox/RectClickBox.h"
 #include "Component/MailContainer/MailContainer.h"
 
@@ -104,7 +105,7 @@ std::shared_ptr<Entity> EntityPresets::cargoTruckDepot(Game* g, sf::Vector2f pos
 			ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-S"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-W")
 		),
-		nullptr,
+		new TruckDepotController(),
 		nullptr,
 		new MailContainer()
 	);

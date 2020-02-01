@@ -105,6 +105,12 @@
     <ClCompile Include="src\Mail\Mail.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Routes\CargoTruckRoute\CargoTruckRoute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\Controller\TruckDepotController\TruckDepotController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h">
@@ -195,6 +201,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\Controller\TruckDepotController\TruckDepotController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Routes\CargoTruckRoute\CargoTruckRoute.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -130,6 +130,7 @@
     <ClCompile Include="src\Component\Controller\BuildingController\BuildingController.cpp" />
     <ClCompile Include="src\Component\Controller\MailTruckController\MailTruckController.cpp" />
     <ClCompile Include="src\Component\Controller\PostOfficeController\PostOfficeController.cpp" />
+    <ClCompile Include="src\Component\Controller\TruckDepotController\TruckDepotController.cpp" />
     <ClCompile Include="src\Component\MailContainer\MailContainer.cpp" />
     <ClCompile Include="src\Component\Renderer\IsoSpriteRenderer\IsoBuildingRenderer\IsoBuildingRenderer.cpp" />
     <ClCompile Include="src\Component\Renderer\IsoSpriteRenderer\IsoSpriteRenderer.cpp" />
@@ -148,6 +149,7 @@
     <ClCompile Include="src\Mail\Mail.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ResourceLoader\ResourceLoader.cpp" />
+    <ClCompile Include="src\Routes\CargoTruckRoute\CargoTruckRoute.cpp" />
     <ClCompile Include="src\Routes\MailTruckRoute\MailTruckRoute.cpp" />
     <ClCompile Include="src\System\Utils\Utils.cpp" />
     <ClCompile Include="src\Ui\Construction\Construction.cpp" />
@@ -164,6 +166,7 @@
     <ClInclude Include="src\Component\Controller\Controller.h" />
     <ClInclude Include="src\Component\Controller\MailTruckController\MailTruckController.h" />
     <ClInclude Include="src\Component\Controller\PostOfficeController\PostOfficeController.h" />
+    <ClInclude Include="src\Component\Controller\TruckDepotController\TruckDepotController.h" />
     <ClInclude Include="src\Component\MailContainer\MailContainer.h" />
     <ClInclude Include="src\Component\Renderer\IsoSpriteRenderer\IsoBuildingRenderer\IsoBuildingRenderer.h" />
     <ClInclude Include="src\Component\Renderer\IsoSpriteRenderer\IsoSpriteRenderer.h" />
@@ -179,6 +182,7 @@
     <ClInclude Include="src\Game\Game.h" />
     <ClInclude Include="src\Mail\Mail.h" />
     <ClInclude Include="src\ResourceLoader\ResourceLoader.h" />
+    <ClInclude Include="src\Routes\CargoTruckRoute\CargoTruckRoute.h" />
     <ClInclude Include="src\Routes\MailTruckRoute\MailTruckRoute.h" />
     <ClInclude Include="src\System\IsoRotation\IsoRotation.h" />
     <ClInclude Include="src\System\Utils\Utils.h" />
