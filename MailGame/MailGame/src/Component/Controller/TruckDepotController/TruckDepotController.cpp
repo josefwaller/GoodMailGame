@@ -8,8 +8,8 @@ void TruckDepotController::update(float delta) {
 	char buf[200];
 
 	// Show gui for each route
-	for (size_t i = 0; i < this->routes.size(); i++) {
-		CargoTruckRoute route = this->routes[i];
+	for (auto kvp: this->routes) {
+		CargoTruckRoute route = kvp.second;
 		ImGui::PushID((int)route.id);
 
 
@@ -52,33 +52,26 @@ void TruckDepotController::update(float delta) {
 
 	ImGui::End();
 	ImGui::PopID();
+
+	// Delete routes
+	for (CargoTruckRoute r : this->toDelete) {
+		this->routes.erase(r.id);
+	}
+	this->toDelete.clear();
 }
 void TruckDepotController::onHourChange(size_t newHour) {
 
 }
 
 void TruckDepotController::addRoute(CargoTruckRoute r) {
-	this->routes.push_back(r);
+	this->routes.insert({ r.id, r });
 }
 void TruckDepotController::deleteRoute(size_t id) {
-	for (size_t i = 0; i < this->routes.size(); i++) {
-		if (this->routes[i].id == id) {
-			this->routes.erase(this->routes.begin() + i);
-			return;
-		}
-	}
+	this->toDelete.push_back(this->routes.find(id)->second);
 }
 void TruckDepotController::addStop(CargoTruckStop stop, size_t routeId) {
-	for (size_t i = 0; i < this->routes.size(); i++) {
-		if (this->routes[i].id == routeId) {
-			this->routes[i].stops.push_back(stop);
-		}
-	}
+	this->routes.find(routeId)->second.stops.push_back(stop);
 }
 void TruckDepotController::deleteStop(size_t stopIndex, size_t routeId) {
-	for (size_t i = 0; i < this->routes.size(); i++) {
-		if (this->routes[i].id == routeId) {
-			this->routes[i].stops.erase(this->routes[i].stops.begin() + stopIndex);
-		}
-	}
+	this->routes.find(routeId)->second.stops.erase(this->routes.find(routeId)->second.stops.begin() + stopIndex);
 }
