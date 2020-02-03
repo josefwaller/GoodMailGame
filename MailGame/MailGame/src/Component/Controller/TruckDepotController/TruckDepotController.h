@@ -11,6 +11,10 @@ public:
 	void addRoute(CargoTruckRoute route);
 	// Delete a route by id
 	void deleteRoute(size_t routeId);
+	// Add a stop to the route by id
+	void addStop(CargoTruckStop stop, size_t routeId);
+	// Delete a stop by index from the route by id
+	void deleteStop(size_t stopIndex, size_t routeId);
 private:
 	// The routes assigned to the depot
 	std::vector<CargoTruckRoute> routes;
