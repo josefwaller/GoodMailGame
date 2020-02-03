@@ -41,6 +41,7 @@ bool UiHandler::handleEvent(sf::Event e) {
 		case UiState::SelectingTile:
 			// Call the callback
 			this->selectTileCallback(this->getHoveredTile());
+			this->changeState(UiState::Default);
 			break;
 		}
 	} else {
