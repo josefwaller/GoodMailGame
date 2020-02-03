@@ -1,4 +1,6 @@
 #include "UiHandler.h"
+#include "Entity/Entity.h"
+#include "Component/ClickBox/ClickBox.h"
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include <SFML/Graphics/VertexArray.hpp>
@@ -26,7 +28,15 @@ bool UiHandler::handleEvent(sf::Event e) {
 			this->changeState(UiState::Default);
 			return true;
 		case UiState::SelectingEntity:
-			// tba
+			// Get the entity
+			for (auto e : this->game->getEntities()) {
+				if (e->clickBox) {
+					if (e->clickBox->checkIfClicked(this->game->getMousePosition())) {
+						this->selectEntityCallback(std::weak_ptr<Entity>(e));
+					}
+				}
+			}
+			this->changeState(UiState::Default);
 			break;
 		case UiState::SelectingTile:
 			// Call the callback

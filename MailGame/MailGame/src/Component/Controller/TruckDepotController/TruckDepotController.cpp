@@ -1,6 +1,7 @@
 #include "TruckDepotController.h"
 #include <imgui.h>
 #include "Entity/Entity.h"
+#include "Game/Game.h"
 
 void TruckDepotController::update(float delta) {
 	ImGui::PushID((int)this->getEntity()->getId());
@@ -19,11 +20,19 @@ void TruckDepotController::update(float delta) {
 			// GUI for the stops
 			for (size_t j = 0; j < route.stops.size(); j++) {
 				ImGui::PushID((int)j);
-
-				sprintf_s(buf, "Stop %zu", j);
+				CargoTruckStop stop = route.stops[j];
+				if (stop.target.lock()) {
+					sprintf_s(buf, "Stop at %zu", stop.target.lock()->getId());
+				}
+				else {
+					sprintf_s(buf, "Empty Stop %d", j);
+				}
 				if (ImGui::CollapsingHeader(buf)) {
 					if (ImGui::Button("Target")) {
-						
+						this->getEntity()->getGame()->getUi()->selectEntity(
+							[this, route, j](std::weak_ptr<Entity> e) {
+								this->setStopTarget(j, route.id, e);
+						});
 					}
 					// Delete stop button
 					if (ImGui::Button("Delete Stop")) {
@@ -74,4 +83,7 @@ void TruckDepotController::addStop(CargoTruckStop stop, size_t routeId) {
 }
 void TruckDepotController::deleteStop(size_t stopIndex, size_t routeId) {
 	this->routes.find(routeId)->second.stops.erase(this->routes.find(routeId)->second.stops.begin() + stopIndex);
+}
+void TruckDepotController::setStopTarget(size_t stopIndex, size_t routeId, std::weak_ptr<Entity> target) {
+	this->routes.find(routeId)->second.stops[stopIndex].target = target;
 }

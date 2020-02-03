@@ -16,6 +16,8 @@ public:
 	void addStop(CargoTruckStop stop, size_t routeId);
 	// Delete a stop by index from the route by id
 	void deleteStop(size_t stopIndex, size_t routeId);
+	// Set a stop's target
+	void setStopTarget(size_t stopIndex, size_t routeId, std::weak_ptr<Entity> target);
 private:
 	// The routes assigned to the depot, keyed by id
 	std::map<size_t, CargoTruckRoute> routes;
