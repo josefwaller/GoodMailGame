@@ -7,6 +7,10 @@ class Entity;
 // An individual stop along the route
 struct CargoTruckStop {
 	std::weak_ptr<Entity> target;
+	// Probably should remove this eventually
+	unsigned long long id;
+	static unsigned long long STOP_ID;
+	CargoTruckStop() : id(STOP_ID++) {}
 };
 
 // The route, with all the stops

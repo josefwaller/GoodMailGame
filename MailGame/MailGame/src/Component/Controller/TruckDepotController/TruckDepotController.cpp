@@ -32,16 +32,20 @@ void TruckDepotController::update(float delta) {
 
 			// GUI for the stops
 			for (size_t j = 0; j < route.stops.size(); j++) {
-				ImGui::PushID((int)j);
 				CargoTruckStop stop = route.stops[j];
-				if (stop.target.lock()) {
-					sprintf_s(buf, "Stop at %zu", stop.target.lock()->getId());
-				}
-				else {
-					sprintf_s(buf, "Empty Stop %d", j);
-				}
+				ImGui::PushID((int)stop.id);
+				
+				sprintf_s(buf, "Stop %zd", stop.id);
 				if (ImGui::CollapsingHeader(buf)) {
-					if (ImGui::Button("Target")) {
+					// Target button
+					if (stop.target.lock()) {
+						sprintf_s(buf, "Target with id = %zu", stop.target.lock()->getId());
+					}
+					else {
+						sprintf_s(buf, "No Taret");
+					}
+
+					if (ImGui::Button(buf)) {
 						this->getEntity()->getGame()->getUi()->selectEntity(
 							[this, route, j](std::weak_ptr<Entity> e) {
 								this->setStopTarget(j, route.id, e);
