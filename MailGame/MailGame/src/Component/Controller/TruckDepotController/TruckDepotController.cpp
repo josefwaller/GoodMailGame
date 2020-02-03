@@ -17,6 +17,19 @@ void TruckDepotController::update(float delta) {
 		sprintf_s(buf, "Route %zu", route.id);
 		if (ImGui::CollapsingHeader(buf)) {
 
+			// Departure time
+			sprintf_s(buf, "%d:00", route.departureTime);
+			if (ImGui::BeginCombo("Departure Time", buf)) {
+				
+				for (int hr = 0; hr < 24; hr++) {
+					sprintf_s(buf, "%d:00", hr);
+					if (ImGui::Selectable(buf, hr == route.departureTime)) {
+						this->setRouteDepartTime(route.id, hr);
+					}
+				}
+				ImGui::EndCombo();
+			}
+
 			// GUI for the stops
 			for (size_t j = 0; j < route.stops.size(); j++) {
 				ImGui::PushID((int)j);
@@ -77,6 +90,9 @@ void TruckDepotController::addRoute(CargoTruckRoute r) {
 }
 void TruckDepotController::deleteRoute(size_t id) {
 	this->toDelete.push_back(this->routes.find(id)->second);
+}
+void TruckDepotController::setRouteDepartTime(size_t routeId, int depTime) {
+	this->routes.find(routeId)->second.departureTime = depTime;
 }
 void TruckDepotController::addStop(CargoTruckStop stop, size_t routeId) {
 	this->routes.find(routeId)->second.stops.push_back(stop);
