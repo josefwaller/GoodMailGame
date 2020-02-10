@@ -148,6 +148,7 @@
     <ClCompile Include="src\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Mail\Mail.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\PostalCodeDatabase\PostalCodeDatabase.cpp" />
     <ClCompile Include="src\ResourceLoader\ResourceLoader.cpp" />
     <ClCompile Include="src\Routes\CargoTruckRoute\CargoTruckRoute.cpp" />
     <ClCompile Include="src\Routes\MailTruckRoute\MailTruckRoute.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="src\GameMap\Line\Line.h" />
     <ClInclude Include="src\Game\Game.h" />
     <ClInclude Include="src\Mail\Mail.h" />
+    <ClInclude Include="src\PostalCodeDatabase\PostalCodeDatabase.h" />
     <ClInclude Include="src\ResourceLoader\ResourceLoader.h" />
     <ClInclude Include="src\Routes\CargoTruckRoute\CargoTruckRoute.h" />
     <ClInclude Include="src\Routes\MailTruckRoute\MailTruckRoute.h" />

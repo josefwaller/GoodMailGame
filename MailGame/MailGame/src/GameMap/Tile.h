@@ -17,7 +17,7 @@ struct Tile {
 	// The building on the tile
 	std::weak_ptr<Entity> building;
 	// The postal code assigned to the tile
-	unsigned long long postalCode;
+	long long postalCode;
 
 	Tile(TileType t = TileType::Empty): postalCode(0) {
 		type = t;

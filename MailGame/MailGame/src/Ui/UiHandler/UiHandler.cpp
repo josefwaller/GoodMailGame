@@ -5,6 +5,7 @@
 #include <imgui-SFML.h>
 #include <SFML/Graphics/VertexArray.hpp>
 #include "Game/Game.h"
+#include "PostalCodeDatabase/PostalCodeDatabase.h"
 
 UiHandler::UiHandler(Game* g): game(g), currentState(UiState::Default), recipe() {}
 
