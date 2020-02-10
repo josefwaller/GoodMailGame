@@ -215,6 +215,11 @@ void GameMap::setBuildingForTile(size_t x, size_t y, std::weak_ptr<Entity> build
 		this->tiles[x][y].building = building;
 	}
 }
+void GameMap::setCodeForTile(size_t x, size_t y, long long id) {
+	if (this->getTileAt(x, y).type != TileType::OffMap) {
+		this->tiles[x][y].postalCode = id;
+	}
+}
 
 Tile GameMap::getTileAt(size_t x, size_t y) {
 	if (x <= tiles.size() && y <= tiles[0].size()) {

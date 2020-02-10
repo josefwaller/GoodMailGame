@@ -24,6 +24,8 @@ public:
 
 	// Set the building for a specific tile
 	void setBuildingForTile(size_t x, size_t y, std::weak_ptr<Entity> building);
+	// Set the postal code for a specific tile
+	void setCodeForTile(size_t x, size_t y, long long code);
 private:
 	Game* game;
 	std::vector<std::vector<Tile>> tiles;
