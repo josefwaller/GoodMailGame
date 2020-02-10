@@ -7,6 +7,8 @@ class Entity;
 // An individual stop along the route
 struct CargoTruckStop {
 	std::weak_ptr<Entity> target;
+	std::vector<long long> toDropOff;
+	std::vector<long long> toPickUp;
 	// Probably should remove this eventually
 	unsigned long long id;
 	static unsigned long long STOP_ID;

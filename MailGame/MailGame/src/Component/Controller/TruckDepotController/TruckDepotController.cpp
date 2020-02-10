@@ -1,4 +1,5 @@
 #include "TruckDepotController.h"
+#include "PostalCodeDatabase/PostalCodeDatabase.h"
 #include <imgui.h>
 #include "Entity/Entity.h"
 #include "Game/Game.h"
@@ -42,7 +43,7 @@ void TruckDepotController::update(float delta) {
 						sprintf_s(buf, "Target with id = %zu", stop.target.lock()->getId());
 					}
 					else {
-						sprintf_s(buf, "No Taret");
+						sprintf_s(buf, "No Target");
 					}
 
 					if (ImGui::Button(buf)) {
@@ -50,6 +51,42 @@ void TruckDepotController::update(float delta) {
 							[this, route, j](std::weak_ptr<Entity> e) {
 								this->setStopTarget(j, route.id, e);
 						});
+					}
+					// Pick up dropdown
+					if (ImGui::CollapsingHeader("Pick up")) {
+						for (long long c : stop.toPickUp) {
+							sprintf_s(buf, "%lu", c);
+							if (ImGui::Button(buf)) {
+								this->removeStopPickUp(j, route.id, c);
+							}
+						}
+						if (ImGui::BeginCombo("Pick Up", "0")) {
+							for (long long c : PostalCodeDatabase::get()->getAllIds()) {
+								sprintf_s(buf, "%lu", c);
+								if (ImGui::Selectable(buf)) {
+									this->setStopPickUp(j, route.id, c);
+								}
+							}
+							ImGui::EndCombo();
+						}
+					}
+					// Drop off dropdown
+					if (ImGui::CollapsingHeader("Drop off")) {
+						for (long long c : stop.toDropOff) {
+							sprintf_s(buf, "%lu", c);
+							if (ImGui::Button(buf)) {
+								this->removeStopDropOff(j, route.id, c);
+							}
+						}
+						if (ImGui::BeginCombo("Drop Off", "0")) {
+							for (long long c : PostalCodeDatabase::get()->getAllIds()) {
+								sprintf_s(buf, "%lu", c);
+								if (ImGui::Selectable(buf)) {
+									this->setStopDropOff(j, route.id, c);
+								}
+							}
+							ImGui::EndCombo();
+						}
 					}
 					// Delete stop button
 					if (ImGui::Button("Delete Stop")) {
@@ -106,4 +143,18 @@ void TruckDepotController::deleteStop(size_t stopIndex, size_t routeId) {
 }
 void TruckDepotController::setStopTarget(size_t stopIndex, size_t routeId, std::weak_ptr<Entity> target) {
 	this->routes.find(routeId)->second.stops[stopIndex].target = target;
+}
+void TruckDepotController::setStopPickUp(size_t stopIndex, size_t routeId, long long code) {
+	this->routes.find(routeId)->second.stops[stopIndex].toPickUp.push_back(code);
+}
+void TruckDepotController::removeStopPickUp(size_t stopIndex, size_t routeId, long long code) {
+	std::vector<long long>* toPickUp = &this->routes.find(routeId)->second.stops[stopIndex].toPickUp;
+	toPickUp->erase(std::remove(toPickUp->begin(), toPickUp->end(), code), toPickUp->end());
+}
+void TruckDepotController::setStopDropOff(size_t stopIndex, size_t routeId, long long code) {
+	this->routes.find(routeId)->second.stops[stopIndex].toDropOff.push_back(code);
+}
+void TruckDepotController::removeStopDropOff(size_t stopIndex, size_t routeId, long long code) {
+	std::vector<long long>* toDropOff = &this->routes.find(routeId)->second.stops[stopIndex].toDropOff;
+	toDropOff->erase(std::remove(toDropOff->begin(), toDropOff->end(), code), toDropOff->end());
 }

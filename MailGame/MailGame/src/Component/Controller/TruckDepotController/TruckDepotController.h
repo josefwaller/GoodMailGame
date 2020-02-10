@@ -20,6 +20,14 @@ public:
 	void deleteStop(size_t stopIndex, size_t routeId);
 	// Set a stop's target
 	void setStopTarget(size_t stopIndex, size_t routeId, std::weak_ptr<Entity> target);
+	// Set a code to be picked up for a stop
+	void setStopPickUp(size_t stopIndex, size_t routeIndex, long long code);
+	// Remove a code to be picked up for a stop
+	void removeStopPickUp(size_t stopIndex, size_t routeIndex, long long code);
+	// Set a code to be dropped off for a stop
+	void setStopDropOff(size_t stopIndex, size_t routeIndex, long long code);
+	// Remove a code to be picked up for a stop
+	void removeStopDropOff(size_t stopIndex, size_t routeIndex, long long code);
 private:
 	// The routes assigned to the depot, keyed by id
 	std::map<size_t, CargoTruckRoute> routes;
