@@ -90,9 +90,6 @@
     <ClCompile Include="src\Ui\Construction\ConstructionRecipe\ConstructionLayout\ConstructionLayout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Component\Controller\MailTruckController\MailTruckController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Component\Renderer\IsoSpriteRenderer\IsoBuildingRenderer\IsoBuildingRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -112,6 +109,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\PostalCodeDatabase\PostalCodeDatabase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\Controller\TruckController\MailTruckController\MailTruckController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\Controller\TruckController\TruckController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -188,9 +191,6 @@
     <ClInclude Include="src\Ui\Construction\ConstructionRecipe\ConstructionLayout\ConstructionLayout.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Component\Controller\MailTruckController\MailTruckController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Component\Renderer\IsoSpriteRenderer\IsoBuildingRenderer\IsoBuildingRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -213,6 +213,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\PostalCodeDatabase\PostalCodeDatabase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\Controller\TruckController\MailTruckController\MailTruckController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\Controller\TruckController\TruckController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

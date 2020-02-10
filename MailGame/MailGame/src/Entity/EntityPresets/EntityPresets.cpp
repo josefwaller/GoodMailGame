@@ -9,7 +9,7 @@
 #include "Component/Renderer/IsoSpriteRenderer/IsoSpriteRenderer.h"
 #include "Component/Renderer/IsoSpriteRenderer/IsoBuildingRenderer/IsoBuildingRenderer.h"
 #include "Component/Controller/PostOfficeController/PostOfficeController.h"
-#include "Component/Controller/MailTruckController/MailTruckController.h"
+#include "Component/Controller/TruckController/MailTruckController/MailTruckController.h"
 #include "Component/Controller/BuildingController/BuildingController.h"
 #include "Component/Controller/TruckDepotController/TruckDepotController.h"
 #include "Component/ClickBox/RectClickBox/RectClickBox.h"

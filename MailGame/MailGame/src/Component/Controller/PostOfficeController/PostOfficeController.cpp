@@ -1,7 +1,7 @@
 #include "PostOfficeController.h"
 #include "Entity/Entity.h"
 #include "Component/Transform/Transform.h"
-#include "Component/Controller/MailTruckController/MailTruckController.h"
+#include "Component/Controller/TruckController/MailTruckController/MailTruckController.h"
 #include "Game/Game.h"
 #include "Ui/UiHandler/UiHandler.h"
 #include "Entity/EntityPresets/EntityPresets.h"
