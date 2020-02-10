@@ -57,14 +57,14 @@ void TruckDepotController::update(float delta) {
 					// Pick up dropdown
 					if (ImGui::CollapsingHeader("Pick up")) {
 						for (long long c : stop.toPickUp) {
-							sprintf_s(buf, "%lu", c);
+							sprintf_s(buf, "%llu", c);
 							if (ImGui::Button(buf)) {
 								this->removeStopPickUp(j, route.id, c);
 							}
 						}
 						if (ImGui::BeginCombo("Pick Up", "0")) {
 							for (long long c : PostalCodeDatabase::get()->getAllIds()) {
-								sprintf_s(buf, "%lu", c);
+								sprintf_s(buf, "%llu", c);
 								if (ImGui::Selectable(buf)) {
 									this->setStopPickUp(j, route.id, c);
 								}
@@ -75,14 +75,14 @@ void TruckDepotController::update(float delta) {
 					// Drop off dropdown
 					if (ImGui::CollapsingHeader("Drop off")) {
 						for (long long c : stop.toDropOff) {
-							sprintf_s(buf, "%lu", c);
+							sprintf_s(buf, "%llu", c);
 							if (ImGui::Button(buf)) {
 								this->removeStopDropOff(j, route.id, c);
 							}
 						}
 						if (ImGui::BeginCombo("Drop Off", "0")) {
 							for (long long c : PostalCodeDatabase::get()->getAllIds()) {
-								sprintf_s(buf, "%lu", c);
+								sprintf_s(buf, "%llu", c);
 								if (ImGui::Selectable(buf)) {
 									this->setStopDropOff(j, route.id, c);
 								}
