@@ -44,9 +44,6 @@ bool UiHandler::handleEvent(sf::Event e) {
 			this->selectTileCallback(this->getHoveredTile());
 			this->changeState(UiState::Default);
 			break;
-		case UiState::EditingPostalCodes:
-			this->game->getGameMap()->setCodeForTile(this->getHoveredTile().x, this->getHoveredTile().y, this->pCode);
-			break;
 		}
 	} else {
 		if (ImGui::GetIO().WantCaptureKeyboard) {
@@ -129,6 +126,11 @@ void UiHandler::update() {
 		if (ImGui::Button("Done")) {
 			this->changeState(UiState::Default);
 		}
+		// Change postal code if the mouse is clicked
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			sf::Vector2i pos = this->getHoveredTile();
+			this->game->getGameMap()->setCodeForTile((size_t)pos.x, (size_t)pos.y, this->pCode);
+		}
 	}
 	else {
 		if (ImGui::Button("Edit Postal Codes")) {
@@ -136,6 +138,7 @@ void UiHandler::update() {
 		}
 	}
 	ImGui::End();
+
 }
 
 void UiHandler::render(sf::RenderWindow* w) {
