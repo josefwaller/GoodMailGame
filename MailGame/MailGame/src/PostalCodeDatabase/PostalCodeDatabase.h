@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics/Color.hpp>
 #include <map>
+#include <vector>
 
 /*
  * Basically a fancy wrapper around a map to hold the postal codes keyed by id.
@@ -21,6 +22,8 @@ public:
 	// Get/Set a postal code
 	CodeInfo getPostalCode(long long id);
 	void setPostalCode(long long id, CodeInfo data);
+	// Get the ids of all the postal codes
+	std::vector<long long> getAllIds();
 private:
 	static PostalCodeDatabase inst;
 	// The map of ids->code infos

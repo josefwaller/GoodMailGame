@@ -23,3 +23,13 @@ void PostalCodeDatabase::setPostalCode(long long id, CodeInfo inf) {
 PostalCodeDatabase::CodeInfo PostalCodeDatabase::getPostalCode(long long id) {
 	return this->postalCodes[id];
 }
+
+std::vector<long long> PostalCodeDatabase::getAllIds() {
+	std::vector<long long> toReturn;
+	for (long long i = 0; i < CURRENT_ID; i++) {
+		if (this->postalCodes.find(i) != this->postalCodes.end()) {
+			toReturn.push_back(i);
+		}
+	}
+	return toReturn;
+}
