@@ -44,6 +44,8 @@ private:
 	std::function<void(std::weak_ptr<Entity> e)> selectEntityCallback;
 	// Callback when selecting tile
 	std::function<void(sf::Vector2i)> selectTileCallback;
+	// The postal code the player is currently setting tiles to
+	long long pCode;
 	// Get the tile the mouse is currently hovering over
 	sf::Vector2i getHoveredTile();
 	// Return a vertex array that is over the tile given, in screen coords

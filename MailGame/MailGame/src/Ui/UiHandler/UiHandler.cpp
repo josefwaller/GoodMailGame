@@ -44,6 +44,9 @@ bool UiHandler::handleEvent(sf::Event e) {
 			this->selectTileCallback(this->getHoveredTile());
 			this->changeState(UiState::Default);
 			break;
+		case UiState::EditingPostalCodes:
+			this->game->getGameMap()->setCodeForTile(this->getHoveredTile().x, this->getHoveredTile().y, this->pCode);
+			break;
 		}
 	} else {
 		if (ImGui::GetIO().WantCaptureKeyboard) {
@@ -110,6 +113,17 @@ void UiHandler::update() {
 	// Postal codes ui
 	if (this->currentState == UiState::EditingPostalCodes) {
 		if (ImGui::CollapsingHeader("Postal Codes")) {
+			for (long long id : PostalCodeDatabase::get()->getAllIds()) {
+				sprintf_s(buf, "%lu", id);
+				if (ImGui::Button(buf)) {
+					this->pCode = id;
+				}
+			}
+		}
+		if (ImGui::Button("New code")) {
+			PostalCodeDatabase::get()->createPostalCode({
+				sf::Color(rand() % 256, rand() % 256, rand() % 256, 100)
+			});
 		}
 
 		if (ImGui::Button("Done")) {
@@ -149,7 +163,7 @@ void UiHandler::render(sf::RenderWindow* w) {
 				PostalCodeDatabase::CodeInfo code = PostalCodeDatabase::get()->getPostalCode(t.postalCode);
 				// Get the tile outline
 				sf::VertexArray toRender = this->getDrawableTile(
-					sf::Vector2i(x, y),
+					sf::Vector2i((int)x, (int)y),
 					sf::PrimitiveType::Quads,
 					code.color);
 				// Draw the tile
