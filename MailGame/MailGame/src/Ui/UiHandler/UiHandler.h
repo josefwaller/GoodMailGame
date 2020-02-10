@@ -14,7 +14,8 @@ public:
 		Default,
 		Building,
 		SelectingEntity,
-		SelectingTile
+		SelectingTile,
+		EditingPostalCodes
 	};
 
 	UiHandler(Game* g);

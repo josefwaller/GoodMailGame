@@ -106,6 +106,20 @@ void UiHandler::update() {
 	sprintf_s(buf, "Mouse position is (%.2f,%.2f), tile is (%d, %d)", mousePos.x, mousePos.y, tile.x, tile.y);
 	ImGui::Text(buf);
 
+	// Postal codes ui
+	if (this->currentState == UiState::EditingPostalCodes) {
+		if (ImGui::CollapsingHeader("Postal Codes")) {
+		}
+
+		if (ImGui::Button("Done")) {
+			this->changeState(UiState::Default);
+		}
+	}
+	else {
+		if (ImGui::Button("Edit Postal Codes")) {
+			this->changeState(UiState::EditingPostalCodes);
+		}
+	}
 	ImGui::End();
 }
 
