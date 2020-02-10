@@ -48,7 +48,7 @@ std::shared_ptr<Entity> EntityPresets::postOffice(Game* g, sf::Vector2f pos, Iso
 			ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-W")
 		),
 		new PostOfficeController(),
-		nullptr,
+		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
 		new MailContainer()
 	);
 }
