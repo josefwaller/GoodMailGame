@@ -1,6 +1,9 @@
 #pragma once
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/PrimitiveType.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
 #include "Ui/Construction/Construction.h"
 #include "Ui/Construction//ConstructionRecipe/ConstructionRecipe.h"
 #include <optional>
@@ -43,4 +46,11 @@ private:
 	std::function<void(sf::Vector2i)> selectTileCallback;
 	// Get the tile the mouse is currently hovering over
 	sf::Vector2i getHoveredTile();
+	// Return a vertex array that is over the tile given, in screen coords
+	// Used to drawing specific tiles
+	sf::VertexArray getDrawableTile(
+		sf::Vector2i pos,
+		sf::PrimitiveType t = sf::PrimitiveType::Quads,
+		sf::Color c = sf::Color::White
+	);
 };

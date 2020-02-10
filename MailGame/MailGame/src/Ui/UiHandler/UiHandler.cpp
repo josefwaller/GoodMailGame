@@ -137,17 +137,22 @@ void UiHandler::render(sf::RenderWindow* w) {
 			w);
 	}
 	// Outline the sprite currently being hovered
-	sf::VertexArray vArr(sf::LinesStrip, 5);
-	sf::Vector2f pos(this->getHoveredTile());
-	Game* g = this->game;
-	vArr[0] = sf::Vertex(g->worldToScreenPos(pos), sf::Color::White);
-	vArr[1] = sf::Vertex(g->worldToScreenPos(pos + sf::Vector2f(1.0f, 0)), sf::Color::White);
-	vArr[2] = sf::Vertex(g->worldToScreenPos(pos + sf::Vector2f(1.0f, 1.0f)), sf::Color::White);
-	vArr[3] = sf::Vertex(g->worldToScreenPos(pos + sf::Vector2f(0, 1.0f)), sf::Color::White);
-	vArr[4] = vArr[0];
+	sf::VertexArray vArr = getDrawableTile(this->getHoveredTile(), sf::PrimitiveType::LinesStrip, sf::Color::White);
 	w->draw(vArr);
 }
 
 void UiHandler::changeState(UiState state) {
 	this->currentState = state;
+}
+
+sf::VertexArray UiHandler::getDrawableTile(sf::Vector2i pos, sf::PrimitiveType t, sf::Color c) {
+	sf::VertexArray vArr(t, 5);
+	sf::Vector2f fPos(pos);
+	Game* g = this->game;
+	vArr[0] = sf::Vertex(g->worldToScreenPos(fPos), c);
+	vArr[1] = sf::Vertex(g->worldToScreenPos(fPos + sf::Vector2f(1.0f, 0)), c);
+	vArr[2] = sf::Vertex(g->worldToScreenPos(fPos + sf::Vector2f(1.0f, 1.0f)), c);
+	vArr[3] = sf::Vertex(g->worldToScreenPos(fPos + sf::Vector2f(0, 1.0f)), c);
+	vArr[4] = vArr[0];
+	return vArr;
 }
