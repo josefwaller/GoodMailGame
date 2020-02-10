@@ -11,14 +11,26 @@ public:
 	// Get the tiles on the path between two points
 	static std::vector<sf::Vector2i> getPathBetween(sf::Vector2i from, sf::Vector2i to, GameMap* gMap);
 protected:
+	// Set the stops
+	void setStops(std::vector<sf::Vector2i> stops);
+	// Methods to be overridden by subclass
+	// When the truck arrives at a tile
+	virtual void onArriveAtTile(sf::Vector2f point);
+	// When the truck arrives at a stop
+	virtual void onArriveAtStop();
+	// When the truck arrives at the last stop, i.e. the route is complete
+	virtual void onArriveAtDest();
+	// Get the speed the truck should move at
+	virtual float getSpeed() = 0;
+private:
 	// The points the truck is currently going through on its route
 	std::vector<sf::Vector2i> points;
 	size_t pointIndex;
+	// The stops and the index of the current stop
+	std::vector<sf::Vector2i> stops;
+	size_t stopIndex;
 	// Set points as the path from its current position to the point given
 	void pathfindToPoint(sf::Vector2i point);
-	// Methods to be overridden by subclass
-	virtual void onArriveAtDest() = 0;
-	virtual void onArriveAtTile(sf::Vector2f point);
-	virtual float getSpeed() = 0;
-
+	// Go to the next stop along the route
+	void goToNextStop();
 };

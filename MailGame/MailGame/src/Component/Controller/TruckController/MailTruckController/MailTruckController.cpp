@@ -12,8 +12,16 @@ const float MailTruckController::SPEED = 1.0f;
 
 // Set stop to -1 to avoid skipping the first stop
 MailTruckController::MailTruckController(MailTruckRoute r, std::weak_ptr<Entity> o)
-	: route(r), stopIndex(-1), office(o), isGoingToOffice(false) {
-
+	: route(r), office(o) {
+	// Build and set the stops
+	std::vector<sf::Vector2i> stops;
+	for (MailTruckRouteStop s : this->route.stops) {
+		stops.push_back(s.target.value());
+	}
+	stops.push_back(sf::Vector2i(
+		o.lock()->transform->getPosition() + o.lock()->transform->getRotation().getUnitVector()
+	));
+	this->setStops(stops);
 }
 
 void MailTruckController::update(float delta) {
@@ -44,36 +52,8 @@ void MailTruckController::dropOffMail(sf::Vector2i pos) {
 		}
 	}
 }
-// When the truck arrives at the destination, in this canse a stop
-void MailTruckController::onArriveAtDest() {
-	// If we were going back to the office, just delete yourself
-	if (this->isGoingToOffice) {
-		// Give all the letters back to the post office
-		if (auto o = this->office.lock()) {
-			this->getEntity()->mailContainer->transferAllMailTo(o->mailContainer);
-		}
-		this->getEntity()->getGame()->removeEntity(this->getEntity());
-		return;
-	}
-	sf::Vector2i stop;
-	// Go to next stop
-	this->stopIndex++;
-	if (this->stopIndex >= this->route.stops.size()) {
-		this->isGoingToOffice = true;
-		if (auto o = this->office.lock()) {
-			stop = sf::Vector2i(o->transform->getPosition() + o->transform->getRotation().getUnitVector());
-		}
-		else {
-			// TBA: What happens if a post office is deleted after it sends out a truck
-			throw std::runtime_error("Not yet implemented");
-		}
-	}
-	else {
-		stop = this->route.stops[stopIndex].target.value();
-	}
-	// Go to the stop
-	this->pathfindToPoint(stop);
-}
+
+
 void MailTruckController::onArriveAtTile(sf::Vector2f point) {
 	// Pick up letters if a mailbox is on the point
 	if (!this->route.isDelivering) {
@@ -91,6 +71,16 @@ void MailTruckController::onArriveAtTile(sf::Vector2f point) {
 			this->dropOffMail(sf::Vector2i(point));
 		}
 	}
+}
+// When done, the truck should be back at the post office
+void MailTruckController::onArriveAtDest() {
+	// If we were going back to the office, just delete yourself
+	// Give all the letters back to the post office
+	if (auto o = this->office.lock()) {
+		this->getEntity()->mailContainer->transferAllMailTo(o->mailContainer);
+	}
+	// Delete self
+	this->getEntity()->getGame()->removeEntity(this->getEntity());
 }
 float MailTruckController::getSpeed() {
 	return SPEED;

@@ -13,7 +13,8 @@ void TruckController::update(float delta) {
 	// If the truck has gone through all the points
 	if (this->pointIndex >= this->points.size()) {
 		// Arrive at destination
-		this->onArriveAtDest();
+		this->onArriveAtStop();
+		this->goToNextStop();
 	}
 	else {
 		// Check if the truck is close enough to the point
@@ -105,5 +106,25 @@ std::vector<sf::Vector2i> TruckController::getPathBetween(sf::Vector2i from, sf:
 	}
 	throw std::runtime_error("Cannot find a path");
 }
-
+void TruckController::goToNextStop() {
+	sf::Vector2i stop;
+	// Go to next stop
+	this->stopIndex++;
+	if (this->stopIndex >= this->stops.size()) {
+		// Arrive at dest
+		this->onArriveAtDest();
+	}
+	else {
+		stop = this->stops[this->stopIndex];
+		// Go to the stop
+		this->pathfindToPoint(stop);
+	}
+}
+void TruckController::setStops(std::vector<sf::Vector2i> s) {
+	this->stops = s;
+	// -1 because it will automatically be incremented into 0
+	this->stopIndex = -1;
+}
 void TruckController::onArriveAtTile(sf::Vector2f point) {}
+void TruckController::onArriveAtStop() {}
+void TruckController::onArriveAtDest() {}

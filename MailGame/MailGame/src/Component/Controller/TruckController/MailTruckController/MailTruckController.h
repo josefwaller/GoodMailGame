@@ -14,9 +14,6 @@ public:
 private:
 	// The route the truck is doing
 	MailTruckRoute route;
-	size_t stopIndex;
-	// Whether the truck is heading back to the post office
-	bool isGoingToOffice;
 	// The office
 	std::weak_ptr<Entity> office;
 	// Get Speed, see TruckController
