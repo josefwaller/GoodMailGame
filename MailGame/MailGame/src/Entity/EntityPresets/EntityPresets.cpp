@@ -10,6 +10,7 @@
 #include "Component/Renderer/IsoSpriteRenderer/IsoBuildingRenderer/IsoBuildingRenderer.h"
 #include "Component/Controller/PostOfficeController/PostOfficeController.h"
 #include "Component/Controller/TruckController/MailTruckController/MailTruckController.h"
+#include "Component/Controller/TruckController/CargoTruckController/CargoTruckController.h"
 #include "Component/Controller/BuildingController/BuildingController.h"
 #include "Component/Controller/TruckDepotController/TruckDepotController.h"
 #include "Component/ClickBox/RectClickBox/RectClickBox.h"
@@ -106,6 +107,27 @@ std::shared_ptr<Entity> EntityPresets::cargoTruckDepot(Game* g, sf::Vector2f pos
 			ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-W")
 		),
 		new TruckDepotController(),
+		nullptr,
+		new MailContainer()
+	);
+}
+std::shared_ptr<Entity> EntityPresets::cargoTruck(
+	Game* g,
+	sf::Vector2f pos,
+	IsoRotation rot,
+	CargoTruckRoute route,
+	std::weak_ptr<Entity> office) {
+	return Entity::createEntity(
+		g,
+		EntityTag::CargoTruck,
+		new Transform(pos, rot),
+		new IsoSpriteRenderer(
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-N"),
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-E"),
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-S"),
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-W")
+		),
+		new CargoTruckController(route, office),
 		nullptr,
 		new MailContainer()
 	);

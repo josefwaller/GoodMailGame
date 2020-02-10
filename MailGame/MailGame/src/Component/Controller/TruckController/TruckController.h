@@ -18,7 +18,7 @@ protected:
 	void pathfindToPoint(sf::Vector2i point);
 	// Methods to be overridden by subclass
 	virtual void onArriveAtDest() = 0;
-	virtual void onArriveAtTile(sf::Vector2f point) = 0;
+	virtual void onArriveAtTile(sf::Vector2f point);
 	virtual float getSpeed() = 0;
 
 };

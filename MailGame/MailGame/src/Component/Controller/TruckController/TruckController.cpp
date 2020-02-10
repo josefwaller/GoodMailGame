@@ -105,3 +105,5 @@ std::vector<sf::Vector2i> TruckController::getPathBetween(sf::Vector2i from, sf:
 	}
 	throw std::runtime_error("Cannot find a path");
 }
+
+void TruckController::onArriveAtTile(sf::Vector2f point) {}

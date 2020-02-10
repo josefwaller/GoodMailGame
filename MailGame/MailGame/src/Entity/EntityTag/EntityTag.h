@@ -5,5 +5,6 @@ enum EntityTag {
 	PostOffice,
 	MailBox,
 	MailTruck,
-	CargoTruckDepot
+	CargoTruckDepot,
+	CargoTruck
 };

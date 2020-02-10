@@ -1,5 +1,7 @@
 #include "TruckDepotController.h"
 #include "PostalCodeDatabase/PostalCodeDatabase.h"
+#include "Component/Transform/Transform.h"
+#include "Entity/EntityPresets/EntityPresets.h"
 #include <imgui.h>
 #include "Entity/Entity.h"
 #include "Game/Game.h"
@@ -123,7 +125,20 @@ void TruckDepotController::update(float delta) {
 	this->toDelete.clear();
 }
 void TruckDepotController::onHourChange(size_t newHour) {
-
+	for (auto it: this->routes) {
+		if (it.second.departureTime == newHour) {
+			this->getEntity()->getGame()->addEntity(
+				EntityPresets::cargoTruck(
+					this->getEntity()->getGame(),
+					this->getEntity()->transform->getPosition()
+					+ this->getEntity()->transform->getRotation().getUnitVector(),
+					IsoRotation::NORTH,
+					it.second,
+					this->getEntity()
+				)
+			);
+		}
+	}
 }
 
 void TruckDepotController::addRoute(CargoTruckRoute r) {
