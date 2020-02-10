@@ -125,16 +125,38 @@ void UiHandler::update() {
 }
 
 void UiHandler::render(sf::RenderWindow* w) {
-	if (this->currentState == UiState::Building) {
+	// Variables in switch statement
+	bool isValid;
+	switch (this->currentState) {
+	case UiState::Building:
+		// Draw the recipe being build
 		if (!this->recipe) {
 			throw std::runtime_error("Tried to draw a construction sprite with no recipe!");
 		}
-		bool isValid = this->recipe.value().isValid(this->game, this->game->getMousePosition(), this->currentRotation);
+		isValid = this->recipe.value().isValid(this->game, this->game->getMousePosition(), this->currentRotation);
 		this->recipe.value().renderConstructionSprite(
 			this->game,
 			this->game->getMousePosition(),
 			this->currentRotation,
 			w);
+		break;
+	case UiState::EditingPostalCodes:
+		// Draw all the postal codes
+		GameMap* gMap = this->game->getGameMap();
+		for (size_t x = 0; x < gMap->MAP_WIDTH; x++) {
+			for (size_t y = 0; y < gMap->MAP_HEIGHT; y++) {
+				Tile t = gMap->getTileAt(x, y);
+				PostalCodeDatabase::CodeInfo code = PostalCodeDatabase::get()->getPostalCode(t.postalCode);
+				// Get the tile outline
+				sf::VertexArray toRender = this->getDrawableTile(
+					sf::Vector2i(x, y),
+					sf::PrimitiveType::Quads,
+					code.color);
+				// Draw the tile
+				w->draw(toRender);
+			}
+		}
+		break;
 	}
 	// Outline the sprite currently being hovered
 	sf::VertexArray vArr = getDrawableTile(this->getHoveredTile(), sf::PrimitiveType::LinesStrip, sf::Color::White);

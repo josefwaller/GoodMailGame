@@ -6,6 +6,7 @@
 #include "System/Utils/Utils.h"
 #include "Line/Line.h"
 #include "Entity/EntityPresets/EntityPresets.h"
+#include "PostalCodeDatabase/PostalCodeDatabase.h"
 #include <SFML/Graphics.hpp>
 #include <queue>
 #include <stdlib.h>
@@ -24,6 +25,8 @@ GameMap::GameMap(Game* g): game(g) {
 		GameMap::ROAD_SPRITES.push_back(ResourceLoader::get()->getSprite("tiles/tiles", "road-" + std::bitset<4>(i).to_string()));
 	}
 
+	// Add the first postal code
+	long long pCode = PostalCodeDatabase::get()->createPostalCode({ sf::Color(255, 0, 0, 100) });
 	// Initialize a 20x20 grid of nothing
 	for (size_t i = 0; i < MAP_WIDTH; i++) {
 		tiles.push_back(std::vector<Tile>());
