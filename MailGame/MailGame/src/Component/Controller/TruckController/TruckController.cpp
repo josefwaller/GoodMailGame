@@ -13,7 +13,9 @@ void TruckController::update(float delta) {
 	// If the truck has gone through all the points
 	if (this->pointIndex >= this->points.size()) {
 		// Arrive at destination
-		this->onArriveAtStop();
+		// Since stopIndex starts at -1, we want to skip calling onArriveAtStop the first time
+		if (this->stopIndex != -1)
+			this->onArriveAtStop(this->stopIndex);
 		this->goToNextStop();
 	}
 	else {
@@ -126,5 +128,5 @@ void TruckController::setStops(std::vector<sf::Vector2i> s) {
 	this->stopIndex = -1;
 }
 void TruckController::onArriveAtTile(sf::Vector2f point) {}
-void TruckController::onArriveAtStop() {}
+void TruckController::onArriveAtStop(size_t stopIndex) {}
 void TruckController::onArriveAtDest() {}
