@@ -15,6 +15,7 @@
 #include "Component/Controller/TruckDepotController/TruckDepotController.h"
 #include "Component/ClickBox/RectClickBox/RectClickBox.h"
 #include "Component/MailContainer/MailContainer.h"
+#include "Component/TransitStop/BasicTransitStop/BasicTransitStop.h"
 
 std::shared_ptr<Entity> EntityPresets::building(Game* g, sf::Vector2f pos, IsoRotation rot) {
 	return Entity::createEntity(
@@ -68,7 +69,8 @@ std::shared_ptr<Entity> EntityPresets::mailBox(Game* g, sf::Vector2f pos, IsoRot
 		),
 		nullptr,
 		nullptr,
-		new MailContainer()
+		new MailContainer(),
+		new BasicTransitStop()
 	);
 }
 
