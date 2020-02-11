@@ -1,7 +1,7 @@
 #pragma once
 
 enum EntityTag {
-	Building,
+	Residence,
 	PostOffice,
 	MailBox,
 	MailTruck,

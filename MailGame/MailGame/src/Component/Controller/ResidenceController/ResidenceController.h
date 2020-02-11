@@ -2,7 +2,7 @@
 #include "Component/Controller/Controller.h"
 #include <SFML/System/Clock.hpp>
 
-class BuildingController : public Controller {
+class ResidenceController : public Controller {
 public:
 	virtual void update(float delta) override;
 	const static float GENERATE_INTERVAL;

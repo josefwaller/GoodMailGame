@@ -1,4 +1,4 @@
-#include "BuildingController.h"
+#include "ResidenceController.h"
 #include "Entity/Entity.h"
 #include "Component/MailContainer/MailContainer.h"
 #include "Component/Transform/Transform.h"
@@ -8,16 +8,16 @@
 
 #include <stdexcept>
 
-const float BuildingController::GENERATE_INTERVAL = 5000.0f;
+const float ResidenceController::GENERATE_INTERVAL = 5000.0f;
 
-void BuildingController::update(float time) {
+void ResidenceController::update(float time) {
 	if (clk.getElapsedTime().asMilliseconds() >= GENERATE_INTERVAL) {
 		clk.restart();
 		this->generateLetter();
 	}
 }
 
-void BuildingController::generateLetter() {
+void ResidenceController::generateLetter() {
 	// Create a new letter addressed to self (tba)
 	sf::Vector2i pos(this->getEntity()->transform->getPosition());
 	Mail letter(pos, pos);

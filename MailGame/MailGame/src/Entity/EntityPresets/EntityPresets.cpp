@@ -11,17 +11,17 @@
 #include "Component/Controller/PostOfficeController/PostOfficeController.h"
 #include "Component/Controller/TruckController/MailTruckController/MailTruckController.h"
 #include "Component/Controller/TruckController/CargoTruckController/CargoTruckController.h"
-#include "Component/Controller/BuildingController/BuildingController.h"
+#include "Component/Controller/ResidenceController/ResidenceController.h"
 #include "Component/Controller/TruckDepotController/TruckDepotController.h"
 #include "Component/ClickBox/RectClickBox/RectClickBox.h"
 #include "Component/MailContainer/MailContainer.h"
 #include "Component/TransitStop/BasicTransitStop/BasicTransitStop.h"
 #include "Component/TransitStop/BuildingTransitStop/BuildingTransitStop.h"
 
-std::shared_ptr<Entity> EntityPresets::building(Game* g, sf::Vector2f pos, IsoRotation rot) {
+std::shared_ptr<Entity> EntityPresets::residence(Game* g, sf::Vector2f pos, IsoRotation rot) {
 	return Entity::createEntity(
 		g,
-		EntityTag::Building,
+		EntityTag::Residence,
 		new Transform(pos, rot),
 		new IsoBuildingRenderer(
 			ResourceLoader::get()->getSprite("buildings/buildings", "building-NE-3"),
@@ -29,7 +29,7 @@ std::shared_ptr<Entity> EntityPresets::building(Game* g, sf::Vector2f pos, IsoRo
 			ResourceLoader::get()->getSprite("buildings/buildings", "building-SW-3"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "building-NW-3")
 		),
-		new BuildingController(),
+		new ResidenceController(),
 		new RectClickBox(sf::FloatRect(
 			0,
 			0,

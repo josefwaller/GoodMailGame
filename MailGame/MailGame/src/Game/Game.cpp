@@ -16,7 +16,7 @@ const float Game::CAMERA_SPEED = 600.0f;
 const float Game::TILE_WIDTH = 64.0f;
 const float Game::TILE_HEIGHT = 32.0f;
 const std::vector<EntityTag> Game::WHITELIST_ENTITY_TAG = {
-	EntityTag::Building,
+	EntityTag::Residence,
 	EntityTag::PostOffice,
 	EntityTag::CargoTruckDepot
 };
