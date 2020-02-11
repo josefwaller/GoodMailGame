@@ -10,4 +10,6 @@ public:
 	CargoTruckController(CargoTruckRoute route, std::weak_ptr<Entity> office);
 	virtual void onArriveAtDest() override;
 	virtual float getSpeed() override;
+private:
+	std::weak_ptr<Entity> depot;
 };
