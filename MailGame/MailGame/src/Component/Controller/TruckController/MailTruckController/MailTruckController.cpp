@@ -2,9 +2,8 @@
 #include "Game/Game.h"
 #include <stdexcept>
 #include "Entity/Entity.h"
-#include "Component/Transform/Transform.h"
+#include "Component/TransitStop/TransitStop.h"
 #include "Component/MailContainer/MailContainer.h"
-#include "GameMap/GameMap.h"
 #include "Mail/Mail.h"
 #include <imgui.h>
 
@@ -19,7 +18,7 @@ MailTruckController::MailTruckController(MailTruckRoute r, std::weak_ptr<Entity>
 		stops.push_back(s.target.value());
 	}
 	stops.push_back(sf::Vector2i(
-		o.lock()->transform->getPosition() + o.lock()->transform->getRotation().getUnitVector()
+		o.lock()->transitStop->getTransitLocation()
 	));
 	this->setStops(stops);
 }
@@ -59,7 +58,7 @@ void MailTruckController::onArriveAtTile(sf::Vector2f point) {
 	if (!this->route.isDelivering) {
 		auto entities = this->getEntity()->getGame()->getEntities();
 		for (auto it = entities.begin(); it != entities.end(); it++) {
-			if ((*it)->tag == EntityTag::MailBox && (*it)->transform->getPosition() == point) {
+			if ((*it)->tag == EntityTag::MailBox && (*it)->transitStop->getTransitLocation() == point) {
 				// Take all the letters
 				(*it)->mailContainer->transferAllMailTo(this->getEntity()->mailContainer);
 			}
