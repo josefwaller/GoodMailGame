@@ -227,6 +227,9 @@
     <ClInclude Include="src\Component\Controller\TruckController\CargoTruckController\CargoTruckController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Component\TransitStop\TransitStop.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\GameMap\Tile.h" />
