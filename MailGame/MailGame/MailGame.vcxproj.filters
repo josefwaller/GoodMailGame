@@ -123,6 +123,9 @@
     <ClCompile Include="src\Component\TransitStop\BasicTransitStop\BasicTransitStop.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Component\TransitStop\BuildingTransitStop\BuildingTransitStop.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h">
@@ -234,6 +237,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Component\TransitStop\BasicTransitStop\BasicTransitStop.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\TransitStop\BuildingTransitStop\BuildingTransitStop.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

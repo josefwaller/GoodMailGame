@@ -16,6 +16,7 @@
 #include "Component/ClickBox/RectClickBox/RectClickBox.h"
 #include "Component/MailContainer/MailContainer.h"
 #include "Component/TransitStop/BasicTransitStop/BasicTransitStop.h"
+#include "Component/TransitStop/BuildingTransitStop/BuildingTransitStop.h"
 
 std::shared_ptr<Entity> EntityPresets::building(Game* g, sf::Vector2f pos, IsoRotation rot) {
 	return Entity::createEntity(
@@ -34,7 +35,9 @@ std::shared_ptr<Entity> EntityPresets::building(Game* g, sf::Vector2f pos, IsoRo
 			0,
 			1,
 			1)
-		)
+		),
+		nullptr,
+		new BuildingTransitStop()
 	);
 }
 
@@ -51,7 +54,8 @@ std::shared_ptr<Entity> EntityPresets::postOffice(Game* g, sf::Vector2f pos, Iso
 		),
 		new PostOfficeController(),
 		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
-		new MailContainer()
+		new MailContainer(),
+		new BuildingTransitStop()
 	);
 }
 
@@ -110,7 +114,8 @@ std::shared_ptr<Entity> EntityPresets::cargoTruckDepot(Game* g, sf::Vector2f pos
 		),
 		new TruckDepotController(),
 		nullptr,
-		new MailContainer()
+		new MailContainer(),
+		new BuildingTransitStop()
 	);
 }
 std::shared_ptr<Entity> EntityPresets::cargoTruck(
