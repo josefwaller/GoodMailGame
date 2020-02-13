@@ -495,22 +495,22 @@
 	<SubTexture name="carSilver6_013.png" x="0" y="406" width="35" height="25"/>
 	<SubTexture name="carSilver6_014.png" x="104" y="368" width="33" height="36"/>
 	<SubTexture name="carSilver6_015.png" x="527" y="486" width="32" height="25"/>
-	<SubTexture name="garbage_E.png" x="106" y="0" width="33" height="29"/>
-	<SubTexture name="garbage_N.png" x="813" y="63" width="19" height="27"/>
-	<SubTexture name="garbage_NE.png" x="35" y="424" width="35" height="31"/>
-	<SubTexture name="garbage_NED.png" x="70" y="439" width="34" height="28"/>
-	<SubTexture name="garbage_NEU.png" x="0" y="119" width="37" height="32"/>
-	<SubTexture name="garbage_NW.png" x="35" y="455" width="35" height="32"/>
-	<SubTexture name="garbage_NWD.png" x="72" y="134" width="34" height="28"/>
-	<SubTexture name="garbage_NWU.png" x="0" y="179" width="37" height="31"/>
-	<SubTexture name="garbage_S.png" x="813" y="33" width="19" height="30"/>
-	<SubTexture name="garbage_SE.png" x="38" y="36" width="35" height="33"/>
-	<SubTexture name="garbage_SED.png" x="139" y="57" width="33" height="37"/>
-	<SubTexture name="garbage_SEU.png" x="0" y="151" width="37" height="28"/>
-	<SubTexture name="garbage_SW.png" x="38" y="69" width="35" height="33"/>
-	<SubTexture name="garbage_SWD.png" x="70" y="362" width="34" height="37"/>
-	<SubTexture name="garbage_SWU.png" x="0" y="210" width="37" height="28"/>
-	<SubTexture name="garbage_W.png" x="203" y="349" width="33" height="29"/>
+	<SubTexture name="cargoTruck_E.png" x="106" y="0" width="33" height="29"/>
+	<SubTexture name="cargoTruck_N.png" x="813" y="63" width="19" height="27"/>
+	<SubTexture name="cargoTruck_NE.png" x="35" y="424" width="35" height="31"/>
+	<SubTexture name="cargoTruck_NED.png" x="70" y="439" width="34" height="28"/>
+	<SubTexture name="cargoTruck_NEU.png" x="0" y="119" width="37" height="32"/>
+	<SubTexture name="cargoTruck_NW.png" x="35" y="455" width="35" height="32"/>
+	<SubTexture name="cargoTruck_NWD.png" x="72" y="134" width="34" height="28"/>
+	<SubTexture name="cargoTruck_NWU.png" x="0" y="179" width="37" height="31"/>
+	<SubTexture name="cargoTruck_S.png" x="813" y="33" width="19" height="30"/>
+	<SubTexture name="cargoTruck_SE.png" x="38" y="36" width="35" height="33"/>
+	<SubTexture name="cargoTruck_SED.png" x="139" y="57" width="33" height="37"/>
+	<SubTexture name="cargoTruck_SEU.png" x="0" y="151" width="37" height="28"/>
+	<SubTexture name="cargoTruck_SW.png" x="38" y="69" width="35" height="33"/>
+	<SubTexture name="cargoTruck_SWD.png" x="70" y="362" width="34" height="37"/>
+	<SubTexture name="cargoTruck_SWU.png" x="0" y="210" width="37" height="28"/>
+	<SubTexture name="cargoTruck_W.png" x="203" y="349" width="33" height="29"/>
 	<SubTexture name="police_E.png" x="782" y="92" width="31" height="24"/>
 	<SubTexture name="police_N.png" x="860" y="160" width="17" height="24"/>
 	<SubTexture name="police_NE.png" x="559" y="445" width="32" height="26"/>

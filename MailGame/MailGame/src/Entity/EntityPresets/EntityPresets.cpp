@@ -129,10 +129,10 @@ std::shared_ptr<Entity> EntityPresets::cargoTruck(
 		EntityTag::CargoTruck,
 		new Transform(pos, rot),
 		new IsoSpriteRenderer(
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-N"),
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-E"),
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-S"),
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-W")
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "cargoTruck_NE.png"),
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "cargoTruck_SE.png"),
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "cargoTruck_SW.png"),
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "cargoTruck_NW.png")
 		),
 		new CargoTruckController(route, office),
 		nullptr,
