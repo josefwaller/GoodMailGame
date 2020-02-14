@@ -18,8 +18,10 @@ struct Tile {
 	std::weak_ptr<Entity> building;
 	// The postal code assigned to the tile
 	long long postalCode;
+	// Does the tile have a railway on it
+	bool hasRailTrack;
 
-	Tile(TileType t = TileType::Empty): postalCode(0) {
+	Tile(TileType t = TileType::Empty): postalCode(0), hasRailTrack(false) {
 		type = t;
 	}
 };

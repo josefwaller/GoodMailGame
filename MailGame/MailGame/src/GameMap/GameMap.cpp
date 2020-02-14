@@ -19,10 +19,12 @@ const size_t GameMap::MAP_WIDTH = 50;
 // Load the sprites
 const sf::Sprite GameMap::EMPTY_SPRITE = ResourceLoader::get()->getSprite("tiles/tiles", "empty");
 std::vector<sf::Sprite> GameMap::ROAD_SPRITES;
+std::vector<sf::Sprite> GameMap::RAIL_TRACK_SPRITES;
 
 GameMap::GameMap(Game* g): game(g) {
 	for (int i = 0; i < 16; i++) {
 		GameMap::ROAD_SPRITES.push_back(ResourceLoader::get()->getSprite("tiles/tiles", "road-" + std::bitset<4>(i).to_string()));
+		GameMap::RAIL_TRACK_SPRITES.push_back(ResourceLoader::get()->getSprite("tiles/tiles", "railway-" + std::bitset<4>(i).to_string()));
 	}
 
 	// Add the first postal code
@@ -83,7 +85,27 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 	sf::Sprite s;
 	switch (tiles[x][y].type) {
 	case TileType::Empty:
-		s = EMPTY_SPRITE;
+		if (!tiles[x][y].hasRailTrack) {
+			s = EMPTY_SPRITE;
+		} else {
+			int index = 0;
+			if (getTileAt(x, y - 1).hasRailTrack) {
+				index |= 0b1000;
+			}
+			if (getTileAt(x + 1, y).hasRailTrack) {
+				index |= 0b0100;
+			}
+			if (getTileAt(x, y + 1).hasRailTrack) {
+				index |= 0b0010;
+			}
+			if (getTileAt(x - 1, y).hasRailTrack) {
+				index |= 0b0001;
+			}
+			unsigned int rotation = game->getRotation().getRotation();
+			index = 0b1111 & ((index >> rotation) | (index << (4 - rotation)));
+			// Get the sprite
+			s = RAIL_TRACK_SPRITES[index];
+		}
 		break;
 	case TileType::Road:
 		int index = 0;
@@ -218,6 +240,11 @@ void GameMap::setBuildingForTile(size_t x, size_t y, std::weak_ptr<Entity> build
 void GameMap::setCodeForTile(size_t x, size_t y, long long id) {
 	if (this->getTileAt(x, y).type != TileType::OffMap) {
 		this->tiles[x][y].postalCode = id;
+	}
+}
+void GameMap::addRailTrack(size_t x, size_t y) {
+	if (this->getTileAt(x, y).type != TileType::OffMap) {
+		this->tiles[x][y].hasRailTrack = true;
 	}
 }
 

@@ -10,15 +10,16 @@
 UiHandler::UiHandler(Game* g): game(g), currentState(UiState::Default), recipe() {}
 
 bool UiHandler::handleEvent(sf::Event e) {
+	sf::Vector2i tilePos;
 	if (e.type == sf::Event::MouseButtonPressed) {
 		if (ImGui::GetIO().WantCaptureMouse) {
 			return true;
 		}
 		sf::Vector2f mousePos;
 		switch(this->currentState) {
-		case UiState::Building:
+		case UiState::BuildingEntity:
 			if (!this->recipe) {
-				throw std::runtime_error("Building but with no ConstructionRecipe!");
+				throw std::runtime_error("BuildingEntity but with no ConstructionRecipe!");
 			}
 			mousePos = this->game->getMousePosition();
 			if (this->recipe.value().isValid(this->game, mousePos, this->currentRotation)) {
@@ -28,6 +29,10 @@ bool UiHandler::handleEvent(sf::Event e) {
 			}
 			this->changeState(UiState::Default);
 			return true;
+		case UiState::BuildingRailTracks:
+			tilePos = sf::Vector2i(this->game->getMousePosition());
+			this->game->getGameMap()->addRailTrack((size_t)tilePos.x, (size_t)tilePos.y);
+			break;
 		case UiState::SelectingEntity:
 			// Get the entity
 			for (auto e : this->game->getEntities()) {
@@ -80,19 +85,22 @@ void UiHandler::update() {
 	if (ImGui::CollapsingHeader("Build")) {
 		if (ImGui::Button("Post Office")) {
 			this->recipe = Construction::recipes[EntityTag::PostOffice];
-			this->changeState(UiState::Building);
+			this->changeState(UiState::BuildingEntity);
 		}
 		if (ImGui::Button("MailBox")) {
 			this->recipe = Construction::recipes[EntityTag::MailBox];
-			this->changeState(UiState::Building);
+			this->changeState(UiState::BuildingEntity);
 		}
 		if (ImGui::Button("Cargo Truck Depot")) {
 			this->recipe = Construction::recipes[EntityTag::CargoTruckDepot];
-			this->changeState(UiState::Building);
+			this->changeState(UiState::BuildingEntity);
+		}
+		if (ImGui::Button("RailWay")) {
+			this->changeState(UiState::BuildingRailTracks);
 		}
 
-		if (this->currentState == UiState::Building) {
-			if (ImGui::Button("Rotate Building")) {
+		if (this->currentState == UiState::BuildingEntity) {
+			if (ImGui::Button("Rotate BuildingEntity")) {
 				this->currentRotation++;
 			}
 			if (ImGui::Button("Cancel")) {
@@ -145,7 +153,7 @@ void UiHandler::render(sf::RenderWindow* w) {
 	// Variables in switch statement
 	bool isValid;
 	switch (this->currentState) {
-	case UiState::Building:
+	case UiState::BuildingEntity:
 		// Draw the recipe being build
 		if (!this->recipe) {
 			throw std::runtime_error("Tried to draw a construction sprite with no recipe!");

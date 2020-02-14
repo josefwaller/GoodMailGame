@@ -24,21 +24,22 @@
 	<SubTexture name="landscapeTiles_022.png" x="662" y="495" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_023.png" x="662" y="396" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_024.png" x="662" y="297" width="132" height="99"/>
-	<SubTexture name="landscapeTiles_025.png" x="662" y="198" width="132" height="99"/>
+	<SubTexture name="railway-0100" x="662" y="198" width="132" height="99"/>
+	<SubTexture name="railway-0001" x="662" y="198" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_026.png" x="0" y="380" width="133" height="99"/>
 	<SubTexture name="landscapeTiles_027.png" x="0" y="1948" width="133" height="99"/>
 	<SubTexture name="landscapeTiles_028.png" x="661" y="1946" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_029.png" x="661" y="1847" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_030.png" x="661" y="1748" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_031.png" x="661" y="1649" width="132" height="99"/>
-	<SubTexture name="landscapeTiles_032.png" x="661" y="1550" width="132" height="99"/>
+	<SubTexture name="railway-1010" x="661" y="1550" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_033.png" x="0" y="1849" width="133" height="99"/>
 	<SubTexture name="landscapeTiles_034.png" x="0" y="1552" width="133" height="99"/>
 	<SubTexture name="landscapeTiles_035.png" x="661" y="1269" width="132" height="83"/>
 	<SubTexture name="landscapeTiles_036.png" x="661" y="1138" width="132" height="131"/>
 	<SubTexture name="landscapeTiles_037.png" x="661" y="1055" width="132" height="83"/>
 	<SubTexture name="landscapeTiles_038.png" x="661" y="956" width="132" height="99"/>
-	<SubTexture name="landscapeTiles_039.png" x="530" y="857" width="132" height="99"/>
+	<SubTexture name="railway-0101" x="530" y="857" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_040.png" x="530" y="758" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_041.png" x="133" y="0" width="133" height="99"/>
 	<SubTexture name="landscapeTiles_042.png" x="133" y="198" width="133" height="83"/>
@@ -63,7 +64,8 @@
 	<SubTexture name="landscapeTiles_061.png" x="398" y="843" width="132" height="83"/>
 	<SubTexture name="landscapeTiles_062.png" x="398" y="744" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_063.png" x="0" y="958" width="133" height="99"/>
-	<SubTexture name="landscapeTiles_064.png" x="0" y="1057" width="133" height="99"/>
+	<SubTexture name="railway-1000" x="0" y="1057" width="133" height="99"/>
+	<SubTexture name="railway-0010" x="0" y="1057" width="133" height="99"/>
 	<SubTexture name="landscapeTiles_065.png" x="398" y="447" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_066.png" x="398" y="364" width="132" height="83"/>
 	<SubTexture name="empty" x="398" y="265" width="132" height="99"/>
@@ -84,22 +86,22 @@
 	<SubTexture name="road-1010" x="662" y="99" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_083.png" x="266" y="723" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_084.png" x="661" y="1451" width="132" height="99"/>
-	<SubTexture name="landscapeTiles_085.png" x="661" y="1352" width="132" height="99"/>
+	<SubTexture name="railway-0110" x="661" y="1352" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_086.png" x="0" y="1651" width="133" height="99"/>
 	<SubTexture name="landscapeTiles_087.png" x="133" y="281" width="133" height="99"/>
 	<SubTexture name="landscapeTiles_088.png" x="530" y="659" width="132" height="99"/>
 	<SubTexture name="road-1011" x="530" y="560" width="132" height="99"/>
 	<SubTexture name="road-1111" x="266" y="0" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_091.png" x="529" y="1933" width="132" height="99"/>
-	<SubTexture name="landscapeTiles_092.png" x="530" y="0" width="132" height="99"/>
-	<SubTexture name="landscapeTiles_093.png" x="133" y="958" width="133" height="99"/>
+	<SubTexture name="railway-1100" x="530" y="0" width="132" height="99"/>
+	<SubTexture name="railway-0011" x="133" y="958" width="133" height="99"/>
 	<SubTexture name="landscapeTiles_094.png" x="0" y="859" width="133" height="99"/>
 	<SubTexture name="landscapeTiles_095.png" x="529" y="1290" width="132" height="99"/>
 	<SubTexture name="road-1110" x="398" y="546" width="132" height="99"/>
 	<SubTexture name="road-0111" x="398" y="645" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_098.png" x="265" y="1238" width="132" height="131"/>
 	<SubTexture name="landscapeTiles_099.png" x="397" y="1828" width="132" height="99"/>
-	<SubTexture name="landscapeTiles_100.png" x="397" y="1927" width="132" height="99"/>
+	<SubTexture name="railway-1001" x="397" y="1927" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_101.png" x="0" y="1453" width="133" height="99"/>
 	<SubTexture name="landscapeTiles_102.png" x="0" y="1354" width="133" height="99"/>
 	<SubTexture name="landscapeTiles_103.png" x="266" y="822" width="132" height="99"/>

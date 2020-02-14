@@ -15,7 +15,8 @@ public:
 	// The states the UI can be in
 	enum class UiState {
 		Default,
-		Building,
+		BuildingEntity,
+		BuildingRailTracks,
 		SelectingEntity,
 		SelectingTile,
 		EditingPostalCodes
