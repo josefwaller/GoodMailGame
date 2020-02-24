@@ -7,7 +7,8 @@
 #include "Game/Game.h"
 #include "PostalCodeDatabase/PostalCodeDatabase.h"
 
-UiHandler::UiHandler(Game* g): game(g), currentState(UiState::Default), recipe() {}
+UiHandler::UiHandler(Game* g): game(g), currentState(UiState::Default), recipe(),
+	toBuild(IsoRotation::NORTH, IsoRotation::SOUTH) {}
 
 bool UiHandler::handleEvent(sf::Event e) {
 	sf::Vector2i tilePos;
@@ -34,8 +35,9 @@ bool UiHandler::handleEvent(sf::Event e) {
 			this->game->getGameMap()->addRailTrack(
 				(size_t)tilePos.x,
 				(size_t)tilePos.y,
-				IsoRotation::NORTH + this->currentRotation.getRotation(),
-				IsoRotation::SOUTH + this->currentRotation.getRotation());
+				this->toBuild.dirOne,
+				this->toBuild.dirTwo
+			);
 			break;
 		case UiState::SelectingEntity:
 			// Get the entity
@@ -102,8 +104,12 @@ void UiHandler::update() {
 		if (ImGui::Button("RailWay")) {
 			this->changeState(UiState::BuildingRailTracks);
 		}
+		if (this->currentState == UiState::BuildingRailTracks) {
+			this->toBuild.dirOne = this->chooseDirection("DirOne", this->toBuild.dirOne);
+			this->toBuild.dirTwo = this->chooseDirection("DirTwo", this->toBuild.dirTwo);
+		}
 
-		if (this->currentState == UiState::BuildingEntity || this->currentState == UiState::BuildingRailTracks) {
+		if (this->currentState == UiState::BuildingEntity) {
 			if (ImGui::Button("Rotate")) {
 				this->currentRotation++;
 			}
@@ -206,4 +212,25 @@ sf::VertexArray UiHandler::getDrawableTile(sf::Vector2i pos, sf::PrimitiveType t
 	vArr[3] = sf::Vertex(g->worldToScreenPos(fPos + sf::Vector2f(0, 1.0f)), c);
 	vArr[4] = vArr[0];
 	return vArr;
+}
+
+IsoRotation UiHandler::chooseDirection(const char* label, IsoRotation def) {
+	IsoRotation toReturn = def;
+	char* preview = std::vector<char*>({ "N", "E", "S", "W" })[def.getRotation()];
+	if (ImGui::BeginCombo(label, preview)) {
+		if (ImGui::Selectable("N")) {
+			toReturn = IsoRotation::NORTH;
+		}
+		if (ImGui::Selectable("E")) {
+			toReturn = IsoRotation::EAST;
+		}
+		if (ImGui::Selectable("S")) {
+			toReturn = IsoRotation::SOUTH;
+		}
+		if (ImGui::Selectable("W")) {
+			toReturn = IsoRotation::WEST;
+		}
+		ImGui::EndCombo();
+	}
+	return toReturn;
 }

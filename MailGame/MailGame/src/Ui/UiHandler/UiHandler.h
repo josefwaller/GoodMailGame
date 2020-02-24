@@ -56,4 +56,8 @@ private:
 		sf::PrimitiveType t = sf::PrimitiveType::Quads,
 		sf::Color c = sf::Color::White
 	);
+	// A selection dropdown to choose a rotation from the 4 cardinal directions
+	IsoRotation chooseDirection(const char* label, IsoRotation default);
+	// The railway currently being built
+	Railway toBuild;
 };
