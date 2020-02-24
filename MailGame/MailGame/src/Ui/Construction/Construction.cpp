@@ -48,5 +48,18 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 				{TileType::Empty, TileType::Road}
 			})
 		)
-	}
-};
+	},
+	{ EntityTag::TrainStation,
+		ConstructionRecipe(
+			&EntityPresets::trainStation,
+			{
+				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-N"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-E"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-S"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-W")
+			},
+			ConstructionLayout({
+				{ TileType::Empty }
+			})
+		)}
+	};

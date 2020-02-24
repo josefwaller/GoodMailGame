@@ -91,28 +91,28 @@
 	<SubTexture name="buildingTiles_089.png" x="397" y="1577" width="99" height="60"/>
 	<SubTexture name="buildingTiles_090.png" x="397" y="1331" width="99" height="63"/>
 	<SubTexture name="buildingTiles_091.png" x="397" y="1394" width="99" height="61"/>
-	<SubTexture name="buildingTiles_092.png" x="0" y="1778" width="133" height="127"/>
+	<SubTexture name="trainstation-N" x="0" y="1778" width="133" height="127"/>
 	<SubTexture name="buildingTiles_093.png" x="265" y="1532" width="132" height="127"/>
 	<SubTexture name="buildingTiles_094.png" x="133" y="1786" width="100" height="55"/>
 	<SubTexture name="buildingTiles_095.png" x="133" y="1841" width="100" height="55"/>
 	<SubTexture name="buildingTiles_096.png" x="497" y="475" width="99" height="61"/>
 	<SubTexture name="buildingTiles_097.png" x="497" y="766" width="99" height="61"/>
 	<SubTexture name="buildingTiles_098.png" x="497" y="827" width="99" height="63"/>
-	<SubTexture name="buildingTiles_099.png" x="0" y="381" width="133" height="127"/>
+	<SubTexture name="trainstation-E" x="0" y="381" width="133" height="127"/>
 	<SubTexture name="buildingTiles_100.png" x="0" y="508" width="133" height="127"/>
 	<SubTexture name="buildingTiles_101.png" x="265" y="766" width="132" height="127"/>
 	<SubTexture name="buildingTiles_102.png" x="397" y="0" width="100" height="55"/>
 	<SubTexture name="buildingTiles_103.png" x="497" y="890" width="99" height="55"/>
 	<SubTexture name="buildingTiles_104.png" x="528" y="1777" width="99" height="63"/>
 	<SubTexture name="buildingTiles_105.png" x="528" y="1840" width="99" height="61"/>
-	<SubTexture name="buildingTiles_106.png" x="0" y="889" width="133" height="127"/>
+	<SubTexture name="trainstation-W" x="0" y="889" width="133" height="127"/>
 	<SubTexture name="buildingTiles_107.png" x="0" y="1651" width="133" height="127"/>
 	<SubTexture name="buildingTiles_108.png" x="264" y="1913" width="132" height="127"/>
 	<SubTexture name="buildingTiles_109.png" x="264" y="1786" width="132" height="127"/>
 	<SubTexture name="buildingTiles_110.png" x="397" y="55" width="100" height="55"/>
 	<SubTexture name="buildingTiles_111.png" x="497" y="1090" width="99" height="55"/>
 	<SubTexture name="buildingTiles_112.png" x="528" y="1901" width="99" height="63"/>
-	<SubTexture name="buildingTiles_113.png" x="265" y="1275" width="132" height="127"/>
+	<SubTexture name="trainstation-S" x="265" y="1275" width="132" height="127"/>
 	<SubTexture name="buildingTiles_114.png" x="0" y="0" width="133" height="127"/>
 	<SubTexture name="buildingTiles_115.png" x="0" y="1524" width="133" height="127"/>
 	<SubTexture name="buildingTiles_116.png" x="133" y="893" width="132" height="127"/>
