@@ -31,7 +31,11 @@ bool UiHandler::handleEvent(sf::Event e) {
 			return true;
 		case UiState::BuildingRailTracks:
 			tilePos = sf::Vector2i(this->game->getMousePosition());
-			this->game->getGameMap()->addRailTrack((size_t)tilePos.x, (size_t)tilePos.y);
+			this->game->getGameMap()->addRailTrack(
+				(size_t)tilePos.x,
+				(size_t)tilePos.y,
+				IsoRotation::NORTH + this->currentRotation.getRotation(),
+				IsoRotation::SOUTH + this->currentRotation.getRotation());
 			break;
 		case UiState::SelectingEntity:
 			// Get the entity
@@ -99,8 +103,8 @@ void UiHandler::update() {
 			this->changeState(UiState::BuildingRailTracks);
 		}
 
-		if (this->currentState == UiState::BuildingEntity) {
-			if (ImGui::Button("Rotate BuildingEntity")) {
+		if (this->currentState == UiState::BuildingEntity || this->currentState == UiState::BuildingRailTracks) {
+			if (ImGui::Button("Rotate")) {
 				this->currentRotation++;
 			}
 			if (ImGui::Button("Cancel")) {

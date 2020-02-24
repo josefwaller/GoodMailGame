@@ -85,26 +85,34 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 	sf::Sprite s;
 	switch (tiles[x][y].type) {
 	case TileType::Empty:
-		if (!tiles[x][y].hasRailTrack) {
-			s = EMPTY_SPRITE;
-		} else {
+		// Draw the railway if it has one
+		if (tiles[x][y].railway.has_value()) {
+			Railway r = tiles[x][y].railway.value();
+			// Get the binary number representing the intersection at the til
 			int index = 0;
-			if (getTileAt(x, y - 1).hasRailTrack) {
-				index |= 0b1000;
+			for (IsoRotation rot : { r.dirOne, r.dirTwo }) {
+				switch (rot.getRotation()) {
+				case IsoRotation::NORTH:
+					index |= 0b1000;
+					break;
+				case IsoRotation::EAST:
+					index |= 0b0100;
+					break;
+				case IsoRotation::SOUTH:
+					index |= 0b0010;
+					break;
+				case IsoRotation::WEST:
+					index |= 0b0001;
+					break;
+				}
 			}
-			if (getTileAt(x + 1, y).hasRailTrack) {
-				index |= 0b0100;
-			}
-			if (getTileAt(x, y + 1).hasRailTrack) {
-				index |= 0b0010;
-			}
-			if (getTileAt(x - 1, y).hasRailTrack) {
-				index |= 0b0001;
-			}
+			// Get the sprite index
 			unsigned int rotation = game->getRotation().getRotation();
 			index = 0b1111 & ((index >> rotation) | (index << (4 - rotation)));
 			// Get the sprite
 			s = RAIL_TRACK_SPRITES[index];
+		} else {
+			s = EMPTY_SPRITE;
 		}
 		break;
 	case TileType::Road:
@@ -242,9 +250,9 @@ void GameMap::setCodeForTile(size_t x, size_t y, long long id) {
 		this->tiles[x][y].postalCode = id;
 	}
 }
-void GameMap::addRailTrack(size_t x, size_t y) {
+void GameMap::addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to) {
 	if (this->getTileAt(x, y).type != TileType::OffMap) {
-		this->tiles[x][y].hasRailTrack = true;
+		this->tiles[x][y].railway = Railway(from, to);
 	}
 }
 

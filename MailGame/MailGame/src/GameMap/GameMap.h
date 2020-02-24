@@ -28,7 +28,7 @@ public:
 	// Set the postal code for a specific tile
 	void setCodeForTile(size_t x, size_t y, long long code);
 	// Add rail track at the tile given
-	void addRailTrack(size_t x, size_t y);
+	void addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to);
 private:
 	Game* game;
 	std::vector<std::vector<Tile>> tiles;
