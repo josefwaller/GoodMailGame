@@ -4,7 +4,7 @@
 #include "Component/Controller/TruckController/MailTruckController/MailTruckController.h"
 #include "Game/Game.h"
 #include "Ui/UiHandler/UiHandler.h"
-#include "Entity/EntityPresets/EntityPresets.h"
+#include "Entity/EntityPresets/VehiclePresets/VehiclePresets.h"
 #include "Component/MailContainer/MailContainer.h"
 #include "Mail/Mail.h"
 #include <string>
@@ -151,7 +151,7 @@ void PostOfficeController::onHourChange(size_t newHour) {
 			// Spawn a new truck for that route
 			Game* game = this->getEntity()->getGame();
 			auto trans = this->getEntity()->transform;
-			auto truck = EntityPresets::mailTruck(
+			auto truck = VehiclePresets::mailTruck(
 				game,
 				trans->getPosition() + trans->getRotation().getUnitVector(),
 				IsoRotation::NORTH,

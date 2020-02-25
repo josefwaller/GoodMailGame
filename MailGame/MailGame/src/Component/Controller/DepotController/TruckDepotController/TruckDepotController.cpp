@@ -1,12 +1,12 @@
 #include "TruckDepotController.h"
 #include "Entity/Entity.h"
-#include "Entity/EntityPresets/EntityPresets.h"
+#include "Entity/EntityPresets/VehiclePresets/VehiclePresets.h"
 #include "Game/Game.h"
 #include "Component/Transform/Transform.h"
 
 void TruckDepotController::spawnVehicleForRoute(TransitRoute route) {
 	this->getEntity()->getGame()->addEntity(
-		EntityPresets::cargoTruck(
+		VehiclePresets::cargoTruck(
 			this->getEntity()->getGame(),
 			this->getEntity()->transform->getPosition()
 			+ this->getEntity()->transform->getRotation().getUnitVector(),

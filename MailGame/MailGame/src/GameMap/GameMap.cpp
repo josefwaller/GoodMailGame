@@ -5,7 +5,7 @@
 #include "ResourceLoader\ResourceLoader.h"
 #include "System/Utils/Utils.h"
 #include "Line/Line.h"
-#include "Entity/EntityPresets/EntityPresets.h"
+#include "Entity/EntityPresets/BuildingPresets/BuildingPresets.h"
 #include "PostalCodeDatabase/PostalCodeDatabase.h"
 #include <SFML/Graphics.hpp>
 #include <queue>
@@ -226,7 +226,7 @@ void GameMap::generateCityAt(sf::Vector2i pos) {
 									rot = yOff == 1 ? IsoRotation::NORTH: IsoRotation::SOUTH;
 								}
 								this->tiles[x + xOff][y + yOff].type = TileType::House;
-								std::shared_ptr<Entity> e = EntityPresets::residence(this->game, sf::Vector2f((float)(x + xOff), (float)(y + yOff)), rot);
+								std::shared_ptr<Entity> e = BuildingPresets::residence(this->game, sf::Vector2f((float)(x + xOff), (float)(y + yOff)), rot);
 								this->game->addEntity(
 									e
 								);

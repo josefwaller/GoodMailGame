@@ -1,5 +1,5 @@
 #include "Construction.h"
-#include "Entity/EntityPresets/EntityPresets.h"
+#include "Entity/EntityPresets/BuildingPresets/BuildingPresets.h"
 #include "Game/Game.h"
 #include <math.h>
 #include "ResourceLoader/ResourceLoader.h"
@@ -9,7 +9,7 @@
 std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 	{ EntityTag::PostOffice,
 		ConstructionRecipe(
-			&EntityPresets::postOffice,
+			&BuildingPresets::postOffice,
 			{
 				ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-N"),
 				ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-E"),
@@ -23,7 +23,7 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 	},
 	{ EntityTag::MailBox,
 		ConstructionRecipe(
-			&EntityPresets::mailBox,
+			&BuildingPresets::mailBox,
 			{
 				ResourceLoader::get()->getSprite("buildings/buildings", "mailbox"),
 				ResourceLoader::get()->getSprite("buildings/buildings", "mailbox"),
@@ -37,7 +37,7 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 	},
 	{ EntityTag::CargoTruckDepot,
 		ConstructionRecipe(
-			&EntityPresets::cargoTruckDepot,
+			&BuildingPresets::cargoTruckDepot,
 			{
 				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-N"),
 				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-E"),
@@ -51,7 +51,7 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 	},
 	{ EntityTag::TrainStation,
 		ConstructionRecipe(
-			&EntityPresets::trainStation,
+			&BuildingPresets::trainStation,
 			{
 				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-N"),
 				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-E"),

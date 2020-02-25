@@ -57,9 +57,6 @@
     <ClCompile Include="src\Component\Renderer\SpriteRenderer\SpriteRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Entity\EntityPresets\EntityPresets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Component\Renderer\IsoSpriteRenderer\IsoSpriteRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -135,6 +132,12 @@
     <ClCompile Include="src\Component\Controller\TrainController\TrainController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Entity\EntityPresets\VehiclePresets\VehiclePresets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Entity\EntityPresets\BuildingPresets\BuildingsPresets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h">
@@ -165,9 +168,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Component\Renderer\SpriteRenderer\SpriteRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Entity\EntityPresets\EntityPresets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\System\IsoRotation\IsoRotation.h">
@@ -258,6 +258,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Component\Controller\TrainController\TrainController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Entity\EntityPresets\VehiclePresets\VehiclePresets.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Entity\EntityPresets\BuildingPresets\BuildingPresets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

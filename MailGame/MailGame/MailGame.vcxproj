@@ -144,7 +144,8 @@
     <ClCompile Include="src\Component\TransitStop\BasicTransitStop\BasicTransitStop.cpp" />
     <ClCompile Include="src\Component\TransitStop\BuildingTransitStop\BuildingTransitStop.cpp" />
     <ClCompile Include="src\Entity\Entity.cpp" />
-    <ClCompile Include="src\Entity\EntityPresets\EntityPresets.cpp" />
+    <ClCompile Include="src\Entity\EntityPresets\BuildingPresets\BuildingsPresets.cpp" />
+    <ClCompile Include="src\Entity\EntityPresets\VehiclePresets\VehiclePresets.cpp" />
     <ClCompile Include="src\GameMap\GameMap.cpp" />
     <ClCompile Include="src\GameMap\Line\Line.cpp" />
     <ClCompile Include="src\Game\Game.cpp" />
@@ -191,7 +192,8 @@
     <ClInclude Include="src\Component\TransitStop\TransitStop.h" />
     <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\Entity\Entity.h" />
-    <ClInclude Include="src\Entity\EntityPresets\EntityPresets.h" />
+    <ClInclude Include="src\Entity\EntityPresets\BuildingPresets\BuildingPresets.h" />
+    <ClInclude Include="src\Entity\EntityPresets\VehiclePresets\VehiclePresets.h" />
     <ClInclude Include="src\Entity\EntityTag\EntityTag.h" />
     <ClInclude Include="src\GameMap\GameMap.h" />
     <ClInclude Include="src\GameMap\Line\Line.h" />
