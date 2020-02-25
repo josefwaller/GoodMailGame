@@ -2,12 +2,23 @@
 #include "Component/Controller/Controller.h"
 #include "Routes/TransitRoute/TransitRoute.h"
 #include <map>
+#include <vector>
 
-class TruckDepotController : public Controller {
+/*
+ * Superclass for entity controllers which spawn trucks/trains/boats/planes/etc to bring mail between places
+ * Has a UI that controls the routes and holds the routes assigned to this depot
+ * Has abstract methods which must be filled out by the subclass for the specific type of depot
+ */
+class DepotController : public Controller {
 public:
 	virtual void update(float delta) override;
 	virtual void onHourChange(size_t newHour) override;
+	// Spawn a vehicle for the given route
+	virtual void spawnVehicleForRoute(TransitRoute route) = 0;
+	// Get the name for the UI window
+	virtual const char* getUiName() = 0;
 
+	/**** Methods used by UI to modify routes ****/
 	// Add a new route
 	void addRoute(TransitRoute route);
 	// Delete a route by id

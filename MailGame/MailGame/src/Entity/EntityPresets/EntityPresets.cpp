@@ -12,7 +12,7 @@
 #include "Component/Controller/TruckController/MailTruckController/MailTruckController.h"
 #include "Component/Controller/TruckController/CargoTruckController/CargoTruckController.h"
 #include "Component/Controller/ResidenceController/ResidenceController.h"
-#include "Component/Controller/TruckDepotController/TruckDepotController.h"
+#include "Component/Controller/DepotController/TruckDepotController/TruckDepotController.h"
 #include "Component/ClickBox/RectClickBox/RectClickBox.h"
 #include "Component/MailContainer/MailContainer.h"
 #include "Component/TransitStop/BasicTransitStop/BasicTransitStop.h"

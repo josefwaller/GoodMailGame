@@ -99,9 +99,6 @@
     <ClCompile Include="src\Mail\Mail.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Component\Controller\TruckDepotController\TruckDepotController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\PostalCodeDatabase\PostalCodeDatabase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -124,6 +121,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Routes\TransitRoute\TransitRoute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\Controller\DepotController\DepotController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\Controller\DepotController\TruckDepotController\TruckDepotController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -212,9 +215,6 @@
     <ClInclude Include="src\Constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Component\Controller\TruckDepotController\TruckDepotController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\PostalCodeDatabase\PostalCodeDatabase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -243,6 +243,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Routes\TransitRoute\TransitRoute.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\Controller\DepotController\TruckDepotController\TruckDepotController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

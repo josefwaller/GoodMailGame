@@ -127,12 +127,13 @@
     <ClCompile Include="src\App\App.cpp" />
     <ClCompile Include="src\Component\ClickBox\RectClickBox\RectClickBox.cpp" />
     <ClCompile Include="src\Component\Component.cpp" />
+    <ClCompile Include="src\Component\Controller\DepotController\DepotController.cpp" />
     <ClCompile Include="src\Component\Controller\ResidenceController\ResidenceController.cpp" />
     <ClCompile Include="src\Component\Controller\TruckController\CargoTruckController\CargoTruckController.cpp" />
     <ClCompile Include="src\Component\Controller\TruckController\MailTruckController\MailTruckController.cpp" />
     <ClCompile Include="src\Component\Controller\PostOfficeController\PostOfficeController.cpp" />
     <ClCompile Include="src\Component\Controller\TruckController\TruckController.cpp" />
-    <ClCompile Include="src\Component\Controller\TruckDepotController\TruckDepotController.cpp" />
+    <ClCompile Include="src\Component\Controller\DepotController\TruckDepotController\TruckDepotController.cpp" />
     <ClCompile Include="src\Component\MailContainer\MailContainer.cpp" />
     <ClCompile Include="src\Component\Renderer\IsoSpriteRenderer\IsoBuildingRenderer\IsoBuildingRenderer.cpp" />
     <ClCompile Include="src\Component\Renderer\IsoSpriteRenderer\IsoSpriteRenderer.cpp" />
@@ -174,7 +175,7 @@
     <ClInclude Include="src\Component\Controller\TruckController\MailTruckController\MailTruckController.h" />
     <ClInclude Include="src\Component\Controller\PostOfficeController\PostOfficeController.h" />
     <ClInclude Include="src\Component\Controller\TruckController\TruckController.h" />
-    <ClInclude Include="src\Component\Controller\TruckDepotController\TruckDepotController.h" />
+    <ClInclude Include="src\Component\Controller\DepotController\TruckDepotController\TruckDepotController.h" />
     <ClInclude Include="src\Component\MailContainer\MailContainer.h" />
     <ClInclude Include="src\Component\Renderer\IsoSpriteRenderer\IsoBuildingRenderer\IsoBuildingRenderer.h" />
     <ClInclude Include="src\Component\Renderer\IsoSpriteRenderer\IsoSpriteRenderer.h" />
