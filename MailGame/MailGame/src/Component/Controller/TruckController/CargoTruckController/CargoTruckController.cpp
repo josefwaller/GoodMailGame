@@ -5,10 +5,10 @@
 #include "Game/Game.h"
 #include <stdexcept>
 
-CargoTruckController::CargoTruckController(CargoTruckRoute r, std::weak_ptr<Entity> d): depot(d), route(r) {
+CargoTruckController::CargoTruckController(TransitRoute r, std::weak_ptr<Entity> d): depot(d), route(r) {
 	// Add all the locations to stops
 	std::vector<sf::Vector2i> stops;
-	for (CargoTruckStop stop : route.stops) {
+	for (TransitRouteStop stop : route.stops) {
 		if (auto s = stop.target.lock()) {
 #ifdef _DEBUG
 			if (!s->transitStop) {
@@ -30,7 +30,7 @@ void CargoTruckController::onArriveAtStop(size_t stopIndex) {
 	// For the last stop (i.e. the depot) we don't need to transfer any letters
 	if (stopIndex >= this->route.stops.size())
 		return;
-	CargoTruckStop stop = this->route.stops[stopIndex];
+	TransitRouteStop stop = this->route.stops[stopIndex];
 	if (!stop.target.lock())
 		return;
 	// Get game map

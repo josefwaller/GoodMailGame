@@ -13,7 +13,7 @@ void TruckDepotController::update(float delta) {
 
 	// Show gui for each route
 	for (auto kvp: this->routes) {
-		CargoTruckRoute route = kvp.second;
+		TransitRoute route = kvp.second;
 		ImGui::PushID((int)route.id);
 
 
@@ -35,7 +35,7 @@ void TruckDepotController::update(float delta) {
 
 			// GUI for the stops
 			for (size_t j = 0; j < route.stops.size(); j++) {
-				CargoTruckStop stop = route.stops[j];
+				TransitRouteStop stop = route.stops[j];
 				ImGui::PushID((int)stop.id);
 				
 				sprintf_s(buf, "Stop %zd", stop.id);
@@ -100,7 +100,7 @@ void TruckDepotController::update(float delta) {
 			}
 			// Add Stop button
 			if (ImGui::Button("Add Stop")) {
-				this->addStop(CargoTruckStop(), route.id);
+				this->addStop(TransitRouteStop(), route.id);
 			}
 			// Delete route button
 			if (ImGui::Button("Delete Route")) {
@@ -112,14 +112,14 @@ void TruckDepotController::update(float delta) {
 	}
 	// Add Route button
 	if (ImGui::Button("Create new route")) {
-		this->addRoute(CargoTruckRoute(0));
+		this->addRoute(TransitRoute(0));
 	}
 
 	ImGui::End();
 	ImGui::PopID();
 
 	// Delete routes
-	for (CargoTruckRoute r : this->toDelete) {
+	for (TransitRoute r : this->toDelete) {
 		this->routes.erase(r.id);
 	}
 	this->toDelete.clear();
@@ -141,7 +141,7 @@ void TruckDepotController::onHourChange(size_t newHour) {
 	}
 }
 
-void TruckDepotController::addRoute(CargoTruckRoute r) {
+void TruckDepotController::addRoute(TransitRoute r) {
 	this->routes.insert({ r.id, r });
 }
 void TruckDepotController::deleteRoute(size_t id) {
@@ -150,7 +150,7 @@ void TruckDepotController::deleteRoute(size_t id) {
 void TruckDepotController::setRouteDepartTime(size_t routeId, int depTime) {
 	this->routes.find(routeId)->second.departureTime = depTime;
 }
-void TruckDepotController::addStop(CargoTruckStop stop, size_t routeId) {
+void TruckDepotController::addStop(TransitRouteStop stop, size_t routeId) {
 	this->routes.find(routeId)->second.stops.push_back(stop);
 }
 void TruckDepotController::deleteStop(size_t stopIndex, size_t routeId) {

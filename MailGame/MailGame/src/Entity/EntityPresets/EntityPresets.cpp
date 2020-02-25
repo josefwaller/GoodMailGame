@@ -122,7 +122,7 @@ std::shared_ptr<Entity> EntityPresets::cargoTruck(
 	Game* g,
 	sf::Vector2f pos,
 	IsoRotation rot,
-	CargoTruckRoute route,
+	TransitRoute route,
 	std::weak_ptr<Entity> office) {
 	return Entity::createEntity(
 		g,

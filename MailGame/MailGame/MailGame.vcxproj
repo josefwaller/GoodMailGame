@@ -154,7 +154,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\PostalCodeDatabase\PostalCodeDatabase.cpp" />
     <ClCompile Include="src\ResourceLoader\ResourceLoader.cpp" />
-    <ClCompile Include="src\Routes\CargoTruckRoute\CargoTruckRoute.cpp" />
+    <ClCompile Include="src\Routes\TransitRoute\TransitRoute.cpp" />
     <ClCompile Include="src\Routes\MailTruckRoute\MailTruckRoute.cpp" />
     <ClCompile Include="src\System\Utils\Utils.cpp" />
     <ClCompile Include="src\Ui\Construction\Construction.cpp" />
@@ -167,6 +167,7 @@
     <ClInclude Include="src\Component\ClickBox\ClickBox.h" />
     <ClInclude Include="src\Component\ClickBox\RectClickBox\RectClickBox.h" />
     <ClInclude Include="src\Component\Component.h" />
+    <ClInclude Include="src\Component\Controller\DepotController\DepotController.h" />
     <ClInclude Include="src\Component\Controller\ResidenceController\ResidenceController.h" />
     <ClInclude Include="src\Component\Controller\Controller.h" />
     <ClInclude Include="src\Component\Controller\TruckController\CargoTruckController\CargoTruckController.h" />
@@ -193,7 +194,7 @@
     <ClInclude Include="src\Mail\Mail.h" />
     <ClInclude Include="src\PostalCodeDatabase\PostalCodeDatabase.h" />
     <ClInclude Include="src\ResourceLoader\ResourceLoader.h" />
-    <ClInclude Include="src\Routes\CargoTruckRoute\CargoTruckRoute.h" />
+    <ClInclude Include="src\Routes\TransitRoute\TransitRoute.h" />
     <ClInclude Include="src\Routes\MailTruckRoute\MailTruckRoute.h" />
     <ClInclude Include="src\System\IsoRotation\IsoRotation.h" />
     <ClInclude Include="src\System\Utils\Utils.h" />
