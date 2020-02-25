@@ -14,6 +14,7 @@
 #include "Component/Controller/ResidenceController/ResidenceController.h"
 #include "Component/Controller/DepotController/TruckDepotController/TruckDepotController.h"
 #include "Component/Controller/DepotController/TrainDepotController/TrainDepotController.h"
+#include "Component/Controller/TrainController/TrainController.h"
 #include "Component/ClickBox/RectClickBox/RectClickBox.h"
 #include "Component/MailContainer/MailContainer.h"
 #include "Component/TransitStop/BasicTransitStop/BasicTransitStop.h"
@@ -173,7 +174,7 @@ std::shared_ptr<Entity> EntityPresets::train(
 			ResourceLoader::get()->getSprite("vehicles/vehicles", "train-W.png"),
 			ResourceLoader::get()->getSprite("vehicles/vehicles", "train-S.png")
 		),
-		nullptr,
+		new TrainController(route, depot),
 		nullptr,
 		new MailContainer()
 	);
