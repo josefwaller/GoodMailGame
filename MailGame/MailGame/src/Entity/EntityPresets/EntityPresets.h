@@ -21,4 +21,7 @@ public:
 		Game* g, sf::Vector2f pos, IsoRotation rot, TransitRoute route, std::weak_ptr<Entity> office
 	);
 	static std::shared_ptr<Entity> trainStation(Game* g, sf::Vector2f pos, IsoRotation rot);
+	static std::shared_ptr<Entity> train(
+		Game* g, sf::Vector2f pos, IsoRotation rot, TransitRoute route, std::weak_ptr<Entity> depot
+	);
 };

@@ -13,6 +13,7 @@
 #include "Component/Controller/TruckController/CargoTruckController/CargoTruckController.h"
 #include "Component/Controller/ResidenceController/ResidenceController.h"
 #include "Component/Controller/DepotController/TruckDepotController/TruckDepotController.h"
+#include "Component/Controller/DepotController/TrainDepotController/TrainDepotController.h"
 #include "Component/ClickBox/RectClickBox/RectClickBox.h"
 #include "Component/MailContainer/MailContainer.h"
 #include "Component/TransitStop/BasicTransitStop/BasicTransitStop.h"
@@ -149,6 +150,28 @@ std::shared_ptr<Entity> EntityPresets::trainStation(Game* g, sf::Vector2f pos, I
 			ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-E"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-S"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-W")
+		),
+		new TrainDepotController(),
+		nullptr,
+		new MailContainer()
+	);
+}
+std::shared_ptr<Entity> EntityPresets::train(
+	Game* g,
+	sf::Vector2f pos,
+	IsoRotation rot,
+	TransitRoute route,
+	std::weak_ptr<Entity> depot
+) {
+	return Entity::createEntity(
+		g,
+		EntityTag::Train,
+		new Transform(pos, rot),
+		new IsoSpriteRenderer(
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "train-N.png"),
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "train-E.png"),
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "train-W.png"),
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "train-S.png")
 		),
 		nullptr,
 		nullptr,
