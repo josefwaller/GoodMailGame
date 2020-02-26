@@ -23,37 +23,22 @@ std::shared_ptr<Entity> Entity::createEntity(
 
 	// Create the entity
 	std::shared_ptr<Entity> e(new Entity(g, tag));
+	// Utility macro for setting components
+#define SET_COMPONENT(var, field, cast) \
+if (var) { \
+	e->field = std::shared_ptr<cast>(var); \
+	var->setEntity(e); \
+}
 	// Set components
-	if (t) {
-		e->transform = std::shared_ptr<Transform>(t);
-		t->setEntity(e);
-	}
-	if (r) {
-		e->renderer = std::shared_ptr<Renderer>(r);
-		r->setEntity(e);
-	}
-	if (c) {
-		e->controller = std::shared_ptr<Controller>(c);
-		c->setEntity(e);
-	}
-	if (cb) {
-		e->clickBox = std::shared_ptr<ClickBox>(cb);
-		cb->setEntity(e);
-	}
-	if (m) {
-		e->mailContainer = std::shared_ptr<MailContainer>(m);
-		m->setEntity(e);
-	}
-	if (ts) {
-		e->transitStop = std::shared_ptr<TransitStop>(ts);
-		ts->setEntity(e);
-	}
+	SET_COMPONENT(t, transform, Transform);
+	SET_COMPONENT(r, renderer, Renderer);
+	SET_COMPONENT(c, controller, Controller);
+	SET_COMPONENT(cb, clickBox, ClickBox);
+	SET_COMPONENT(m, mailContainer, MailContainer);
+	SET_COMPONENT(ts, transitStop, TransitStop);
+	SET_COMPONENT(p, pathfinder, Pathfinder);
 
-	if (p) {
-		e->pathfinder = std::shared_ptr<Pathfinder>(p);
-		p->setEntity(e);
-	}
-
+#undef SET_COMPONENT
 	// Return built entity
 	return e;
 
