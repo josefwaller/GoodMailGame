@@ -12,6 +12,8 @@
 #include "Component/Controller/TrainController/TrainController.h"
 // Mail Container
 #include "Component/MailContainer/MailContainer.h"
+// Pathfinders
+#include "Component/Pathfinder/RoadPathfinder/RoadPathfinder.h"
 
 std::shared_ptr<Entity> VehiclePresets::mailTruck(
 	Game* g,
@@ -32,7 +34,9 @@ std::shared_ptr<Entity> VehiclePresets::mailTruck(
 		),
 		new MailTruckController(route, postOffice),
 		nullptr,
-		new MailContainer()
+		new MailContainer(),
+		nullptr,
+		new RoadPathfinder()
 	);
 }
 
@@ -54,7 +58,9 @@ std::shared_ptr<Entity> VehiclePresets::cargoTruck(
 		),
 		new CargoTruckController(route, office),
 		nullptr,
-		new MailContainer()
+		new MailContainer(),
+		nullptr,
+		new RoadPathfinder()
 	);
 }
 

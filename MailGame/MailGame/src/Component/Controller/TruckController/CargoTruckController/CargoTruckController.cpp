@@ -7,7 +7,7 @@
 
 CargoTruckController::CargoTruckController(TransitRoute r, std::weak_ptr<Entity> d): depot(d), route(r) {
 	// Add all the locations to stops
-	std::vector<sf::Vector2i> stops;
+	std::vector<sf::Vector2f> stops;
 	for (TransitRouteStop stop : route.stops) {
 		if (auto s = stop.target.lock()) {
 #ifdef _DEBUG
@@ -15,10 +15,10 @@ CargoTruckController::CargoTruckController(TransitRoute r, std::weak_ptr<Entity>
 				throw std::runtime_error("Cargo truck has stop that does not have TransitStop!");
 			}
 #endif
-			stops.push_back(sf::Vector2i(s->transitStop->getTransitLocation()));
+			stops.push_back(s->transitStop->getTransitLocation());
 		}
 	}
-	stops.push_back(sf::Vector2i(depot.lock()->transitStop->getTransitLocation()));
+	stops.push_back(depot.lock()->transitStop->getTransitLocation());
 	this->setStops(stops);
 }
 void CargoTruckController::onArriveAtDest() {

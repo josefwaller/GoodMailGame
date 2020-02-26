@@ -12,6 +12,8 @@ public:
 	static const float SPEED;
 	virtual void update(float delta) override;
 private:
+	// Flag for if the truck has picked up the mail from the office yet
+	bool hasPickedUpMail;
 	// The route the truck is doing
 	MailTruckRoute route;
 	// The office
@@ -22,4 +24,6 @@ private:
 	virtual void onArriveAtDest() override;
 	// Drop off any mail it has for the tiles around the given position
 	void dropOffMail(sf::Vector2i pos);
+	// Pick up the mail along the truck's route from the post office that spawned it
+	void pickupMailFromOffice();
 };

@@ -4,6 +4,8 @@
 #include "Entity/Entity.h"
 #include "Component/TransitStop/TransitStop.h"
 #include "Component/MailContainer/MailContainer.h"
+#include "Component/Transform/Transform.h"
+#include "Component/Pathfinder/Pathfinder.h"
 #include "Mail/Mail.h"
 #include <imgui.h>
 
@@ -11,19 +13,23 @@ const float MailTruckController::SPEED = 1.0f;
 
 // Set stop to -1 to avoid skipping the first stop
 MailTruckController::MailTruckController(MailTruckRoute r, std::weak_ptr<Entity> o)
-	: route(r), office(o) {
+	: route(r), office(o), hasPickedUpMail(false) {
 	// Build and set the stops
-	std::vector<sf::Vector2i> stops;
+	std::vector<sf::Vector2f> stops;
 	for (MailTruckRouteStop s : this->route.stops) {
-		stops.push_back(s.target.value());
+		stops.push_back(sf::Vector2f(s.target.value()));
 	}
-	stops.push_back(sf::Vector2i(
+	stops.push_back(
 		o.lock()->transitStop->getTransitLocation()
-	));
+	);
 	this->setStops(stops);
 }
 
 void MailTruckController::update(float delta) {
+	if (!hasPickedUpMail && this->route.isDelivering) {
+		hasPickedUpMail = true;
+		this->pickupMailFromOffice();
+	}
 	TruckController::update(delta);
 	// Draw GUI
 	ImGui::Begin("Mail Trucks");
@@ -84,3 +90,54 @@ void MailTruckController::onArriveAtDest() {
 float MailTruckController::getSpeed() {
 	return SPEED;
 }
+void MailTruckController::pickupMailFromOffice() {
+	// Get the position of the post office
+	sf::Vector2f pos(this->office.lock()->transitStop->getTransitLocation());
+	// Get all the stops along the route (i.e. from post office -> through all the stops -> back to post office)
+	std::vector<sf::Vector2f> allStops = { pos };
+	for (MailTruckRouteStop s : route.stops) {
+		allStops.push_back(sf::Vector2f(s.target.value()));
+	}
+	allStops.push_back(pos);
+	// Now gather all the tiles between the stops
+	std::vector<sf::Vector2i> allPoints;
+	for (size_t i = 0; i < allStops.size() - 1; i++) {
+		// Get the points
+		std::vector<sf::Vector2f> pointsBetween = this->getEntity()->pathfinder->findPathBetweenPoints(
+			allStops[i],
+			allStops[i + 1]
+		);
+		// Add to all points
+		for (auto it = pointsBetween.begin(); it != pointsBetween.end(); it++) {
+			allPoints.push_back(sf::Vector2i(*it));
+		}
+	}
+	// Add all the points beside these points
+	std::vector<sf::Vector2i> pointsAround;
+	for (sf::Vector2i p : allPoints) {
+		std::vector<sf::Vector2i> pointsToAdd = {
+			p + sf::Vector2i(1, 0),
+			p + sf::Vector2i(-1, 0),
+			p + sf::Vector2i(0, 1),
+			p + sf::Vector2i(0, -1)
+		};
+		for (sf::Vector2i p2 : pointsToAdd) {
+			// Add the point if it is not a road
+			if (this->getEntity()->getGame()->getGameMap()->getTileAt(p2.x, p2.y).type == TileType::Road)
+				continue;
+			if (std::find(pointsAround.begin(), pointsAround.end(), p2) == pointsAround.end()) {
+				pointsAround.push_back(p2);
+			}
+		}
+	}
+	// Now go through all the mail and select the ones that are delivered on these points
+	std::vector<Mail> mailForRoute;
+	for (Mail m : this->office.lock()->mailContainer->getMail()) {
+		if (std::find(pointsAround.begin(), pointsAround.end(), m.getDest()) != pointsAround.end()) {
+			mailForRoute.push_back(m);
+		}
+	}
+	// Take the mail
+	this->office.lock()->mailContainer->transferSomeMailTo(mailForRoute, this->getEntity()->mailContainer);
+}
+

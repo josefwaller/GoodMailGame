@@ -138,6 +138,9 @@
     <ClCompile Include="src\Entity\EntityPresets\BuildingPresets\BuildingsPresets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Component\Pathfinder\RoadPathfinder\RoadPathfinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h">
@@ -267,6 +270,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Component\Pathfinder\Pathfinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\Pathfinder\RoadPathfinder\RoadPathfinder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -6,6 +6,7 @@
 #include "Ui/UiHandler/UiHandler.h"
 #include "Entity/EntityPresets/VehiclePresets/VehiclePresets.h"
 #include "Component/MailContainer/MailContainer.h"
+#include "Component/Pathfinder/RoadPathfinder/RoadPathfinder.h"
 #include "Mail/Mail.h"
 #include <string>
 #include <imgui.h>
@@ -95,55 +96,6 @@ void PostOfficeController::update(float delta) {
 	}
 	this->routesToDelete.clear();
 }
-std::vector<Mail> PostOfficeController::getMailForRoute(MailTruckRoute route) {
-	// Get the position of the post office
-	auto trans = this->getEntity()->transform;
-	sf::Vector2i pos(trans->getPosition() + trans->getRotation().getUnitVector());
-	// Get all the stops along the route (i.e. from post office -> through all the stops -> back to post office)
-	std::vector<sf::Vector2i> allStops = { pos };
-	for (MailTruckRouteStop s : route.stops) {
-		allStops.push_back(s.target.value());
-	}
-	allStops.push_back(pos);
-	// Now gather all the tiles between the stops
-	std::vector<sf::Vector2i> allPoints;
-	for (size_t i = 0; i < allStops.size() - 1; i++) {
-		// Get the points
-		std::vector<sf::Vector2i> pointsBetween = MailTruckController::getPathBetween(
-			allStops[i],
-			allStops[i + 1],
-			this->getEntity()->getGame()->getGameMap()
-		);
-		// Add to all points
-		allPoints.insert(allPoints.end(), pointsBetween.begin(), pointsBetween.end());
-	}
-	// Add all the points beside these points
-	std::vector<sf::Vector2i> pointsAround;
-	for (sf::Vector2i p : allPoints) {
-		std::vector<sf::Vector2i> pointsToAdd = {
-			p + sf::Vector2i(1, 0),
-			p + sf::Vector2i(-1, 0),
-			p + sf::Vector2i(0, 1),
-			p + sf::Vector2i(0, -1)
-		};
-		for (sf::Vector2i p2 : pointsToAdd) {
-			// Add the point if it is not a road
-			if (this->getEntity()->getGame()->getGameMap()->getTileAt(p2.x, p2.y).type == TileType::Road)
-				continue;
-			if (std::find(pointsAround.begin(), pointsAround.end(), p2) == pointsAround.end()) {
-				pointsAround.push_back(p2);
-			}
-		}
-	}
-	// Now go through all the mail and select the ones that are delivered on these points
-	std::vector<Mail> mailForRoute;
-	for (Mail m : this->getEntity()->mailContainer->getMail()) {
-		if (std::find(pointsAround.begin(), pointsAround.end(), m.getDest()) != pointsAround.end()) {
-			mailForRoute.push_back(m);
-		}
-	}
-	return mailForRoute;
-}
 void PostOfficeController::onHourChange(size_t newHour) {
 	// Check if any of the routes depart
 	for (auto it = this->routes.begin(); it != this->routes.end(); it++) {
@@ -158,13 +110,6 @@ void PostOfficeController::onHourChange(size_t newHour) {
 				*it,
 				this->getEntity()
 			);
-			// Give it some mail
-			if (it->isDelivering) {
-				this->getEntity()->mailContainer->transferSomeMailTo(
-					this->getMailForRoute(*it),
-					truck->mailContainer
-				);
-			}
 			game->addEntity(truck);
 		}
 	}

@@ -137,6 +137,7 @@
     <ClCompile Include="src\Component\Controller\TruckController\TruckController.cpp" />
     <ClCompile Include="src\Component\Controller\DepotController\TruckDepotController\TruckDepotController.cpp" />
     <ClCompile Include="src\Component\MailContainer\MailContainer.cpp" />
+    <ClCompile Include="src\Component\Pathfinder\RoadPathfinder\RoadPathfinder.cpp" />
     <ClCompile Include="src\Component\Renderer\IsoSpriteRenderer\IsoBuildingRenderer\IsoBuildingRenderer.cpp" />
     <ClCompile Include="src\Component\Renderer\IsoSpriteRenderer\IsoSpriteRenderer.cpp" />
     <ClCompile Include="src\Component\Renderer\SpriteRenderer\SpriteRenderer.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="src\Component\Controller\DepotController\TruckDepotController\TruckDepotController.h" />
     <ClInclude Include="src\Component\MailContainer\MailContainer.h" />
     <ClInclude Include="src\Component\Pathfinder\Pathfinder.h" />
+    <ClInclude Include="src\Component\Pathfinder\RoadPathfinder\RoadPathfinder.h" />
     <ClInclude Include="src\Component\Renderer\IsoSpriteRenderer\IsoBuildingRenderer\IsoBuildingRenderer.h" />
     <ClInclude Include="src\Component\Renderer\IsoSpriteRenderer\IsoSpriteRenderer.h" />
     <ClInclude Include="src\Component\Renderer\Renderer.h" />
