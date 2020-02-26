@@ -266,6 +266,9 @@
     <ClInclude Include="src\Entity\EntityPresets\BuildingPresets\BuildingPresets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Component\Pathfinder\Pathfinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\GameMap\Tile.h" />

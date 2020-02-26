@@ -6,6 +6,7 @@
 #include "Component/ClickBox/ClickBox.h"
 #include "Component/MailContainer/MailContainer.h"
 #include "Component/TransitStop/TransitStop.h"
+#include "Component/Pathfinder/Pathfinder.h"
 
 size_t Entity::entityId = 0;
 
@@ -17,7 +18,8 @@ std::shared_ptr<Entity> Entity::createEntity(
 	Controller* c,
 	ClickBox* cb,
 	MailContainer* m,
-	TransitStop* ts) {
+	TransitStop* ts,
+	Pathfinder* p) {
 
 	// Create the entity
 	std::shared_ptr<Entity> e(new Entity(g, tag));
@@ -45,6 +47,11 @@ std::shared_ptr<Entity> Entity::createEntity(
 	if (ts) {
 		e->transitStop = std::shared_ptr<TransitStop>(ts);
 		ts->setEntity(e);
+	}
+
+	if (p) {
+		e->pathfinder = std::shared_ptr<Pathfinder>(p);
+		p->setEntity(e);
 	}
 
 	// Return built entity

@@ -182,6 +182,7 @@
     <ClInclude Include="src\Component\Controller\TruckController\TruckController.h" />
     <ClInclude Include="src\Component\Controller\DepotController\TruckDepotController\TruckDepotController.h" />
     <ClInclude Include="src\Component\MailContainer\MailContainer.h" />
+    <ClInclude Include="src\Component\Pathfinder\Pathfinder.h" />
     <ClInclude Include="src\Component\Renderer\IsoSpriteRenderer\IsoBuildingRenderer\IsoBuildingRenderer.h" />
     <ClInclude Include="src\Component\Renderer\IsoSpriteRenderer\IsoSpriteRenderer.h" />
     <ClInclude Include="src\Component\Renderer\Renderer.h" />

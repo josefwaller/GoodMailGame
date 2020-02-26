@@ -8,6 +8,7 @@ class Controller;
 class ClickBox;
 class MailContainer;
 class TransitStop;
+class Pathfinder;
 class Game;
 
 class Entity {
@@ -20,7 +21,8 @@ public:
 		Controller* c = nullptr,
 		ClickBox* cb = nullptr,
 		MailContainer* m = nullptr,
-		TransitStop* ts = nullptr
+		TransitStop* ts = nullptr,
+		Pathfinder* p = nullptr
 	);
 	// The tag of the entity
 	EntityTag tag;
@@ -31,6 +33,7 @@ public:
 	std::shared_ptr<ClickBox> clickBox;
 	std::shared_ptr<MailContainer> mailContainer;
 	std::shared_ptr<TransitStop> transitStop;
+	std::shared_ptr<Pathfinder> pathfinder;
 	// Get the id
 	size_t getId();
 	// Get the game
