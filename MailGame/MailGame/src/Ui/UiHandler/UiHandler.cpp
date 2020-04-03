@@ -179,6 +179,11 @@ void UiHandler::render(sf::RenderWindow* w) {
 			this->currentRotation,
 			w);
 		break;
+	case UiState::BuildingRailTracks:
+		// Draw 2 lines that correspond with the direction
+		this->drawLineInDirection(w, this->getHoveredTile(), this->toBuild.dirOne);
+		this->drawLineInDirection(w, this->getHoveredTile(), this->toBuild.dirTwo);
+		break;
 	case UiState::EditingPostalCodes:
 		// Draw all the postal codes
 		GameMap* gMap = this->game->getGameMap();
@@ -202,6 +207,16 @@ void UiHandler::render(sf::RenderWindow* w) {
 	w->draw(vArr);
 }
 
+void UiHandler::drawLineInDirection(sf::RenderWindow* window, sf::Vector2i tile, IsoRotation rot) {
+	sf::VertexArray arr(sf::Lines, 2);
+	sf::Vector2f center = sf::Vector2f(tile) + sf::Vector2f(0.5f, 0.5f);
+	arr[0].position = this->game->worldToScreenPos(center);
+	arr[0].color = sf::Color::Red;
+	arr[1].position = this->game->worldToScreenPos(center + rot.getUnitVector() / 2.0f);
+	auto x = rot.getUnitVector();
+	arr[1].color = sf::Color::Red;
+	window->draw(arr);
+}
 void UiHandler::changeState(UiState state) {
 	this->currentState = state;
 }

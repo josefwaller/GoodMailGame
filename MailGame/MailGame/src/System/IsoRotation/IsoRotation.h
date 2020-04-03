@@ -56,9 +56,9 @@ public:
 		case IsoRotation::SOUTH:
 			return { 0, 1.0f };
 		case IsoRotation::EAST:
-			return { -1.0f, 0 };
-		case IsoRotation::WEST:
 			return { 1.0f, 0 };
+		case IsoRotation::WEST:
+			return { -1.0f, 0 };
 		default:
 			throw std::runtime_error("getUnitVector called on an invalid IsoRotation!");
 		}
