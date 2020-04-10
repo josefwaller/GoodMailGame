@@ -16,9 +16,9 @@ enum class TileType {
 // The railway on a tile
 struct Railway {
 	// The two directions the railway goes through
-	IsoRotation dirOne;
-	IsoRotation dirTwo;
-	Railway(IsoRotation from, IsoRotation to) : dirOne(from), dirTwo(to) {}
+	IsoRotation from;
+	IsoRotation to;
+	Railway(IsoRotation from, IsoRotation to) : from(from), to(to) {}
 };
 
 struct Tile {

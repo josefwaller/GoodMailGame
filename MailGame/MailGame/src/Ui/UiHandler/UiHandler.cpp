@@ -35,8 +35,8 @@ bool UiHandler::handleEvent(sf::Event e) {
 			this->game->getGameMap()->addRailTrack(
 				(size_t)tilePos.x,
 				(size_t)tilePos.y,
-				this->toBuild.dirOne,
-				this->toBuild.dirTwo
+				this->toBuild.from,
+				this->toBuild.to
 			);
 			break;
 		case UiState::SelectingEntity:
@@ -109,8 +109,8 @@ void UiHandler::update() {
 			this->changeState(UiState::BuildingRailTracks);
 		}
 		if (this->currentState == UiState::BuildingRailTracks) {
-			this->toBuild.dirOne = this->chooseDirection("DirOne", this->toBuild.dirOne);
-			this->toBuild.dirTwo = this->chooseDirection("DirTwo", this->toBuild.dirTwo);
+			this->toBuild.from = this->chooseDirection("From:", this->toBuild.from);
+			this->toBuild.to = this->chooseDirection("To:", this->toBuild.to);
 		}
 
 		if (this->currentState == UiState::BuildingEntity) {
@@ -181,8 +181,8 @@ void UiHandler::render(sf::RenderWindow* w) {
 		break;
 	case UiState::BuildingRailTracks:
 		// Draw 2 lines that correspond with the direction
-		this->drawLineInDirection(w, this->getHoveredTile(), this->toBuild.dirOne);
-		this->drawLineInDirection(w, this->getHoveredTile(), this->toBuild.dirTwo);
+		this->drawLineInDirection(w, this->getHoveredTile(), this->toBuild.from);
+		this->drawLineInDirection(w, this->getHoveredTile(), this->toBuild.to);
 		break;
 	case UiState::EditingPostalCodes:
 		// Draw all the postal codes

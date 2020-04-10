@@ -90,7 +90,7 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 			Railway r = tiles[x][y].railway.value();
 			// Get the binary number representing the intersection at the til
 			int index = 0;
-			for (IsoRotation rot : { r.dirOne, r.dirTwo }) {
+			for (IsoRotation rot : { r.from, r.to}) {
 				switch (rot.getRotation()) {
 				case IsoRotation::NORTH:
 					index |= 0b1000;

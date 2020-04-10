@@ -116,7 +116,7 @@ std::shared_ptr<Entity> BuildingPresets::trainStation(Game* g, sf::Vector2f pos,
 		new TrainDepotController(),
 		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
 		new MailContainer(),
-		new BuildingTransitStop()
+		new BasicTransitStop()
 	);
 }
 
