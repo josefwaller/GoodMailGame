@@ -1,11 +1,11 @@
 #pragma once
-#include "Component/Controller/TruckController/TruckController.h"
+#include "Component/Controller/VehicleController/VehicleController.h"
 #include "Routes/TransitRoute/TransitRoute.h"
 #include <memory>
 
 class Entity;
 
-class CargoTruckController : public TruckController {
+class CargoTruckController : public VehicleController {
 public:
 	CargoTruckController(TransitRoute route, std::weak_ptr<Entity> office);
 	// Overridden methods, see TruckController

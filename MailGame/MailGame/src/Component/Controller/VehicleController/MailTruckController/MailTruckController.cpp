@@ -30,7 +30,7 @@ void MailTruckController::update(float delta) {
 		hasPickedUpMail = true;
 		this->pickupMailFromOffice();
 	}
-	TruckController::update(delta);
+	VehicleController::update(delta);
 	// Draw GUI
 	ImGui::Begin("Mail Trucks");
 	char buf[200];

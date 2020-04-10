@@ -1,4 +1,4 @@
-#include "TruckController.h"
+#include "VehicleController.h"
 #include "System/IsoRotation/IsoRotation.h"
 #include "Component/Transform/Transform.h"
 #include "Component/Pathfinder/Pathfinder.h"
@@ -8,7 +8,7 @@
 #include <map>
 #include <functional>
 
-void TruckController::update(float delta) {
+void VehicleController::update(float delta) {
 	// If the truck has gone through all the points
 	if (this->pointIndex >= this->points.size()) {
 		// Arrive at destination
@@ -54,14 +54,14 @@ void TruckController::update(float delta) {
 		}
 	}
 }
-void TruckController::pathfindToPoint(sf::Vector2f point){
+void VehicleController::pathfindToPoint(sf::Vector2f point){
 	// Get the path to the point
 	sf::Vector2f pos(this->getEntity()->transform->getPosition());
 	this->points = this->getEntity()->pathfinder->findPathBetweenPoints(pos, point);
 	// Reset pathIndex
 	this->pointIndex = 0;
 }
-void TruckController::goToNextStop() {
+void VehicleController::goToNextStop() {
 	sf::Vector2f stop;
 	// Go to next stop
 	this->stopIndex++;
@@ -75,11 +75,11 @@ void TruckController::goToNextStop() {
 		this->pathfindToPoint(stop);
 	}
 }
-void TruckController::setStops(std::vector<sf::Vector2f> s) {
+void VehicleController::setStops(std::vector<sf::Vector2f> s) {
 	this->stops = s;
 	// -1 because it will automatically be incremented into 0
 	this->stopIndex = -1;
 }
-void TruckController::onArriveAtTile(sf::Vector2f point) {}
-void TruckController::onArriveAtStop(size_t stopIndex) {}
-void TruckController::onArriveAtDest() {}
+void VehicleController::onArriveAtTile(sf::Vector2f point) {}
+void VehicleController::onArriveAtStop(size_t stopIndex) {}
+void VehicleController::onArriveAtDest() {}

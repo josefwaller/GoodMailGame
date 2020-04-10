@@ -5,7 +5,7 @@
 
 class GameMap;
 
-class TruckController : public Controller {
+class VehicleController: public Controller {
 public:
 	virtual void update(float delta) override;
 protected:

@@ -7,8 +7,8 @@
 // Renderers
 #include "Component/Renderer/IsoSpriteRenderer/IsoSpriteRenderer.h"
 // Controllers
-#include "Component/Controller/TruckController/MailTruckController/MailTruckController.h"
-#include "Component/Controller/TruckController/CargoTruckController/CargoTruckController.h"
+#include "Component/Controller/VehicleController/MailTruckController/MailTruckController.h"
+#include "Component/Controller/VehicleController/CargoTruckController/CargoTruckController.h"
 #include "Component/Controller/TrainController/TrainController.h"
 // Mail Container
 #include "Component/MailContainer/MailContainer.h"

@@ -1,12 +1,12 @@
 #pragma once
-#include "Component/Controller/TruckController/TruckController.h"
+#include "Component/Controller/VehicleController/VehicleController.h"
 #include <SFML/System/Vector2.hpp>
 #include "Routes/MailTruckRoute/MailTruckRoute.h"
 #include <vector>
 
 class GameMap;
 
-class MailTruckController : public TruckController {
+class MailTruckController : public VehicleController {
 public:
 	MailTruckController(MailTruckRoute route, std::weak_ptr<Entity> office);
 	static const float SPEED;
@@ -18,7 +18,7 @@ private:
 	MailTruckRoute route;
 	// The office
 	std::weak_ptr<Entity> office;
-	// Get Speed, see TruckController
+	// Get Speed, see VehicleController
 	virtual float getSpeed() override;
 	virtual void onArriveAtTile(sf::Vector2f point) override;
 	virtual void onArriveAtDest() override;

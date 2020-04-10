@@ -99,15 +99,6 @@
     <ClCompile Include="src\PostalCodeDatabase\PostalCodeDatabase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Component\Controller\TruckController\MailTruckController\MailTruckController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Component\Controller\TruckController\TruckController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Component\Controller\TruckController\CargoTruckController\CargoTruckController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Component\TransitStop\BasicTransitStop\BasicTransitStop.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -139,6 +130,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Component\Pathfinder\RoadPathfinder\RoadPathfinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\Controller\VehicleController\CargoTruckController\CargoTruckController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\Controller\VehicleController\MailTruckController\MailTruckController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\Controller\VehicleController\VehicleController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -227,15 +227,6 @@
     <ClInclude Include="src\PostalCodeDatabase\PostalCodeDatabase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Component\Controller\TruckController\MailTruckController\MailTruckController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Component\Controller\TruckController\TruckController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Component\Controller\TruckController\CargoTruckController\CargoTruckController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Component\TransitStop\TransitStop.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -273,6 +264,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Component\Pathfinder\RoadPathfinder\RoadPathfinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\Controller\VehicleController\CargoTruckController\CargoTruckController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\Controller\VehicleController\MailTruckController\MailTruckController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\Controller\VehicleController\VehicleController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
