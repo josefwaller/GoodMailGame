@@ -7,8 +7,9 @@
 
 void DepotController::update(float delta) {
 	ImGui::PushID((int)this->getEntity()->getId());
-	ImGui::Begin("Depot");
 	char buf[200];
+	sprintf_s(buf, "Depot %d", this->getEntity()->getId());
+	ImGui::Begin(buf);
 
 	// Show gui for each route
 	for (auto kvp: this->routes) {
