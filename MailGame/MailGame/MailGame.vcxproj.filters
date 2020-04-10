@@ -120,9 +120,6 @@
     <ClCompile Include="src\Component\Controller\DepotController\TrainDepotController\TrainDepotController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Component\Controller\TrainController\TrainController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Entity\EntityPresets\VehiclePresets\VehiclePresets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -132,13 +129,16 @@
     <ClCompile Include="src\Component\Pathfinder\RoadPathfinder\RoadPathfinder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Component\Controller\VehicleController\CargoTruckController\CargoTruckController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Component\Controller\VehicleController\MailTruckController\MailTruckController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Component\Controller\VehicleController\VehicleController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\Controller\VehicleController\CargoVehicleController\CargoVehicleController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\Pathfinder\RailsPathfinder\RailsPathfinder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -251,9 +251,6 @@
     <ClInclude Include="src\Component\Controller\DepotController\TrainDepotController\TrainDepotController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Component\Controller\TrainController\TrainController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Entity\EntityPresets\VehiclePresets\VehiclePresets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -266,13 +263,16 @@
     <ClInclude Include="src\Component\Pathfinder\RoadPathfinder\RoadPathfinder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Component\Controller\VehicleController\CargoTruckController\CargoTruckController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Component\Controller\VehicleController\MailTruckController\MailTruckController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Component\Controller\VehicleController\VehicleController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\Controller\VehicleController\CargoVehicleController\CargoVehicleController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\Pathfinder\RailsPathfinder\RailsPathfinder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

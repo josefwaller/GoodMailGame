@@ -8,12 +8,12 @@
 #include "Component/Renderer/IsoSpriteRenderer/IsoSpriteRenderer.h"
 // Controllers
 #include "Component/Controller/VehicleController/MailTruckController/MailTruckController.h"
-#include "Component/Controller/VehicleController/CargoTruckController/CargoTruckController.h"
-#include "Component/Controller/TrainController/TrainController.h"
+#include "Component/Controller/VehicleController/CargoVehicleController/CargoVehicleController.h"
 // Mail Container
 #include "Component/MailContainer/MailContainer.h"
 // Pathfinders
 #include "Component/Pathfinder/RoadPathfinder/RoadPathfinder.h"
+#include "Component/Pathfinder/RailsPathfinder/RailsPathfinder.h"
 
 std::shared_ptr<Entity> VehiclePresets::mailTruck(
 	Game* g,
@@ -56,7 +56,7 @@ std::shared_ptr<Entity> VehiclePresets::cargoTruck(
 			ResourceLoader::get()->getSprite("vehicles/vehicles", "cargoTruck_SW.png"),
 			ResourceLoader::get()->getSprite("vehicles/vehicles", "cargoTruck_NW.png")
 		),
-		new CargoTruckController(route, office),
+		new CargoVehicleController(route, office),
 		nullptr,
 		new MailContainer(),
 		nullptr,
@@ -81,8 +81,10 @@ std::shared_ptr<Entity> VehiclePresets::train(
 			ResourceLoader::get()->getSprite("vehicles/vehicles", "train-W.png"),
 			ResourceLoader::get()->getSprite("vehicles/vehicles", "train-S.png")
 		),
-		new TrainController(route, depot),
+		new CargoVehicleController(route, depot),
 		nullptr,
-		new MailContainer()
+		new MailContainer(),
+		nullptr,
+		new RailsPathfinder()
 	);
 }

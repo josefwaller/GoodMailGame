@@ -5,9 +5,9 @@
 
 class Entity;
 
-class CargoTruckController : public VehicleController {
+class CargoVehicleController : public VehicleController {
 public:
-	CargoTruckController(TransitRoute route, std::weak_ptr<Entity> office);
+	CargoVehicleController(TransitRoute route, std::weak_ptr<Entity> office);
 	// Overridden methods, see TruckController
 	virtual void onArriveAtDest() override;
 	virtual void onArriveAtStop(size_t stopIndex) override;

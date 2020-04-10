@@ -1,11 +1,11 @@
-#include "CargoTruckController.h"
+#include "CargoVehicleController.h"
 #include "Entity/Entity.h"
 #include "Component/TransitStop/TransitStop.h"
 #include "Component/MailContainer/MailContainer.h"
 #include "Game/Game.h"
 #include <stdexcept>
 
-CargoTruckController::CargoTruckController(TransitRoute r, std::weak_ptr<Entity> d): depot(d), route(r) {
+CargoVehicleController::CargoVehicleController(TransitRoute r, std::weak_ptr<Entity> d): depot(d), route(r) {
 	// Add all the locations to stops
 	std::vector<sf::Vector2f> stops;
 	for (TransitRouteStop stop : route.stops) {
@@ -21,12 +21,12 @@ CargoTruckController::CargoTruckController(TransitRoute r, std::weak_ptr<Entity>
 	stops.push_back(depot.lock()->transitStop->getTransitLocation());
 	this->setStops(stops);
 }
-void CargoTruckController::onArriveAtDest() {
+void CargoVehicleController::onArriveAtDest() {
 	// Give letters to depot and destory self
 	this->getEntity()->mailContainer->transferAllMailTo(this->depot.lock()->mailContainer);
 	this->getEntity()->getGame()->removeEntity(this->getEntity());
 }
-void CargoTruckController::onArriveAtStop(size_t stopIndex) {
+void CargoVehicleController::onArriveAtStop(size_t stopIndex) {
 	// For the last stop (i.e. the depot) we don't need to transfer any letters
 	if (stopIndex >= this->route.stops.size())
 		return;
@@ -65,4 +65,4 @@ void CargoTruckController::onArriveAtStop(size_t stopIndex) {
 	mail->transferSomeMailTo(toDropOff, otherMail);
 	otherMail->transferSomeMailTo(toPickUp, mail);
 }
-float CargoTruckController::getSpeed() { return 1.0f; };
+float CargoVehicleController::getSpeed() { return 1.0f; };

@@ -10,6 +10,7 @@
 
 void VehicleController::update(float delta) {
 	// If the truck has gone through all the points
+	// Also called if the truck has no points, i.e. no path exists
 	if (this->pointIndex >= this->points.size()) {
 		// Arrive at destination
 		// Since stopIndex starts at -1, we want to skip calling onArriveAtStop the first time
