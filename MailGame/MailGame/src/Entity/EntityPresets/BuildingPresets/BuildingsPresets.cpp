@@ -96,7 +96,7 @@ std::shared_ptr<Entity> BuildingPresets::cargoTruckDepot(Game* g, sf::Vector2f p
 			ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-W")
 		),
 		new TruckDepotController(),
-		nullptr,
+		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
 		new MailContainer(),
 		new BuildingTransitStop()
 	);
@@ -114,7 +114,7 @@ std::shared_ptr<Entity> BuildingPresets::trainStation(Game* g, sf::Vector2f pos,
 			ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-W")
 		),
 		new TrainDepotController(),
-		nullptr,
+		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
 		new MailContainer()
 	);
 }
