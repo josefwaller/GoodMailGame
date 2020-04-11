@@ -23,11 +23,11 @@ public:
 	}
 	// Rotate 90 degrees clockwise
 	IsoRotation operator+(IsoRotation other) {
-		return *this + other.getRotation();
+		return IsoRotation(this->getRotation() + other.getRotation());
 	}
 	// Rotate 90 degrees counter clockwise
 	IsoRotation operator-(IsoRotation other) {
-		return *this - other.getRotation();
+		return IsoRotation(this->getRotation() - other.getRotation());
 	}
 	// Rotate 90 degrees clockwise
 	IsoRotation& operator++() {
@@ -47,6 +47,10 @@ public:
 	IsoRotation& operator--(int x) {
 		rotation = (rotation - 1) % 4;
 		return *this;
+	}
+	// Check equality
+	bool operator==(IsoRotation other) {
+		return this->getRotation() == other.getRotation();
 	}
 	// Get unit vector
 	sf::Vector2f getUnitVector() {
