@@ -127,6 +127,9 @@ void UiHandler::update() {
 		if (this->currentState == UiState::BuildingRailTracks) {
 			this->toBuild.from = this->chooseDirection("From:", this->toBuild.from);
 			this->toBuild.to = this->chooseDirection("To:", this->toBuild.to);
+			if (ImGui::Button("Cancel")) {
+				this->changeState(UiState::Default);
+			}
 		}
 
 		if (this->currentState == UiState::BuildingEntity) {
