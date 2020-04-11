@@ -511,22 +511,22 @@
 	<SubTexture name="cargoTruck_SWD.png" x="70" y="362" width="34" height="37"/>
 	<SubTexture name="cargoTruck_SWU.png" x="0" y="210" width="37" height="28"/>
 	<SubTexture name="cargoTruck_W.png" x="203" y="349" width="33" height="29"/>
-	<SubTexture name="train-E.png" x="782" y="92" width="31" height="24"/>
-	<SubTexture name="train-N.png" x="860" y="160" width="17" height="24"/>
-	<SubTexture name="police_NE.png" x="559" y="445" width="32" height="26"/>
+	<SubTexture name="atrain-E.png" x="782" y="92" width="31" height="24"/>
+	<SubTexture name="atrain-N.png" x="860" y="160" width="17" height="24"/>
+	<SubTexture name="train-N.png" x="559" y="445" width="32" height="26"/>
 	<SubTexture name="police_NED.png" x="203" y="409" width="33" height="24"/>
 	<SubTexture name="police_NEU.png" x="205" y="0" width="33" height="31"/>
-	<SubTexture name="police_NW.png" x="560" y="22" width="32" height="27"/>
+	<SubTexture name="train-S.png" x="560" y="22" width="32" height="27"/>
 	<SubTexture name="police_NWD.png" x="560" y="102" width="32" height="23"/>
 	<SubTexture name="police_NWU.png" x="205" y="78" width="33" height="30"/>
-	<SubTexture name="train-S.png" x="877" y="140" width="17" height="24"/>
-	<SubTexture name="police_SE.png" x="591" y="152" width="32" height="27"/>
+	<SubTexture name="atrain-S.png" x="877" y="140" width="17" height="24"/>
+	<SubTexture name="train-E.png" x="591" y="152" width="32" height="27"/>
 	<SubTexture name="police_SED.png" x="591" y="179" width="32" height="32"/>
 	<SubTexture name="police_SEU.png" x="236" y="233" width="33" height="23"/>
-	<SubTexture name="police_SW.png" x="236" y="452" width="33" height="27"/>
+	<SubTexture name="train-W.png" x="236" y="452" width="33" height="27"/>
 	<SubTexture name="police_SWD.png" x="237" y="170" width="33" height="32"/>
 	<SubTexture name="police_SWU.png" x="238" y="56" width="33" height="24"/>
-	<SubTexture name="train-W.png" x="812" y="237" width="31" height="24"/>
+	<SubTexture name="atrain-W.png" x="812" y="237" width="31" height="24"/>
 	<SubTexture name="taxi_E.png" x="812" y="291" width="31" height="23"/>
 	<SubTexture name="taxi_N.png" x="843" y="252" width="17" height="23"/>
 	<SubTexture name="taxi_NE.png" x="591" y="237" width="32" height="25"/>
