@@ -13,11 +13,12 @@ UiHandler::UiHandler(Game* g): game(g), currentState(UiState::Default), recipe()
 
 bool UiHandler::handleEvent(sf::Event e) {
 	sf::Vector2i tilePos;
-	if (e.type == sf::Event::MouseButtonPressed) {
+	sf::Vector2f mousePos;
+	switch (e.type) {
+	case sf::Event::MouseButtonPressed:
 		if (ImGui::GetIO().WantCaptureMouse) {
 			return true;
 		}
-		sf::Vector2f mousePos;
 		switch(this->currentState) {
 		case UiState::BuildingEntity:
 			if (!this->recipe) {
@@ -57,9 +58,23 @@ bool UiHandler::handleEvent(sf::Event e) {
 			this->changeState(UiState::Default);
 			break;
 		}
-	} else {
+	case sf::Event::KeyPressed:
 		if (ImGui::GetIO().WantCaptureKeyboard) {
 			return true;
+		}
+		if (this->currentState == UiState::BuildingRailTracks) {
+			// Rotate the track if R is pressed
+			if (e.key.code == sf::Keyboard::R) {
+				this->toBuild.from++;
+				this->toBuild.to++;
+			}
+			else if (e.key.code == sf::Keyboard::T) {
+				// Toggle between straight and curved track
+				this->toBuild.to++;
+				if (this->toBuild.from == this->toBuild.to) {
+					this->toBuild.to++;
+				}
+			}
 		}
 	}
 	return false;
@@ -161,7 +176,6 @@ void UiHandler::update() {
 		}
 	}
 	ImGui::End();
-
 }
 
 void UiHandler::render(sf::RenderWindow* w) {
