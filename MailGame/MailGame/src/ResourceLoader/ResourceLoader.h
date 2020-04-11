@@ -24,4 +24,6 @@ public:
 	// Gets a single sprite from a spritesheet, loading the sheet if neccessary
 	// Optional parameter to center it
 	sf::Sprite getSprite(std::string sheetName, std::string spriteName, bool center = false);
+	// Get a single sprite fro its own image
+	sf::Sprite getIndividualSprite(std::string spriteName);
 };

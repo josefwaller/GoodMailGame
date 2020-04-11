@@ -55,3 +55,14 @@ sf::Sprite ResourceLoader::getSprite(std::string sheetName, std::string spriteNa
 	}
 	return spr;
 }
+
+sf::Sprite ResourceLoader::getIndividualSprite(std::string spriteName) {
+	// Check if we already have the file loaded
+	if (this->spritesheets.find(spriteName) == this->spritesheets.end()) {
+		sf::Texture* t = &this->spritesheets[spriteName].texture;
+		if (!t->loadFromFile("assets/sprites/" + spriteName)) {
+			// TBA
+		}
+	}
+	return sf::Sprite(this->spritesheets[spriteName].texture);
+}
