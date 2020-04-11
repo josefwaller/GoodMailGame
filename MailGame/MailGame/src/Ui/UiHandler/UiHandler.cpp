@@ -6,6 +6,7 @@
 #include <SFML/Graphics/VertexArray.hpp>
 #include "Game/Game.h"
 #include "PostalCodeDatabase/PostalCodeDatabase.h"
+#include "ResourceLoader/ResourceLoader.h"
 
 UiHandler::UiHandler(Game* g): game(g), currentState(UiState::Default), recipe(),
 	toBuild(IsoRotation::NORTH, IsoRotation::SOUTH) {}
@@ -181,8 +182,8 @@ void UiHandler::render(sf::RenderWindow* w) {
 		break;
 	case UiState::BuildingRailTracks:
 		// Draw 2 lines that correspond with the direction
-		this->drawLineInDirection(w, this->getHoveredTile(), this->toBuild.from);
-		this->drawLineInDirection(w, this->getHoveredTile(), this->toBuild.to);
+		this->drawArrow(w, this->getHoveredTile(), this->toBuild.from, false);
+		this->drawArrow(w, this->getHoveredTile(), this->toBuild.to + 2, true);
 		break;
 	case UiState::EditingPostalCodes:
 		// Draw all the postal codes
@@ -207,15 +208,43 @@ void UiHandler::render(sf::RenderWindow* w) {
 	w->draw(vArr);
 }
 
-void UiHandler::drawLineInDirection(sf::RenderWindow* window, sf::Vector2i tile, IsoRotation rot) {
-	sf::VertexArray arr(sf::Lines, 2);
-	sf::Vector2f center = sf::Vector2f(tile) + sf::Vector2f(0.5f, 0.5f);
-	arr[0].position = this->game->worldToScreenPos(center);
-	arr[0].color = sf::Color::Red;
-	arr[1].position = this->game->worldToScreenPos(center + rot.getUnitVector() / 2.0f);
-	auto x = rot.getUnitVector();
-	arr[1].color = sf::Color::Red;
-	window->draw(arr);
+void UiHandler::drawArrow(sf::RenderWindow* window, sf::Vector2i tile, IsoRotation rot, bool isOutgoing) {
+	// Load the arrow sprite
+	std::string sprName = "arrow_";
+	switch(rot.getRotation()) {
+	case IsoRotation::NORTH:
+		sprName += "N";
+		break;
+	case IsoRotation::EAST:
+		sprName += "E";
+		break;
+	case IsoRotation::SOUTH:
+		sprName += "S";
+		break;
+	case IsoRotation::WEST:
+		sprName += "W";
+		break;
+	default:
+		// Oh no
+		throw std::runtime_error("Invalid IsoRotation in UiHander::drawArrrow!");
+	}
+	sprName += ".png";
+	sf::Sprite arrow = ResourceLoader::get()->getIndividualSprite(sprName);
+	// Set origin to bottom center
+	arrow.setOrigin(
+		arrow.getGlobalBounds().width / 2.0f,
+		arrow.getGlobalBounds().height
+	);
+	// If outgoing, position itself to point out of the tile
+	if (isOutgoing)
+		rot = rot + 2;
+	arrow.setPosition(
+		this->game->worldToScreenPos(sf::Vector2f(tile)
+			+ sf::Vector2f(1.0f, 1.0f)
+			+ rot.getUnitVector() / 2.0f)
+	);
+	arrow.setScale(0.5f, 0.5f);
+	window->draw(arrow);
 }
 void UiHandler::changeState(UiState state) {
 	this->currentState = state;

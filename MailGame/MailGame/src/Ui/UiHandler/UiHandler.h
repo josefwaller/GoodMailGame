@@ -60,6 +60,6 @@ private:
 	IsoRotation chooseDirection(const char* label, IsoRotation default);
 	// The railway currently being built
 	Railway toBuild;
-	// Draw a line from the tile given to the edge of the tile in a given direction
-	void drawLineInDirection(sf::RenderWindow* window, sf::Vector2i tile, IsoRotation rot);
+	// Draw an arrow at the tile given in the direction given
+	void drawArrow(sf::RenderWindow* window, sf::Vector2i tile, IsoRotation rot, bool isOutgoing);
 };
