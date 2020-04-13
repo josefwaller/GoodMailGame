@@ -15,7 +15,7 @@ public:
 	const static unsigned int WEST = 3;
 
 	IsoRotation() { rotation = 0; }
-	IsoRotation(unsigned int initRot) { rotation = initRot; }
+	IsoRotation(unsigned int initRot) { rotation = initRot % 4; }
 	int getRotation() { return rotation; }
 	// Rotate 90 degrees clockwise
 	IsoRotation operator+(unsigned int other) {
