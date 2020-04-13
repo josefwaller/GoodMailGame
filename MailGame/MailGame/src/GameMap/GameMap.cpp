@@ -83,10 +83,11 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 		}
 	}
 	sf::Sprite s;
-	switch (tiles[x][y].type) {
-	case TileType::Empty:
+	Tile tile = tiles[x][y];
+	switch (tile.type) {
+	case TileType::Land:
 		// Draw the railway if it has one
-		if (tiles[x][y].railway.has_value()) {
+		if (tile.railway.has_value()) {
 			Railway r = tiles[x][y].railway.value();
 			// Get the binary number representing the intersection at the til
 			int index = 0;
@@ -111,28 +112,28 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 			index = 0b1111 & ((index >> rotation) | (index << (4 - rotation)));
 			// Get the sprite
 			s = RAIL_TRACK_SPRITES[index];
-		} else {
+		}
+		else {
 			s = EMPTY_SPRITE;
 		}
-		break;
-	case TileType::Road:
-		int index = 0;
-		if (getTileAt(x, y - 1).type == TileType::Road) {
-			index |= 0b1000;
+		if (tile.road.has_value()) {
+			int index = 0;
+			if (tile.road.value().hasNorth) {
+				index |= 0b1000;
+			}
+			if (tile.road.value().hasEast) {
+				index |= 0b0100;
+			}
+			if (tile.road.value().hasSouth) {
+				index |= 0b0010;
+			}
+			if (tile.road.value().hasWest) {
+				index |= 0b0001;
+			}
+			unsigned int rotation = game->getRotation().getRotation();
+			index = 0b1111 & ((index >> rotation) | (index << (4 - rotation)));
+			s = ROAD_SPRITES[index];
 		}
-		if (getTileAt(x + 1, y).type == TileType::Road) {
-			index |= 0b0100;
-		}
-		if (getTileAt(x, y + 1).type == TileType::Road) {
-			index |= 0b0010;
-		}
-		if (getTileAt(x - 1, y).type == TileType::Road) {
-			index |= 0b0001;
-		}
-		unsigned int rotation = game->getRotation().getRotation();
-		index = 0b1111 & ((index >> rotation) | (index << (4 - rotation)));
-		s = ROAD_SPRITES[index];
-		break;
 	}
 	sf::Vector2f pos((float)x + 0.5f, (float)y + 0.5f);
 	s.setPosition(this->game->worldToScreenPos(pos));
@@ -195,23 +196,43 @@ void GameMap::generateCityAt(sf::Vector2i pos) {
 	for (auto it = addedLines.begin(); it != addedLines.end(); it++) {
 		for (size_t i = 0; i < it->getLength(); i++) {
 			if (it->getIsVertical()) {
-				if (it->getStart().y + i < MAP_HEIGHT)
-					this->tiles[it->getStart().x][it->getStart().y + i].type = TileType::Road;
+				if (it->getStart().y + i < MAP_HEIGHT) {
+					Tile* t = &this->tiles[it->getStart().x][it->getStart().y + i];
+					Road r;
+					if (t->road.has_value()) {
+						r = t->road.value();
+					}
+					if (i != it->getLength() - 1)
+						r.hasSouth = true;
+					if (i != 0)
+						r.hasNorth = true;
+					t->road = r;
+				}
 			}
 			else {
-				if (it->getStart().x + i < MAP_WIDTH)
-					this->tiles[it->getStart().x + i][it->getStart().y].type = TileType::Road;
+				if (it->getStart().x + i < MAP_WIDTH) {
+					Tile* t = &this->tiles[it->getStart().x + i][it->getStart().y];
+					Road r;
+					if (t->road.has_value()) {
+						r = t->road.value();
+					}
+					if (i != it->getLength() - 1)
+						r.hasEast = true;
+					if (i != 0)
+						r.hasWest = true;
+					t->road = r;
+				}
 			}
 		}
 	}
 	// Have a 90% change that there is a building on each tile adjacent to a road
 	for (size_t x = 0; x < MAP_WIDTH; x++) {
 		for (size_t y = 0; y < MAP_HEIGHT; y++) {
-			if (this->tiles[x][y].type == TileType::Road) {
+			if (this->hasRoadAt(x, y)) {
 				for (int xOff = -1; xOff < 2; xOff++) {
 					for (int yOff = -1; yOff < 2; yOff++) {
 						if (xOff == 0 || yOff == 0) {
-							if (this->getTileAt(x + xOff, y + yOff).type == TileType::Empty) {
+							if (!this->hasRoadAt(x + xOff, y + yOff)) {
 								if (rand() % 10 == 9)
 									continue;
 								IsoRotation rot;
@@ -225,7 +246,6 @@ void GameMap::generateCityAt(sf::Vector2i pos) {
 								case 0:
 									rot = yOff == 1 ? IsoRotation::NORTH: IsoRotation::SOUTH;
 								}
-								this->tiles[x + xOff][y + yOff].type = TileType::House;
 								std::shared_ptr<Entity> e = BuildingPresets::residence(this->game, sf::Vector2f((float)(x + xOff), (float)(y + yOff)), rot);
 								this->game->addEntity(
 									e
@@ -261,4 +281,23 @@ Tile GameMap::getTileAt(size_t x, size_t y) {
 		return tiles[x][y];
 	}
 	return Tile(TileType::OffMap);
+}
+bool GameMap::hasRoadAt(size_t x, size_t y) {
+	return this->getTileAt(x, y).road.has_value();
+}
+bool GameMap::hasRoadInDirection(size_t x, size_t y, IsoRotation rot) {
+	Tile t = this->getTileAt(x, y);
+	if (t.road.has_value()) {
+		switch (rot.getRotation()) {
+		case IsoRotation::NORTH:
+			return t.road.value().hasNorth;
+		case IsoRotation::SOUTH:
+			return t.road.value().hasSouth;
+		case IsoRotation::EAST:
+			return t.road.value().hasEast;
+		case IsoRotation::WEST:
+			return t.road.value().hasWest;
+		}
+	}
+	return false;
 }

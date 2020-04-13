@@ -17,7 +17,7 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 				ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-W")
 			},
 			ConstructionLayout({
-				{ TileType::Empty, TileType::Road }
+				{ TileType::Land }
 			})
 			)
 	},
@@ -31,7 +31,7 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 				ResourceLoader::get()->getSprite("buildings/buildings", "mailbox")
 			},
 			ConstructionLayout({
-				{ TileType::Road }
+				{ TileType::Land }
 			})
 		)
 	},
@@ -45,7 +45,7 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-W")
 			},
 			ConstructionLayout({
-				{TileType::Empty, TileType::Road}
+				{TileType::Land }
 			})
 		)
 	},
@@ -62,7 +62,7 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-W")
 			},
 			ConstructionLayout({
-				{ TileType::Empty }
+				{ TileType::Land }
 			})
 		)}
 	};

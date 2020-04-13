@@ -6,10 +6,10 @@
 // Forward declaration
 class Entity;
 
+// The three types of tiles
 enum class TileType {
-	Empty,
-	Road,
-	House,
+	Land,
+	Water,
 	OffMap
 };
 
@@ -19,6 +19,15 @@ struct Railway {
 	IsoRotation from;
 	IsoRotation to;
 	Railway(IsoRotation from, IsoRotation to) : from(from), to(to) {}
+};
+// The road on a tile
+struct Road {
+	// Whether it has road going in any of the 4 directions
+	bool hasNorth;
+	bool hasEast;
+	bool hasSouth;
+	bool hasWest;
+	Road() : hasNorth(false), hasEast(false), hasSouth(false), hasWest(false) {}
 };
 
 struct Tile {
@@ -30,8 +39,10 @@ struct Tile {
 	long long postalCode;
 	// The railway, if it has one
 	std::optional<Railway> railway;
+	// The road, if it has one
+	std::optional<Road> road;
 
-	Tile(TileType t = TileType::Empty): postalCode(0) {
+	Tile(TileType t = TileType::Land): postalCode(0) {
 		type = t;
 	}
 };

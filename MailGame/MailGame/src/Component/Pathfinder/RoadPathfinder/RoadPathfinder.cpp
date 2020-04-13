@@ -23,6 +23,11 @@ std::vector<sf::Vector2f> RoadPathfinder::findPathBetweenPoints(sf::Vector2f fro
 		// Get the first point
 		sf::Vector2i point = potentialPoints.front();
 		potentialPoints.pop();
+		// Ensure it has a road
+		Tile fromTile = gMap->getTileAt(point.x, point.y);
+		if (!fromTile.road.has_value()) {
+			throw std::runtime_error("Pathinging to/from point that does not has a road");
+		}
 		// Check if it is the correct one
 		if (point == sf::Vector2i(to)) {
 			// Gather points along the path
@@ -35,18 +40,20 @@ std::vector<sf::Vector2f> RoadPathfinder::findPathBetweenPoints(sf::Vector2f fro
 			return pathPoints;
 		}
 		// Add the points around it
-		for (int x = -1; x < 2; x++) {
-			for (int y = -1; y < 2; y++) {
-				if ((x == 0 || y == 0) && x != y) {
-					sf::Vector2i p(point.x + x, point.y + y);
-					if (gMap->getTileAt(p.x, p.y).type == TileType::Road
-						&& std::find(visitedPoints.begin(), visitedPoints.end(), p) == visitedPoints.end()) {
-						// Add the point
-						potentialPoints.push(p);
-						visitedPoints.push_back(p);
-						previous[p] = point;
-					}
-				}
+		std::vector<sf::Vector2i> toAdd;
+		for (size_t i = 0; i < 4; i++) {
+			IsoRotation rot(i);
+			sf::Vector2i off = point + sf::Vector2i(rot.getUnitVector());
+			if (gMap->hasRoadInDirection(point.x, point.y, rot) && gMap->hasRoadInDirection(off.x, off.y, rot + 2)) {
+				toAdd.push_back(off);
+			}
+		}
+		// Add any points to potential points we've not visited
+		for (auto it = toAdd.begin(); it != toAdd.end(); it++) {
+			if (std::find(visitedPoints.begin(), visitedPoints.end(), *it) == visitedPoints.end()) {
+				potentialPoints.push(*it);
+				visitedPoints.push_back(*it);
+				previous[*it] = point;
 			}
 		}
 	}
