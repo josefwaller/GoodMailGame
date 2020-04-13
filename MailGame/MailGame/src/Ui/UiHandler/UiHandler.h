@@ -33,6 +33,8 @@ public:
 	// Change the state
 	// Also will deal with leaving the state it is currently in
 	void changeState(UiState state);
+	// Draw an arrow at the tile given in the direction given
+	void drawArrow(sf::RenderWindow* window, sf::Vector2i tile, IsoRotation rot, bool isOutgoing);
 private:
 	Game* game;
 	// Current state of the Ui
@@ -60,6 +62,4 @@ private:
 	IsoRotation chooseDirection(const char* label, IsoRotation default);
 	// The railway currently being built
 	Railway toBuild;
-	// Draw an arrow at the tile given in the direction given
-	void drawArrow(sf::RenderWindow* window, sf::Vector2i tile, IsoRotation rot, bool isOutgoing);
 };

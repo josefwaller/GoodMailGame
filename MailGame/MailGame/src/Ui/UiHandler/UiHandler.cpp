@@ -199,8 +199,8 @@ void UiHandler::render(sf::RenderWindow* w) {
 		break;
 	case UiState::BuildingRailTracks:
 		// Draw 2 lines that correspond with the direction
-		this->drawArrow(w, this->getHoveredTile(), this->toBuild.from, false);
-		this->drawArrow(w, this->getHoveredTile(), this->toBuild.to + 2, true);
+		this->drawArrow(w, this->getHoveredTile(), this->toBuild.from + 2, false);
+		this->drawArrow(w, this->getHoveredTile(), this->toBuild.to, true);
 		break;
 	case UiState::EditingPostalCodes:
 		// Draw all the postal codes
@@ -252,8 +252,8 @@ void UiHandler::drawArrow(sf::RenderWindow* window, sf::Vector2i tile, IsoRotati
 		arrow.getGlobalBounds().width / 2.0f,
 		arrow.getGlobalBounds().height
 	);
-	// If outgoing, position itself to point out of the tile
-	if (isOutgoing)
+	// If not outgoing, position itself to point out of the tile
+	if (!isOutgoing)
 		rot = rot + 2;
 	arrow.setPosition(
 		this->game->worldToScreenPos(sf::Vector2f(tile)
