@@ -62,13 +62,19 @@ bool UiHandler::handleEvent(sf::Event e) {
 		if (ImGui::GetIO().WantCaptureKeyboard) {
 			return true;
 		}
-		if (this->currentState == UiState::BuildingRailTracks) {
-			// Rotate the track if R is pressed
-			if (e.key.code == sf::Keyboard::R) {
+		switch (e.key.code) {
+		// Rotate the building/track if R is pressed
+		case sf::Keyboard::R:
+			if (this->currentState == UiState::BuildingRailTracks) {
 				this->toBuild.from++;
 				this->toBuild.to++;
 			}
-			else if (e.key.code == sf::Keyboard::T) {
+			else if (this->currentState == UiState::BuildingEntity) {
+				this->currentRotation++;
+			}
+			break;
+		case sf::Keyboard::T:
+			if (this->currentState == UiState::BuildingRailTracks) {
 				// Toggle between straight and curved track
 				this->toBuild.to++;
 				if (this->toBuild.from == this->toBuild.to) {
