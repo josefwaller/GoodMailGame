@@ -2,14 +2,15 @@
 #include "Entity/Entity.h"
 #include "Game/Game.h"
 #include "Component/Transform/Transform.h"
+#include "Component/TransitStop/TransitStop.h"
 #include "Entity/EntityPresets/VehiclePresets/VehiclePresets.h"
 
 void TrainDepotController::spawnVehicleForRoute(TransitRoute route) {
 	this->getEntity()->getGame()->addEntity(
 		VehiclePresets::train(
 			this->getEntity()->getGame(),
-			this->getEntity()->transform->getPosition(),
-			this->getEntity()->transform->getRotation(),
+			this->getEntity()->transitStop->getTransitLocation(),
+			this->getEntity()->transform->getRotation() + 1,
 			route,
 			this->getEntity()
 		)

@@ -46,6 +46,7 @@ std::shared_ptr<Entity> BuildingPresets::residence(Game* g, sf::Vector2f pos, Is
 }
 
 std::shared_ptr<Entity> BuildingPresets::postOffice(Game* g, sf::Vector2f pos, IsoRotation rot) {
+	addRoadForTransitBuilding(g, sf::Vector2i(pos), rot);
 	return Entity::createEntity(
 		g,
 		EntityTag::PostOffice,
@@ -59,7 +60,7 @@ std::shared_ptr<Entity> BuildingPresets::postOffice(Game* g, sf::Vector2f pos, I
 		new PostOfficeController(),
 		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
 		new MailContainer(),
-		new BuildingTransitStop()
+		new BasicTransitStop()
 	);
 }
 
@@ -85,6 +86,7 @@ std::shared_ptr<Entity> BuildingPresets::mailBox(Game* g, sf::Vector2f pos, IsoR
 
 
 std::shared_ptr<Entity> BuildingPresets::cargoTruckDepot(Game* g, sf::Vector2f pos, IsoRotation rot) {
+	addRoadForTransitBuilding(g, sf::Vector2i(pos), rot);
 	return Entity::createEntity(
 		g,
 		EntityTag::CargoTruckDepot,
@@ -98,15 +100,13 @@ std::shared_ptr<Entity> BuildingPresets::cargoTruckDepot(Game* g, sf::Vector2f p
 		new TruckDepotController(),
 		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
 		new MailContainer(),
-		new BuildingTransitStop()
+		new BasicTransitStop()
 	);
 }
 
 std::shared_ptr<Entity> BuildingPresets::trainStation(Game* g, sf::Vector2f pos, IsoRotation rot) {
 	// Add road into train station
-	sf::Vector2i inFront = sf::Vector2i(pos + rot.getUnitVector());
-	g->getGameMap()->addRoadInDirection(inFront.x, inFront.y, rot + 2);
-	g->getGameMap()->addRoadInDirection((size_t)pos.x, (size_t)pos.y, rot);
+	addRoadForTransitBuilding(g, sf::Vector2i(pos), rot);
 	return Entity::createEntity(
 		g,
 		EntityTag::TrainStation,
@@ -124,3 +124,8 @@ std::shared_ptr<Entity> BuildingPresets::trainStation(Game* g, sf::Vector2f pos,
 	);
 }
 
+void BuildingPresets::addRoadForTransitBuilding(Game* g, sf::Vector2i pos, IsoRotation rot) {
+	sf::Vector2i inFront = pos + sf::Vector2i(rot.getUnitVector());
+	g->getGameMap()->addRoadInDirection(inFront.x, inFront.y, rot + 2);
+	g->getGameMap()->addRoadInDirection((size_t)pos.x, (size_t)pos.y, rot);
+}

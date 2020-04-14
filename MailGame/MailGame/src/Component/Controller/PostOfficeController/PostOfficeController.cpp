@@ -1,6 +1,7 @@
 #include "PostOfficeController.h"
 #include "Entity/Entity.h"
 #include "Component/Transform/Transform.h"
+#include "Component/TransitStop/TransitStop.h"
 #include "Component/Controller/VehicleController/MailTruckController/MailTruckController.h"
 #include "Game/Game.h"
 #include "Ui/UiHandler/UiHandler.h"
@@ -103,9 +104,10 @@ void PostOfficeController::onHourChange(size_t newHour) {
 			// Spawn a new truck for that route
 			Game* game = this->getEntity()->getGame();
 			auto trans = this->getEntity()->transform;
+			auto transit = this->getEntity()->transitStop;
 			auto truck = VehiclePresets::mailTruck(
 				game,
-				trans->getPosition() + trans->getRotation().getUnitVector(),
+				transit->getTransitLocation(),
 				IsoRotation::NORTH,
 				*it,
 				this->getEntity()
