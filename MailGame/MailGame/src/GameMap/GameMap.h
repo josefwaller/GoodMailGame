@@ -33,6 +33,8 @@ public:
 	bool hasRoadAt(size_t x, size_t y);
 	// check if there is a road leading in the given direction on a tile
 	bool hasRoadInDirection(size_t x, size_t y, IsoRotation rot);
+	// Add a road in a given direction
+	void addRoadInDirection(size_t x, size_t y, IsoRotation rot);
 private:
 	Game* game;
 	std::vector<std::vector<Tile>> tiles;

@@ -301,3 +301,28 @@ bool GameMap::hasRoadInDirection(size_t x, size_t y, IsoRotation rot) {
 	}
 	return false;
 }
+void GameMap::addRoadInDirection(size_t x, size_t y, IsoRotation rot) {
+	Tile t = this->getTileAt(x, y);
+	if (t.type != TileType::OffMap) {
+		// Add a road if it doesn't exist
+		Road r;
+		if (t.road.has_value()) {
+			r = t.road.value();
+		}
+		switch (rot.getRotation()) {
+		case IsoRotation::NORTH:
+			r.hasNorth = true;
+			break;
+		case IsoRotation::SOUTH:
+			r.hasSouth = true;
+			break;
+		case IsoRotation::EAST:
+			r.hasEast = true;
+			break;
+		case IsoRotation::WEST:
+			r.hasWest = true;
+			break;
+		}
+		this->tiles[x][y].road = r;
+	}
+}

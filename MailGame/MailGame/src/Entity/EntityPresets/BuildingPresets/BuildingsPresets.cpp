@@ -103,6 +103,10 @@ std::shared_ptr<Entity> BuildingPresets::cargoTruckDepot(Game* g, sf::Vector2f p
 }
 
 std::shared_ptr<Entity> BuildingPresets::trainStation(Game* g, sf::Vector2f pos, IsoRotation rot) {
+	// Add road into train station
+	sf::Vector2i inFront = sf::Vector2i(pos + rot.getUnitVector());
+	g->getGameMap()->addRoadInDirection(inFront.x, inFront.y, rot + 2);
+	g->getGameMap()->addRoadInDirection((size_t)pos.x, (size_t)pos.y, rot);
 	return Entity::createEntity(
 		g,
 		EntityTag::TrainStation,
