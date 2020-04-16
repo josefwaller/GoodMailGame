@@ -328,5 +328,42 @@ void GameMap::addRoadInDirection(size_t x, size_t y, IsoRotation rot) {
 	}
 }
 SaveData GameMap::getSaveData() {
-	return SaveData("GameMap");
+	SaveData sd("GameMap");
+	for (size_t x = 0; x < this->tiles.size(); x++) {
+		for (size_t y = 0; y < this->tiles[x].size(); y++) {
+			Tile t = this->tiles[x][y];
+			SaveData td("Tile");
+			// Add position
+			td.addValue("x", std::to_string(x));
+			td.addValue("y", std::to_string(y));
+			// Add postal code
+			td.addValue("pc", std::to_string(t.postalCode));
+			// Add type
+			td.addValue("type", std::to_string((size_t)t.type));
+			// Add building
+			if (t.building.lock()) {
+				td.addValue("building", std::to_string(t.building.lock()->getId()));
+			}
+			// Add data for road
+			if (t.road.has_value()) {
+				Road r = t.road.value();
+				SaveData rd("Road");
+				rd.addValue("hasNorth", std::to_string(r.hasNorth));
+				rd.addValue("hasEast", std::to_string(r.hasEast));
+				rd.addValue("hasSouth", std::to_string(r.hasSouth));
+				rd.addValue("hasWest", std::to_string(r.hasWest));
+				td.addData(rd);
+			}
+			// Add data for railway
+			if (t.railway.has_value()) {
+				Railway rw = t.railway.value();
+				SaveData rwd("RailWay");
+				rwd.addValue("To", std::to_string(rw.to.getRotation()));
+				rwd.addValue("From", std::to_string(rw.from.getRotation()));
+				td.addData(rwd);
+			}
+			sd.addData(td);
+		}
+	}
+	return sd;
 }
