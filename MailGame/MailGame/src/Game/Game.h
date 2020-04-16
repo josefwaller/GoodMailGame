@@ -8,6 +8,7 @@
 
 class App;
 class Entity;
+class SaveData;
 
 class Game {
 public:
@@ -52,6 +53,8 @@ public:
 	void advanceTime();
 	// Get a list of the entities in game
 	std::vector<std::shared_ptr<Entity>> getEntities();
+	// Get the save data for the entire game
+	SaveData getSaveData();
 private:
 	// The window for the game
 	sf::RenderWindow* window;

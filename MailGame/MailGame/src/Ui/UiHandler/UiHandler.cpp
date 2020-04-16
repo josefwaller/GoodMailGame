@@ -2,11 +2,14 @@
 #include "Entity/Entity.h"
 #include "Component/ClickBox/ClickBox.h"
 #include <imgui.h>
+#include <iostream>
+#include <fstream>
 #include <imgui-SFML.h>
 #include <SFML/Graphics/VertexArray.hpp>
 #include "Game/Game.h"
 #include "PostalCodeDatabase/PostalCodeDatabase.h"
 #include "ResourceLoader/ResourceLoader.h"
+#include "System/SaveData/SaveData.h"
 
 UiHandler::UiHandler(Game* g): game(g), currentState(UiState::Default), recipe(),
 	toBuild(IsoRotation::NORTH, IsoRotation::SOUTH) {}
@@ -109,6 +112,16 @@ void UiHandler::update() {
 	ImGui::Text((std::to_string(this->game->getTime()) + ":00").c_str());
 	if (ImGui::Button("Next Hour")) {
 		this->game->advanceTime();
+	}
+	if (ImGui::Button("Save Game")) {
+		// Terrible way of temporarily doing this
+		// Just save rn to file
+		SaveData toSave = this->game->getSaveData();
+		std::string toWrite = toSave.getAsString("Game");
+		std::ofstream file;
+		file.open("test.txt");
+		file << toWrite;
+		file.close();
 	}
 	if (ImGui::CollapsingHeader("Build")) {
 		if (ImGui::Button("Post Office")) {

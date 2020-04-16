@@ -10,6 +10,7 @@ class MailContainer;
 class TransitStop;
 class Pathfinder;
 class Game;
+class SaveData;
 
 class Entity {
 public:
@@ -38,6 +39,8 @@ public:
 	size_t getId();
 	// Get the game
 	Game* getGame();
+	// Get the save data for this entities
+	SaveData getSaveData();
 private:
 	// The ID of the entity
 	size_t id;

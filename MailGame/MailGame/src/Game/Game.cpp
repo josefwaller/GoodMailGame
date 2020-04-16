@@ -6,6 +6,7 @@
 #include "Component/Controller/Controller.h"
 #include "Component/Controller/PostOfficeController/PostOfficeController.h"
 #include "Component/ClickBox/ClickBox.h"
+#include "System/SaveData/SaveData.h"
 #include "Constants.h"
 #include "Ui/Construction/Construction.h"
 #include <SFML/Graphics.hpp>
@@ -210,3 +211,17 @@ void Game::advanceTime() {
 	}
 }
 std::vector<std::shared_ptr<Entity>> Game::getEntities() { return this->entities; }
+
+SaveData Game::getSaveData() {
+	// Create save data for game
+	SaveData sd;
+	// Add the game map's data
+	sd.addData("GameMap", this->gameMap.getSaveData());
+	// Add all the entities' data
+	SaveData entData;
+	for (auto e : this->entities) {
+		entData.addData(std::to_string(e->getId()), e->getSaveData());
+	}
+	sd.addData("Entities", entData);
+	return sd;
+}

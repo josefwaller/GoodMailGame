@@ -8,6 +8,7 @@
 #include "Entity/EntityPresets/BuildingPresets/BuildingPresets.h"
 #include "PostalCodeDatabase/PostalCodeDatabase.h"
 #include <SFML/Graphics.hpp>
+#include "System/SaveData/SaveData.h"
 #include <queue>
 #include <stdlib.h>
 #include <bitset>
@@ -325,4 +326,7 @@ void GameMap::addRoadInDirection(size_t x, size_t y, IsoRotation rot) {
 		}
 		this->tiles[x][y].road = r;
 	}
+}
+SaveData GameMap::getSaveData() {
+	return SaveData();
 }

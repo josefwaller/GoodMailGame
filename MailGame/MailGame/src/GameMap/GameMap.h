@@ -4,6 +4,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <vector>
 class Game;
+class SaveData;
 
 class GameMap {
 public:
@@ -35,6 +36,8 @@ public:
 	bool hasRoadInDirection(size_t x, size_t y, IsoRotation rot);
 	// Add a road in a given direction
 	void addRoadInDirection(size_t x, size_t y, IsoRotation rot);
+	// Get the save data for the map
+	SaveData getSaveData();
 private:
 	Game* game;
 	std::vector<std::vector<Tile>> tiles;

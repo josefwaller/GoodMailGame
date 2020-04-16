@@ -7,6 +7,7 @@
 #include "Component/MailContainer/MailContainer.h"
 #include "Component/TransitStop/TransitStop.h"
 #include "Component/Pathfinder/Pathfinder.h"
+#include "System/SaveData/SaveData.h"
 
 size_t Entity::entityId = 0;
 
@@ -53,4 +54,8 @@ size_t Entity::getId() {
 
 Game* Entity::getGame() {
 	return this->game;
+}
+
+SaveData Entity::getSaveData() {
+	return SaveData();
 }
