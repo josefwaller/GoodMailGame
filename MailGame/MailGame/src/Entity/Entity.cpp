@@ -57,5 +57,20 @@ Game* Entity::getGame() {
 }
 
 SaveData Entity::getSaveData() {
-	return SaveData("Entity");
+	SaveData data("Entity");
+#define ADD_DATA(var) \
+if (this->var) { \
+	data.addData(this->var->getSaveData()); \
+}
+
+	ADD_DATA(transform);
+	ADD_DATA(renderer);
+	ADD_DATA(controller);
+	ADD_DATA(clickBox);
+	ADD_DATA(mailContainer);
+	ADD_DATA(transitStop);
+	ADD_DATA(pathfinder);
+
+#undef ADD_DATA
+	return data;
 }

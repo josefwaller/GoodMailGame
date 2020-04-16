@@ -10,7 +10,7 @@ public:
 	// Set/Get Entity
 	void setEntity(std::shared_ptr<Entity> e);
 	std::shared_ptr<Entity> getEntity();
-	SaveData getSaveData();
+	virtual SaveData getSaveData();
 private:
 	std::weak_ptr<Entity> entity;
 };
