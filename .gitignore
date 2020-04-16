@@ -363,3 +363,5 @@ MailGame/MailGame/imgui.ini
 MailGame/opengl
 # Unify Line endings file
 *.leu
+# Save data
+MailGame/MailGame/savedata/*

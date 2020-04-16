@@ -119,7 +119,7 @@ void UiHandler::update() {
 		SaveData toSave = this->game->getSaveData();
 		std::string toWrite = toSave.getAsString("Game");
 		std::ofstream file;
-		file.open("test.txt");
+		file.open("savedata/test.txt");
 		file << toWrite;
 		file.close();
 	}
