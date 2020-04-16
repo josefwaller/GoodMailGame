@@ -328,5 +328,5 @@ void GameMap::addRoadInDirection(size_t x, size_t y, IsoRotation rot) {
 	}
 }
 SaveData GameMap::getSaveData() {
-	return SaveData();
+	return SaveData("GameMap");
 }

@@ -57,5 +57,5 @@ Game* Entity::getGame() {
 }
 
 SaveData Entity::getSaveData() {
-	return SaveData();
+	return SaveData("Entity");
 }

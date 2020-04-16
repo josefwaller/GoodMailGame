@@ -3,61 +3,43 @@
 #include <stdexcept>
 #include <sstream>
 
-SaveData::SaveData() {}
-SaveData::SaveData(std::string initData) { //TBA 
-}
+SaveData::SaveData(std::string name): name(name) {}
 
-void SaveData::addData(std::string name, SaveData data) {
-	this->values[name] = data;
+void SaveData::addData(SaveData data) {
+	this->datas.push_back(data);
 }
 void SaveData::addValue(std::string name, std::string value) {
 	this->values[name] = value;
 }
 std::string SaveData::getValue(std::string name) {
-	try {
-		return std::get<std::string>(this->values[name]);
-	}
-	catch (const std::bad_variant_access&) {
-		throw std::runtime_error("Tried to get a string value, vbut the value was a SaveData ");
-	}
+	return this->values[name];
 }
-SaveData SaveData::getData(std::string name) {
-	try {
-		return std::get<SaveData>(this->values[name]);
-	}
-	catch (const std::bad_variant_access&) {
-		throw std::runtime_error("Tried to get a SaveData value, but the value was a string");
-	}
+std::vector<SaveData> SaveData::getDatas() {
+	return this->datas;
 }
-rapidxml::xml_node<>* SaveData::getDataAsXml(rapidxml::xml_document<>* doc, std::string name) {
+rapidxml::xml_node<>* SaveData::getDataAsXml(rapidxml::xml_document<>* doc) {
 	// Create node
 	rapidxml::xml_node<>* node = doc->allocate_node(
 		rapidxml::node_type::node_element,
-		doc->allocate_string(name.c_str()));
-	// Add nodes for every child
-	for (auto it = this->values.begin(); it != this->values.end(); it++) {
-		// If it's a string value
-		if (std::holds_alternative<std::string>(it->second)) {
-			// Add as attribute
-			rapidxml::xml_attribute<>* attr = doc->allocate_attribute(
-				doc->allocate_string(it->first.c_str()),
-				doc->allocate_string(std::get<std::string>(it->second).c_str()));
-		}
-		else if (std::holds_alternative<SaveData>(it->second)) {
-			// Get the node
-			rapidxml::xml_node<>* n = std::get<SaveData>(it->second).getDataAsXml(doc, it->first);
-			// Add the node to this node
-			node->append_node(n);
-		}
-		else {
-			throw std::runtime_error("SaveData has neither a string or a SaveData in its values");
-		}
+		doc->allocate_string(this->name.c_str()));
+	// Add attributes for values
+	for (auto kv : this->values) {
+		rapidxml::xml_attribute<>* attr = doc->allocate_attribute(
+			doc->allocate_string(kv.first.c_str()),
+			doc->allocate_string(kv.second.c_str())
+		);
+		node->append_attribute(attr);
+	}
+	// Add nodes for datas
+	for (SaveData d : this->datas) {
+		rapidxml::xml_node<>* n = d.getDataAsXml(doc);
+		node->append_node(n);
 	}
 	return node;
 }
-std::string SaveData::getAsString(std::string name) {
+std::string SaveData::getAsString() {
 	rapidxml::xml_document<> doc;
-	rapidxml::xml_node<>* node = this->getDataAsXml(&doc, name);
+	rapidxml::xml_node<>* node = this->getDataAsXml(&doc);
 	doc.append_node(node);
 	std::stringstream ss;
 	ss << doc;

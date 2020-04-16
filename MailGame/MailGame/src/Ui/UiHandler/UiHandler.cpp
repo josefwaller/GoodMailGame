@@ -117,7 +117,7 @@ void UiHandler::update() {
 		// Terrible way of temporarily doing this
 		// Just save rn to file
 		SaveData toSave = this->game->getSaveData();
-		std::string toWrite = toSave.getAsString("Game");
+		std::string toWrite = toSave.getAsString();
 		std::ofstream file;
 		file.open("savedata/test.txt");
 		file << toWrite;

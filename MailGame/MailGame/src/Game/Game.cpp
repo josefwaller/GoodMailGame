@@ -214,14 +214,14 @@ std::vector<std::shared_ptr<Entity>> Game::getEntities() { return this->entities
 
 SaveData Game::getSaveData() {
 	// Create save data for game
-	SaveData sd;
+	SaveData sd("Game");
 	// Add the game map's data
-	sd.addData("GameMap", this->gameMap.getSaveData());
+	sd.addData(this->gameMap.getSaveData());
 	// Add all the entities' data
-	SaveData entData;
+	SaveData entData("Entities");
 	for (auto e : this->entities) {
-		entData.addData(std::to_string(e->getId()), e->getSaveData());
+		entData.addData(e->getSaveData());
 	}
-	sd.addData("Entities", entData);
+	sd.addData(entData);
 	return sd;
 }
