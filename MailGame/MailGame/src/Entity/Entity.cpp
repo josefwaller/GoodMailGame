@@ -57,7 +57,7 @@ Game* Entity::getGame() {
 }
 
 SaveData Entity::getSaveData() {
-	SaveData data("Entity");
+	SaveData data(entityTagToString(this->tag));
 #define ADD_DATA(var) \
 if (this->var) { \
 	data.addData(this->var->getSaveData()); \
