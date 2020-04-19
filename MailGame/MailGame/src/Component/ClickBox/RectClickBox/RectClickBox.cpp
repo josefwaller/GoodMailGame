@@ -42,7 +42,7 @@ void RectClickBox::renderClickBox(sf::RenderWindow* window) {
 }
 #endif
 
-SaveData RectClickBox::getSaveData() {
+std::optional<SaveData> RectClickBox::getSaveData() {
 	SaveData d("ClickBox");
 	d.addValue("x", std::to_string(this->rect.left));
 	d.addValue("y", std::to_string(this->rect.top));

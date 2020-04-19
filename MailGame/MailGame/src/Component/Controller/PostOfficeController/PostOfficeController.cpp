@@ -143,7 +143,7 @@ void PostOfficeController::deleteRoute(size_t routeIndex) {
 	routesToDelete.push_back(routeIndex);
 }
 
-SaveData PostOfficeController::getSaveData() {
+std::optional<SaveData> PostOfficeController::getSaveData() {
 	SaveData sd("Controller");
 	for (MailTruckRoute route : this->routes) {
 		sd.addData(mailTruckRouteToSaveData(route));

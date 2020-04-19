@@ -142,7 +142,7 @@ void MailTruckController::pickupMailFromOffice() {
 	this->office.lock()->mailContainer->transferSomeMailTo(mailForRoute, this->getEntity()->mailContainer);
 }
 
-SaveData MailTruckController::getSaveData() {
+std::optional<SaveData> MailTruckController::getSaveData() {
 	SaveData sd("Controller");
 	if (this->office.lock()) {
 		sd.addValue("OfficeId", this->office.lock()->getId());

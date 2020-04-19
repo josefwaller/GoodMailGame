@@ -36,7 +36,7 @@ std::vector<Mail> MailContainer::getMail() {
 	return this->mail;
 }
 
-SaveData MailContainer::getSaveData() {
+std::optional<SaveData> MailContainer::getSaveData() {
 	SaveData d("MailContainer");
 	for (Mail mail : this->mail) {
 		SaveData m("Mail");

@@ -10,7 +10,7 @@ public:
 #ifdef _DEBUG
 	virtual void renderClickBox(sf::RenderWindow* w) override;
 #endif
-	virtual SaveData getSaveData() override;
+	virtual std::optional<SaveData> getSaveData() override;
 private:
 	sf::FloatRect rect;
 	// Get the rect after it has been moved to the entity's position, etc

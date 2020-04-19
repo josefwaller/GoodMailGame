@@ -12,7 +12,7 @@ public:
 	virtual void onArriveAtDest() override;
 	virtual void onArriveAtStop(size_t stopIndex) override;
 	virtual float getSpeed() override;
-	virtual SaveData getSaveData() override;
+	virtual std::optional<SaveData> getSaveData() override;
 private:
 	// The depot that the truck started at, and will return to
 	std::weak_ptr<Entity> depot;

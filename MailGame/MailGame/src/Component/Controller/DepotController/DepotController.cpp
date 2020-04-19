@@ -164,7 +164,7 @@ void DepotController::removeStopDropOff(size_t stopIndex, size_t routeId, long l
 	toDropOff->erase(std::remove(toDropOff->begin(), toDropOff->end(), code), toDropOff->end());
 }
 
-SaveData DepotController::getSaveData() {
+std::optional<SaveData> DepotController::getSaveData() {
 	SaveData sd("Controller");
 	for (auto kv: this->routes) {
 		sd.addData(transitRouteToSaveData(kv.second));

@@ -60,7 +60,9 @@ SaveData Entity::getSaveData() {
 	SaveData data(entityTagToString(this->tag));
 #define ADD_DATA(var) \
 if (this->var) { \
-	data.addData(this->var->getSaveData()); \
+	std::optional<SaveData> d = this->var->getSaveData(); \
+	if (d.has_value()) \
+		data.addData(d.value()); \
 }
 
 	ADD_DATA(transform);

@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <optional>
 // Forward declaration of entity
 class Entity;
 class SaveData;
@@ -10,7 +11,7 @@ public:
 	// Set/Get Entity
 	void setEntity(std::shared_ptr<Entity> e);
 	std::shared_ptr<Entity> getEntity();
-	virtual SaveData getSaveData();
+	virtual std::optional<SaveData> getSaveData();
 private:
 	std::weak_ptr<Entity> entity;
 };

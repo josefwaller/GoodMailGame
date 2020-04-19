@@ -43,7 +43,7 @@ void ResidenceController::generateLetter() {
 	}
 }
 
-SaveData ResidenceController::getSaveData() {
+std::optional<SaveData> ResidenceController::getSaveData() {
 	SaveData sd("Controller");
 	return sd;
 }

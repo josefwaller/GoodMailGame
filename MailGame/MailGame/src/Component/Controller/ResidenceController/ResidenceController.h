@@ -6,7 +6,7 @@ class ResidenceController : public Controller {
 public:
 	virtual void update(float delta) override;
 	const static float GENERATE_INTERVAL;
-	virtual SaveData getSaveData() override;
+	virtual std::optional<SaveData> getSaveData() override;
 private:
 	sf::Clock clk;
 	void generateLetter();

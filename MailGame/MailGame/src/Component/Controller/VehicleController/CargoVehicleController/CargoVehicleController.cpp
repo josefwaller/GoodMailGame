@@ -68,10 +68,7 @@ void CargoVehicleController::onArriveAtStop(size_t stopIndex) {
 }
 float CargoVehicleController::getSpeed() { return 1.0f; };
 
-SaveData CargoVehicleController::getSaveData() {
+std::optional<SaveData> CargoVehicleController::getSaveData() {
 	SaveData sd("Controller");
-	if (this->depot.lock())
-		sd.addValue("DepotId", this->depot.lock()->getId());
-	sd.addData(transitRouteToSaveData(this->route));
 	return sd;
 }

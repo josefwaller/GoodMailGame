@@ -30,7 +30,7 @@ void Transform::setRotation(IsoRotation rot) {
 	this->rotation = rot;
 }
 
-SaveData Transform::getSaveData() {
+std::optional<SaveData> Transform::getSaveData() {
 	SaveData d("Transform");
 	d.addValue("x", std::to_string(this->position.x));
 	d.addValue("y", std::to_string(this->position.y));
