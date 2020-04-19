@@ -6,6 +6,7 @@
 #include "Component/MailContainer/MailContainer.h"
 #include "Component/Transform/Transform.h"
 #include "Component/Pathfinder/Pathfinder.h"
+#include "System/SaveData/SaveData.h"
 #include "Mail/Mail.h"
 #include <imgui.h>
 
@@ -141,3 +142,11 @@ void MailTruckController::pickupMailFromOffice() {
 	this->office.lock()->mailContainer->transferSomeMailTo(mailForRoute, this->getEntity()->mailContainer);
 }
 
+SaveData MailTruckController::getSaveData() {
+	SaveData sd("Controller");
+	if (this->office.lock()) {
+		sd.addValue("OfficeId", this->office.lock()->getId());
+	}
+	sd.addData(mailTruckRouteToSaveData(this->route));
+	return sd;
+}

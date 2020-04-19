@@ -5,6 +5,7 @@
 #include "Mail/Mail.h"
 #include "Game/Game.h"
 #include <imgui.h>
+#include "System/SaveData/SaveData.h"
 
 #include <stdexcept>
 
@@ -40,4 +41,9 @@ void ResidenceController::generateLetter() {
 			}
 		}
 	}
+}
+
+SaveData ResidenceController::getSaveData() {
+	SaveData sd("Controller");
+	return sd;
 }

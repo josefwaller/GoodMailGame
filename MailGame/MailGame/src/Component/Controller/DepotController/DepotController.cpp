@@ -4,6 +4,7 @@
 #include <imgui.h>
 #include "Entity/Entity.h"
 #include "Game/Game.h"
+#include "System/SaveData/SaveData.h"
 
 void DepotController::update(float delta) {
 	ImGui::PushID((int)this->getEntity()->getId());
@@ -161,4 +162,12 @@ void DepotController::setStopDropOff(size_t stopIndex, size_t routeId, long long
 void DepotController::removeStopDropOff(size_t stopIndex, size_t routeId, long long code) {
 	std::vector<long long>* toDropOff = &this->routes.find(routeId)->second.stops[stopIndex].toDropOff;
 	toDropOff->erase(std::remove(toDropOff->begin(), toDropOff->end(), code), toDropOff->end());
+}
+
+SaveData DepotController::getSaveData() {
+	SaveData sd("Controller");
+	for (auto kv: this->routes) {
+		sd.addData(transitRouteToSaveData(kv.second));
+	}
+	return sd;
 }

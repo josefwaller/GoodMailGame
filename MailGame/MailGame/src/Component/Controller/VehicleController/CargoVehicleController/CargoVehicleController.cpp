@@ -3,6 +3,7 @@
 #include "Component/TransitStop/TransitStop.h"
 #include "Component/MailContainer/MailContainer.h"
 #include "Game/Game.h"
+#include "System/SaveData/SaveData.h"
 #include <stdexcept>
 
 CargoVehicleController::CargoVehicleController(TransitRoute r, std::weak_ptr<Entity> d): depot(d), route(r) {
@@ -66,3 +67,11 @@ void CargoVehicleController::onArriveAtStop(size_t stopIndex) {
 	otherMail->transferSomeMailTo(toPickUp, mail);
 }
 float CargoVehicleController::getSpeed() { return 1.0f; };
+
+SaveData CargoVehicleController::getSaveData() {
+	SaveData sd("Controller");
+	if (this->depot.lock())
+		sd.addValue("DepotId", this->depot.lock()->getId());
+	sd.addData(transitRouteToSaveData(this->route));
+	return sd;
+}

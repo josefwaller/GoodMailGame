@@ -1,4 +1,5 @@
 #include "MailContainer.h"
+#include "System/SaveData/SaveData.h"
 #include <algorithm>
 #include <stdexcept>
 
@@ -33,4 +34,18 @@ void MailContainer::removeMail(std::vector<Mail> mList) {
 }
 std::vector<Mail> MailContainer::getMail() {
 	return this->mail;
+}
+
+SaveData MailContainer::getSaveData() {
+	SaveData d("MailContainer");
+	for (Mail mail : this->mail) {
+		SaveData m("Mail");
+		m.addValue("id", std::to_string(mail.getId()));
+		m.addValue("srcX", std::to_string(mail.getSrc().x));
+		m.addValue("srcY", std::to_string(mail.getSrc().y));
+		m.addValue("destX", std::to_string(mail.getDest().x));
+		m.addValue("destY", std::to_string(mail.getDest().y));
+		d.addData(m);
+	}
+	return d;
 }

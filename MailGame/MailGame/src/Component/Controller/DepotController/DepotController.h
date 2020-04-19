@@ -39,6 +39,8 @@ public:
 	void setStopDropOff(size_t stopIndex, size_t routeIndex, long long code);
 	// Remove a code to be picked up for a stop
 	void removeStopDropOff(size_t stopIndex, size_t routeIndex, long long code);
+
+	virtual SaveData getSaveData() override;
 private:
 	// The routes assigned to the depot, keyed by id
 	std::map<size_t, TransitRoute> routes;

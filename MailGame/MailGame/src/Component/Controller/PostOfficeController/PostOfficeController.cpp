@@ -9,6 +9,7 @@
 #include "Component/MailContainer/MailContainer.h"
 #include "Component/Pathfinder/RoadPathfinder/RoadPathfinder.h"
 #include "Mail/Mail.h"
+#include "System/SaveData/SaveData.h"
 #include <string>
 #include <imgui.h>
 
@@ -140,4 +141,12 @@ void PostOfficeController::addRoute(MailTruckRoute route) {
 }
 void PostOfficeController::deleteRoute(size_t routeIndex) {
 	routesToDelete.push_back(routeIndex);
+}
+
+SaveData PostOfficeController::getSaveData() {
+	SaveData sd("Controller");
+	for (MailTruckRoute route : this->routes) {
+		sd.addData(mailTruckRouteToSaveData(route));
+	}
+	return sd;
 }

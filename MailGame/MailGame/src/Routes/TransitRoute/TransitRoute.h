@@ -3,6 +3,7 @@
 #include <vector>
 
 class Entity;
+class SaveData;
 
 /*
  * An individual stop along a TransitRoute
@@ -34,3 +35,6 @@ struct TransitRoute {
 	// Constructor
 	TransitRoute(int time) : departureTime(time), id(ROUTE_ID++) {}
 };
+
+SaveData transitRouteToSaveData(TransitRoute route);
+SaveData transitRouteStopToSaveData(TransitRouteStop stop);

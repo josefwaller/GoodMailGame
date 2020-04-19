@@ -4,6 +4,7 @@
 #include <optional>
 
 class Entity;
+class SaveData;
 
 // The individual stop of a route
 struct MailTruckRouteStop {
@@ -24,3 +25,5 @@ struct MailTruckRoute {
 	// Constructor
 	MailTruckRoute(bool isDeliv, int time) : isDelivering(isDeliv), departTime(time), id(ROUTE_ID++) {};
 };
+
+SaveData mailTruckRouteToSaveData(MailTruckRoute route);

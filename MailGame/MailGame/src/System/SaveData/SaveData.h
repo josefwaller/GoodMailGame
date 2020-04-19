@@ -10,6 +10,9 @@ public:
 	SaveData(std::string name);
 	// Add a value to the data
 	void addValue(std::string name, std::string val);
+	// Add an int, long, etc
+	void addValue(std::string name, int val);
+	void addValue(std::string name, size_t val);
 	// Add a nested SaveData
 	void addData(SaveData data);
 	// Get a value/dta

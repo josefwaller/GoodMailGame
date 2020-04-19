@@ -11,6 +11,12 @@ void SaveData::addData(SaveData data) {
 void SaveData::addValue(std::string name, std::string value) {
 	this->values[name] = value;
 }
+void SaveData::addValue(std::string name, int value) {
+	addValue(name, std::to_string(value));
+}
+void SaveData::addValue(std::string name, size_t value) {
+	addValue(name, std::to_string(value));
+}
 std::string SaveData::getValue(std::string name) {
 	return this->values[name];
 }

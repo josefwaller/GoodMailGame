@@ -147,6 +147,7 @@
     <ClCompile Include="src\Entity\Entity.cpp" />
     <ClCompile Include="src\Entity\EntityPresets\BuildingPresets\BuildingsPresets.cpp" />
     <ClCompile Include="src\Entity\EntityPresets\VehiclePresets\VehiclePresets.cpp" />
+    <ClCompile Include="src\Entity\EntityTag\EntityTag.cpp" />
     <ClCompile Include="src\GameMap\GameMap.cpp" />
     <ClCompile Include="src\GameMap\Line\Line.cpp" />
     <ClCompile Include="src\Game\Game.cpp" />

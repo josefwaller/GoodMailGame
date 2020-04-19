@@ -72,5 +72,6 @@ if (this->var) { \
 	ADD_DATA(pathfinder);
 
 #undef ADD_DATA
+	data.addValue("id", std::to_string(this->id));
 	return data;
 }

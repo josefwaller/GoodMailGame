@@ -19,6 +19,8 @@ public:
 	size_t getNumLetters();
 	// Get the mail
 	std::vector<Mail> getMail();
+
+	virtual SaveData getSaveData() override;
 private:
 	// The mail in the entity right now
 	std::vector<Mail> mail;

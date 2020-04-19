@@ -15,6 +15,8 @@ public:
 
 	IsoRotation getRotation();
 	void setRotation(IsoRotation rot);
+
+	virtual SaveData getSaveData() override;
 private:
 	sf::Vector2f position;
 	IsoRotation rotation;

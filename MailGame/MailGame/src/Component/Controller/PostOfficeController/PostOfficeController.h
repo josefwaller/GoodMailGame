@@ -17,6 +17,8 @@ public:
 	void setRouteType(size_t routeIndex, bool isDelivering);
 	void addRoute(MailTruckRoute r);
 	void deleteRoute(size_t routeIndex);
+
+	virtual SaveData getSaveData() override;
 private:
 	// The routes that the post office will spawn trucks for
 	std::vector<MailTruckRoute> routes;

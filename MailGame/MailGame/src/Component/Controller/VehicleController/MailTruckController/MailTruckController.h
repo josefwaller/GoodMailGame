@@ -11,6 +11,7 @@ public:
 	MailTruckController(MailTruckRoute route, std::weak_ptr<Entity> office);
 	static const float SPEED;
 	virtual void update(float delta) override;
+	virtual SaveData getSaveData() override;
 private:
 	// Flag for if the truck has picked up the mail from the office yet
 	bool hasPickedUpMail;
