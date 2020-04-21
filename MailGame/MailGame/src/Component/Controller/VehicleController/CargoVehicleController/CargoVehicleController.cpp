@@ -2,6 +2,7 @@
 #include "Entity/Entity.h"
 #include "Component/TransitStop/TransitStop.h"
 #include "Component/MailContainer/MailContainer.h"
+#include "Component/ComponentType/ComponentType.h"
 #include "Game/Game.h"
 #include "System/SaveData/SaveData.h"
 #include <stdexcept>
@@ -69,6 +70,6 @@ void CargoVehicleController::onArriveAtStop(size_t stopIndex) {
 float CargoVehicleController::getSpeed() { return 1.0f; };
 
 std::optional<SaveData> CargoVehicleController::getSaveData() {
-	SaveData sd("Controller");
+	SaveData sd(componentTypeToStr(ComponentType::Controller));
 	return sd;
 }

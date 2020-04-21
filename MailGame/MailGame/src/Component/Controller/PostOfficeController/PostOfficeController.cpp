@@ -1,6 +1,7 @@
 #include "PostOfficeController.h"
 #include "Entity/Entity.h"
 #include "Component/Transform/Transform.h"
+#include "Component/ComponentType/ComponentType.h"
 #include "Component/TransitStop/TransitStop.h"
 #include "Component/Controller/VehicleController/MailTruckController/MailTruckController.h"
 #include "Game/Game.h"
@@ -144,7 +145,7 @@ void PostOfficeController::deleteRoute(size_t routeIndex) {
 }
 
 std::optional<SaveData> PostOfficeController::getSaveData() {
-	SaveData sd("Controller");
+	SaveData sd(componentTypeToStr(ComponentType::Controller));
 	for (MailTruckRoute route : this->routes) {
 		sd.addData(mailTruckRouteToSaveData(route));
 	}

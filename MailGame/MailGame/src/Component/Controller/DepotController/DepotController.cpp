@@ -1,6 +1,7 @@
 #include "DepotController.h"
 #include "PostalCodeDatabase/PostalCodeDatabase.h"
 #include "Component/Transform/Transform.h"
+#include "Component/ComponentType/ComponentType.h"
 #include <imgui.h>
 #include "Entity/Entity.h"
 #include "Game/Game.h"
@@ -165,7 +166,7 @@ void DepotController::removeStopDropOff(size_t stopIndex, size_t routeId, long l
 }
 
 std::optional<SaveData> DepotController::getSaveData() {
-	SaveData sd("Controller");
+	SaveData sd(componentTypeToStr(ComponentType::Controller));
 	for (auto kv: this->routes) {
 		sd.addData(transitRouteToSaveData(kv.second));
 	}

@@ -1,6 +1,7 @@
 #include "Transform.h"
 #include "Entity/Entity.h"
 #include "Game/Game.h"
+#include "Component/ComponentType/ComponentType.h"
 #include "System/SaveData/SaveData.h"
 
 Transform::Transform(sf::Vector2f pos, IsoRotation rot) {
@@ -31,7 +32,7 @@ void Transform::setRotation(IsoRotation rot) {
 }
 
 std::optional<SaveData> Transform::getSaveData() {
-	SaveData d("Transform");
+	SaveData d(componentTypeToStr(ComponentType::Transform));
 	d.addValue("x", std::to_string(this->position.x));
 	d.addValue("y", std::to_string(this->position.y));
 	d.addValue("rot", std::to_string(this->rotation.getRotation()));

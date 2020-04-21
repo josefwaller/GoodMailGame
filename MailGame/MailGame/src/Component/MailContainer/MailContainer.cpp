@@ -1,5 +1,6 @@
 #include "MailContainer.h"
 #include "System/SaveData/SaveData.h"
+#include "Component/ComponentType/ComponentType.h"
 #include <algorithm>
 #include <stdexcept>
 
@@ -37,7 +38,7 @@ std::vector<Mail> MailContainer::getMail() {
 }
 
 std::optional<SaveData> MailContainer::getSaveData() {
-	SaveData d("MailContainer");
+	SaveData d(componentTypeToStr(ComponentType::MailContainer));
 	for (Mail mail : this->mail) {
 		SaveData m("Mail");
 		m.addValue("id", std::to_string(mail.getId()));

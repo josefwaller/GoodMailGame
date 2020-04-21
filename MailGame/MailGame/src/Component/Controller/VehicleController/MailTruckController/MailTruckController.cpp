@@ -4,6 +4,7 @@
 #include "Entity/Entity.h"
 #include "Component/TransitStop/TransitStop.h"
 #include "Component/MailContainer/MailContainer.h"
+#include "Component/ComponentType/ComponentType.h"
 #include "Component/Transform/Transform.h"
 #include "Component/Pathfinder/Pathfinder.h"
 #include "System/SaveData/SaveData.h"
@@ -143,7 +144,7 @@ void MailTruckController::pickupMailFromOffice() {
 }
 
 std::optional<SaveData> MailTruckController::getSaveData() {
-	SaveData sd("Controller");
+	SaveData sd(componentTypeToStr(ComponentType::Controller));
 	if (this->office.lock()) {
 		sd.addValue("OfficeId", this->office.lock()->getId());
 	}

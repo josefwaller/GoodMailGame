@@ -1,6 +1,7 @@
 #include "ResidenceController.h"
 #include "Entity/Entity.h"
 #include "Component/MailContainer/MailContainer.h"
+#include "Component/ComponentType/ComponentType.h"
 #include "Component/Transform/Transform.h"
 #include "Mail/Mail.h"
 #include "Game/Game.h"
@@ -44,6 +45,6 @@ void ResidenceController::generateLetter() {
 }
 
 std::optional<SaveData> ResidenceController::getSaveData() {
-	SaveData sd("Controller");
+	SaveData sd(componentTypeToStr(ComponentType::Controller));
 	return sd;
 }
