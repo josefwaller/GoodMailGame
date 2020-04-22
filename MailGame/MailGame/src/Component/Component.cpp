@@ -12,5 +12,5 @@ std::shared_ptr<Entity> Component::getEntity() {
 	return this->entity.lock();
 }
 std::optional<SaveData> Component::getSaveData() {
-	return SaveData("Component");
+	return {};
 }
