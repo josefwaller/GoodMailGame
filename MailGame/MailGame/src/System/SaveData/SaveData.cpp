@@ -17,6 +17,12 @@ void SaveData::addValue(std::string name, int value) {
 void SaveData::addValue(std::string name, size_t value) {
 	addValue(name, std::to_string(value));
 }
+void SaveData::addValue(std::string name, bool val) {
+	addValue(name, std::to_string(val));
+}
+void SaveData::addValue(std::string name, long long val) {
+	addValue(name, std::to_string(val));
+}
 std::string SaveData::getValue(std::string name) {
 	return this->values[name];
 }

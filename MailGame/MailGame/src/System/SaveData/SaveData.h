@@ -13,6 +13,8 @@ public:
 	// Add an int, long, etc
 	void addValue(std::string name, int val);
 	void addValue(std::string name, size_t val);
+	void addValue(std::string name, bool val);
+	void addValue(std::string name, long long val);
 	// Add a nested SaveData
 	void addData(SaveData data);
 	// Get a value/dta
