@@ -49,6 +49,41 @@ rapidxml::xml_node<>* SaveData::getDataAsXml(rapidxml::xml_document<>* doc) {
 	}
 	return node;
 }
+
+SaveData SaveData::getData(std::string name) {
+	for (auto d : this->datas) {
+		if (d.name == name) {
+			return d;
+		}
+	}
+	return SaveData("");
+}
+SaveData SaveData::fromFileContents(std::string data) {
+	rapidxml::xml_document<> doc;
+	// Unsafe stuff going on here
+	char* c = new char[data.length() + 1];
+	strncpy_s(c, data.length() + 1, data.c_str(), data.length());
+	doc.parse<0>(c);
+	// Load all the stuff
+	rapidxml::xml_node<>* n = doc.first_node();
+	SaveData toReturn = SaveData::fromXmlNode(n);
+
+	delete[] c;
+	return toReturn;
+}
+SaveData SaveData::fromXmlNode(rapidxml::xml_node<>* node) {
+	// Create save data
+	SaveData toReturn(std::string(node->name()));
+	// Add values
+	for (rapidxml::xml_attribute<>* attr = node->first_attribute(); attr != NULL; attr = attr->next_attribute()) {
+		toReturn.addValue(std::string(attr->name()), std::string(attr->value()));
+	}
+	// Add nexted datas
+	for (rapidxml::xml_node<>* n = node->first_node(); n != NULL; n = n->next_sibling()) {
+		toReturn.addData(fromXmlNode(n));
+	}
+	return toReturn;
+}
 std::string SaveData::getAsString() {
 	rapidxml::xml_document<> doc;
 	rapidxml::xml_node<>* node = this->getDataAsXml(&doc);
@@ -57,3 +92,5 @@ std::string SaveData::getAsString() {
 	ss << doc;
 	return ss.str();
 }
+
+std::string SaveData::getName() { return this->name; }

@@ -8,6 +8,10 @@ class SaveData {
 public:
 	// Create a save data with the name given
 	SaveData(std::string name);
+	// Load a save data from the file contents
+	static SaveData fromFileContents(std::string fileContents);
+	// Get the save data represented by the xml node
+	static SaveData fromXmlNode(rapidxml::xml_node<>* node);
 	// Add a value to the data
 	void addValue(std::string name, std::string val);
 	// Add an int, long, etc
@@ -20,8 +24,12 @@ public:
 	// Get a value/dta
 	std::string getValue(std::string name);
 	std::vector<SaveData> getDatas();
+	// Get the first data with the name given
+	SaveData getData(std::string name);
 	// Get the string to save to file
 	std::string getAsString();
+	// Get the name
+	std::string getName();
 private:
 	// The name of this data
 	std::string name;

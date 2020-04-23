@@ -22,8 +22,12 @@ public:
 	// Whitelist of entity tags which are interlaid with the map and must be drawn instead of the tile they're on
 	static const std::vector<EntityTag> WHITELIST_ENTITY_TAG;
 
-	// Initialize game
+	// Create an "empty" game, i.e. no entities, etc
 	Game(App * a, sf::RenderWindow* window);
+	// Generate a new game, with a new map and everything
+	void generateNew();
+	// Load a game from the save data provided
+	void loadFromSaveData(SaveData data);
 	// Update game
 	void update(float delta);
 	// On an event such as a keyboard click

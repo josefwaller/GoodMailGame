@@ -21,21 +21,22 @@ const std::vector<EntityTag> Game::WHITELIST_ENTITY_TAG = {
 	EntityTag::CargoTruckDepot,
 	EntityTag::TrainStation
 };
+// Initialize Game
 Game::Game(App* a, sf::RenderWindow* w): time(0), gameMap(this), uiHandler(this), window(w), rotation(IsoRotation::NORTH), entities() {
-	// For testing: Create a post office and a simple route for it
-	auto pO = Construction::recipes[EntityTag::PostOffice].buildRecipe(
-		this,
-		sf::Vector2f(13.0f, 12.0f),
-		IsoRotation::NORTH
-	);
 	this->gameView.setSize(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT));
-	this->addEntity(pO);
-	auto pOCont = std::dynamic_pointer_cast<PostOfficeController>(pO->controller);
-	pOCont->addRoute(MailTruckRoute(true, 1));
-	pOCont->addStop(0, MailTruckRouteStop());
-	pOCont->setStopTile(0, 0, { 12, 11 });
-	pOCont->addStop(0, MailTruckRouteStop());
-	pOCont->setStopTile(0, 1, { 22, 10 });
+}
+void Game::generateNew() {
+	// Stuff to generate a new game
+	this->gameMap.generateNew();
+}
+void Game::loadFromSaveData(SaveData data) {
+	// First, create entities with the id's given but don't load anything else
+	// So that entities referenced by id in the save data will be valid
+
+	// The create the game map
+	this->gameMap.loadFromSaveData(data.getData("GameMap"));
+
+	// Then load the actual entity data
 }
 
 void Game::update(float delta) {
@@ -225,3 +226,4 @@ SaveData Game::getSaveData() {
 	sd.addData(entData);
 	return sd;
 }
+

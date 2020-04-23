@@ -5,7 +5,10 @@
 #include <SFML/System/Clock.hpp>
 #include <imgui-SFML.h>
 #include <imgui.h>
-
+#include <rapidxml.hpp>
+#include <fstream>
+#include <stdio.h>
+#include "System/SaveData/SaveData.h"
 
 App::App() : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Hello World"), lastTime()
 {
@@ -13,8 +16,13 @@ App::App() : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Hello World"), 
 }
 
 void App::run() {
+	// Load test save data
+	std::ifstream fs("savedata/test.txt");
+	std::string data((std::istreambuf_iterator<char>(fs)), (std::istreambuf_iterator<char>()));
+	SaveData sd = SaveData::fromFileContents(data);
 	// Create game
 	Game game(this, &this->window);
+	game.loadFromSaveData(sd);
 	sf::Clock deltaClock;
 	ImGui::SFML::Init(window);
 

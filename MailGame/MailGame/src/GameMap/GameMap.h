@@ -17,8 +17,12 @@ public:
 	static std::vector<sf::Sprite> ROAD_SPRITES;
 	static std::vector<sf::Sprite> RAIL_TRACK_SPRITES;
 	static const sf::Sprite EMPTY_SPRITE;
-
+	// Create an empty game map, i.e. all tiles are empty
 	GameMap(Game* g);
+	// Generate a new map
+	void generateNew();
+	// Load a game map from the data given
+	void loadFromSaveData(SaveData data);
 
 	Tile getTileAt(size_t x, size_t y);
 
@@ -41,6 +45,8 @@ public:
 private:
 	Game* game;
 	std::vector<std::vector<Tile>> tiles;
+	// Initialize the tile sprites
+	void initTileSprites();
 	// Render a single tile
 	void renderTile(sf::RenderWindow* window, size_t x, size_t y);
 	void generateCityAt(sf::Vector2i pos);

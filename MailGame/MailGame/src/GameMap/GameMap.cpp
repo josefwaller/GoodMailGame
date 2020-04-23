@@ -23,23 +23,25 @@ std::vector<sf::Sprite> GameMap::ROAD_SPRITES;
 std::vector<sf::Sprite> GameMap::RAIL_TRACK_SPRITES;
 
 GameMap::GameMap(Game* g): game(g) {
+	// Load the tile sprites
 	for (int i = 0; i < 16; i++) {
 		GameMap::ROAD_SPRITES.push_back(ResourceLoader::get()->getSprite("tiles/tiles", "road-" + std::bitset<4>(i).to_string()));
 		GameMap::RAIL_TRACK_SPRITES.push_back(ResourceLoader::get()->getSprite("tiles/tiles", "railway-" + std::bitset<4>(i).to_string()));
 	}
-
 	// Add the first postal code
 	long long pCode = PostalCodeDatabase::get()->createPostalCode({ sf::Color(255, 0, 0, 100) });
-	// Initialize a 20x20 grid of nothing
+	// Initialize a grid of nothing
 	for (size_t i = 0; i < MAP_WIDTH; i++) {
 		tiles.push_back(std::vector<Tile>());
 		for (size_t j = 0; j < MAP_HEIGHT; j++) {
 			tiles[i].push_back(Tile());
 		}
 	}
+}
+void GameMap::generateNew() {
+	// Generate city
 	generateCityAt({ MAP_WIDTH / 2, MAP_HEIGHT / 4 });
 }
-
 void GameMap::render(sf::RenderWindow* window) {
 	int rotation = this->game->getRotation().getRotation();
 	switch(rotation) {
@@ -340,10 +342,6 @@ SaveData GameMap::getSaveData() {
 			td.addValue("pc", std::to_string(t.postalCode));
 			// Add type
 			td.addValue("type", std::to_string((size_t)t.type));
-			// Add building
-			if (t.building.lock()) {
-				td.addValue("building", std::to_string(t.building.lock()->getId()));
-			}
 			// Add data for road
 			if (t.road.has_value()) {
 				Road r = t.road.value();
@@ -357,9 +355,9 @@ SaveData GameMap::getSaveData() {
 			// Add data for railway
 			if (t.railway.has_value()) {
 				Railway rw = t.railway.value();
-				SaveData rwd("RailWay");
-				rwd.addValue("To", std::to_string(rw.to.getRotation()));
-				rwd.addValue("From", std::to_string(rw.from.getRotation()));
+				SaveData rwd("Railway");
+				rwd.addValue("to", std::to_string(rw.to.getRotation()));
+				rwd.addValue("from", std::to_string(rw.from.getRotation()));
 				td.addData(rwd);
 			}
 			sd.addData(td);
@@ -367,3 +365,31 @@ SaveData GameMap::getSaveData() {
 	}
 	return sd;
 }
+void GameMap::loadFromSaveData(SaveData data) {
+	// Go through every tile data
+	for (SaveData d : data.getDatas()) {
+		size_t x = std::stoull(d.getValue("x"));
+		size_t y = std::stoull(d.getValue("y"));
+		this->tiles[x][y].postalCode = std::stoll(d.getValue("pc"));
+		this->tiles[x][y].type = (TileType)(std::stoull(d.getValue("type")));
+		// Go through the save datas in the tile
+		// Will be for a road/railway
+		for (SaveData rd : d.getDatas()) {
+			if (rd.getName() == "Road") {
+				Road r = Road();
+				r.hasNorth = (rd.getValue("hasNorth") == "1");
+				r.hasSouth = (rd.getValue("hasSouth") == "1");
+				r.hasEast = (rd.getValue("hasEast") == "1");
+				r.hasWest = (rd.getValue("hasWest") == "1");
+				this->tiles[x][y].road = r;
+			}
+			else if (rd.getName() == "Railway") {
+				IsoRotation from = IsoRotation(std::stoi(rd.getValue("from")));
+				IsoRotation to = IsoRotation(std::stoi(rd.getValue("to")));
+				Railway r = Railway(from, to);
+				this->tiles[x][y].railway = r;
+			}
+		}
+	}
+}
+
