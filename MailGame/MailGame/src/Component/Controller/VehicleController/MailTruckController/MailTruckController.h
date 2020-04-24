@@ -12,6 +12,7 @@ public:
 	static const float SPEED;
 	virtual void update(float delta) override;
 	virtual std::optional<SaveData> getSaveData() override;
+	void fromSaveData(SaveData data);
 private:
 	// Flag for if the truck has picked up the mail from the office yet
 	bool hasPickedUpMail;
@@ -27,4 +28,6 @@ private:
 	void dropOffMail(sf::Vector2i pos);
 	// Pick up the mail along the truck's route from the post office that spawned it
 	void pickupMailFromOffice();
+	// Set teh stops based on the route
+	void setRouteStops();
 };

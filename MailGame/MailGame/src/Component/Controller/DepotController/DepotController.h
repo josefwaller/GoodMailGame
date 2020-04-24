@@ -41,6 +41,7 @@ public:
 	void removeStopDropOff(size_t stopIndex, size_t routeIndex, long long code);
 
 	virtual std::optional<SaveData> getSaveData() override;
+	virtual void fromSaveData(SaveData data) override;
 private:
 	// The routes assigned to the depot, keyed by id
 	std::map<size_t, TransitRoute> routes;

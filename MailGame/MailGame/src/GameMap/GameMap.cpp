@@ -342,6 +342,9 @@ SaveData GameMap::getSaveData() {
 			td.addValue("pc", std::to_string(t.postalCode));
 			// Add type
 			td.addValue("type", std::to_string((size_t)t.type));
+			if (t.building.lock()) {
+				td.addValue("building", t.building.lock()->getId());
+			}
 			// Add data for road
 			if (t.road.has_value()) {
 				Road r = t.road.value();
@@ -372,6 +375,11 @@ void GameMap::loadFromSaveData(SaveData data) {
 		size_t y = std::stoull(d.getValue("y"));
 		this->tiles[x][y].postalCode = std::stoll(d.getValue("pc"));
 		this->tiles[x][y].type = (TileType)(std::stoull(d.getValue("type")));
+		if (x == 13 && y == 10)
+			auto x = 0;
+		if (d.hasValue("building")) {
+			this->tiles[x][y].building = this->game->getEntityById(std::stoull(d.getValue("building")));
+		}
 		// Go through the save datas in the tile
 		// Will be for a road/railway
 		for (SaveData rd : d.getDatas()) {

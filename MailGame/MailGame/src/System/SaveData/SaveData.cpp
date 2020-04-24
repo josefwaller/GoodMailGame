@@ -29,6 +29,9 @@ std::string SaveData::getValue(std::string name) {
 std::vector<SaveData> SaveData::getDatas() {
 	return this->datas;
 }
+bool SaveData::hasValue(std::string name) {
+	return (this->values.find(name) != this->values.end());
+}
 rapidxml::xml_node<>* SaveData::getDataAsXml(rapidxml::xml_document<>* doc) {
 	// Create node
 	rapidxml::xml_node<>* node = doc->allocate_node(

@@ -151,3 +151,8 @@ std::optional<SaveData> PostOfficeController::getSaveData() {
 	}
 	return sd;
 }
+void PostOfficeController::fromSaveData(SaveData data) {
+	for (SaveData d : data.getDatas()) {
+		this->routes.push_back(saveDataToMailTruckRoute(d));
+	}
+}

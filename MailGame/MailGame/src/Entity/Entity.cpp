@@ -1,5 +1,6 @@
 #include "Entity\Entity.h"
 #include "Component/Component.h"
+#include "Component/ComponentType/ComponentType.h"
 #include "Component/Transform/Transform.h"
 #include "Component/Renderer/Renderer.h"
 #include "Component/Controller/Controller.h"
@@ -77,3 +78,23 @@ if (this->var) { \
 	data.addValue("id", std::to_string(this->id));
 	return data;
 }
+
+void Entity::fromSaveData(SaveData data) {
+	this->id = std::stoull(data.getValue("id"));
+	Entity::entityId = std::max(Entity::entityId, this->id + 1);
+}
+
+#define LOAD_COMPONENT(compType, var) case ComponentType::compType: \
+	this->var->fromSaveData(d); \
+	break;
+void Entity::loadComponentsFromSaveData(SaveData data) {
+	for (SaveData d : data.getDatas()) {
+		switch (strToComponentType(d.getName())) {
+			LOAD_COMPONENT(Transform, transform)
+			LOAD_COMPONENT(Controller, controller)
+			LOAD_COMPONENT(MailContainer, mailContainer)
+		default: break; // Todo: Do something here
+		}
+	}
+}
+#undef LOAD_COMPONENT

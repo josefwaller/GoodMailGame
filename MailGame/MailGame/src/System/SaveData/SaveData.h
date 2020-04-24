@@ -19,6 +19,7 @@ public:
 	void addValue(std::string name, size_t val);
 	void addValue(std::string name, bool val);
 	void addValue(std::string name, long long val);
+	bool hasValue(std::string name);
 	// Add a nested SaveData
 	void addData(SaveData data);
 	// Get a value/dta

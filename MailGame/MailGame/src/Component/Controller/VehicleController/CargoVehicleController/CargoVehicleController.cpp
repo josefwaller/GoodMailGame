@@ -7,7 +7,10 @@
 #include "System/SaveData/SaveData.h"
 #include <stdexcept>
 
-CargoVehicleController::CargoVehicleController(TransitRoute r, std::weak_ptr<Entity> d): depot(d), route(r) {
+CargoVehicleController::CargoVehicleController(TransitRoute r, std::weak_ptr<Entity> d) : depot(d), route(r) {
+	setRouteStops();
+}
+void CargoVehicleController::setRouteStops() {
 	// Add all the locations to stops
 	std::vector<sf::Vector2f> stops;
 	for (TransitRouteStop stop : route.stops) {
@@ -20,7 +23,8 @@ CargoVehicleController::CargoVehicleController(TransitRoute r, std::weak_ptr<Ent
 			stops.push_back(s->transitStop->getTransitLocation());
 		}
 	}
-	stops.push_back(depot.lock()->transitStop->getTransitLocation());
+	if (depot.lock())
+		stops.push_back(depot.lock()->transitStop->getTransitLocation());
 	this->setStops(stops);
 }
 void CargoVehicleController::onArriveAtDest() {
@@ -71,5 +75,17 @@ float CargoVehicleController::getSpeed() { return 1.0f; };
 
 std::optional<SaveData> CargoVehicleController::getSaveData() {
 	SaveData sd(componentTypeToStr(ComponentType::Controller));
+	sd.addData(transitRouteToSaveData(this->route));
+	if (depot.lock())
+		sd.addValue("depotId", depot.lock()->getId());
+	sd.addValue("stopIndex", this->stopIndex);
 	return sd;
+}
+void CargoVehicleController::fromSaveData(SaveData data) {
+	this->route = saveDataToTransitRoute(this->getEntity()->getGame(), data.getData("TransitRoute"));
+	if (data.hasValue("depotId")) {
+		this->depot = this->getEntity()->getGame()->getEntityById(std::stoull(data.getValue("depotId")));
+	}
+	this->stopIndex = std::stoull(data.getValue("stopIndex"));
+	this->setRouteStops();
 }

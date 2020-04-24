@@ -12,6 +12,8 @@ public:
 	void setEntity(std::shared_ptr<Entity> e);
 	std::shared_ptr<Entity> getEntity();
 	virtual std::optional<SaveData> getSaveData();
+	// Load the component from save data, after the entities have all been initialized
+	virtual void fromSaveData(SaveData d);
 private:
 	std::weak_ptr<Entity> entity;
 };

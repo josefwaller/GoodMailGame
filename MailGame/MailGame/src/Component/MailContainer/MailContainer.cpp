@@ -40,13 +40,12 @@ std::vector<Mail> MailContainer::getMail() {
 std::optional<SaveData> MailContainer::getSaveData() {
 	SaveData d(componentTypeToStr(ComponentType::MailContainer));
 	for (Mail mail : this->mail) {
-		SaveData m("Mail");
-		m.addValue("id", std::to_string(mail.getId()));
-		m.addValue("srcX", std::to_string(mail.getSrc().x));
-		m.addValue("srcY", std::to_string(mail.getSrc().y));
-		m.addValue("destX", std::to_string(mail.getDest().x));
-		m.addValue("destY", std::to_string(mail.getDest().y));
-		d.addData(m);
+		d.addData(mail.getSaveData());
 	}
 	return d;
+}
+void MailContainer::fromSaveData(SaveData data) {
+	for (SaveData d : data.getDatas()) {
+		this->mail.push_back(Mail(d));
+	}
 }

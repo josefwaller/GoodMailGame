@@ -57,6 +57,8 @@ public:
 	void advanceTime();
 	// Get a list of the entities in game
 	std::vector<std::shared_ptr<Entity>> getEntities();
+	// Get an entity by id
+	std::weak_ptr<Entity> getEntityById(size_t id);
 	// Get the save data for the entire game
 	SaveData getSaveData();
 private:

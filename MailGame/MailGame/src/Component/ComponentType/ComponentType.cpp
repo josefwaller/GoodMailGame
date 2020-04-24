@@ -6,3 +6,10 @@ std::string componentTypeToStr(ComponentType t) {
 	}
 	return "UnknownComponentType";
 }
+
+ComponentType strToComponentType(std::string str) {
+	if (STRING_COMPONENTS.find(str) != STRING_COMPONENTS.end()) {
+		return STRING_COMPONENTS.at(str);
+	}
+	return ComponentType::Transform;
+}

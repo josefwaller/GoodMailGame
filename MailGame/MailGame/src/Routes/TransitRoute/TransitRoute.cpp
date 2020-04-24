@@ -1,6 +1,7 @@
 #include "TransitRoute.h"
 #include "System/SaveData/SaveData.h"
 #include "Entity/Entity.h"
+#include "Game/Game.h"
 
 unsigned long long TransitRouteStop::STOP_ID = 0;
 unsigned long long TransitRoute::ROUTE_ID = 0;
@@ -8,11 +9,24 @@ unsigned long long TransitRoute::ROUTE_ID = 0;
 SaveData transitRouteToSaveData(TransitRoute route) {
 	SaveData sd = SaveData("TransitRoute");
 	sd.addValue("departureTime", route.departureTime);
-	sd.addValue("id", route.id);
-	for (TransitRouteStop stop : route.stops) {
-		sd.addData(transitRouteStopToSaveData(stop));
+	sd.addValue("numStops", route.stops.size());
+	for (size_t i = 0; i < route.stops.size(); i++) {
+		TransitRouteStop stop = route.stops[i];
+		SaveData d = transitRouteStopToSaveData(stop);
+		d.addValue("index", i);
+		sd.addData(d);
 	}
 	return sd;
+}
+
+TransitRoute saveDataToTransitRoute(Game* g, SaveData data) {
+	TransitRoute route(std::stoi(data.getValue("departureTime")));
+	route.stops.resize(std::stoull(data.getValue("numStops")));
+	for (SaveData d : data.getDatas()) {
+		size_t index = std::stoull(d.getValue("index"));
+		route.stops[index] = saveDataToTransitRouteStop(g, d);
+	}
+	return route;
 }
 
 SaveData transitRouteStopToSaveData(TransitRouteStop stop) {
@@ -36,4 +50,20 @@ SaveData transitRouteStopToSaveData(TransitRouteStop stop) {
 		sd.addData(d);
 	}
 	return sd;
+}
+TransitRouteStop saveDataToTransitRouteStop(Game* g, SaveData data) {
+	TransitRouteStop stop;
+	if (data.getValue("hasTarget") == "1") {
+		stop.target = g->getEntityById(std::stoull(data.getValue("targetId")));
+	}
+	// Set pick up/drop off
+	for (SaveData d : data.getDatas()) {
+		if (d.getName() == "PickUp") {
+			stop.toPickUp.push_back(std::stoull(d.getValue("code")));
+		}
+		else if (d.getName() == "DropOff") {
+			stop.toDropOff.push_back(std::stoull(d.getValue("code")));
+		}
+	}
+	return stop;
 }

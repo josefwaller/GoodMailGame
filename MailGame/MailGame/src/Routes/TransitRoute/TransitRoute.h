@@ -4,6 +4,7 @@
 
 class Entity;
 class SaveData;
+class Game;
 
 /*
  * An individual stop along a TransitRoute
@@ -38,3 +39,5 @@ struct TransitRoute {
 
 SaveData transitRouteToSaveData(TransitRoute route);
 SaveData transitRouteStopToSaveData(TransitRouteStop stop);
+TransitRoute saveDataToTransitRoute(Game* g, SaveData d);
+TransitRouteStop saveDataToTransitRouteStop(Game* g, SaveData d);

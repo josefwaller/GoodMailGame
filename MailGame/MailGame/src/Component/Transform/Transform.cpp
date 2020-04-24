@@ -38,3 +38,8 @@ std::optional<SaveData> Transform::getSaveData() {
 	d.addValue("rot", std::to_string(this->rotation.getRotation()));
 	return d;
 }
+void Transform::fromSaveData(SaveData data) {
+	this->position.x = std::stof(data.getValue("x"));
+	this->position.y = std::stof(data.getValue("y"));
+	this->rotation = IsoRotation(std::stoi(data.getValue("rot")));
+}

@@ -14,3 +14,4 @@ std::shared_ptr<Entity> Component::getEntity() {
 std::optional<SaveData> Component::getSaveData() {
 	return {};
 }
+void Component::fromSaveData(SaveData d) {}

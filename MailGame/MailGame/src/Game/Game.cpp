@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "GameMap/GameMap.h"
 #include "Entity/Entity.h"
+#include "Entity/EntityTag/EntityTag.h"
 #include "Component/Transform/Transform.h"
 #include "Component/Renderer/Renderer.h"
 #include "Component/Controller/Controller.h"
@@ -32,11 +33,27 @@ void Game::generateNew() {
 void Game::loadFromSaveData(SaveData data) {
 	// First, create entities with the id's given but don't load anything else
 	// So that entities referenced by id in the save data will be valid
+	for (SaveData entData : data.getData("Entities").getDatas()) {
+		// Create the entity
+		auto e = entityTagToEntity(
+			strToEntityTag(entData.getName()),
+			this,
+			sf::Vector2f(),
+			IsoRotation()
+		);
+		// Load from data
+		e->fromSaveData(entData);
+		this->entities.push_back(e);
+	}
 
 	// The create the game map
 	this->gameMap.loadFromSaveData(data.getData("GameMap"));
 
 	// Then load the actual entity data
+	for (SaveData entData : data.getData("Entities").getDatas()) {
+		this->getEntityById(std::stoull(entData.getValue("id"))).lock()->loadComponentsFromSaveData(entData);
+	}
+	this->time = std::stoull(data.getValue("time"));
 }
 
 void Game::update(float delta) {
@@ -224,6 +241,15 @@ SaveData Game::getSaveData() {
 		entData.addData(e->getSaveData());
 	}
 	sd.addData(entData);
+	sd.addValue("time", this->time);
 	return sd;
 }
 
+std::weak_ptr<Entity> Game::getEntityById(size_t id) {
+	for (auto it = this->entities.begin(); it != this->entities.end(); it++) {
+		if ((*it)->getId() == id) {
+			return *it;
+		}
+	}
+	return {};
+}

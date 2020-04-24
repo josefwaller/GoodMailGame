@@ -27,3 +27,6 @@ struct MailTruckRoute {
 };
 
 SaveData mailTruckRouteToSaveData(MailTruckRoute route);
+SaveData mailTruckRouteStopToSaveData(MailTruckRouteStop stop);
+MailTruckRoute saveDataToMailTruckRoute(SaveData data);
+MailTruckRouteStop saveDataToMailTruckRouteStop(SaveData data);

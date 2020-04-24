@@ -41,6 +41,11 @@ public:
 	Game* getGame();
 	// Get the save data for this entities
 	SaveData getSaveData();
+	// Overwrite the entity with the save data given
+	void fromSaveData(SaveData d);
+	// Set connections between components/entities using id
+	// Can assume the correct ids have been set here
+	void loadComponentsFromSaveData(SaveData d);
 private:
 	// The ID of the entity
 	size_t id;

@@ -21,6 +21,7 @@ public:
 	std::vector<Mail> getMail();
 
 	virtual std::optional<SaveData> getSaveData() override;
+	void fromSaveData(SaveData data) override;
 private:
 	// The mail in the entity right now
 	std::vector<Mail> mail;

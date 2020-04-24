@@ -16,14 +16,18 @@ const float MailTruckController::SPEED = 1.0f;
 // Set stop to -1 to avoid skipping the first stop
 MailTruckController::MailTruckController(MailTruckRoute r, std::weak_ptr<Entity> o)
 	: route(r), office(o), hasPickedUpMail(false) {
+	setRouteStops();
+}
+void MailTruckController::setRouteStops() {
 	// Build and set the stops
 	std::vector<sf::Vector2f> stops;
 	for (MailTruckRouteStop s : this->route.stops) {
 		stops.push_back(sf::Vector2f(s.target.value()));
 	}
-	stops.push_back(
-		o.lock()->transitStop->getTransitLocation()
-	);
+	if (this->office.lock())
+		stops.push_back(
+			this->office.lock()->transitStop->getTransitLocation()
+		);
 	this->setStops(stops);
 }
 
@@ -146,8 +150,17 @@ void MailTruckController::pickupMailFromOffice() {
 std::optional<SaveData> MailTruckController::getSaveData() {
 	SaveData sd(componentTypeToStr(ComponentType::Controller));
 	if (this->office.lock()) {
-		sd.addValue("OfficeId", this->office.lock()->getId());
+		sd.addValue("officeId", this->office.lock()->getId());
 	}
+	sd.addValue("stopIndex", this->stopIndex);
 	sd.addData(mailTruckRouteToSaveData(this->route));
 	return sd;
+}
+void MailTruckController::fromSaveData(SaveData data) {
+	if (data.hasValue("officeId")) {
+		this->office = this->getEntity()->getGame()->getEntityById(std::stoull(data.getValue("officeId")));
+	}
+	this->stopIndex = std::stoull(data.getValue("stopIndex"));
+	this->route = saveDataToMailTruckRoute(data.getDatas()[0]);
+	setRouteStops();
 }

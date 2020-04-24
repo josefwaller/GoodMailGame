@@ -20,13 +20,15 @@ protected:
 	virtual void onArriveAtDest();
 	// Get the speed the truck should move at
 	virtual float getSpeed() = 0;
+	// Children need access to this for saving/loading
+	size_t stopIndex;
+
 private:
 	// The points the truck is currently going through on its route
 	std::vector<sf::Vector2f> points;
 	size_t pointIndex;
 	// The stops and the index of the current stop
 	std::vector<sf::Vector2f> stops;
-	size_t stopIndex;
 	// Set points as the path from its current position to the point given
 	void pathfindToPoint(sf::Vector2f point);
 	// Go to the next stop along the route
