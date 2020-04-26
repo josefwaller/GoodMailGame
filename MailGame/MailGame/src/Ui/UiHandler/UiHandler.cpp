@@ -140,6 +140,10 @@ void UiHandler::update() {
 			this->recipe = Construction::recipes[EntityTag::TrainStation];
 			this->changeState(UiState::BuildingEntity);
 		}
+		if (ImGui::Button("Airport")) {
+			this->recipe = Construction::recipes[EntityTag::Airport];
+			this->changeState(UiState::BuildingEntity);
+		}
 		if (ImGui::Button("RailWay")) {
 			this->changeState(UiState::BuildingRailTracks);
 		}

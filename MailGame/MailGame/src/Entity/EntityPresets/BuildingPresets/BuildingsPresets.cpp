@@ -14,6 +14,7 @@
 #include "Component/Controller/ResidenceController/ResidenceController.h"
 #include "Component/Controller/DepotController/TruckDepotController/TruckDepotController.h"
 #include "Component/Controller/DepotController/TrainDepotController/TrainDepotController.h"
+#include "Component/Controller/DepotController/PlaneDepotController/PlaneDepotController.h"
 // Clickboxes
 #include "Component/ClickBox/RectClickBox/RectClickBox.h"
 // Mail Container
@@ -118,6 +119,24 @@ std::shared_ptr<Entity> BuildingPresets::trainStation(Game* g, sf::Vector3f pos,
 			ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-W")
 		),
 		new TrainDepotController(),
+		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
+		new MailContainer(),
+		new BasicTransitStop()
+	);
+}
+std::shared_ptr<Entity> BuildingPresets::airport(Game* g, sf::Vector3f pos, IsoRotation rot) {
+	addRoadForTransitBuilding(g, sf::Vector3i(pos), rot);
+	return Entity::createEntity(
+		g,
+		EntityTag::Airport,
+		new Transform(pos, rot),
+		new IsoBuildingRenderer(
+			ResourceLoader::get()->getSprite("buildings/buildings", "airport-N"),
+			ResourceLoader::get()->getSprite("buildings/buildings", "airport-E"),
+			ResourceLoader::get()->getSprite("buildings/buildings", "airport-S"),
+			ResourceLoader::get()->getSprite("buildings/buildings", "airport-W")
+		),
+		new PlaneDepotController(),
 		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
 		new MailContainer(),
 		new BasicTransitStop()
