@@ -529,17 +529,17 @@
 	<SubTexture name="atrain-W.png" x="812" y="237" width="31" height="24"/>
 	<SubTexture name="taxi_E.png" x="812" y="291" width="31" height="23"/>
 	<SubTexture name="taxi_N.png" x="843" y="252" width="17" height="23"/>
-	<SubTexture name="taxi_NE.png" x="591" y="237" width="32" height="25"/>
+	<SubTexture name="plane-N" x="591" y="237" width="32" height="25"/>
 	<SubTexture name="taxi_NED.png" x="812" y="314" width="31" height="22"/>
 	<SubTexture name="taxi_NEU.png" x="269" y="231" width="33" height="30"/>
-	<SubTexture name="taxi_NW.png" x="591" y="371" width="32" height="25"/>
+	<SubTexture name="plane-W" x="591" y="371" width="32" height="25"/>
 	<SubTexture name="taxi_NWD.png" x="592" y="21" width="32" height="22"/>
 	<SubTexture name="taxi_NWU.png" x="269" y="379" width="33" height="30"/>
 	<SubTexture name="taxi_S.png" x="877" y="287" width="17" height="23"/>
-	<SubTexture name="taxi_SE.png" x="623" y="151" width="32" height="26"/>
+	<SubTexture name="plane-E" x="623" y="151" width="32" height="26"/>
 	<SubTexture name="taxi_SED.png" x="623" y="306" width="32" height="30"/>
 	<SubTexture name="taxi_SEU.png" x="269" y="463" width="33" height="23"/>
-	<SubTexture name="taxi_SW.png" x="623" y="336" width="32" height="26"/>
+	<SubTexture name="plane-S" x="623" y="336" width="32" height="26"/>
 	<SubTexture name="taxi_SWD.png" x="812" y="404" width="31" height="31"/>
 	<SubTexture name="taxi_SWU.png" x="655" y="99" width="32" height="22"/>
 	<SubTexture name="taxi_W.png" x="812" y="458" width="31" height="23"/>

@@ -20,6 +20,9 @@ public:
 	entity_ptr train(
 		Game* g, sf::Vector3f pos, IsoRotation rot, TransitRoute route, std::weak_ptr<Entity> depot
 	);
+	entity_ptr plane(
+		Game* g, sf::Vector3f pos, IsoRotation rot, TransitRoute route, std::weak_ptr<Entity> depot
+	);
 };
 
 #undef entity_ptr

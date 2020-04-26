@@ -14,6 +14,7 @@
 // Pathfinders
 #include "Component/Pathfinder/RoadPathfinder/RoadPathfinder.h"
 #include "Component/Pathfinder/RailsPathfinder/RailsPathfinder.h"
+#include "Component/Pathfinder/AirPathfinder/AirPathfinder.h"
 
 std::shared_ptr<Entity> VehiclePresets::mailTruck(
 	Game* g,
@@ -86,5 +87,28 @@ std::shared_ptr<Entity> VehiclePresets::train(
 		new MailContainer(),
 		nullptr,
 		new RailsPathfinder()
+	);
+}
+std::shared_ptr<Entity> VehiclePresets::plane(
+	Game* g,
+	sf::Vector3f pos,
+	IsoRotation rot,
+	TransitRoute route,
+	std::weak_ptr<Entity> depot) {
+	return Entity::createEntity(
+		g,
+		EntityTag::Airplane,
+		new Transform(pos, rot),
+		new IsoSpriteRenderer(
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-N"),
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-E"),
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-W"),
+			ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-S")
+		),
+		new CargoVehicleController(route, depot),
+		nullptr,
+		new MailContainer(),
+		nullptr,
+		new AirPathfinder()
 	);
 }

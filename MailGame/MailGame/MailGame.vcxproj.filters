@@ -153,6 +153,9 @@
     <ClCompile Include="src\Component\Controller\DepotController\PlaneDepotController\PlaneDepotController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Component\Pathfinder\AirPathfinder\AirPathfinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h">
@@ -294,6 +297,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Component\Controller\DepotController\PlaneDepotController\PlaneDepotController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\Pathfinder\AirPathfinder\AirPathfinder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
