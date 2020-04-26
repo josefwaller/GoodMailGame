@@ -20,9 +20,11 @@ MailTruckController::MailTruckController(MailTruckRoute r, std::weak_ptr<Entity>
 }
 void MailTruckController::setRouteStops() {
 	// Build and set the stops
-	std::vector<sf::Vector2f> stops;
+	std::vector<sf::Vector3f> stops;
 	for (MailTruckRouteStop s : this->route.stops) {
-		stops.push_back(sf::Vector2f(s.target.value()));
+		// ToDo: What if a stop has not been set?
+		sf::Vector2i p = s.target.value();
+		stops.push_back(sf::Vector3f(p.x, p.y, 0));
 	}
 	if (this->office.lock())
 		stops.push_back(
@@ -65,14 +67,18 @@ void MailTruckController::dropOffMail(sf::Vector2i pos) {
 }
 
 
-void MailTruckController::onArriveAtTile(sf::Vector2f point) {
+void MailTruckController::onArriveAtTile(sf::Vector2i point) {
 	// Pick up letters if a mailbox is on the point
 	if (!this->route.isDelivering) {
 		auto entities = this->getEntity()->getGame()->getEntities();
 		for (auto it = entities.begin(); it != entities.end(); it++) {
-			if ((*it)->tag == EntityTag::MailBox && (*it)->transitStop->getTransitLocation() == point) {
-				// Take all the letters
-				(*it)->mailContainer->transferAllMailTo(this->getEntity()->mailContainer);
+			if ((*it)->tag == EntityTag::MailBox) {
+				sf::Vector3f pos = (*it)->transitStop->getTransitLocation();
+				// Check if the transit location is the tile it just arrived at
+				if (sf::Vector2f(pos.x, pos.y) == sf::Vector2f(point)) {
+					// Take all the letters
+					(*it)->mailContainer->transferAllMailTo(this->getEntity()->mailContainer);
+				}
 			}
 		}
 	}
@@ -98,7 +104,8 @@ float MailTruckController::getSpeed() {
 }
 void MailTruckController::pickupMailFromOffice() {
 	// Get the position of the post office
-	sf::Vector2f pos(this->office.lock()->transitStop->getTransitLocation());
+	sf::Vector3f pos3D(this->office.lock()->transitStop->getTransitLocation());
+	sf::Vector2f pos(pos3D.x, pos3D.y);
 	// Get all the stops along the route (i.e. from post office -> through all the stops -> back to post office)
 	std::vector<sf::Vector2f> allStops = { pos };
 	for (MailTruckRouteStop s : route.stops) {
@@ -109,13 +116,13 @@ void MailTruckController::pickupMailFromOffice() {
 	std::vector<sf::Vector2i> allPoints;
 	for (size_t i = 0; i < allStops.size() - 1; i++) {
 		// Get the points
-		std::vector<sf::Vector2f> pointsBetween = this->getEntity()->pathfinder->findPathBetweenPoints(
-			allStops[i],
-			allStops[i + 1]
+		std::vector<sf::Vector3f> pointsBetween = this->getEntity()->pathfinder->findPathBetweenPoints(
+			sf::Vector3f(allStops[i].x, allStops[i].y, 0),
+			sf::Vector3f(allStops[i + 1].x, allStops[i + 1].y, 0)
 		);
 		// Add to all points
 		for (auto it = pointsBetween.begin(); it != pointsBetween.end(); it++) {
-			allPoints.push_back(sf::Vector2i(*it));
+			allPoints.push_back(sf::Vector2i(it->x, it->y));
 		}
 	}
 	// Add all the points beside these points

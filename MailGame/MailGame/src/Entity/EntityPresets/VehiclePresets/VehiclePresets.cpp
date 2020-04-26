@@ -17,7 +17,7 @@
 
 std::shared_ptr<Entity> VehiclePresets::mailTruck(
 	Game* g,
-	sf::Vector2f pos,
+	sf::Vector3f pos,
 	IsoRotation rot,
 	MailTruckRoute route,
 	std::weak_ptr<Entity> postOffice
@@ -42,7 +42,7 @@ std::shared_ptr<Entity> VehiclePresets::mailTruck(
 
 std::shared_ptr<Entity> VehiclePresets::cargoTruck(
 	Game* g,
-	sf::Vector2f pos,
+	sf::Vector3f pos,
 	IsoRotation rot,
 	TransitRoute route,
 	std::weak_ptr<Entity> office) {
@@ -66,7 +66,7 @@ std::shared_ptr<Entity> VehiclePresets::cargoTruck(
 
 std::shared_ptr<Entity> VehiclePresets::train(
 	Game* g,
-	sf::Vector2f pos,
+	sf::Vector3f pos,
 	IsoRotation rot,
 	TransitRoute route,
 	std::weak_ptr<Entity> depot

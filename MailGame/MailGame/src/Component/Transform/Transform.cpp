@@ -4,11 +4,11 @@
 #include "Component/ComponentType/ComponentType.h"
 #include "System/SaveData/SaveData.h"
 
-Transform::Transform(sf::Vector2f pos, IsoRotation rot) {
+Transform::Transform(sf::Vector3f pos, IsoRotation rot) {
 	this->position = pos;
 	this->rotation = rot;
 }
-sf::Vector2f Transform::getPosition() {
+sf::Vector3f Transform::getPosition() {
 	return this->position;
 }
 
@@ -19,7 +19,7 @@ bool Transform::isOnScreen() {
 	return viewport.contains(screenPos);
 }
 
-void Transform::setPosition(sf::Vector2f pos) {
+void Transform::setPosition(sf::Vector3f pos) {
 	this->position = pos;
 }
 

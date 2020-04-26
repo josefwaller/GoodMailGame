@@ -28,9 +28,9 @@ bool UiHandler::handleEvent(sf::Event e) {
 				throw std::runtime_error("BuildingEntity but with no ConstructionRecipe!");
 			}
 			mousePos = this->game->getMousePosition();
-			if (this->recipe.value().isValid(this->game, mousePos, this->currentRotation)) {
+			if (this->recipe.value().isValid(this->game, sf::Vector3f(mousePos.x, mousePos.y, 0), this->currentRotation)) {
 				this->game->addEntity(
-					this->recipe.value().buildRecipe(this->game, mousePos, this->currentRotation)
+					this->recipe.value().buildRecipe(this->game, sf::Vector3f(mousePos.x, mousePos.y, 0), this->currentRotation)
 				);
 			}
 			this->changeState(UiState::Default);
@@ -203,16 +203,18 @@ void UiHandler::update() {
 void UiHandler::render(sf::RenderWindow* w) {
 	// Variables in switch statement
 	bool isValid;
+	sf::Vector2f mousePos;
 	switch (this->currentState) {
 	case UiState::BuildingEntity:
 		// Draw the recipe being build
 		if (!this->recipe) {
 			throw std::runtime_error("Tried to draw a construction sprite with no recipe!");
 		}
-		isValid = this->recipe.value().isValid(this->game, this->game->getMousePosition(), this->currentRotation);
+		mousePos = this->game->getMousePosition();
+		isValid = this->recipe.value().isValid(this->game, sf::Vector3f(mousePos.x, mousePos.y, 0), this->currentRotation);
 		this->recipe.value().renderConstructionSprite(
 			this->game,
-			this->game->getMousePosition(),
+			sf::Vector3f(mousePos.x, mousePos.y, 0),
 			this->currentRotation,
 			w);
 		break;
@@ -275,9 +277,9 @@ void UiHandler::drawArrow(sf::RenderWindow* window, sf::Vector2i tile, IsoRotati
 	if (!isOutgoing)
 		rot = rot + 2;
 	arrow.setPosition(
-		this->game->worldToScreenPos(sf::Vector2f(tile)
-			+ sf::Vector2f(1.0f, 1.0f)
-			+ rot.getUnitVector() / 2.0f)
+		this->game->worldToScreenPos(sf::Vector3f((float)tile.x, (float)tile.y, 0)
+			+ sf::Vector3f(1.0f, 1.0f, 0)
+			+ rot.getUnitVector3D() / 2.0f)
 	);
 	arrow.setScale(0.5f, 0.5f);
 	window->draw(arrow);
@@ -288,12 +290,12 @@ void UiHandler::changeState(UiState state) {
 
 sf::VertexArray UiHandler::getDrawableTile(sf::Vector2i pos, sf::PrimitiveType t, sf::Color c) {
 	sf::VertexArray vArr(t, 5);
-	sf::Vector2f fPos(pos);
+	sf::Vector3f fPos((float)pos.x, (float)pos.y, 0);
 	Game* g = this->game;
 	vArr[0] = sf::Vertex(g->worldToScreenPos(fPos), c);
-	vArr[1] = sf::Vertex(g->worldToScreenPos(fPos + sf::Vector2f(1.0f, 0)), c);
-	vArr[2] = sf::Vertex(g->worldToScreenPos(fPos + sf::Vector2f(1.0f, 1.0f)), c);
-	vArr[3] = sf::Vertex(g->worldToScreenPos(fPos + sf::Vector2f(0, 1.0f)), c);
+	vArr[1] = sf::Vertex(g->worldToScreenPos(fPos + sf::Vector3f(1.0f, 0, 0)), c);
+	vArr[2] = sf::Vertex(g->worldToScreenPos(fPos + sf::Vector3f(1.0f, 1.0f, 0)), c);
+	vArr[3] = sf::Vertex(g->worldToScreenPos(fPos + sf::Vector3f(0, 1.0f, 0)), c);
 	vArr[4] = vArr[0];
 	return vArr;
 }

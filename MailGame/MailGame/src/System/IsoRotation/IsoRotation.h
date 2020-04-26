@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/System/Vector2.hpp>
 #include <stdexcept>
+#include <SFML/System/Vector3.hpp>
 
 // Simple struct which just loops a number over 4 values
 // Used to represent the rotation of buildings/camera, etc
@@ -66,5 +67,9 @@ public:
 		default:
 			throw std::runtime_error("getUnitVector called on an invalid IsoRotation!");
 		}
+	}
+	// Get unit vector in 3D space (with Z = 0)
+	sf::Vector3f getUnitVector3D() {
+		return sf::Vector3f(getUnitVector().x, getUnitVector().y, 0);
 	}
 };

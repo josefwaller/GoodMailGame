@@ -51,7 +51,7 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 	},
 	{ EntityTag::TrainStation,
 		ConstructionRecipe(
-			[&](Game* g, sf::Vector2f pos, IsoRotation rot) {
+			[&](Game* g, sf::Vector3f pos, IsoRotation rot) {
 				g->getGameMap()->addRailTrack((size_t)pos.x, (size_t)pos.y, rot + 1, rot + 3);
 				return BuildingPresets::trainStation(g, pos, rot);
 			},

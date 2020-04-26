@@ -2,6 +2,6 @@
 #include "Component/Transform/Transform.h"
 #include "Entity/Entity.h"
 
-sf::Vector2f BasicTransitStop::getTransitLocation() {
+sf::Vector3f BasicTransitStop::getTransitLocation() {
 	return this->getEntity()->transform->getPosition();
 }

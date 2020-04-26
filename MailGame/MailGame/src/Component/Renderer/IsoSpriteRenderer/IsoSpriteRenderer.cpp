@@ -5,7 +5,7 @@
 #include <SFML/Graphics/CircleShape.hpp>
 #include "System/Utils/Utils.h"
 
-IsoSpriteRenderer::IsoSpriteRenderer(sf::Sprite n, sf::Sprite e, sf::Sprite s, sf::Sprite w, sf::Vector2f off) {
+IsoSpriteRenderer::IsoSpriteRenderer(sf::Sprite n, sf::Sprite e, sf::Sprite s, sf::Sprite w, sf::Vector3f off) {
 	this->sprites.push_back(n);
 	this->sprites.push_back(e);
 	this->sprites.push_back(s);
@@ -23,7 +23,7 @@ sf::Sprite IsoSpriteRenderer::getSpriteToRender() {
 	// Get the sprite with the proper rotation
 	sf::Sprite toRender = this->sprites[rot.getRotation()];
 	// Set position
-	sf::Vector2f position = this->getEntity()->transform->getPosition();
+	sf::Vector3f position = this->getEntity()->transform->getPosition();
 	toRender.setPosition(game->worldToScreenPos(position + this->offset));
 	return toRender;
 }

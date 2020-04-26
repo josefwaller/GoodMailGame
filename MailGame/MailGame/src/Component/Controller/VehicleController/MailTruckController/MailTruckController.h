@@ -22,7 +22,7 @@ private:
 	std::weak_ptr<Entity> office;
 	// Get Speed, see VehicleController
 	virtual float getSpeed() override;
-	virtual void onArriveAtTile(sf::Vector2f point) override;
+	virtual void onArriveAtTile(sf::Vector2i point) override;
 	virtual void onArriveAtDest() override;
 	// Drop off any mail it has for the tiles around the given position
 	void dropOffMail(sf::Vector2i pos);

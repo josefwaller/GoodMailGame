@@ -4,7 +4,7 @@
 
 ConstructionRecipe::ConstructionRecipe() : layout({}) {}
 ConstructionRecipe::ConstructionRecipe(
-	std::function<std::shared_ptr<Entity>(Game* g, sf::Vector2f pos, IsoRotation rot)> func,
+	std::function<std::shared_ptr<Entity>(Game* g, sf::Vector3f pos, IsoRotation rot)> func,
 	std::vector<sf::Sprite> sprs,
 	ConstructionLayout l
 ): layout(l) {
@@ -12,9 +12,10 @@ ConstructionRecipe::ConstructionRecipe(
 	this->displaySprites = sprs;
 }
 
-bool ConstructionRecipe::isValid(Game* g, sf::Vector2f pos, IsoRotation rot) {
+bool ConstructionRecipe::isValid(Game* g, sf::Vector3f pos3D, IsoRotation rot) {
+	sf::Vector3i posToCheck3D = roundCoords(pos3D);
+	sf::Vector2i posToCheck(posToCheck3D.x, posToCheck3D.y);
 	// Rotate
-	sf::Vector2i posToCheck = roundCoords(pos);
 	ConstructionLayout l = this->layout;
 	switch (rot.getRotation()) {
 	case IsoRotation::SOUTH:
@@ -36,7 +37,7 @@ bool ConstructionRecipe::isValid(Game* g, sf::Vector2f pos, IsoRotation rot) {
 	return l.fits(g->getGameMap(), posToCheck);
 }
 
-void ConstructionRecipe::renderConstructionSprite(Game* g, sf::Vector2f pos, IsoRotation rot, sf::RenderWindow* w) {
+void ConstructionRecipe::renderConstructionSprite(Game* g, sf::Vector3f pos, IsoRotation rot, sf::RenderWindow* w) {
 	// Get the index of the sprite it should draw
 	size_t i = 0;
 	IsoRotation r = rot + g->getRotation();
@@ -48,7 +49,7 @@ void ConstructionRecipe::renderConstructionSprite(Game* g, sf::Vector2f pos, Iso
 	// Set up for building
 	displaySprite = Utils::setupBuildingSprite(displaySprite);
 	// Set pos
-	displaySprite.setPosition(g->worldToScreenPos(sf::Vector2f(roundCoords(pos)) + sf::Vector2f(0.5f, 0.5f)));
+	displaySprite.setPosition(g->worldToScreenPos(sf::Vector3f(roundCoords(pos)) + sf::Vector3f(0.5f, 0.5f, 0)));
 	// Set color
 	if (isValid(g, pos, rot)) {
 		displaySprite.setColor(sf::Color::Green);
@@ -59,16 +60,16 @@ void ConstructionRecipe::renderConstructionSprite(Game* g, sf::Vector2f pos, Iso
 	w->draw(displaySprite);
 }
 
-std::shared_ptr<Entity> ConstructionRecipe::buildRecipe(Game* g, sf::Vector2f pos, IsoRotation rot) {
-	sf::Vector2i tilePos = roundCoords(pos);
+std::shared_ptr<Entity> ConstructionRecipe::buildRecipe(Game* g, sf::Vector3f pos, IsoRotation rot) {
+	sf::Vector3i tilePos = roundCoords(pos);
 	// Create building
-	std::shared_ptr<Entity> e = this->buildFunction(g, sf::Vector2f(tilePos), rot);
+	std::shared_ptr<Entity> e = this->buildFunction(g, sf::Vector3f(tilePos), rot);
 	// Set as the building for the tiles it's on
 	g->getGameMap()->setBuildingForTile(tilePos.x, tilePos.y, e);
 	// Return the entity
 	return e;
 }
 
-sf::Vector2i ConstructionRecipe::roundCoords(sf::Vector2f pos) {
-	return { (int)floor(pos.x), (int)floor(pos.y) };
+sf::Vector3i ConstructionRecipe::roundCoords(sf::Vector3f pos) {
+	return { (int)floor(pos.x), (int)floor(pos.y), (int)floor(pos.z) };
 }

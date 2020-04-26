@@ -1,5 +1,5 @@
 #pragma once
-#include <SFML/System/Vector2.hpp>
+#include <SFML/System/Vector3.hpp>
 #include <vector>
 #include "Component/Component.h"
 
@@ -9,5 +9,5 @@
  */
 class Pathfinder: public Component {
 public:
-	virtual std::vector<sf::Vector2f> findPathBetweenPoints(sf::Vector2f from, sf::Vector2f to) = 0;
+	virtual std::vector<sf::Vector3f> findPathBetweenPoints(sf::Vector3f from, sf::Vector3f to) = 0;
 };

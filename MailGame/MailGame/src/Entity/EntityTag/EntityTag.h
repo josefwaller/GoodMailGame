@@ -49,13 +49,13 @@ const std::map<std::string, EntityTag> strTags = {
 EntityTag strToEntityTag(std::string s);
 
 #undef F
-#define F(x, y) { EntityTag::x, [&](Game* g, sf::Vector2f pos, IsoRotation rot) { return y; }},
+#define F(x, y) { EntityTag::x, [&](Game* g, sf::Vector3f pos, IsoRotation rot) { return y; }},
 
-const std::map<EntityTag, std::function<std::shared_ptr<Entity>(Game*, sf::Vector2f, IsoRotation rot)>> loadEntityFuncs = {
+const std::map<EntityTag, std::function<std::shared_ptr<Entity>(Game*, sf::Vector3f, IsoRotation rot)>> loadEntityFuncs = {
 	ENTITY_TAGS
 };
 
-std::shared_ptr<Entity> entityTagToEntity(EntityTag tag, Game* g, sf::Vector2f pos, IsoRotation rot);
+std::shared_ptr<Entity> entityTagToEntity(EntityTag tag, Game* g, sf::Vector3f pos, IsoRotation rot);
 
 #undef F
 #undef ENTITY_TAGS

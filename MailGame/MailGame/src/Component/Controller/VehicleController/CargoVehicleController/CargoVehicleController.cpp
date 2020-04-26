@@ -12,7 +12,7 @@ CargoVehicleController::CargoVehicleController(TransitRoute r, std::weak_ptr<Ent
 }
 void CargoVehicleController::setRouteStops() {
 	// Add all the locations to stops
-	std::vector<sf::Vector2f> stops;
+	std::vector<sf::Vector3f> stops;
 	for (TransitRouteStop stop : route.stops) {
 		if (auto s = stop.target.lock()) {
 #ifdef _DEBUG

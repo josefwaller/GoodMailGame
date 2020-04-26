@@ -38,7 +38,7 @@ void Game::loadFromSaveData(SaveData data) {
 		auto e = entityTagToEntity(
 			strToEntityTag(entData.getName()),
 			this,
-			sf::Vector2f(),
+			sf::Vector3f(),
 			IsoRotation()
 		);
 		// Load from data
@@ -91,21 +91,22 @@ void Game::update(float delta) {
 	}
 	this->toRemove.clear();
 }
-sf::Vector2f Game::worldToScreenPos(sf::Vector2f pos) {
+sf::Vector2f Game::worldToScreenPos(sf::Vector3f pos) {
+	sf::Vector2f pos2D(pos.x, pos.y);
 	switch (this->rotation.getRotation()) {
 	case IsoRotation::NORTH:
 		break;
 	case IsoRotation::EAST:
-		pos = sf::Vector2f(-pos.y, pos.x);
+		pos2D = sf::Vector2f(-pos.y, pos.x);
 		break;
 	case IsoRotation::SOUTH:
-		pos = sf::Vector2f(-pos.x, -pos.y);
+		pos2D = sf::Vector2f(-pos.x, -pos.y);
 		break;
 	case IsoRotation::WEST:
-		pos = sf::Vector2f(pos.y, -pos.x);
+		pos2D = sf::Vector2f(pos.y, -pos.x);
 		break;
 	}
-	return sf::Vector2f(TILE_WIDTH * (pos.x - pos.y), TILE_HEIGHT * (pos.x + pos.y));
+	return sf::Vector2f(TILE_WIDTH * (pos2D.x - pos2D.y), TILE_HEIGHT * (pos2D.x + pos2D.y) + pos.z * 0.5f);
 }
 
 void Game::addEntity(std::shared_ptr<Entity> e) {
@@ -141,9 +142,9 @@ void Game::onEvent(sf::Event e) {
 	case sf::Event::MouseButtonPressed:
 		for (auto it = this->entities.begin(); it != this->entities.end(); it++) {
 			if (auto cb = (*it)->clickBox) {
-				if (cb->checkIfClicked(this->getMousePosition())) {
+				/*if (cb->checkIfClicked(this->getMousePosition())) {
 					auto x = 0;
-				}
+				}*/
 			}
 		}
 	}

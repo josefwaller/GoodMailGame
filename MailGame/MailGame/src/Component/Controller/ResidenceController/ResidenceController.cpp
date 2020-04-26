@@ -21,16 +21,16 @@ void ResidenceController::update(float time) {
 
 void ResidenceController::generateLetter() {
 	// Create a new letter addressed to self (tba)
-	sf::Vector2i pos(this->getEntity()->transform->getPosition());
-	Mail letter(pos, pos);
+	sf::Vector3i pos(this->getEntity()->transform->getPosition());
+	sf::Vector2i p(pos.x, pos.y);
+	Mail letter(p, p);
 	// Check if there is a mailbox close enough to get it
 	auto entities = this->getEntity()->getGame()->getEntities();
 	for (auto it = entities.begin(); it != entities.end(); it++) {
 		// Check if a mailbox
 		if ((*it)->tag == EntityTag::MailBox) {
 			// Check if it's close enough
-			sf::Vector2f oPos = (*it)->transform->getPosition();
-			sf::Vector2f pos = this->getEntity()->transform->getPosition();
+			sf::Vector3f oPos = (*it)->transform->getPosition();
 			if (pow(oPos.x - pos.x, 2) + pow(oPos.y - pos.y, 2) <= pow(5.0f, 2)) {
 				// Give the letter to it
 #ifdef _DEBUG

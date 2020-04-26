@@ -14,9 +14,11 @@ bool RectClickBox::checkIfClicked(sf::Vector2f mouseCoords) {
 }
 
 sf::FloatRect RectClickBox::getPositionedRect() {
+	// ToDo:
+	// This is all broken, should really be done better wrt the thrid dimension
 	sf::Vector2f pos;
 	if (auto trans = this->getEntity()->transform) {
-		pos = trans->getPosition();
+		pos = sf::Vector2f(trans->getPosition().x, trans->getPosition().y);
 	}
 	return sf::FloatRect(pos.x + rect.left, pos.y + rect.top, rect.width, rect.height);
 
@@ -30,11 +32,11 @@ void RectClickBox::renderClickBox(sf::RenderWindow* window) {
 	Game* g = this->getEntity()->getGame();
 	sf::VertexArray v(sf::LineStrip, 5);
 	// Add all the points
-	v[0].position = g->worldToScreenPos({ actualRect.left, actualRect.top });
-	v[1].position = g->worldToScreenPos({ actualRect.left + actualRect.width, actualRect.top });
-	v[2].position = g->worldToScreenPos({ actualRect.left + actualRect.width, actualRect.top + actualRect.height });
-	v[3].position = g->worldToScreenPos({ actualRect.left, actualRect.top + actualRect.height });
-	v[4].position = g->worldToScreenPos({ actualRect.left, actualRect.top });
+	v[0].position = g->worldToScreenPos({ actualRect.left, actualRect.top, 0 });
+	v[1].position = g->worldToScreenPos({ actualRect.left + actualRect.width, actualRect.top, 0 });
+	v[2].position = g->worldToScreenPos({ actualRect.left + actualRect.width, actualRect.top + actualRect.height, 0 });
+	v[3].position = g->worldToScreenPos({ actualRect.left, actualRect.top + actualRect.height, 0 });
+	v[4].position = g->worldToScreenPos({ actualRect.left, actualRect.top, 0 });
 	for (size_t i = 0; i < 5; i++) {
 		v[i].color = sf::Color::Red;
 	}

@@ -15,6 +15,6 @@ EntityTag strToEntityTag(std::string str) {
 	return EntityTag::PostOffice; // idk what to do here ?
 }
 
-std::shared_ptr<Entity> entityTagToEntity(EntityTag tag, Game* g, sf::Vector2f pos, IsoRotation rot) {
+std::shared_ptr<Entity> entityTagToEntity(EntityTag tag, Game* g, sf::Vector3f pos, IsoRotation rot) {
 	return loadEntityFuncs.at(tag)(g, pos, rot);
 }

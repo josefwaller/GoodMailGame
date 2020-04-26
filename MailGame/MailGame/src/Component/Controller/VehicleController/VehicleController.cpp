@@ -3,7 +3,7 @@
 #include "Component/Transform/Transform.h"
 #include "Component/Pathfinder/Pathfinder.h"
 #include "Entity/Entity.h"
-#include <SFML/System/Vector2.hpp>
+#include <SFML/System/Vector3.hpp>
 #include <queue>
 #include <map>
 #include <functional>
@@ -20,20 +20,20 @@ void VehicleController::update(float delta) {
 	}
 	else {
 		// Check if the truck is close enough to the point
-		sf::Vector2f point(this->points[this->pointIndex]);
+		sf::Vector3f point(this->points[this->pointIndex]);
 		auto trans = this->getEntity()->transform;
-		sf::Vector2f pos = trans->getPosition();
+		sf::Vector3f pos = trans->getPosition();
 		if (pow(pos.x - point.x, 2) + pow(pos.y - point.y, 2) <= pow(0.1f, 2)) {
 			// Go to the next point
 			this->pointIndex++;
 			// Set position to point to avoid being a bit off
 			trans->setPosition(point);
 			// Call callback
-			this->onArriveAtTile(point);
+			this->onArriveAtTile(sf::Vector2i(point.x, point.y));
 		}
 		else {
 			// Move closer to stop
-			sf::Vector2f diff = point - pos;
+			sf::Vector3f diff = point - pos;
 			float magDiff = sqrt(pow(diff.x, 2) + pow(diff.y, 2));
 			trans->setPosition(trans->getPosition() + (diff / magDiff) * getSpeed() * delta);
 			// Set rotation accordingly
@@ -55,15 +55,15 @@ void VehicleController::update(float delta) {
 		}
 	}
 }
-void VehicleController::pathfindToPoint(sf::Vector2f point){
+void VehicleController::pathfindToPoint(sf::Vector3f point){
 	// Get the path to the point
-	sf::Vector2f pos(this->getEntity()->transform->getPosition());
+	sf::Vector3f pos(this->getEntity()->transform->getPosition());
 	this->points = this->getEntity()->pathfinder->findPathBetweenPoints(pos, point);
 	// Reset pathIndex
 	this->pointIndex = 0;
 }
 void VehicleController::goToNextStop() {
-	sf::Vector2f stop;
+	sf::Vector3f stop;
 	// Go to next stop
 	this->stopIndex++;
 	if (this->stopIndex >= this->stops.size()) {
@@ -76,11 +76,11 @@ void VehicleController::goToNextStop() {
 		this->pathfindToPoint(stop);
 	}
 }
-void VehicleController::setStops(std::vector<sf::Vector2f> s) {
+void VehicleController::setStops(std::vector<sf::Vector3f> s) {
 	this->stops = s;
 	// -1 because it will automatically be incremented into 0
 	this->stopIndex = -1;
 }
-void VehicleController::onArriveAtTile(sf::Vector2f point) {}
+void VehicleController::onArriveAtTile(sf::Vector2i point) {}
 void VehicleController::onArriveAtStop(size_t stopIndex) {}
 void VehicleController::onArriveAtDest() {}

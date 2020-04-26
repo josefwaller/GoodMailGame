@@ -22,7 +22,7 @@
 #include "Component/TransitStop/BasicTransitStop/BasicTransitStop.h"
 #include "Component/TransitStop/BuildingTransitStop/BuildingTransitStop.h"
 
-std::shared_ptr<Entity> BuildingPresets::residence(Game* g, sf::Vector2f pos, IsoRotation rot) {
+std::shared_ptr<Entity> BuildingPresets::residence(Game* g, sf::Vector3f pos, IsoRotation rot) {
 	return Entity::createEntity(
 		g,
 		EntityTag::Residence,
@@ -45,8 +45,8 @@ std::shared_ptr<Entity> BuildingPresets::residence(Game* g, sf::Vector2f pos, Is
 	);
 }
 
-std::shared_ptr<Entity> BuildingPresets::postOffice(Game* g, sf::Vector2f pos, IsoRotation rot) {
-	addRoadForTransitBuilding(g, sf::Vector2i(pos), rot);
+std::shared_ptr<Entity> BuildingPresets::postOffice(Game* g, sf::Vector3f pos, IsoRotation rot) {
+	addRoadForTransitBuilding(g, sf::Vector3i(pos), rot);
 	return Entity::createEntity(
 		g,
 		EntityTag::PostOffice,
@@ -64,7 +64,7 @@ std::shared_ptr<Entity> BuildingPresets::postOffice(Game* g, sf::Vector2f pos, I
 	);
 }
 
-std::shared_ptr<Entity> BuildingPresets::mailBox(Game* g, sf::Vector2f pos, IsoRotation rot) {
+std::shared_ptr<Entity> BuildingPresets::mailBox(Game* g, sf::Vector3f pos, IsoRotation rot) {
 	return Entity::createEntity(
 		g,
 		EntityTag::MailBox,
@@ -74,7 +74,7 @@ std::shared_ptr<Entity> BuildingPresets::mailBox(Game* g, sf::Vector2f pos, IsoR
 			ResourceLoader::get()->getSprite("buildings/buildings", "mailbox", true),
 			ResourceLoader::get()->getSprite("buildings/buildings", "mailbox", true),
 			ResourceLoader::get()->getSprite("buildings/buildings", "mailbox", true),
-			sf::Vector2f(0.5f, 0.5f)
+			sf::Vector3f(0.5f, 0.5f, 0)
 		),
 		nullptr,
 		nullptr,
@@ -85,8 +85,8 @@ std::shared_ptr<Entity> BuildingPresets::mailBox(Game* g, sf::Vector2f pos, IsoR
 
 
 
-std::shared_ptr<Entity> BuildingPresets::cargoTruckDepot(Game* g, sf::Vector2f pos, IsoRotation rot) {
-	addRoadForTransitBuilding(g, sf::Vector2i(pos), rot);
+std::shared_ptr<Entity> BuildingPresets::cargoTruckDepot(Game* g, sf::Vector3f pos, IsoRotation rot) {
+	addRoadForTransitBuilding(g, sf::Vector3i(pos), rot);
 	return Entity::createEntity(
 		g,
 		EntityTag::CargoTruckDepot,
@@ -104,9 +104,9 @@ std::shared_ptr<Entity> BuildingPresets::cargoTruckDepot(Game* g, sf::Vector2f p
 	);
 }
 
-std::shared_ptr<Entity> BuildingPresets::trainStation(Game* g, sf::Vector2f pos, IsoRotation rot) {
+std::shared_ptr<Entity> BuildingPresets::trainStation(Game* g, sf::Vector3f pos, IsoRotation rot) {
 	// Add road into train station
-	addRoadForTransitBuilding(g, sf::Vector2i(pos), rot);
+	addRoadForTransitBuilding(g, sf::Vector3i(pos), rot);
 	return Entity::createEntity(
 		g,
 		EntityTag::TrainStation,
@@ -124,8 +124,8 @@ std::shared_ptr<Entity> BuildingPresets::trainStation(Game* g, sf::Vector2f pos,
 	);
 }
 
-void BuildingPresets::addRoadForTransitBuilding(Game* g, sf::Vector2i pos, IsoRotation rot) {
-	sf::Vector2i inFront = pos + sf::Vector2i(rot.getUnitVector());
+void BuildingPresets::addRoadForTransitBuilding(Game* g, sf::Vector3i pos, IsoRotation rot) {
+	sf::Vector3i inFront = pos + sf::Vector3i(rot.getUnitVector3D());
 	g->getGameMap()->addRoadInDirection(inFront.x, inFront.y, rot + 2);
 	g->getGameMap()->addRoadInDirection((size_t)pos.x, (size_t)pos.y, rot);
 }

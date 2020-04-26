@@ -138,7 +138,7 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 			s = ROAD_SPRITES[index];
 		}
 	}
-	sf::Vector2f pos((float)x + 0.5f, (float)y + 0.5f);
+	sf::Vector3f pos((float)x + 0.5f, (float)y + 0.5f, 0);
 	s.setPosition(this->game->worldToScreenPos(pos));
 	s = Utils::setupBuildingSprite(s, false);
 	window->draw(s);
@@ -249,7 +249,7 @@ void GameMap::generateCityAt(sf::Vector2i pos) {
 								case 0:
 									rot = yOff == 1 ? IsoRotation::NORTH: IsoRotation::SOUTH;
 								}
-								std::shared_ptr<Entity> e = BuildingPresets::residence(this->game, sf::Vector2f((float)(x + xOff), (float)(y + yOff)), rot);
+								std::shared_ptr<Entity> e = BuildingPresets::residence(this->game, sf::Vector3f((float)(x + xOff), (float)(y + yOff), 0), rot);
 								this->game->addEntity(
 									e
 								);

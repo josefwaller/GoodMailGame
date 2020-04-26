@@ -18,22 +18,22 @@ public:
 	ConstructionRecipe();
 	ConstructionRecipe(
 		// The EntityPresets function to build this entity
-		std::function<std::shared_ptr<Entity>(Game* g, sf::Vector2f pos, IsoRotation rot)> buildFunction,
+		std::function<std::shared_ptr<Entity>(Game* g, sf::Vector3f pos, IsoRotation rot)> buildFunction,
 		// The sprites to display, ordered by rotation
 		std::vector<sf::Sprite> displaySprites,
 		// The alyout required for a valid position for this building
 		ConstructionLayout layout
 	);
-	bool isValid(Game* g, sf::Vector2f pos, IsoRotation rot);
-	void renderConstructionSprite(Game* g, sf::Vector2f pos, IsoRotation rot, sf::RenderWindow* w);
-	std::shared_ptr<Entity> buildRecipe(Game* g, sf::Vector2f pos, IsoRotation rot);
+	bool isValid(Game* g, sf::Vector3f pos, IsoRotation rot);
+	void renderConstructionSprite(Game* g, sf::Vector3f pos, IsoRotation rot, sf::RenderWindow* w);
+	std::shared_ptr<Entity> buildRecipe(Game* g, sf::Vector3f pos, IsoRotation rot);
 private:
 	// The function to build the entity
-	std::function<std::shared_ptr<Entity>(Game* g, sf::Vector2f pos, IsoRotation rot)> buildFunction;
+	std::function<std::shared_ptr<Entity>(Game* g, sf::Vector3f pos, IsoRotation rot)> buildFunction;
 	// The sprites to display
 	std::vector<sf::Sprite> displaySprites;
 	// The layout
 	ConstructionLayout layout;
 	// Get rounded coordinates
-	sf::Vector2i roundCoords(sf::Vector2f pos);
+	sf::Vector3i roundCoords(sf::Vector3f pos);
 };

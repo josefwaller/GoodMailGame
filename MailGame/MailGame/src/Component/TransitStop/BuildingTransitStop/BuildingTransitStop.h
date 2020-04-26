@@ -7,5 +7,5 @@
  */
 class BuildingTransitStop : public TransitStop {
 public:
-	virtual sf::Vector2f getTransitLocation() override;
+	virtual sf::Vector3f getTransitLocation() override;
 };
