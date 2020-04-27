@@ -25,7 +25,7 @@ void ResidenceController::generateLetter() {
 	// Create a new letter addressed to self (tba)
 	sf::Vector3i pos(this->getEntity()->transform->getPosition());
 	sf::Vector2i p(pos.x, pos.y);
-	Mail letter(p, p);
+	Mail letter(p, p, this->getEntity()->getGame()->getTime());
 	// Check if there is a mailbox close enough to get it
 	auto entities = this->getEntity()->getGame()->getEntities();
 	for (auto it = entities.begin(); it != entities.end(); it++) {

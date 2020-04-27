@@ -1,5 +1,6 @@
 #include "UiHandler.h"
 #include "Entity/Entity.h"
+#include "Mail/Mail.h"
 #include "Component/ClickBox/ClickBox.h"
 #include <imgui.h>
 #include <iostream>
@@ -104,12 +105,16 @@ void UiHandler::selectEntity(std::function<void(std::weak_ptr<Entity>)> callback
 	this->selectEntityCallback = callback;
 }
 void UiHandler::update() {
+	char buf[200];
 	ImGui::Begin("Game Controls");
+	// Print percent of letters that have been delivered
+	sprintf_s(buf, "%f of letters delivered", Mail::getPercentDelivered() * 100.0f);
+	ImGui::Text(buf);
 
 	if (ImGui::Button("Rotate Camera")) {
 		this->game->rotateCamera();
 	}
-	ImGui::Text((std::to_string(this->game->getTime()) + ":00").c_str());
+	ImGui::Text((std::to_string(this->game->getHour()) + ":00").c_str());
 	if (ImGui::Button("Next Hour")) {
 		this->game->advanceTime();
 	}
@@ -167,7 +172,6 @@ void UiHandler::update() {
 	// Print mouse position
 	sf::Vector2f mousePos = this->game->getMousePosition();
 	sf::Vector2i tile = this->getHoveredTile();
-	char buf[200];
 	sprintf_s(buf, "Mouse position is (%.2f,%.2f), tile is (%d, %d)", mousePos.x, mousePos.y, tile.x, tile.y);
 	ImGui::Text(buf);
 

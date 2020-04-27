@@ -224,6 +224,8 @@ hour_t Game::getHour() { return this->time % 24; }
 void Game::advanceTime() {
 	// Increase time
 	this->time++;
+	// Update mail records
+	Mail::onTimeChanged(this->time);
 	// Update entities
 	for (auto it = this->entities.begin(); it != this->entities.end(); it++) {
 		if ((*it)->controller) {

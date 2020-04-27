@@ -58,6 +58,7 @@ void MailTruckController::dropOffMail(sf::Vector2i pos) {
 				for (Mail l : this->getEntity()->mailContainer->getMail()) {
 					if (l.getDest() == pos + sf::Vector2i(x, y)) {
 						// Deliver the letter
+						l.onDelivery(this->getEntity()->getGame()->getTime());
 						this->getEntity()->mailContainer->removeMail({ l });
 					}
 				}
