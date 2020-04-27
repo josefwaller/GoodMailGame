@@ -10,12 +10,14 @@
 
 #include <stdexcept>
 
-const float ResidenceController::GENERATE_INTERVAL = 5000.0f;
+const gtime_t ResidenceController::GENERATE_INTERVAL = 5;
+ResidenceController::ResidenceController(gtime_t time) : lastGenTime(time) {}
 
 void ResidenceController::update(float time) {
-	if (clk.getElapsedTime().asMilliseconds() >= GENERATE_INTERVAL) {
-		clk.restart();
+	gtime_t gTime = this->getEntity()->getGame()->getTime();
+	if (gTime - this->lastGenTime >= GENERATE_INTERVAL) {
 		this->generateLetter();
+		this->lastGenTime = gTime;
 	}
 }
 

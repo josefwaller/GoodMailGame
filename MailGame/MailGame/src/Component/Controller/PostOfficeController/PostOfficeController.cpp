@@ -99,7 +99,7 @@ void PostOfficeController::update(float delta) {
 	}
 	this->routesToDelete.clear();
 }
-void PostOfficeController::onHourChange(size_t newHour) {
+void PostOfficeController::onHourChange(hour_t newHour) {
 	// Check if any of the routes depart
 	for (auto it = this->routes.begin(); it != this->routes.end(); it++) {
 		if (it->departTime == newHour) {

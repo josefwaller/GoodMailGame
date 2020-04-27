@@ -12,7 +12,7 @@
 class DepotController : public Controller {
 public:
 	virtual void update(float delta) override;
-	virtual void onHourChange(size_t newHour) override;
+	virtual void onHourChange(hour_t newHour) override;
 	// Spawn a vehicle for the given route
 	virtual void spawnVehicleForRoute(TransitRoute route) = 0;
 	// Get the name for the UI window

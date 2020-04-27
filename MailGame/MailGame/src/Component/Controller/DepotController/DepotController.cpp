@@ -124,7 +124,7 @@ void DepotController::update(float delta) {
 	}
 	this->toDelete.clear();
 }
-void DepotController::onHourChange(size_t newHour) {
+void DepotController::onHourChange(hour_t newHour) {
 	for (auto it: this->routes) {
 		if (it.second.departureTime == newHour) {
 			this->spawnVehicleForRoute(it.second);

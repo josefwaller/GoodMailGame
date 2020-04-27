@@ -2,6 +2,7 @@
 #include <vector>
 #include <SFML/System/Vector2.hpp>
 #include <optional>
+#include "Constants.h"
 
 class Entity;
 class SaveData;
@@ -20,10 +21,10 @@ struct MailTruckRoute {
 	// The time of departure
 	int departTime;
 	// Unique Id
-	size_t id;
-	static size_t ROUTE_ID;
+	id_t id;
+	static id_t ROUTE_ID;
 	// Constructor
-	MailTruckRoute(bool isDeliv, int time) : isDelivering(isDeliv), departTime(time), id(ROUTE_ID++) {};
+	MailTruckRoute(bool isDeliv, hour_t time) : isDelivering(isDeliv), departTime(time), id(ROUTE_ID++) {};
 };
 
 SaveData mailTruckRouteToSaveData(MailTruckRoute route);

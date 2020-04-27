@@ -3,6 +3,7 @@
 #include <map>
 #include <vector>
 #include "rapidxml.hpp"
+#include "Constants.h"
 
 class SaveData {
 public:
@@ -19,6 +20,7 @@ public:
 	void addValue(std::string name, size_t val);
 	void addValue(std::string name, bool val);
 	void addValue(std::string name, long long val);
+	void addValue(std::string name, hour_t val);
 	bool hasValue(std::string name);
 	// Add a nested SaveData
 	void addData(SaveData data);

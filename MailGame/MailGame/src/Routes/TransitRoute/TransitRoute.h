@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <vector>
+#include "Constants.h"
 
 class Entity;
 class SaveData;
@@ -16,8 +17,8 @@ struct TransitRouteStop {
 	std::vector<long long> toDropOff;
 	std::vector<long long> toPickUp;
 	// Id of the stop (Todo: Remove this when not needed by ImGui
-	unsigned long long id;
-	static unsigned long long STOP_ID;
+	id_t id;
+	static id_t STOP_ID;
 	TransitRouteStop() : id(STOP_ID++) {}
 };
 
@@ -29,12 +30,12 @@ struct TransitRoute {
 	// The stops along the route
 	std::vector<TransitRouteStop> stops;
 	// When to leave the depot
-	int departureTime;
+	hour_t departureTime;
 	// The id
-	unsigned long long id;
-	static unsigned long long ROUTE_ID;
+	id_t id;
+	static id_t ROUTE_ID;
 	// Constructor
-	TransitRoute(int time) : departureTime(time), id(ROUTE_ID++) {}
+	TransitRoute(hour_t time) : departureTime(time), id(ROUTE_ID++) {}
 };
 
 SaveData transitRouteToSaveData(TransitRoute route);

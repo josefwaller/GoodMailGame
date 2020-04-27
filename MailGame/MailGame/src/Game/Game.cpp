@@ -8,7 +8,6 @@
 #include "Component/Controller/PostOfficeController/PostOfficeController.h"
 #include "Component/ClickBox/ClickBox.h"
 #include "System/SaveData/SaveData.h"
-#include "Constants.h"
 #include "Ui/Construction/Construction.h"
 #include <SFML/Graphics.hpp>
 #include <imgui.h>
@@ -220,12 +219,15 @@ GameMap* Game::getGameMap() {
 UiHandler* Game::getUi() {
 	return &this->uiHandler;
 }
-size_t Game::getTime() { return this->time; }
+gtime_t Game::getTime() { return this->time; }
+hour_t Game::getHour() { return this->time % 24; }
 void Game::advanceTime() {
-	this->time = (this->time + 1) % 24;
+	// Increase time
+	this->time++;
+	// Update entities
 	for (auto it = this->entities.begin(); it != this->entities.end(); it++) {
 		if ((*it)->controller) {
-			(*it)->controller->onHourChange(this->time);
+			(*it)->controller->onHourChange(this->time % 24);
 		}
 	}
 }

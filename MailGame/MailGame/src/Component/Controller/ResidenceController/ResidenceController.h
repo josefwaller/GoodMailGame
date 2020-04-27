@@ -1,13 +1,14 @@
 #pragma once
 #include "Component/Controller/Controller.h"
-#include <SFML/System/Clock.hpp>
+#include "Constants.h"
 
 class ResidenceController : public Controller {
 public:
+	ResidenceController(gtime_t currentTime);
 	virtual void update(float delta) override;
-	const static float GENERATE_INTERVAL;
+	static const gtime_t GENERATE_INTERVAL;
 	virtual std::optional<SaveData> getSaveData() override;
 private:
-	sf::Clock clk;
+	gtime_t lastGenTime;
 	void generateLetter();
 };

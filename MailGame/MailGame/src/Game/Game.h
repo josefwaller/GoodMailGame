@@ -5,10 +5,12 @@
 #include "GameMap/GameMap.h"
 #include "System/IsoRotation/IsoRotation.h"
 #include "Ui/UiHandler/UiHandler.h"
+#include "Constants.h"
 
 class App;
 class Entity;
 class SaveData;
+
 
 class Game {
 public:
@@ -53,7 +55,9 @@ public:
 	// Get the dimensions of the view
 	sf::FloatRect getViewport();
 	// Get the time
-	size_t getTime();
+	gtime_t getTime();
+	// Get the hour as an uint between 0 and 23
+	hour_t getHour();
 	// Go to next hour
 	void advanceTime();
 	// Get a list of the entities in game
@@ -79,6 +83,6 @@ private:
 	sf::View gameView;
 	// The rotation, where each increase is a 90 degree turn
 	IsoRotation rotation;
-	// The time, in hours, between 0-23
-	size_t time;
+	// The time, not in hours
+	gtime_t time;
 };

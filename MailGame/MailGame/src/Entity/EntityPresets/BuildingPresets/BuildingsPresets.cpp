@@ -34,7 +34,7 @@ std::shared_ptr<Entity> BuildingPresets::residence(Game* g, sf::Vector3f pos, Is
 			ResourceLoader::get()->getSprite("buildings/buildings", "building-SW-3"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "building-NW-3")
 		),
-		new ResidenceController(),
+		new ResidenceController(g->getTime()),
 		new RectClickBox(sf::FloatRect(
 			0,
 			0,
