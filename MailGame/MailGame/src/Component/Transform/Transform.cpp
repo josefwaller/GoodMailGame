@@ -35,11 +35,13 @@ std::optional<SaveData> Transform::getSaveData() {
 	SaveData d(componentTypeToStr(ComponentType::Transform));
 	d.addValue("x", std::to_string(this->position.x));
 	d.addValue("y", std::to_string(this->position.y));
+	d.addValue("z", std::to_string(this->position.z));
 	d.addValue("rot", std::to_string(this->rotation.getRotation()));
 	return d;
 }
 void Transform::fromSaveData(SaveData data) {
 	this->position.x = std::stof(data.getValue("x"));
 	this->position.y = std::stof(data.getValue("y"));
+	this->position.z = std::stof(data.getValue("z"));
 	this->rotation = IsoRotation(std::stoi(data.getValue("rot")));
 }

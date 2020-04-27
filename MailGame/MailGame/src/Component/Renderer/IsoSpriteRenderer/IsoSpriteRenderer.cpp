@@ -14,7 +14,19 @@ IsoSpriteRenderer::IsoSpriteRenderer(sf::Sprite n, sf::Sprite e, sf::Sprite s, s
 }
 
 void IsoSpriteRenderer::render(sf::RenderWindow* window) {
-	window->draw(getSpriteToRender());
+	// Get sprite
+	sf::Sprite spr = getSpriteToRender();
+	// Create copy
+	sf::Sprite shadowSpr(spr);
+	// Set to black and render as a shadow on the ground
+	shadowSpr.setColor(sf::Color(0, 0, 0, 100));
+	sf::Vector3f pos = this->getEntity()->transform->getPosition();
+	shadowSpr.setPosition(
+		this->getEntity()->getGame()->worldToScreenPos(sf::Vector3f(pos.x, pos.y, 0.0f))
+	);
+	window->draw(shadowSpr);
+	// Render original sprite
+	window->draw(spr);
 }
 sf::Sprite IsoSpriteRenderer::getSpriteToRender() {
 	// Get the rotation of the entity and the game combined
