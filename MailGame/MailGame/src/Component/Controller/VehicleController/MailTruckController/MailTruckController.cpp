@@ -136,7 +136,7 @@ void MailTruckController::pickupMailFromOffice() {
 		};
 		for (sf::Vector2i p2 : pointsToAdd) {
 			// Add the point if it is not a road
-			if (!this->getEntity()->getGame()->getGameMap()->hasRoadAt(p2.x, p2.y))
+			if (this->getEntity()->getGame()->getGameMap()->hasRoadAt(p2.x, p2.y))
 				continue;
 			if (std::find(pointsAround.begin(), pointsAround.end(), p2) == pointsAround.end()) {
 				pointsAround.push_back(p2);
