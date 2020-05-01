@@ -19,7 +19,8 @@ const std::vector<EntityTag> Game::WHITELIST_ENTITY_TAG = {
 	EntityTag::Residence,
 	EntityTag::PostOffice,
 	EntityTag::CargoTruckDepot,
-	EntityTag::TrainStation
+	EntityTag::TrainStation,
+	EntityTag::Airport
 };
 // Initialize Game
 Game::Game(App* a, sf::RenderWindow* w): time(0), gameMap(this), uiHandler(this), window(w), rotation(IsoRotation::NORTH), entities() {

@@ -126,7 +126,7 @@ std::shared_ptr<Entity> BuildingPresets::trainStation(Game* g, sf::Vector3f pos,
 }
 std::shared_ptr<Entity> BuildingPresets::airport(Game* g, sf::Vector3f pos, IsoRotation rot) {
 	addRoadForTransitBuilding(g, sf::Vector3i(pos), rot);
-	return Entity::createEntity(
+	auto e = Entity::createEntity(
 		g,
 		EntityTag::Airport,
 		new Transform(pos, rot),
@@ -142,10 +142,20 @@ std::shared_ptr<Entity> BuildingPresets::airport(Game* g, sf::Vector3f pos, IsoR
 		new MailContainer(),
 		new BasicTransitStop()
 	);
+	setTilesToBuilding(g, e, sf::IntRect((int)pos.x, (int)pos.y, 3, 2));
+	return e;
 }
 
 void BuildingPresets::addRoadForTransitBuilding(Game* g, sf::Vector3i pos, IsoRotation rot) {
 	sf::Vector3i inFront = pos + sf::Vector3i(rot.getUnitVector3D());
 	g->getGameMap()->addRoadInDirection(inFront.x, inFront.y, rot + 2);
 	g->getGameMap()->addRoadInDirection((size_t)pos.x, (size_t)pos.y, rot);
+}
+
+void BuildingPresets::setTilesToBuilding(Game* g, std::weak_ptr<Entity> e, sf::IntRect pos) {
+	for (size_t x = pos.left; x < pos.left + pos.width; x++) {
+		for (size_t y = pos.top; y < pos.top + pos.height; y++) {
+			g->getGameMap()->setBuildingForTile(x, y, e);
+		}
+	}
 }
