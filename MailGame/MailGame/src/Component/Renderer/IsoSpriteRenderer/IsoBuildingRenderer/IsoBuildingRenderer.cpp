@@ -3,8 +3,14 @@
 #include "Entity/Entity.h"
 #include "Component/Transform/Transform.h"
 
-IsoBuildingRenderer::IsoBuildingRenderer(sf::Sprite n, sf::Sprite e, sf::Sprite s, sf::Sprite w, sf::Vector3f off)
-	: IsoSpriteRenderer(n, e, s, w, off) {
+IsoBuildingRenderer::IsoBuildingRenderer(
+	sf::Sprite n,
+	sf::Sprite e,
+	sf::Sprite s,
+	sf::Sprite w,
+	sf::Vector2i size,
+	sf::Vector3f off)
+	: IsoSpriteRenderer(n, e, s, w, off), size(size) {
 	for (auto it = this->sprites.begin(); it != this->sprites.end(); it++) {
 		*it = Utils::setupBuildingSprite(*it);
 	}
@@ -12,11 +18,35 @@ IsoBuildingRenderer::IsoBuildingRenderer(sf::Sprite n, sf::Sprite e, sf::Sprite 
 
 void IsoBuildingRenderer::render(sf::RenderWindow* window) {
 	sf::Sprite toRender = getSpriteToRender();
+	sf::Vector3f pos = this->getEntity()->transform->getPosition();
 	// Since buildings are origined around where the center of the tile is (~64px from the bottom), we want to draw
 	// the sprite at the center of the tile (i.e. pos + (0.5, 0.5)
 	Game* g = this->getEntity()->getGame();
+	sf::FloatRect bb(toRender.getLocalBounds());
+	float originX = 0.0f;
+	switch (g->getRotation().getRotation()) {
+	case IsoRotation::NORTH:
+		originX = bb.width / (size.x + size.y) * size.x;
+		pos += sf::Vector3f(size.x, size.y, 0);
+		break;
+	case IsoRotation::EAST:
+		originX = bb.width / (size.x + size.y) * size.y;
+		pos += sf::Vector3f(size.x, 0, 0);
+		break;
+	case IsoRotation::SOUTH:
+		originX = bb.width / (size.x + size.y) * size.x;
+		break;
+	case IsoRotation::WEST:
+		originX = bb.width / (size.x + size.y) * size.y;
+		pos += sf::Vector3f(0, size.y, 0);
+	}
+	toRender.setOrigin(originX, bb.height);
+	// 32 px is the distance from the bottom of the sprite to the bottom corner
+	// Needed because the sprites I'm currently using are rectangular prisms instead of flat squares
 	toRender.setPosition(g->worldToScreenPos(
-		this->getEntity()->transform->getPosition() + sf::Vector3f(0.5f, 0.5f, 0) + this->offset)
-	);
+		pos
+	) + sf::Vector2f(0, 32));
 	window->draw(toRender);
+	if (this->getEntity()->tag == EntityTag::Airport)
+		auto x = 0;
 }

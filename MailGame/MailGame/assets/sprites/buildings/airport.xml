@@ -1,6 +1,6 @@
 <TextureAtlas imagePath="airport.png">
-  <SubTexture name="airport-S" x="0" y="0" width="327" height="209" />
-  <SubTexture name="airport-N" x="327" y="0" width="327" height="209" />
-  <SubTexture name="airport-E" x="0" y="209" width="327" height="209" />
-  <SubTexture name="airport-W" x="327" y="209" width="327" height="209" />
+  <SubTexture name="airport-S" x="0" y="0" width="327" height="195" />
+  <SubTexture name="airport-N" x="328" y="1" width="321" height="195" />
+  <SubTexture name="airport-E" x="2" y="199" width="323" height="195" />
+  <SubTexture name="airport-W" x="327" y="197" width="326" height="219" />
 </TextureAtlas>

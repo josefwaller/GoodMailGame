@@ -131,13 +131,14 @@ std::shared_ptr<Entity> BuildingPresets::airport(Game* g, sf::Vector3f pos, IsoR
 		EntityTag::Airport,
 		new Transform(pos, rot),
 		new IsoBuildingRenderer(
-			ResourceLoader::get()->getSprite("buildings/buildings", "airport-N"),
-			ResourceLoader::get()->getSprite("buildings/buildings", "airport-E"),
-			ResourceLoader::get()->getSprite("buildings/buildings", "airport-S"),
-			ResourceLoader::get()->getSprite("buildings/buildings", "airport-W")
+			ResourceLoader::get()->getSprite("buildings/airport", "airport-N"),
+			ResourceLoader::get()->getSprite("buildings/airport", "airport-E"),
+			ResourceLoader::get()->getSprite("buildings/airport", "airport-S"),
+			ResourceLoader::get()->getSprite("buildings/airport", "airport-W"),
+			sf::Vector2i(3, 2)
 		),
 		new PlaneDepotController(),
-		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
+		new RectClickBox(sf::FloatRect(0, 0, 3, 2)),
 		new MailContainer(),
 		new BasicTransitStop()
 	);
