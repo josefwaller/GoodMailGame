@@ -9,7 +9,7 @@ void TruckDepotController::spawnVehicleForRoute(TransitRoute route) {
 	this->getEntity()->getGame()->addEntity(
 		VehiclePresets::cargoTruck(
 			this->getEntity()->getGame(),
-			this->getEntity()->transitStop->getTransitLocation(),
+			this->getEntity()->transitStop->getCarStop().tile,
 			IsoRotation::NORTH,
 			route,
 			this->getEntity()

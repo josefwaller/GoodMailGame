@@ -7,7 +7,11 @@
 #include "System/SaveData/SaveData.h"
 #include <stdexcept>
 
-CargoVehicleController::CargoVehicleController(TransitRoute r, std::weak_ptr<Entity> d) : depot(d), route(r) {
+CargoVehicleController::CargoVehicleController(
+	TransitRoute r,
+	std::weak_ptr<Entity> d,
+	TransitStop::TransitType type
+) : depot(d), route(r), type(type) {
 	setRouteStops();
 }
 void CargoVehicleController::setRouteStops() {
@@ -20,11 +24,14 @@ void CargoVehicleController::setRouteStops() {
 				throw std::runtime_error("Cargo truck has stop that does not have TransitStop!");
 			}
 #endif
-			stops.push_back(s->transitStop->getTransitLocation());
+			auto path = getTransitPos(s);
+			stops.insert(stops.end(), path.begin(), path.end());
 		}
 	}
-	if (depot.lock())
-		stops.push_back(depot.lock()->transitStop->getTransitLocation());
+	if (depot.lock()) {
+		auto path = getTransitPos(depot.lock());
+		stops.insert(stops.end(), path.begin(), path.end());
+	}
 	this->setStops(stops);
 }
 void CargoVehicleController::onArriveAtDest() {
@@ -88,4 +95,29 @@ void CargoVehicleController::fromSaveData(SaveData data) {
 	}
 	this->stopIndex = std::stoull(data.getValue("stopIndex"));
 	this->setRouteStops();
+}
+
+std::vector<sf::Vector3f> CargoVehicleController::getTransitPos(std::shared_ptr<Entity> e) {
+	auto transit = e->transitStop;
+	switch (this->type) {
+	case TransitStop::TransitType::Car:
+		return { transit->getCarStop().tile };
+	case TransitStop::TransitType::Train:
+		return { transit->getTrainStop().tile };
+	case TransitStop::TransitType::Airplane:
+		// Compute where we need to go
+		auto aStop = transit->getAirplaneStop();
+		auto dir = aStop.end - aStop.begin;
+		// TBA add z
+		sf::Vector3f unit = dir / (sqrt(dir.x * dir.x + dir.y * dir.y));
+		// Th horizontal distance to cover when descending
+		const float DESCENT_LENGTH = 5.0f;
+		const float PLANE_HEIGHT = 4.0f;
+		sf::Vector3f airStart = aStop.begin - DESCENT_LENGTH * unit;
+		airStart.z = PLANE_HEIGHT;
+		sf::Vector3f airEnd = aStop.end + unit * DESCENT_LENGTH;
+		airEnd.z = PLANE_HEIGHT;
+		return  { airStart, aStop.begin, aStop.end, airEnd };
+	}
+	return {};
 }

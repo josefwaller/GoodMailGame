@@ -26,10 +26,14 @@ void MailTruckController::setRouteStops() {
 		sf::Vector2i p = s.target.value();
 		stops.push_back(sf::Vector3f(p.x, p.y, 0));
 	}
-	if (this->office.lock())
+	if (this->office.lock()) {
+		// Add two stops, one on the tile and one directly after
+		TransitStop::CarStop cStop = this->office.lock()->transitStop->getCarStop();
 		stops.push_back(
-			this->office.lock()->transitStop->getTransitLocation()
+			cStop.tile
 		);
+		stops.push_back(sf::Vector3f(cStop.tile) + cStop.dir.value().getUnitVector3D());
+	}
 	this->setStops(stops);
 }
 
@@ -74,7 +78,7 @@ void MailTruckController::onArriveAtTile(sf::Vector2i point) {
 		auto entities = this->getEntity()->getGame()->getEntities();
 		for (auto it = entities.begin(); it != entities.end(); it++) {
 			if ((*it)->tag == EntityTag::MailBox) {
-				sf::Vector3f pos = (*it)->transitStop->getTransitLocation();
+				sf::Vector3f pos = (*it)->transitStop->getCarStop().tile;
 				// Check if the transit location is the tile it just arrived at
 				if (sf::Vector2f(pos.x, pos.y) == sf::Vector2f(point)) {
 					// Take all the letters
@@ -105,7 +109,8 @@ float MailTruckController::getSpeed() {
 }
 void MailTruckController::pickupMailFromOffice() {
 	// Get the position of the post office
-	sf::Vector3f pos3D(this->office.lock()->transitStop->getTransitLocation());
+	TransitStop::CarStop carStop = this->office.lock()->transitStop->getCarStop();
+	sf::Vector3f pos3D(carStop.tile + carStop.dir.value().getUnitVector3D());
 	sf::Vector2f pos(pos3D.x, pos3D.y);
 	// Get all the stops along the route (i.e. from post office -> through all the stops -> back to post office)
 	std::vector<sf::Vector2f> allStops = { pos };

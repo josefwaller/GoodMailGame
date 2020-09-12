@@ -19,9 +19,6 @@
 #include "Component/ClickBox/RectClickBox/RectClickBox.h"
 // Mail Container
 #include "Component/MailContainer/MailContainer.h"
-// Transit stops
-#include "Component/TransitStop/BasicTransitStop/BasicTransitStop.h"
-#include "Component/TransitStop/BuildingTransitStop/BuildingTransitStop.h"
 
 std::shared_ptr<Entity> BuildingPresets::residence(Game* g, sf::Vector3f pos, IsoRotation rot) {
 	return Entity::createEntity(
@@ -42,7 +39,7 @@ std::shared_ptr<Entity> BuildingPresets::residence(Game* g, sf::Vector3f pos, Is
 			1)
 		),
 		nullptr,
-		new BuildingTransitStop()
+		new TransitStop(getDefaultBuildingTransitStop(pos, rot))
 	);
 }
 
@@ -61,11 +58,15 @@ std::shared_ptr<Entity> BuildingPresets::postOffice(Game* g, sf::Vector3f pos, I
 		new PostOfficeController(),
 		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
 		new MailContainer(),
-		new BasicTransitStop()
+		new TransitStop(getDefaultBuildingTransitStop(pos, rot))
 	);
 }
 
 std::shared_ptr<Entity> BuildingPresets::mailBox(Game* g, sf::Vector3f pos, IsoRotation rot) {
+	TransitStop::CarStop stop = {
+		pos,
+		{}
+	};
 	return Entity::createEntity(
 		g,
 		EntityTag::MailBox,
@@ -80,7 +81,7 @@ std::shared_ptr<Entity> BuildingPresets::mailBox(Game* g, sf::Vector3f pos, IsoR
 		nullptr,
 		nullptr,
 		new MailContainer(),
-		new BasicTransitStop()
+		new TransitStop(stop)
 	);
 }
 
@@ -101,13 +102,19 @@ std::shared_ptr<Entity> BuildingPresets::cargoTruckDepot(Game* g, sf::Vector3f p
 		new TruckDepotController(),
 		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
 		new MailContainer(),
-		new BasicTransitStop()
+		new TransitStop(getDefaultBuildingTransitStop(pos, rot))
 	);
 }
 
 std::shared_ptr<Entity> BuildingPresets::trainStation(Game* g, sf::Vector3f pos, IsoRotation rot) {
 	// Add road into train station
 	addRoadForTransitBuilding(g, sf::Vector3i(pos), rot);
+	TransitStop::CarStop carStop = getDefaultBuildingTransitStop(pos, rot);
+	TransitStop::TrainStop trainStop = {
+		pos,
+		rot - 1
+	};
+
 	return Entity::createEntity(
 		g,
 		EntityTag::TrainStation,
@@ -121,11 +128,19 @@ std::shared_ptr<Entity> BuildingPresets::trainStation(Game* g, sf::Vector3f pos,
 		new TrainDepotController(),
 		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
 		new MailContainer(),
-		new BasicTransitStop()
+		new TransitStop(carStop, trainStop)
 	);
 }
 std::shared_ptr<Entity> BuildingPresets::airport(Game* g, sf::Vector3f pos, IsoRotation rot) {
 	addRoadForTransitBuilding(g, sf::Vector3i(pos), rot);
+	TransitStop::CarStop carStop = getDefaultBuildingTransitStop(pos, rot);
+	// TODO: Make this account for rotation
+	TransitStop::AirplaneStop airplaneStop = {
+		// Stop at the beginning of the runway
+		sf::Vector3f(2, 1, 0) + pos,
+		// Stop at the end of the runway
+		sf::Vector3f(0, 1, 0) + pos
+	};
 	auto e = Entity::createEntity(
 		g,
 		EntityTag::Airport,
@@ -140,7 +155,7 @@ std::shared_ptr<Entity> BuildingPresets::airport(Game* g, sf::Vector3f pos, IsoR
 		new PlaneDepotController(),
 		new RectClickBox(sf::FloatRect(0, 0, 3, 2)),
 		new MailContainer(),
-		new BasicTransitStop()
+		new TransitStop(carStop, {}, airplaneStop)
 	);
 	setTilesToBuilding(g, e, sf::IntRect((int)pos.x, (int)pos.y, 3, 2));
 	return e;
@@ -158,4 +173,11 @@ void BuildingPresets::setTilesToBuilding(Game* g, std::weak_ptr<Entity> e, sf::I
 			g->getGameMap()->setBuildingForTile(x, y, e);
 		}
 	}
+}
+
+TransitStop::CarStop BuildingPresets::getDefaultBuildingTransitStop(sf::Vector3f pos, IsoRotation rot) {
+	return {
+		pos,
+		{ rot}
+	};
 }

@@ -57,7 +57,7 @@ std::shared_ptr<Entity> VehiclePresets::cargoTruck(
 			ResourceLoader::get()->getSprite("vehicles/vehicles", "cargoTruck_SW.png"),
 			ResourceLoader::get()->getSprite("vehicles/vehicles", "cargoTruck_NW.png")
 		),
-		new CargoVehicleController(route, office),
+		new CargoVehicleController(route, office, TransitStop::TransitType::Car),
 		nullptr,
 		new MailContainer(),
 		nullptr,
@@ -82,7 +82,7 @@ std::shared_ptr<Entity> VehiclePresets::train(
 			ResourceLoader::get()->getSprite("vehicles/vehicles", "train-W.png"),
 			ResourceLoader::get()->getSprite("vehicles/vehicles", "train-S.png")
 		),
-		new CargoVehicleController(route, depot),
+		new CargoVehicleController(route, depot, TransitStop::TransitType::Train),
 		nullptr,
 		new MailContainer(),
 		nullptr,
@@ -105,7 +105,7 @@ std::shared_ptr<Entity> VehiclePresets::plane(
 			ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-W"),
 			ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-S")
 		),
-		new CargoVehicleController(route, depot),
+		new CargoVehicleController(route, depot, TransitStop::TransitType::Airplane),
 		nullptr,
 		new MailContainer(),
 		nullptr,

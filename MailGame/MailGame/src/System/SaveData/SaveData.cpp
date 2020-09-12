@@ -26,8 +26,14 @@ void SaveData::addValue(std::string name, long long val) {
 void SaveData::addValue(std::string name, hour_t val) {
 	addValue(name, std::to_string(val));
 }
+void SaveData::addValue(std::string name, float val) {
+	addValue(name, std::to_string(val));
+}
 std::string SaveData::getValue(std::string name) {
 	return this->values[name];
+}
+float SaveData::getValuef(std::string name) {
+	return std::stof(getValue(name));
 }
 std::vector<SaveData> SaveData::getDatas() {
 	return this->datas;

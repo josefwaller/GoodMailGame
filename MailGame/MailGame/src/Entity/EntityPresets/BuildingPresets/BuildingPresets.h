@@ -2,6 +2,7 @@
 #include <memory>
 #include <SFML/System/Vector3.hpp>
 #include "System/IsoRotation/IsoRotation.h"
+#include "Component/TransitStop/TransitStop.h"
 #include <SFML/Graphics/Rect.hpp>
 
 class Entity;
@@ -22,4 +23,7 @@ private:
 	// Set the building value in the tiles to the building given
 	// Set for all tiles within (x, y) to (x + w, y + h)
 	static void setTilesToBuilding(Game* g, std::weak_ptr<Entity> building, sf::IntRect rect);
+	// Get the default car stop for a building
+	// i.e. the space the building is facing
+	static TransitStop::CarStop getDefaultBuildingTransitStop(sf::Vector3f pos, IsoRotation rot);
 };

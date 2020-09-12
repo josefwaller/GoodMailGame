@@ -145,8 +145,7 @@
     <ClCompile Include="src\Component\Renderer\IsoSpriteRenderer\IsoSpriteRenderer.cpp" />
     <ClCompile Include="src\Component\Renderer\SpriteRenderer\SpriteRenderer.cpp" />
     <ClCompile Include="src\Component\Transform\Transform.cpp" />
-    <ClCompile Include="src\Component\TransitStop\BasicTransitStop\BasicTransitStop.cpp" />
-    <ClCompile Include="src\Component\TransitStop\BuildingTransitStop\BuildingTransitStop.cpp" />
+    <ClCompile Include="src\Component\TransitStop\TransitStop.cpp" />
     <ClCompile Include="src\Entity\Entity.cpp" />
     <ClCompile Include="src\Entity\EntityPresets\BuildingPresets\BuildingsPresets.cpp" />
     <ClCompile Include="src\Entity\EntityPresets\VehiclePresets\VehiclePresets.cpp" />
@@ -198,8 +197,6 @@
     <ClInclude Include="src\Component\Renderer\Renderer.h" />
     <ClInclude Include="src\Component\Renderer\SpriteRenderer\SpriteRenderer.h" />
     <ClInclude Include="src\Component\Transform\Transform.h" />
-    <ClInclude Include="src\Component\TransitStop\BasicTransitStop\BasicTransitStop.h" />
-    <ClInclude Include="src\Component\TransitStop\BuildingTransitStop\BuildingTransitStop.h" />
     <ClInclude Include="src\Component\TransitStop\TransitStop.h" />
     <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\Entity\Entity.h" />

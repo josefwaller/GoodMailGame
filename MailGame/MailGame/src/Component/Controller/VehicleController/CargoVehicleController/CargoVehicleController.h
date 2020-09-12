@@ -1,5 +1,6 @@
 #pragma once
 #include "Component/Controller/VehicleController/VehicleController.h"
+#include "Component/TransitStop/TransitStop.h"
 #include "Routes/TransitRoute/TransitRoute.h"
 #include <memory>
 
@@ -7,7 +8,7 @@ class Entity;
 
 class CargoVehicleController : public VehicleController {
 public:
-	CargoVehicleController(TransitRoute route, std::weak_ptr<Entity> office);
+	CargoVehicleController(TransitRoute route, std::weak_ptr<Entity> office, TransitStop::TransitType type);
 	// Set stops in vehicle controller based on route
 	void setRouteStops();
 	// Overridden methods, see TruckController
@@ -21,4 +22,8 @@ private:
 	std::weak_ptr<Entity> depot;
 	// The route the truck is following
 	TransitRoute route;
+	// The type of stop this vehicle will access
+	TransitStop::TransitType type;
+	// Get the position to travel to for this entity
+	std::vector<sf::Vector3f> getTransitPos(std::shared_ptr<Entity> e);
 };

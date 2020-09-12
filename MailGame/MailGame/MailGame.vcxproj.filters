@@ -99,12 +99,6 @@
     <ClCompile Include="src\PostalCodeDatabase\PostalCodeDatabase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Component\TransitStop\BasicTransitStop\BasicTransitStop.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Component\TransitStop\BuildingTransitStop\BuildingTransitStop.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Component\Controller\ResidenceController\ResidenceController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -154,6 +148,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Component\Pathfinder\AirPathfinder\AirPathfinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\TransitStop\TransitStop.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -243,12 +240,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Component\TransitStop\TransitStop.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Component\TransitStop\BasicTransitStop\BasicTransitStop.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Component\TransitStop\BuildingTransitStop\BuildingTransitStop.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Component\Controller\ResidenceController\ResidenceController.h">

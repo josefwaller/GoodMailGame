@@ -93,6 +93,7 @@ void Entity::loadComponentsFromSaveData(SaveData data) {
 			LOAD_COMPONENT(Transform, transform)
 			LOAD_COMPONENT(Controller, controller)
 			LOAD_COMPONENT(MailContainer, mailContainer)
+			LOAD_COMPONENT(TransitStop, transitStop)
 		default: break; // Todo: Do something here
 		}
 	}

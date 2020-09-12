@@ -23,6 +23,7 @@ void App::run() {
 	// Create game
 	Game game(this, &this->window);
 	game.loadFromSaveData(sd);
+	//game.generateNew();
 	sf::Clock deltaClock;
 	ImGui::SFML::Init(window);
 

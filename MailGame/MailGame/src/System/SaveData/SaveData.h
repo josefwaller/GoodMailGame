@@ -21,11 +21,13 @@ public:
 	void addValue(std::string name, bool val);
 	void addValue(std::string name, long long val);
 	void addValue(std::string name, hour_t val);
+	void addValue(std::string name, float val);
 	bool hasValue(std::string name);
 	// Add a nested SaveData
 	void addData(SaveData data);
 	// Get a value/dta
 	std::string getValue(std::string name);
+	float getValuef(std::string name);
 	std::vector<SaveData> getDatas();
 	// Get the first data with the name given
 	SaveData getData(std::string name);

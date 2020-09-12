@@ -109,7 +109,8 @@ void PostOfficeController::onHourChange(hour_t newHour) {
 			auto transit = this->getEntity()->transitStop;
 			auto truck = VehiclePresets::mailTruck(
 				game,
-				transit->getTransitLocation(),
+				// For right now, just spawn the truck on the tile
+				sf::Vector3f(transit->getCarStop().tile),
 				IsoRotation::NORTH,
 				*it,
 				this->getEntity()
