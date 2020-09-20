@@ -26,31 +26,33 @@ void VehicleController::update(float delta) {
 		// Go to next stop
 		this->goToNextStop();
 	}
-	// If the truck has gone through all the points
-	// Also called if the truck has no points, i.e. no path exists
-	if (travelTime >= this->points[this->pointIndex].expectedTime) {
-		sf::Vector3f point = this->points[this->pointIndex].pos;
-		// Go to the next point
-		this->pointIndex++;
-		// Call callback
-		if (this->pointIndex >= this->points.size()) {
-			this->onArriveAtStop(this->stopIndex);
-			this->goToNextStop();
+	else {
+		// If the truck has gone through all the points
+		// Also called if the truck has no points, i.e. no path exists
+		if (travelTime >= this->points[this->pointIndex].expectedTime) {
+			sf::Vector3f point = this->points[this->pointIndex].pos;
+			// Go to the next point
+			this->pointIndex++;
+			// Call callback
+			if (this->pointIndex >= this->points.size()) {
+				this->onArriveAtStop(this->stopIndex);
+				this->goToNextStop();
+			}
+			else {
+				this->onArriveAtTile(sf::Vector2i(point.x, point.y));
+			}
 		}
 		else {
-			this->onArriveAtTile(sf::Vector2i(point.x, point.y));
+			VehicleControllerStop lastPoint = this->points[this->pointIndex - 1];
+			VehicleControllerStop nextPoint = this->points[this->pointIndex];
+			gtime_t timeSincePoint = travelTime - lastPoint.expectedTime;
+			sf::Vector3f pos = lastPoint.pos + (nextPoint.pos - lastPoint.pos) * (float)(timeSincePoint / (float)(nextPoint.expectedTime - lastPoint.expectedTime));
+			this->getEntity()->transform->setPosition(pos);
+			// Get rotation
+			sf::Vector2f diff(nextPoint.pos.x - lastPoint.pos.x, nextPoint.pos.y - lastPoint.pos.y);
+			IsoRotation rot = IsoRotation::fromUnitVector(diff);
+			this->getEntity()->transform->setRotation(rot);
 		}
-	}
-	else {
-		VehicleControllerStop lastPoint = this->points[this->pointIndex - 1];
-		VehicleControllerStop nextPoint = this->points[this->pointIndex];
-		gtime_t timeSincePoint = travelTime - lastPoint.expectedTime;
-		sf::Vector3f pos = lastPoint.pos + (nextPoint.pos - lastPoint.pos) * (float)(timeSincePoint / (float)(nextPoint.expectedTime - lastPoint.expectedTime));
-		this->getEntity()->transform->setPosition(pos);
-		// Get rotation
-		sf::Vector2f diff(nextPoint.pos.x - lastPoint.pos.x, nextPoint.pos.y - lastPoint.pos.y);
-		IsoRotation rot = IsoRotation::fromUnitVector(diff);
-		this->getEntity()->transform->setRotation(rot);
 	}
 }
 void VehicleController::pathfindToPoint(sf::Vector3f from, sf::Vector3f point){
