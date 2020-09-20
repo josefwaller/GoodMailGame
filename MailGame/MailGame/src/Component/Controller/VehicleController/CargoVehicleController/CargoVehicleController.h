@@ -8,7 +8,7 @@ class Entity;
 
 class CargoVehicleController : public VehicleController {
 public:
-	CargoVehicleController(TransitRoute route, std::weak_ptr<Entity> office, TransitStop::TransitType type);
+	CargoVehicleController(TransitRoute route, std::weak_ptr<Entity> office, TransitStop::TransitType type, gtime_t departTime);
 	// Set stops in vehicle controller based on route
 	void setRouteStops();
 	// Overridden methods, see TruckController

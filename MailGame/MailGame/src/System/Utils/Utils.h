@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/System/Vector3.hpp>
 
 // Misc Utils that I couldn't think to put anywhere else
 // Mostly temporary things that shouldn't make it into the final product
@@ -9,4 +10,6 @@ public:
 	// has some extra ground for buildings
 	// This is pretty messy, but hopefully will not make it into the final version
 	static sf::Sprite setupBuildingSprite(sf::Sprite spr, bool isBuilding = true);
+	// Get distance between vector3fs
+	static float getVectorDistance(sf::Vector3f one, sf::Vector3f two);
 };

@@ -8,7 +8,7 @@ class GameMap;
 
 class MailTruckController : public VehicleController {
 public:
-	MailTruckController(MailTruckRoute route, std::weak_ptr<Entity> office);
+	MailTruckController(MailTruckRoute route, std::weak_ptr<Entity> office, gtime_t departTime);
 	static const float SPEED;
 	virtual void update(float delta) override;
 	virtual std::optional<SaveData> getSaveData() override;

@@ -14,8 +14,8 @@
 const float MailTruckController::SPEED = 1.0f;
 
 // Set stop to -1 to avoid skipping the first stop
-MailTruckController::MailTruckController(MailTruckRoute r, std::weak_ptr<Entity> o)
-	: route(r), office(o), hasPickedUpMail(false) {
+MailTruckController::MailTruckController(MailTruckRoute r, std::weak_ptr<Entity> o, gtime_t departTime)
+	: route(r), office(o), hasPickedUpMail(false), VehicleController(departTime) {
 	setRouteStops();
 }
 void MailTruckController::setRouteStops() {

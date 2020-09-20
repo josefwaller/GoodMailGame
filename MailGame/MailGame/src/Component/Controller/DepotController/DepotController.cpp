@@ -175,6 +175,6 @@ std::optional<SaveData> DepotController::getSaveData() {
 void DepotController::fromSaveData(SaveData data) {
 	for (SaveData d : data.getDatas()) {
 		TransitRoute r = saveDataToTransitRoute(this->getEntity()->getGame(), d);
-		this->routes.insert({ r.departureTime, r });
+		this->routes.insert({ r.id, r });
 	}
 }

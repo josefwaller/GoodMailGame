@@ -10,13 +10,22 @@
 CargoVehicleController::CargoVehicleController(
 	TransitRoute r,
 	std::weak_ptr<Entity> d,
-	TransitStop::TransitType type
-) : depot(d), route(r), type(type) {
+	TransitStop::TransitType type,
+	gtime_t departTime
+) : depot(d), route(r), type(type), VehicleController(departTime) {
 	setRouteStops();
 }
 void CargoVehicleController::setRouteStops() {
+	std::vector<sf::Vector3f> depotPath = {};
+	if (depot.lock()) {
+		depotPath = getTransitPos(depot.lock());
+	}
 	// Add all the locations to stops
 	std::vector<sf::Vector3f> stops;
+	// Add the depot
+	// TODO: Separate this into departingDepotPath and enteringDepotPath
+	stops.insert(stops.end(), depotPath.begin(), depotPath.end());
+	// Add the stops for the route
 	for (TransitRouteStop stop : route.stops) {
 		if (auto s = stop.target.lock()) {
 #ifdef _DEBUG
@@ -28,10 +37,9 @@ void CargoVehicleController::setRouteStops() {
 			stops.insert(stops.end(), path.begin(), path.end());
 		}
 	}
-	if (depot.lock()) {
-		auto path = getTransitPos(depot.lock());
-		stops.insert(stops.end(), path.begin(), path.end());
-	}
+	// Add the stops going into the depot
+	// See Todo above
+	stops.insert(stops.end(), depotPath.begin(), depotPath.end());
 	this->setStops(stops);
 }
 void CargoVehicleController::onArriveAtDest() {

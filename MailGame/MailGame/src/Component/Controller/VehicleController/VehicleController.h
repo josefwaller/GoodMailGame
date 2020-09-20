@@ -6,8 +6,16 @@
 
 class GameMap;
 
+// Data structure for each stop
+struct VehicleControllerStop {
+	sf::Vector3f pos;
+	gtime_t expectedTime;
+	VehicleControllerStop(sf::Vector3f pos, gtime_t time) : pos(pos), expectedTime(time) {}
+};
+
 class VehicleController: public Controller {
 public:
+	VehicleController(gtime_t departTime);
 	virtual void update(float delta) override;
 protected:
 	// Set the stops
@@ -23,15 +31,17 @@ protected:
 	virtual float getSpeed() = 0;
 	// Children need access to this for saving/loading
 	size_t stopIndex;
-
 private:
 	// The points the truck is currently going through on its route
-	std::vector<sf::Vector3f> points;
+	std::vector<VehicleControllerStop> points;
 	size_t pointIndex;
 	// The stops and the index of the current stop
-	std::vector<sf::Vector3f> stops;
+	std::vector<VehicleControllerStop> stops;
 	// Set points as the path from its current position to the point given
-	void pathfindToPoint(sf::Vector3f point);
+	void pathfindToPoint(sf::Vector3f from, sf::Vector3f point);
 	// Go to the next stop along the route
 	void goToNextStop();
+	// The time the vehicle departed the depot
+	gtime_t departTime;
 };
+
