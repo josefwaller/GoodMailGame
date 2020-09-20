@@ -43,6 +43,7 @@ void GameMap::generateNew() {
 	generateCityAt({ MAP_WIDTH / 2, MAP_HEIGHT / 4 });
 }
 void GameMap::render(sf::RenderWindow* window) {
+	// Render all the tiles
 	int rotation = this->game->getRotation().getRotation();
 	switch(rotation) {
 	case IsoRotation::NORTH:
@@ -142,6 +143,12 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 	s.setPosition(this->game->worldToScreenPos(pos));
 	s = Utils::setupBuildingSprite(s, false);
 	window->draw(s);
+	// If there's a railway, also draw that
+	if (tile.railway.has_value()) {
+		Railway r = tile.railway.value();
+		game->getUi()->drawArrow(window, sf::Vector2i(x, y), r.from + 2, false);
+		game->getUi()->drawArrow(window, sf::Vector2i(x, y), r.to, true);
+	}
 }
 /*
  * A very simple algorithm which just generates n roads criss-crossing

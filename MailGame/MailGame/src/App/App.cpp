@@ -18,13 +18,18 @@ App::App() : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Hello World"), 
 void App::run() {
 	// Create game
 	Game game(this, &this->window);
-	//game.generateNew();
-	// Load test save data
-	// Uncomment this to load save data
-	std::ifstream fs("savedata/test.txt");
-	std::string data((std::istreambuf_iterator<char>(fs)), (std::istreambuf_iterator<char>()));
-	SaveData sd = SaveData::fromFileContents(data);
-	game.loadFromSaveData(sd);
+	// Just change this flag to either load the save file or generate a new map
+	const bool LOAD_NEW = true;
+	if (LOAD_NEW) {
+		game.generateNew();
+	}
+	else {
+		// Load test save data
+		std::ifstream fs("savedata/test.txt");
+		std::string data((std::istreambuf_iterator<char>(fs)), (std::istreambuf_iterator<char>()));
+		SaveData sd = SaveData::fromFileContents(data);
+		game.loadFromSaveData(sd);
+	}
 	sf::Clock deltaClock;
 	ImGui::SFML::Init(window);
 
