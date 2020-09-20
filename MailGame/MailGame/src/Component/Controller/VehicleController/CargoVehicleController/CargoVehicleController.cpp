@@ -93,7 +93,7 @@ std::optional<SaveData> CargoVehicleController::getSaveData() {
 	sd.addData(transitRouteToSaveData(this->route));
 	if (depot.lock())
 		sd.addValue("depotId", depot.lock()->getId());
-	sd.addValue("stopIndex", this->stopIndex);
+	sd.addValuesFrom(VehicleController::getSaveData().value());
 	return sd;
 }
 void CargoVehicleController::fromSaveData(SaveData data) {
@@ -101,8 +101,8 @@ void CargoVehicleController::fromSaveData(SaveData data) {
 	if (data.hasValue("depotId")) {
 		this->depot = this->getEntity()->getGame()->getEntityById(std::stoull(data.getValue("depotId")));
 	}
-	this->stopIndex = std::stoull(data.getValue("stopIndex"));
 	this->setRouteStops();
+	VehicleController::fromSaveData(data);
 }
 
 std::vector<sf::Vector3f> CargoVehicleController::getTransitPos(std::shared_ptr<Entity> e) {

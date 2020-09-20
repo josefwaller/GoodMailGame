@@ -41,6 +41,18 @@ std::vector<SaveData> SaveData::getDatas() {
 bool SaveData::hasValue(std::string name) {
 	return (this->values.find(name) != this->values.end());
 }
+void SaveData::addValuesFrom(SaveData other) {
+	for (std::string key : other.getValueNames()) {
+		this->addValue(key, other.getValue(key));
+	}
+}
+std::vector<std::string> SaveData::getValueNames() {
+	std::vector<std::string> toReturn;
+	for (auto it = this->values.begin(); it != this->values.end(); it++) {
+		toReturn.push_back(it->first);
+	}
+	return toReturn;
+}
 rapidxml::xml_node<>* SaveData::getDataAsXml(rapidxml::xml_document<>* doc) {
 	// Create node
 	rapidxml::xml_node<>* node = doc->allocate_node(

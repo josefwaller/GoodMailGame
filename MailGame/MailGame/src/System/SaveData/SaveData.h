@@ -25,6 +25,8 @@ public:
 	bool hasValue(std::string name);
 	// Add a nested SaveData
 	void addData(SaveData data);
+	// Copy all the values of the SaveData
+	void addValuesFrom(SaveData data);
 	// Get a value/dta
 	std::string getValue(std::string name);
 	float getValuef(std::string name);
@@ -35,6 +37,8 @@ public:
 	std::string getAsString();
 	// Get the name
 	std::string getName();
+	// Get the names of the values
+	std::vector<std::string> getValueNames();
 private:
 	// The name of this data
 	std::string name;

@@ -31,6 +31,15 @@ protected:
 	virtual float getSpeed() = 0;
 	// Children need access to this for saving/loading
 	size_t stopIndex;
+	// The time the vehicle departed the depot
+	gtime_t departTime;
+	// Sets up the stops on load
+	// Mainly sets the expected time so that things will run smoothly
+	// Make sure to call this after setting the stops
+	virtual void fromSaveData(SaveData data) override;
+	// Get eth save data
+	// For this class, it should be called by a child class and combined with another save data
+	std::optional<SaveData> getSaveData() override;
 private:
 	// The points the truck is currently going through on its route
 	std::vector<VehicleControllerStop> points;
@@ -41,7 +50,7 @@ private:
 	void pathfindToPoint(sf::Vector3f from, sf::Vector3f point);
 	// Go to the next stop along the route
 	void goToNextStop();
-	// The time the vehicle departed the depot
-	gtime_t departTime;
+	// Get the distance to travel between two points, via the path returned by the pathfinder
+	float getPathDistance(sf::Vector3f from, sf::Vector3f to);
 };
 

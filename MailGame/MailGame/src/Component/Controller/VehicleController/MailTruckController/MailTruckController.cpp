@@ -165,8 +165,8 @@ std::optional<SaveData> MailTruckController::getSaveData() {
 	if (this->office.lock()) {
 		sd.addValue("officeId", this->office.lock()->getId());
 	}
-	sd.addValue("stopIndex", this->stopIndex);
 	sd.addData(mailTruckRouteToSaveData(this->route));
+	sd.addValuesFrom(VehicleController::getSaveData().value());
 	return sd;
 }
 void MailTruckController::fromSaveData(SaveData data) {
@@ -176,4 +176,5 @@ void MailTruckController::fromSaveData(SaveData data) {
 	this->stopIndex = std::stoull(data.getValue("stopIndex"));
 	this->route = saveDataToMailTruckRoute(data.getDatas()[0]);
 	setRouteStops();
+	VehicleController::fromSaveData(data);
 }

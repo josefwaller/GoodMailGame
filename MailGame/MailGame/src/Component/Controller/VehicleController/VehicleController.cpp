@@ -6,6 +6,7 @@
 #include "Component/Pathfinder/Pathfinder.h"
 #include "Entity/Entity.h"
 #include "System/Utils/Utils.h"
+#include "System/SaveData/SaveData.h"
 #include <SFML/System/Vector3.hpp>
 #include <queue>
 #include <map>
@@ -89,15 +90,43 @@ void VehicleController::goToNextStop() {
 	}
 }
 void VehicleController::setStops(std::vector<sf::Vector3f> stops) {
-	if (stops.size() < 2) {
-		throw std::runtime_error("Route with less than two stops created!");
-	}
 	this->stops = {};
 	for (auto s : stops) {
 		// Set the expected time to 0 for now, it will be overridden when going to that stop
 		this->stops.push_back(VehicleControllerStop(s, 0.0f));
 	}
 	this->stopIndex = 0;
+}
+float VehicleController::getPathDistance(sf::Vector3f from, sf::Vector3f to) {
+	float toReturn = 0.0f;
+	std::vector<sf::Vector3f> points = this->getEntity()->pathfinder->findPathBetweenPoints(from, to);
+	sf::Vector3f lastPoint = points[0];
+	for (sf::Vector3f point : points) {
+		toReturn += Utils::getVectorDistance(point, lastPoint);
+		lastPoint = point;
+	}
+	return toReturn;
+}
+void VehicleController::fromSaveData(SaveData data) {
+	this->stopIndex = std::stoull(data.getValue("stopIndex"));
+	this->departTime = std::stoull(data.getValue("departTime"));
+	// Set the expected arrival time for each stop up to the one it's going to
+	float totalDistance = 0.0f;
+	for (size_t i = 1; i < this->stopIndex; i++) {
+		totalDistance += getPathDistance(this->stops[i - 1].pos, this->stops[i].pos) * Game::UNITS_IN_GAME_HOUR * getSpeed();
+		this->stops[i].expectedTime = totalDistance;
+	}
+	// Generate the points from the last stop to the next stop
+	if (stopIndex < 1) {
+		throw std::runtime_error("Invalid stopIndex, must be more than 0");
+	}
+	this->pathfindToPoint(this->stops[this->stopIndex - 1].pos, this->stops[this->stopIndex].pos);
+}
+std::optional<SaveData> VehicleController::getSaveData() {
+	SaveData data("VehicleController");
+	data.addValue("stopIndex", stopIndex);
+	data.addValue("departTime", departTime);
+	return { data };
 }
 void VehicleController::onArriveAtTile(sf::Vector2i point) {}
 void VehicleController::onArriveAtStop(size_t stopIndex) {}
