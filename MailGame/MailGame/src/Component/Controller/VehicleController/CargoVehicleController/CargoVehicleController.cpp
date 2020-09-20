@@ -18,7 +18,7 @@ CargoVehicleController::CargoVehicleController(
 void CargoVehicleController::setRouteStops() {
 	std::vector<sf::Vector3f> depotPath = {};
 	if (depot.lock()) {
-		depotPath = getTransitPos(depot.lock());
+		depotPath = getDepartingTransitPath(depot.lock());
 	}
 	// Add all the locations to stops
 	std::vector<sf::Vector3f> stops;
@@ -33,12 +33,17 @@ void CargoVehicleController::setRouteStops() {
 				throw std::runtime_error("Cargo truck has stop that does not have TransitStop!");
 			}
 #endif
-			auto path = getTransitPos(s);
-			stops.insert(stops.end(), path.begin(), path.end());
+			// Add the arriving and departing path
+			auto arrivingPath = getArrivingTransitPath(s);
+			stops.insert(stops.end(), arrivingPath.begin(), arrivingPath.end());
+			auto departingPath = getDepartingTransitPath(s);
+			stops.insert(stops.end(), departingPath.begin(), departingPath.end());
 		}
 	}
 	// Add the stops going into the depot
 	// See Todo above
+	if (this->depot.lock())
+		depotPath = getArrivingTransitPath(depot.lock());
 	stops.insert(stops.end(), depotPath.begin(), depotPath.end());
 	this->setStops(stops);
 }
@@ -105,7 +110,7 @@ void CargoVehicleController::fromSaveData(SaveData data) {
 	VehicleController::fromSaveData(data);
 }
 
-std::vector<sf::Vector3f> CargoVehicleController::getTransitPos(std::shared_ptr<Entity> e) {
+std::vector<sf::Vector3f> CargoVehicleController::getArrivingTransitPath(std::shared_ptr<Entity> e) {
 	auto transit = e->transitStop;
 	switch (this->type) {
 	case TransitStop::TransitType::Car:
@@ -125,7 +130,31 @@ std::vector<sf::Vector3f> CargoVehicleController::getTransitPos(std::shared_ptr<
 		airStart.z = PLANE_HEIGHT;
 		sf::Vector3f airEnd = aStop.end + unit * DESCENT_LENGTH;
 		airEnd.z = PLANE_HEIGHT;
-		return  { airStart, aStop.begin, aStop.end, airEnd };
+		return  { airStart, aStop.begin, aStop.end };
 	}
 	return {};
+}
+std::vector<sf::Vector3f> CargoVehicleController::getDepartingTransitPath(std::shared_ptr<Entity> e) {
+	auto transit = e->transitStop;
+	// TODO: Once there are better depot types/more defined railways and driveways, this will be more complicated
+	switch (this->type) {
+	case TransitStop::TransitType::Car:
+	case TransitStop::TransitType::Train:
+		// This is a hacky temporary shortcut
+		return getArrivingTransitPath(e);
+	case TransitStop::TransitType::Airplane:
+		// Compute where we need to go
+		auto aStop = transit->getAirplaneStop();
+		auto dir = aStop.end - aStop.begin;
+		// TBA add z
+		sf::Vector3f unit = dir / (sqrt(dir.x * dir.x + dir.y * dir.y));
+		// Th horizontal distance to cover when descending
+		const float DESCENT_LENGTH = 5.0f;
+		const float PLANE_HEIGHT = 4.0f;
+		sf::Vector3f airStart = aStop.begin - DESCENT_LENGTH * unit;
+		airStart.z = PLANE_HEIGHT;
+		sf::Vector3f airEnd = aStop.end + unit * DESCENT_LENGTH;
+		airEnd.z = PLANE_HEIGHT;
+		return  { aStop.begin, aStop.end, airEnd };
+	}
 }
