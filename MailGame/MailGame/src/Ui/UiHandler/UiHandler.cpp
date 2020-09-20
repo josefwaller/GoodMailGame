@@ -115,9 +115,10 @@ void UiHandler::update() {
 		this->game->rotateCamera();
 	}
 	ImGui::Text((std::to_string(this->game->getHour()) + ":00").c_str());
-	if (ImGui::Button("Next Hour")) {
-		this->game->advanceTime();
+	if (ImGui::Button("Toggle Paused")) {
+		this->game->togglePause();
 	}
+	ImGui::Text((std::string("Game.time: ") + std::to_string(this->game->getTime())).c_str());
 	if (ImGui::Button("Save Game")) {
 		// Terrible way of temporarily doing this
 		// Just save rn to file

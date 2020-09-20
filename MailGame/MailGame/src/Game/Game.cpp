@@ -15,6 +15,8 @@
 const float Game::CAMERA_SPEED = 600.0f;
 const float Game::TILE_WIDTH = 64.0f;
 const float Game::TILE_HEIGHT = 32.0f;
+const gtime_t Game::UNITS_IN_GAME_HOUR = 1 * 1000;
+const gtime_t Game::UNITS_IN_REAL_SECOND = 1000;
 const std::vector<EntityTag> Game::WHITELIST_ENTITY_TAG = {
 	EntityTag::Residence,
 	EntityTag::PostOffice,
@@ -57,6 +59,13 @@ void Game::loadFromSaveData(SaveData data) {
 }
 
 void Game::update(float delta) {
+	// Advance time
+	if (!isPaused) {
+		const gtime_t lastTime = this->time / UNITS_IN_GAME_HOUR;
+		this->time += (gtime_t)(delta * UNITS_IN_REAL_SECOND);
+		if (lastTime < this->time / UNITS_IN_GAME_HOUR)
+			this->advanceTime();
+	}
 	// Move the camera
 	sf::Vector2f offset;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
@@ -221,20 +230,22 @@ UiHandler* Game::getUi() {
 	return &this->uiHandler;
 }
 gtime_t Game::getTime() { return this->time; }
-hour_t Game::getHour() { return this->time % 24; }
+hour_t Game::getHour() { return (this->time / UNITS_IN_GAME_HOUR) % 24; }
 void Game::advanceTime() {
-	// Increase time
-	this->time++;
 	// Update mail records
 	Mail::onTimeChanged(this->time);
 	// Update entities
 	for (auto it = this->entities.begin(); it != this->entities.end(); it++) {
 		if ((*it)->controller) {
-			(*it)->controller->onHourChange(this->time % 24);
+			(*it)->controller->onHourChange(this->getHour());
 		}
 	}
 }
 std::vector<std::shared_ptr<Entity>> Game::getEntities() { return this->entities; }
+
+void Game::togglePause() {
+	this->isPaused = !this->isPaused;
+}
 
 SaveData Game::getSaveData() {
 	// Create save data for game

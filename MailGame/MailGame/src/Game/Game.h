@@ -20,6 +20,11 @@ public:
 	static const float TILE_WIDTH;
 	static const float TILE_HEIGHT;
 
+	// The number of gtime_t units in an in-game hour
+	static const gtime_t UNITS_IN_GAME_HOUR;
+	// The number of gtime_t units in a real world second;
+	static const gtime_t UNITS_IN_REAL_SECOND;
+
 	// To be removed
 	// Whitelist of entity tags which are interlaid with the map and must be drawn instead of the tile they're on
 	static const std::vector<EntityTag> WHITELIST_ENTITY_TAG;
@@ -66,6 +71,8 @@ public:
 	std::weak_ptr<Entity> getEntityById(size_t id);
 	// Get the save data for the entire game
 	SaveData getSaveData();
+	// Toggle whether the game is paused or not
+	void togglePause();
 private:
 	// The window for the game
 	sf::RenderWindow* window;
@@ -85,4 +92,6 @@ private:
 	IsoRotation rotation;
 	// The time, not in hours
 	gtime_t time;
+	// Whether the game is paused or not
+	bool isPaused;
 };

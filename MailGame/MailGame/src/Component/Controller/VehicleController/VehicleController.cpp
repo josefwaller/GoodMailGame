@@ -56,7 +56,7 @@ void VehicleController::pathfindToPoint(sf::Vector3f from, sf::Vector3f point){
 	sf::Vector3f lastPoint = pos;
 	float totalDistance = this->stops[this->stopIndex - 1].expectedTime;
 	for (auto s : this->getEntity()->pathfinder->findPathBetweenPoints(pos, point)) {
-		totalDistance += Utils::getVectorDistance(lastPoint, s);
+		totalDistance += Utils::getVectorDistance(lastPoint, s) * Game::UNITS_IN_GAME_HOUR * getSpeed();
 		// Currently, just assume units go 1 tile per second
 		// TODO: Change this to actual speed
 		this->points.push_back(VehicleControllerStop(s, (gtime_t)totalDistance));

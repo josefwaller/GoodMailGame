@@ -30,7 +30,7 @@ void Mail::onTimeChanged(time_t time) {
 	// Remove mail
 	std::vector<id_t> toRemove;
 	for (auto kv : mailRecords) {
-		if (time - kv.second.first >= 24) {
+		if (time - kv.second.first >= 24 * Game::UNITS_IN_GAME_HOUR) {
 			toRemove.push_back(kv.first);
 		}
 	}

@@ -10,7 +10,7 @@
 
 #include <stdexcept>
 
-const gtime_t ResidenceController::GENERATE_INTERVAL = 5;
+const gtime_t ResidenceController::GENERATE_INTERVAL = 5 * Game::UNITS_IN_GAME_HOUR;
 ResidenceController::ResidenceController(gtime_t time) : lastGenTime(time) {}
 
 void ResidenceController::update(float time) {
