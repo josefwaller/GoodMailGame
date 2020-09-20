@@ -47,6 +47,10 @@ void VehicleController::update(float delta) {
 		gtime_t timeSincePoint = travelTime - lastPoint.expectedTime;
 		sf::Vector3f pos = lastPoint.pos + (nextPoint.pos - lastPoint.pos) * (float)(timeSincePoint / (float)(nextPoint.expectedTime - lastPoint.expectedTime));
 		this->getEntity()->transform->setPosition(pos);
+		// Get rotation
+		sf::Vector2f diff(nextPoint.pos.x - lastPoint.pos.x, nextPoint.pos.y - lastPoint.pos.y);
+		IsoRotation rot = IsoRotation::fromUnitVector(diff);
+		this->getEntity()->transform->setRotation(rot);
 	}
 }
 void VehicleController::pathfindToPoint(sf::Vector3f from, sf::Vector3f point){

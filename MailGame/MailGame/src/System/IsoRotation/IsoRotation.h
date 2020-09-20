@@ -68,6 +68,27 @@ public:
 			throw std::runtime_error("getUnitVector called on an invalid IsoRotation!");
 		}
 	}
+	// Get an IsoRotation from a unit vector, assuming it's a valid one
+	static IsoRotation fromUnitVector(sf::Vector2f u) {
+		if (u.x == 0.0f) {
+			if (u.y == -1.0f) {
+				return IsoRotation::NORTH;
+			}
+			else if (u.y == 1.0f) {
+				return IsoRotation::SOUTH;
+			}
+		}
+		else if (u.y == 0.0f) {
+			if (u.x == 1.0f) {
+				return IsoRotation::EAST;
+			}
+			else if (u.x == -1.0f) {
+				return IsoRotation::WEST;
+			}
+		}
+		// ERROR but not crashing as planes will prob get here
+		return IsoRotation::NORTH;
+	}
 	// Get unit vector in 3D space (with Z = 0)
 	sf::Vector3f getUnitVector3D() {
 		return sf::Vector3f(getUnitVector().x, getUnitVector().y, 0);
