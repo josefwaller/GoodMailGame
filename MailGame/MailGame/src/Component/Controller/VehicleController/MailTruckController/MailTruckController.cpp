@@ -21,18 +21,21 @@ MailTruckController::MailTruckController(MailTruckRoute r, std::weak_ptr<Entity>
 void MailTruckController::setRouteStops() {
 	// Build and set the stops
 	std::vector<sf::Vector3f> stops;
+	// Start at the depot
+	if (this->office.lock()) {
+		auto officePath = this->getDepartingTransitPath(this->office.lock(), TransitStop::TransitType::Car);
+		stops.insert(stops.end(), officePath.begin(), officePath.end());
+	}
 	for (MailTruckRouteStop s : this->route.stops) {
-		// ToDo: What if a stop has not been set?
-		sf::Vector2i p = s.target.value();
-		stops.push_back(sf::Vector3f(p.x, p.y, 0));
+		// Skip targets where the value has not been set
+		if (s.target.has_value()) {
+			sf::Vector2i p = s.target.value();
+			stops.push_back(sf::Vector3f(p.x, p.y, 0));
+		}
 	}
 	if (this->office.lock()) {
-		// Add two stops, one on the tile and one directly after
-		TransitStop::CarStop cStop = this->office.lock()->transitStop->getCarStop();
-		stops.push_back(
-			cStop.tile
-		);
-		stops.push_back(sf::Vector3f(cStop.tile) + cStop.dir.value().getUnitVector3D());
+		auto officePath = this->getArrivingTransitPath(this->office.lock(), TransitStop::TransitType::Car);
+		stops.insert(stops.end(), officePath.begin(), officePath.end());
 	}
 	this->setStops(stops);
 }
@@ -115,7 +118,8 @@ void MailTruckController::pickupMailFromOffice() {
 	// Get all the stops along the route (i.e. from post office -> through all the stops -> back to post office)
 	std::vector<sf::Vector2f> allStops = { pos };
 	for (MailTruckRouteStop s : route.stops) {
-		allStops.push_back(sf::Vector2f(s.target.value()));
+		if (s.target.has_value())
+			allStops.push_back(sf::Vector2f(s.target.value()));
 	}
 	allStops.push_back(pos);
 	// Now gather all the tiles between the stops

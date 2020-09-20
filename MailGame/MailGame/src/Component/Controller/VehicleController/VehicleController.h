@@ -1,5 +1,6 @@
 #pragma once
 #include "Component/Controller/Controller.h"
+#include "Component/TransitStop/TransitStop.h"
 #include <vector>
 #include <SFML/System/Vector3.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -33,6 +34,10 @@ protected:
 	size_t stopIndex;
 	// The time the vehicle departed the depot
 	gtime_t departTime;
+	// Get the position to travel to for a given entity
+	// Split into arriving and departing
+	std::vector<sf::Vector3f> getArrivingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type);
+	std::vector<sf::Vector3f> getDepartingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type);
 	// Sets up the stops on load
 	// Mainly sets the expected time so that things will run smoothly
 	// Make sure to call this after setting the stops

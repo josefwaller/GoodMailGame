@@ -128,6 +128,54 @@ std::optional<SaveData> VehicleController::getSaveData() {
 	data.addValue("departTime", departTime);
 	return { data };
 }
+std::vector<sf::Vector3f> VehicleController::getArrivingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type) {
+	auto transit = e->transitStop;
+	switch (type) {
+	case TransitStop::TransitType::Car:
+		return { transit->getCarStop().tile };
+	case TransitStop::TransitType::Train:
+		return { transit->getTrainStop().tile };
+	case TransitStop::TransitType::Airplane:
+		// Compute where we need to go
+		auto aStop = transit->getAirplaneStop();
+		auto dir = aStop.end - aStop.begin;
+		// TBA add z
+		sf::Vector3f unit = dir / (sqrt(dir.x * dir.x + dir.y * dir.y));
+		// Th horizontal distance to cover when descending
+		const float DESCENT_LENGTH = 5.0f;
+		const float PLANE_HEIGHT = 4.0f;
+		sf::Vector3f airStart = aStop.begin - DESCENT_LENGTH * unit;
+		airStart.z = PLANE_HEIGHT;
+		sf::Vector3f airEnd = aStop.end + unit * DESCENT_LENGTH;
+		airEnd.z = PLANE_HEIGHT;
+		return  { airStart, aStop.begin, aStop.end };
+	}
+	return {};
+}
+std::vector<sf::Vector3f> VehicleController::getDepartingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type) {
+	auto transit = e->transitStop;
+	// TODO: Once there are better depot types/more defined railways and driveways, this will be more complicated
+	switch (type) {
+	case TransitStop::TransitType::Car:
+	case TransitStop::TransitType::Train:
+		// This is a hacky temporary shortcut
+		return getArrivingTransitPath(e, type);
+	case TransitStop::TransitType::Airplane:
+		// Compute where we need to go
+		auto aStop = transit->getAirplaneStop();
+		auto dir = aStop.end - aStop.begin;
+		// TBA add z
+		sf::Vector3f unit = dir / (sqrt(dir.x * dir.x + dir.y * dir.y));
+		// Th horizontal distance to cover when descending
+		const float DESCENT_LENGTH = 5.0f;
+		const float PLANE_HEIGHT = 4.0f;
+		sf::Vector3f airStart = aStop.begin - DESCENT_LENGTH * unit;
+		airStart.z = PLANE_HEIGHT;
+		sf::Vector3f airEnd = aStop.end + unit * DESCENT_LENGTH;
+		airEnd.z = PLANE_HEIGHT;
+		return  { aStop.begin, aStop.end, airEnd };
+	}
+}
 void VehicleController::onArriveAtTile(sf::Vector2i point) {}
 void VehicleController::onArriveAtStop(size_t stopIndex) {}
 void VehicleController::onArriveAtDest() {}

@@ -24,8 +24,4 @@ private:
 	TransitRoute route;
 	// The type of stop this vehicle will access
 	TransitStop::TransitType type;
-	// Get the position to travel to for this entity
-	// Split into arriving and departing
-	std::vector<sf::Vector3f> getArrivingTransitPath(std::shared_ptr<Entity> e);
-	std::vector<sf::Vector3f> getDepartingTransitPath (std::shared_ptr<Entity> e);
 };
