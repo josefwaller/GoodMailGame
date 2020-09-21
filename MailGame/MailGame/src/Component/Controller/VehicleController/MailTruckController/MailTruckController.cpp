@@ -54,6 +54,9 @@ void MailTruckController::update(float delta) {
 		this->getEntity()->mailContainer->getNumLetters()
 	);
 	ImGui::Text(buf);
+	sf::Vector3f pos = this->getEntity()->transform->getPosition();
+	sprintf_s(buf, "Position (%f, %f, %f)", pos.x, pos.y, pos.z);
+	ImGui::Text(buf);
 	ImGui::End();
 
 }

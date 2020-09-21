@@ -56,13 +56,15 @@ void VehicleController::update(float delta) {
 		}
 	}
 }
-void VehicleController::pathfindToPoint(sf::Vector3f from, sf::Vector3f point){
+void VehicleController::pathfindToPoint(sf::Vector3f from, sf::Vector3f to){
 	// Get the path to the point
 	sf::Vector3f pos(from);
 	this->points = {};
 	sf::Vector3f lastPoint = pos;
 	float totalDistance = this->stops[this->stopIndex - 1].expectedTime;
-	for (auto s : this->getEntity()->pathfinder->findPathBetweenPoints(pos, point)) {
+	// Start at the from point
+	this->points.push_back(VehicleControllerStop(from, totalDistance));
+	for (auto s : this->getEntity()->pathfinder->findPathBetweenPoints(pos, to)) {
 		totalDistance += Utils::getVectorDistance(lastPoint, s) * Game::UNITS_IN_GAME_HOUR * getSpeed();
 		// Currently, just assume units go 1 tile per second
 		// TODO: Change this to actual speed
