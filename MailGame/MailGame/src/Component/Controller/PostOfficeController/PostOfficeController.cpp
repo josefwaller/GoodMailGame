@@ -18,9 +18,11 @@
 void PostOfficeController::update(float delta) {
 	if (this->getEntity()->transform->isOnScreen()) {
 		ImGui::PushID((int)this->getEntity()->getId());
-		ImGui::Begin(std::string("Post Office " + std::to_string(this->getEntity()->getId())).c_str());
+		sf::Vector3f pos = this->getEntity()->transform->getPosition();
 		// Print num letters
 		char buf[200];
+		sprintf_s(buf, "Post Office at (%f, %f)", pos.x, pos.y);
+		ImGui::Begin(buf);
 		sprintf_s(buf, "%zu mail objects", this->getEntity()->mailContainer->getNumLetters());
 		ImGui::Text(buf);
 		for (auto it = this->routes.begin(); it != this->routes.end(); it++) {

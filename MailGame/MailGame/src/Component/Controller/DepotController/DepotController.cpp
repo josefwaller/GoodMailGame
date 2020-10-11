@@ -14,7 +14,9 @@ DepotController::DepotController(TransitStop::TransitType t) : type(t) {}
 void DepotController::update(float delta) {
 	ImGui::PushID((int)this->getEntity()->getId());
 	char buf[200];
-	sprintf_s(buf, "Depot %d", this->getEntity()->getId());
+	sf::Vector3f pos = this->getEntity()->transform->getPosition();
+	std::string s = entityTagToString(this->getEntity()->tag);
+	sprintf_s(buf, "%s at (%f, %f)", s.c_str(), pos.x, pos.y);
 	ImGui::Begin(buf);
 
 	// Show gui for each route
