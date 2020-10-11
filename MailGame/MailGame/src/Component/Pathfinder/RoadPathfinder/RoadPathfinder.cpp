@@ -4,7 +4,11 @@
 #include "Game/Game.h"
 #include "GameMap/GameMap.h"
 
-std::vector<sf::Vector3f> RoadPathfinder::findPathBetweenPoints(sf::Vector3f from, sf::Vector3f to) {
+std::vector<RoutePoint> RoadPathfinder::findPathBetweenPoints(
+	sf::Vector3f from,
+	sf::Vector3f to,
+	gtime_t departTime,
+	float speed) {
 	// Get Gamemap
 	GameMap* gMap = this->getEntity()->getGame()->getGameMap();
 	// Need to pathfind from current position to the destination
@@ -37,7 +41,12 @@ std::vector<sf::Vector3f> RoadPathfinder::findPathBetweenPoints(sf::Vector3f fro
 				point = previous[point];
 			}
 			std::reverse(pathPoints.begin(), pathPoints.end());
-			return pathPoints;
+			std::vector<RoutePoint> toReturn = { RoutePoint(from, departTime) };
+			for (auto it = pathPoints.begin(); it != pathPoints.end(); it++) {
+				departTime += getTimeBetween(*it, toReturn.back().pos, speed);
+				toReturn.push_back(RoutePoint(*it, departTime));
+			}
+			return toReturn;
 		}
 		// Add the points around it
 		std::vector<sf::Vector3i> toAdd;

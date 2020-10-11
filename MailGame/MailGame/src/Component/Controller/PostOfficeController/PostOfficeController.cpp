@@ -10,6 +10,7 @@
 #include "Component/MailContainer/MailContainer.h"
 #include "Component/Pathfinder/RoadPathfinder/RoadPathfinder.h"
 #include "Mail/Mail.h"
+#include "System/Utils/Utils.h"
 #include "System/SaveData/SaveData.h"
 #include <string>
 #include <imgui.h>
@@ -112,7 +113,7 @@ void PostOfficeController::onHourChange(hour_t newHour) {
 				// For right now, just spawn the truck on the tile
 				sf::Vector3f(transit->getCarStop().tile),
 				IsoRotation::NORTH,
-				*it,
+				prepareRouteForTruck(*it),
 				this->getEntity()
 			);
 			game->addEntity(truck);
@@ -120,20 +121,34 @@ void PostOfficeController::onHourChange(hour_t newHour) {
 	}
 }
 
+MailTruckRoute PostOfficeController::prepareRouteForTruck(MailTruckRoute route) {
+	gtime_t mTime = this->getEntity()->getGame()->getMidnightTime();
+	for (auto stop = route.stops.begin(); stop != route.stops.end(); stop++) {
+		for (auto p = stop->points.begin(); p != stop->points.end(); p++) {
+			p->expectedTime += mTime;
+		}
+	}
+	return route;
+}
+
 void PostOfficeController::setStopTile(size_t routeIndex, size_t stopIndex, sf::Vector2i pos) {
 	// Make sure the tile is a road
 	if (this->getEntity()->getGame()->getGameMap()->hasRoadAt(pos.x, pos.y))
 		this->routes[routeIndex].stops[stopIndex].target = pos;
+	resetRoutePoints();
 }
 void PostOfficeController::addStop(size_t routeIndex, MailTruckRouteStop stop) {
 	this->routes[routeIndex].stops.push_back(stop);
+	resetRoutePoints();
 }
 void PostOfficeController::deleteStop(size_t routeIndex, size_t stopIndex) {
 	std::vector<MailTruckRouteStop>* stops = &this->routes[routeIndex].stops;
 	stops->erase(stops->begin() + stopIndex);
+	resetRoutePoints();
 }
 void PostOfficeController::setRouteTime(size_t routeIndex, int time) {
 	this->routes[routeIndex].departTime = time;
+	resetRoutePoints();
 }
 void PostOfficeController::setRouteType(size_t routeIndex, bool isDelivering) {
 	this->routes[routeIndex].isDelivering = isDelivering;
@@ -155,5 +170,50 @@ std::optional<SaveData> PostOfficeController::getSaveData() {
 void PostOfficeController::fromSaveData(SaveData data) {
 	for (SaveData d : data.getDatas()) {
 		this->routes.push_back(saveDataToMailTruckRoute(d));
+	}
+}
+std::vector<RoutePoint> PostOfficeController::toRoutePointVector(std::vector<sf::Vector3f> points, gtime_t time) {
+	std::vector<RoutePoint> toReturn;
+	sf::Vector3f lastPos = points.front();
+	for (sf::Vector3f p : points) {
+		time + Utils::getVectorDistance(lastPos, p);
+		toReturn.push_back(RoutePoint(p, time));
+	}
+	return toReturn;
+}
+void PostOfficeController::resetRoutePoints() {
+	for (auto r = this->routes.begin(); r != this->routes.end(); r++) {
+		MailTruckRoute route = *r;
+		gtime_t time = route.departTime * Game::UNITS_IN_GAME_HOUR;
+		for (auto s = r->stops.begin(); s != r->stops.end(); s++) {
+			if (!s->target.has_value())
+				continue;
+			sf::Vector2i v = s->target.value();
+			if (s == r->stops.begin()) {
+				std::vector<RoutePoint> path = this->toRoutePointVector(
+					this->getEntity()->transitStop->getDepartingTransitPath(this->getEntity(), TransitStop::TransitType::Car),
+					time
+				);
+				time = path.back().expectedTime;
+				std::vector<RoutePoint> newPath = this->getEntity()->pathfinder->findPathBetweenPoints(
+					path.back().pos,
+					sf::Vector3f(v.x, v.y, 0.0f),
+					time,
+					1.0f
+				);
+				path.insert(path.end(), newPath.begin(), newPath.end());
+				s->points = path;
+			}
+			else {
+				sf::Vector2i prevStop = (s - 1)->target.value();
+				s->points = this->getEntity()->pathfinder->findPathBetweenPoints(
+					sf::Vector3f(prevStop.x, prevStop.y, 0.0f),
+					sf::Vector3f(v.x, v.y, 0.0f),
+					time,
+					2.0f
+				);
+			}
+			time = s->points.back().expectedTime;
+		}
 	}
 }

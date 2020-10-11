@@ -3,10 +3,14 @@
 #include "Component/Transform/Transform.h"
 #include "System/IsoRotation/IsoRotation.h"
 
-std::vector<sf::Vector3f> AirPathfinder::findPathBetweenPoints(sf::Vector3f start, sf::Vector3f end) {
-	std::vector<sf::Vector3f> path;
+std::vector<RoutePoint> AirPathfinder::findPathBetweenPoints(
+	sf::Vector3f start,
+	sf::Vector3f end,
+	gtime_t departTime,
+	float speed) {
+	std::vector<RoutePoint> path;
 	// Add the start
-	path.push_back(start);
-	path.push_back(end);
+	path.push_back(RoutePoint(start, departTime));
+	path.push_back(RoutePoint(end, departTime + this->getTimeBetween(start, end, speed)));
 	return path;
 }

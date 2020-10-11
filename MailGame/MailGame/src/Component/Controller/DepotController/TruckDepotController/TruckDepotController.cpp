@@ -5,13 +5,14 @@
 #include "Component/Transform/Transform.h"
 #include "Component/TransitStop/TransitStop.h"
 
+TruckDepotController::TruckDepotController() : DepotController(TransitStop::TransitType::Car) {}
 void TruckDepotController::spawnVehicleForRoute(TransitRoute route) {
 	this->getEntity()->getGame()->addEntity(
 		VehiclePresets::cargoTruck(
 			this->getEntity()->getGame(),
 			this->getEntity()->transitStop->getCarStop().tile,
 			IsoRotation::NORTH,
-			route,
+			prepareRouteForVehicle(route),
 			this->getEntity()
 		)
 	);

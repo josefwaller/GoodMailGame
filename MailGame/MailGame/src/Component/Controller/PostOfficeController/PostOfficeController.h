@@ -25,4 +25,8 @@ private:
 	std::vector<MailTruckRoute> routes;
 	// The routes that should be deleted
 	std::vector<size_t> routesToDelete;
+	// Reset all the points in the route
+	void resetRoutePoints();
+	std::vector<RoutePoint> toRoutePointVector(std::vector<sf::Vector3f> points, gtime_t time);
+	MailTruckRoute prepareRouteForTruck(MailTruckRoute route);
 };

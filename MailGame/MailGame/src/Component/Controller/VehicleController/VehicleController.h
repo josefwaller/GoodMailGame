@@ -1,6 +1,7 @@
 #pragma once
 #include "Component/Controller/Controller.h"
 #include "Component/TransitStop/TransitStop.h"
+#include "Routes/RoutePoint.h"
 #include <vector>
 #include <SFML/System/Vector3.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -11,7 +12,9 @@ class GameMap;
 struct VehicleControllerStop {
 	sf::Vector3f pos;
 	gtime_t expectedTime;
-	VehicleControllerStop(sf::Vector3f pos, gtime_t time) : pos(pos), expectedTime(time) {}
+	std::vector<RoutePoint> points;
+	VehicleControllerStop(sf::Vector3f pos, gtime_t time, std::vector<RoutePoint> points)
+		: pos(pos), expectedTime(time), points(points) {}
 };
 
 class VehicleController: public Controller {
@@ -20,7 +23,7 @@ public:
 	virtual void update(float delta) override;
 protected:
 	// Set the stops
-	void setStops(std::vector<sf::Vector3f> stops);
+	void setStops(std::vector<VehicleControllerStop> stops);
 	// Methods to be overridden by subclass
 	// When the truck arrives at a tile
 	virtual void onArriveAtTile(sf::Vector2i point);
@@ -34,10 +37,6 @@ protected:
 	size_t stopIndex;
 	// The time the vehicle departed the depot
 	gtime_t departTime;
-	// Get the position to travel to for a given entity
-	// Split into arriving and departing
-	std::vector<sf::Vector3f> getArrivingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type);
-	std::vector<sf::Vector3f> getDepartingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type);
 	// Sets up the stops on load
 	// Mainly sets the expected time so that things will run smoothly
 	// Make sure to call this after setting the stops
@@ -47,7 +46,7 @@ protected:
 	std::optional<SaveData> getSaveData() override;
 private:
 	// The points the truck is currently going through on its route
-	std::vector<VehicleControllerStop> points;
+	std::vector<RoutePoint> points;
 	size_t pointIndex;
 	// The stops and the index of the current stop
 	std::vector<VehicleControllerStop> stops;

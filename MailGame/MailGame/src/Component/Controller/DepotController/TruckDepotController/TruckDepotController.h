@@ -4,6 +4,7 @@
 
 class TruckDepotController : public DepotController {
 public:
+	TruckDepotController();
 	virtual void spawnVehicleForRoute(TransitRoute route) override;
 	const char* getUiName() override;
 };

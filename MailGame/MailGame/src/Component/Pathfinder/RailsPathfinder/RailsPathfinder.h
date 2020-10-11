@@ -3,5 +3,9 @@
 
 class RailsPathfinder : public Pathfinder {
 public:
-	virtual std::vector<sf::Vector3f> findPathBetweenPoints(sf::Vector3f from, sf::Vector3f to) override;
+	virtual std::vector<RoutePoint> findPathBetweenPoints(
+		sf::Vector3f from,
+		sf::Vector3f to,
+		gtime_t departTime,
+		float speed) override;
 };

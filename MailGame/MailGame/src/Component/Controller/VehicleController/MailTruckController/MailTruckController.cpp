@@ -19,25 +19,16 @@ MailTruckController::MailTruckController(MailTruckRoute r, std::weak_ptr<Entity>
 	setRouteStops();
 }
 void MailTruckController::setRouteStops() {
+	std::vector<VehicleControllerStop> vStops;
+	for (MailTruckRouteStop stop : this->route.stops) {
+		// TODO: Clean this up too
+		if (!stop.target.has_value())
+			continue;
+
+		vStops.push_back(VehicleControllerStop(stop.points.back().pos, stop.points.back().expectedTime, stop.points));
+	}
+	this->setStops(vStops);
 	// Build and set the stops
-	std::vector<sf::Vector3f> stops;
-	// Start at the depot
-	if (this->office.lock()) {
-		auto officePath = this->getDepartingTransitPath(this->office.lock(), TransitStop::TransitType::Car);
-		stops.insert(stops.end(), officePath.begin(), officePath.end());
-	}
-	for (MailTruckRouteStop s : this->route.stops) {
-		// Skip targets where the value has not been set
-		if (s.target.has_value()) {
-			sf::Vector2i p = s.target.value();
-			stops.push_back(sf::Vector3f(p.x, p.y, 0));
-		}
-	}
-	if (this->office.lock()) {
-		auto officePath = this->getArrivingTransitPath(this->office.lock(), TransitStop::TransitType::Car);
-		stops.insert(stops.end(), officePath.begin(), officePath.end());
-	}
-	this->setStops(stops);
 }
 
 void MailTruckController::update(float delta) {
@@ -47,10 +38,10 @@ void MailTruckController::update(float delta) {
 	}
 	VehicleController::update(delta);
 	// Draw GUI
-	ImGui::Begin("Mail Trucks");
 	char buf[200];
-	sprintf_s(buf, "Truck %zu has %zu letters",
-		this->getEntity()->getId(),
+	sprintf_s(buf, "Mail Truck %llu", this->getEntity()->getId());
+	ImGui::Begin(buf);
+	sprintf_s(buf, "%zu letters",
 		this->getEntity()->mailContainer->getNumLetters()
 	);
 	ImGui::Text(buf);
@@ -127,15 +118,12 @@ void MailTruckController::pickupMailFromOffice() {
 	allStops.push_back(pos);
 	// Now gather all the tiles between the stops
 	std::vector<sf::Vector2i> allPoints;
-	for (size_t i = 0; i < allStops.size() - 1; i++) {
+	for (size_t i = 0; i < route.stops.size(); i++) {
 		// Get the points
-		std::vector<sf::Vector3f> pointsBetween = this->getEntity()->pathfinder->findPathBetweenPoints(
-			sf::Vector3f(allStops[i].x, allStops[i].y, 0),
-			sf::Vector3f(allStops[i + 1].x, allStops[i + 1].y, 0)
-		);
+		std::vector<RoutePoint> pointsBetween = this->route.stops[i].points;
 		// Add to all points
 		for (auto it = pointsBetween.begin(); it != pointsBetween.end(); it++) {
-			allPoints.push_back(sf::Vector2i(it->x, it->y));
+			allPoints.push_back(sf::Vector2i(it->pos.x, it->pos.y));
 		}
 	}
 	// Add all the points beside these points

@@ -16,36 +16,12 @@ CargoVehicleController::CargoVehicleController(
 	setRouteStops();
 }
 void CargoVehicleController::setRouteStops() {
-	std::vector<sf::Vector3f> depotPath = {};
-	if (depot.lock()) {
-		depotPath = getDepartingTransitPath(depot.lock(), this->type);
+	std::vector<VehicleControllerStop> vStops;
+	for (TransitRouteStop stop : this->route.stops) {
+		// TODO: Tidy this up
+		vStops.push_back(VehicleControllerStop(stop.points.back().pos, stop.points.back().expectedTime, stop.points));
 	}
-	// Add all the locations to stops
-	std::vector<sf::Vector3f> stops;
-	// Add the depot
-	// TODO: Separate this into departingDepotPath and enteringDepotPath
-	stops.insert(stops.end(), depotPath.begin(), depotPath.end());
-	// Add the stops for the route
-	for (TransitRouteStop stop : route.stops) {
-		if (auto s = stop.target.lock()) {
-#ifdef _DEBUG
-			if (!s->transitStop) {
-				throw std::runtime_error("Cargo truck has stop that does not have TransitStop!");
-			}
-#endif
-			// Add the arriving and departing path
-			auto arrivingPath = getArrivingTransitPath(s, this->type);
-			stops.insert(stops.end(), arrivingPath.begin(), arrivingPath.end());
-			auto departingPath = getDepartingTransitPath(s, this->type);
-			stops.insert(stops.end(), departingPath.begin(), departingPath.end());
-		}
-	}
-	// Add the stops going into the depot
-	// See Todo above
-	if (this->depot.lock())
-		depotPath = getArrivingTransitPath(depot.lock(), this->type);
-	stops.insert(stops.end(), depotPath.begin(), depotPath.end());
-	this->setStops(stops);
+	this->setStops(vStops);
 }
 void CargoVehicleController::onArriveAtDest() {
 	// Give letters to depot and destory self

@@ -139,6 +139,7 @@
     <ClCompile Include="src\Component\Controller\DepotController\TruckDepotController\TruckDepotController.cpp" />
     <ClCompile Include="src\Component\MailContainer\MailContainer.cpp" />
     <ClCompile Include="src\Component\Pathfinder\AirPathfinder\AirPathfinder.cpp" />
+    <ClCompile Include="src\Component\Pathfinder\Pathfinder.cpp" />
     <ClCompile Include="src\Component\Pathfinder\RailsPathfinder\RailsPathfinder.cpp" />
     <ClCompile Include="src\Component\Pathfinder\RoadPathfinder\RoadPathfinder.cpp" />
     <ClCompile Include="src\Component\Renderer\IsoSpriteRenderer\IsoBuildingRenderer\IsoBuildingRenderer.cpp" />

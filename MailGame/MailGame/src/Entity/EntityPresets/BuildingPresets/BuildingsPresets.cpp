@@ -15,10 +15,18 @@
 #include "Component/Controller/DepotController/TruckDepotController/TruckDepotController.h"
 #include "Component/Controller/DepotController/TrainDepotController/TrainDepotController.h"
 #include "Component/Controller/DepotController/PlaneDepotController/PlaneDepotController.h"
+// Pathfinders
+#include "Component/Pathfinder/RoadPathfinder/RoadPathfinder.h"
+#include "Component/Pathfinder/RailsPathfinder/RailsPathfinder.h"
+#include "Component/Pathfinder/AirPathfinder/AirPathfinder.h"
 // Clickboxes
 #include "Component/ClickBox/RectClickBox/RectClickBox.h"
 // Mail Container
 #include "Component/MailContainer/MailContainer.h"
+// Pathfinders
+#include "Component/Pathfinder/AirPathfinder/AirPathfinder.h"
+#include "Component/Pathfinder/RailsPathfinder/RailsPathfinder.h"
+#include "Component/Pathfinder/RoadPathfinder/RoadPathfinder.h"
 
 std::shared_ptr<Entity> BuildingPresets::residence(Game* g, sf::Vector3f pos, IsoRotation rot) {
 	return Entity::createEntity(
@@ -58,7 +66,8 @@ std::shared_ptr<Entity> BuildingPresets::postOffice(Game* g, sf::Vector3f pos, I
 		new PostOfficeController(),
 		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
 		new MailContainer(),
-		new TransitStop(getDefaultBuildingTransitStop(pos, rot))
+		new TransitStop(getDefaultBuildingTransitStop(pos, rot)),
+		new RoadPathfinder()
 	);
 }
 
@@ -102,7 +111,8 @@ std::shared_ptr<Entity> BuildingPresets::cargoTruckDepot(Game* g, sf::Vector3f p
 		new TruckDepotController(),
 		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
 		new MailContainer(),
-		new TransitStop(getDefaultBuildingTransitStop(pos, rot))
+		new TransitStop(getDefaultBuildingTransitStop(pos, rot)),
+		new RoadPathfinder()
 	);
 }
 
@@ -128,7 +138,8 @@ std::shared_ptr<Entity> BuildingPresets::trainStation(Game* g, sf::Vector3f pos,
 		new TrainDepotController(),
 		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
 		new MailContainer(),
-		new TransitStop(carStop, trainStop)
+		new TransitStop(carStop, trainStop),
+		new RailsPathfinder()
 	);
 }
 std::shared_ptr<Entity> BuildingPresets::airport(Game* g, sf::Vector3f pos, IsoRotation rot) {
@@ -155,7 +166,8 @@ std::shared_ptr<Entity> BuildingPresets::airport(Game* g, sf::Vector3f pos, IsoR
 		new PlaneDepotController(),
 		new RectClickBox(sf::FloatRect(0, 0, 3, 2)),
 		new MailContainer(),
-		new TransitStop(carStop, {}, airplaneStop)
+		new TransitStop(carStop, {}, airplaneStop),
+		new AirPathfinder()
 	);
 	setTilesToBuilding(g, e, sf::IntRect((int)pos.x, (int)pos.y, 3, 2));
 	return e;

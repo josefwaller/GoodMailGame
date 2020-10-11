@@ -3,6 +3,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <optional>
 #include "Constants.h"
+#include "Routes/RoutePoint.h"
 
 class Entity;
 class SaveData;
@@ -10,6 +11,8 @@ class SaveData;
 // The individual stop of a route
 struct MailTruckRouteStop {
 	std::optional<sf::Vector2i> target;
+	// The points to get to this stop from the previous stop
+	std::vector<RoutePoint> points;
 };
 
 // A route, with a list of stops and a depart time

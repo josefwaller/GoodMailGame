@@ -63,6 +63,9 @@ public:
 	gtime_t getTime();
 	// Get the hour as an uint between 0 and 23
 	hour_t getHour();
+	// Get the time at midnight of today
+	// Used by vehicles to determine where they should be with their departureTime
+	gtime_t getMidnightTime();
 	// Go to next hour
 	void advanceTime();
 	// Get a list of the entities in game

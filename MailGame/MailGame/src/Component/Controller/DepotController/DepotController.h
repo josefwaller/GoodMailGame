@@ -1,6 +1,7 @@
 #pragma once
 #include "Component/Controller/Controller.h"
 #include "Routes/TransitRoute/TransitRoute.h"
+#include "Component/TransitStop/TransitStop.h"
 #include <map>
 #include <vector>
 
@@ -11,6 +12,7 @@
  */
 class DepotController : public Controller {
 public:
+	DepotController(TransitStop::TransitType type);
 	virtual void update(float delta) override;
 	virtual void onHourChange(hour_t newHour) override;
 	// Spawn a vehicle for the given route
@@ -42,9 +44,17 @@ public:
 
 	virtual std::optional<SaveData> getSaveData() override;
 	virtual void fromSaveData(SaveData data) override;
+
+protected:
+	TransitRoute prepareRouteForVehicle(TransitRoute route);
 private:
 	// The routes assigned to the depot, keyed by id
 	std::map<size_t, TransitRoute> routes;
 	// The routes to delete, done after drawing UI in order to prevent conflicts
 	std::vector<TransitRoute> toDelete;
+	// Reset the points field in all the stops
+	void resetRoutePoints();
+	// The type of transit
+	TransitStop::TransitType type;
+	std::vector<RoutePoint> toRoutePointVector(std::vector<sf::Vector3f> points, gtime_t time);
 };

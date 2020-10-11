@@ -3,13 +3,15 @@
 #include "Game/Game.h"
 #include "Component/Transform/Transform.h"
 
+PlaneDepotController::PlaneDepotController() : DepotController(TransitStop::TransitType::Airplane) {}
+
 void PlaneDepotController::spawnVehicleForRoute(TransitRoute route) {
 	this->getEntity()->getGame()->addEntity(
 		VehiclePresets::plane(
 			this->getEntity()->getGame(),
 			this->getEntity()->transform->getPosition(),
 			this->getEntity()->transform->getRotation(),
-			route,
+			prepareRouteForVehicle(route),
 			this->getEntity()
 		)
 	);

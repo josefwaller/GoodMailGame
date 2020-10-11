@@ -15,14 +15,7 @@
 VehicleController::VehicleController(gtime_t d) : departTime(d) {}
 
 void VehicleController::update(float delta) {
-	gtime_t travelTime = this->getEntity()->getGame()->getTime() - this->departTime;
-	/*
-		// Arrive at destination
-		// Since stopIndex starts at -1, we want to skip calling onArriveAtStop the first time
-		if (this->stopIndex != -1)
-			this->onArriveAtStop(this->stopIndex);
-		this->goToNextStop();
-*/
+	gtime_t travelTime = this->getEntity()->getGame()->getTime();// -this->departTime;
 	if (this->pointIndex >= this->points.size()) {
 		// Go to next stop
 		this->goToNextStop();
@@ -44,8 +37,8 @@ void VehicleController::update(float delta) {
 			}
 		}
 		else {
-			VehicleControllerStop lastPoint = this->points[this->pointIndex - 1];
-			VehicleControllerStop nextPoint = this->points[this->pointIndex];
+			RoutePoint lastPoint = this->points[this->pointIndex - 1];
+			RoutePoint nextPoint = this->points[this->pointIndex];
 			gtime_t timeSincePoint = travelTime - lastPoint.expectedTime;
 			sf::Vector3f pos = lastPoint.pos + (nextPoint.pos - lastPoint.pos) * (float)(timeSincePoint / (float)(nextPoint.expectedTime - lastPoint.expectedTime));
 			this->getEntity()->transform->setPosition(pos);
@@ -56,6 +49,8 @@ void VehicleController::update(float delta) {
 		}
 	}
 }
+// This function will eventually be used if the vehicle's route is altered and it cannot complete it's original path
+// For now it is not used
 void VehicleController::pathfindToPoint(sf::Vector3f from, sf::Vector3f to){
 	// Get the path to the point
 	sf::Vector3f pos(from);
@@ -63,14 +58,19 @@ void VehicleController::pathfindToPoint(sf::Vector3f from, sf::Vector3f to){
 	sf::Vector3f lastPoint = pos;
 	float totalDistance = this->stops[this->stopIndex - 1].expectedTime;
 	// Start at the from point
-	this->points.push_back(VehicleControllerStop(from, totalDistance));
-	for (auto s : this->getEntity()->pathfinder->findPathBetweenPoints(pos, to)) {
-		totalDistance += Utils::getVectorDistance(lastPoint, s) * Game::UNITS_IN_GAME_HOUR * getSpeed();
+	this->points.push_back(RoutePoint(from, totalDistance));
+	// Add wait time if this is the first stop
+	if (this->stopIndex == 1) {
+		this->points.push_back(RoutePoint(from, totalDistance));
+	}
+	for (auto s : this->getEntity()->pathfinder->findPathBetweenPoints(pos, to, totalDistance, 1.0f)) {
+		totalDistance += Utils::getVectorDistance(lastPoint, s.pos) * Game::UNITS_IN_GAME_HOUR * getSpeed();
 		// Currently, just assume units go 1 tile per second
 		// TODO: Change this to actual speed
-		this->points.push_back(VehicleControllerStop(s, (gtime_t)totalDistance));
-		lastPoint = s;
+		this->points.push_back(RoutePoint(s.pos, (gtime_t)totalDistance));
+		lastPoint = s.pos;
 	}
+	this->points.push_back(RoutePoint(to, totalDistance));
 	// Now we can set the expected time for the stop
 	this->stops[this->stopIndex].expectedTime = totalDistance;
 	// Reset pathIndex
@@ -88,26 +88,29 @@ void VehicleController::goToNextStop() {
 		sf::Vector3f fromStop = this->stops[this->stopIndex - 1].pos;
 		sf::Vector3f toStop = this->stops[this->stopIndex].pos;
 		// Go to the stop
-		this->pathfindToPoint(fromStop, toStop);
+		this->points = this->stops[this->stopIndex].points;
+		this->pointIndex = 0;
 	}
-}
-void VehicleController::setStops(std::vector<sf::Vector3f> stops) {
-	this->stops = {};
-	for (auto s : stops) {
-		// Set the expected time to 0 for now, it will be overridden when going to that stop
-		this->stops.push_back(VehicleControllerStop(s, 0.0f));
-	}
-	this->stopIndex = 0;
 }
 float VehicleController::getPathDistance(sf::Vector3f from, sf::Vector3f to) {
 	float toReturn = 0.0f;
-	std::vector<sf::Vector3f> points = this->getEntity()->pathfinder->findPathBetweenPoints(from, to);
+	std::vector<sf::Vector3f> points;// = this->getEntity()->pathfinder->findPathBetweenPoints(from, to);
+	// If points is empty, just return 0
+	if (points.size() == 0)
+		return toReturn;
 	sf::Vector3f lastPoint = points[0];
 	for (sf::Vector3f point : points) {
 		toReturn += Utils::getVectorDistance(point, lastPoint);
 		lastPoint = point;
 	}
 	return toReturn;
+	return 0.0f;
+}
+void VehicleController::setStops(std::vector<VehicleControllerStop> stops) {
+	this->stops = stops;
+	this->stopIndex = 0;
+	this->pointIndex = 0;
+	this->points = stops.front().points;
 }
 void VehicleController::fromSaveData(SaveData data) {
 	this->stopIndex = std::stoull(data.getValue("stopIndex"));
@@ -130,54 +133,7 @@ std::optional<SaveData> VehicleController::getSaveData() {
 	data.addValue("departTime", departTime);
 	return { data };
 }
-std::vector<sf::Vector3f> VehicleController::getArrivingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type) {
-	auto transit = e->transitStop;
-	switch (type) {
-	case TransitStop::TransitType::Car:
-		return { transit->getCarStop().tile };
-	case TransitStop::TransitType::Train:
-		return { transit->getTrainStop().tile };
-	case TransitStop::TransitType::Airplane:
-		// Compute where we need to go
-		auto aStop = transit->getAirplaneStop();
-		auto dir = aStop.end - aStop.begin;
-		// TBA add z
-		sf::Vector3f unit = dir / (sqrt(dir.x * dir.x + dir.y * dir.y));
-		// Th horizontal distance to cover when descending
-		const float DESCENT_LENGTH = 5.0f;
-		const float PLANE_HEIGHT = 4.0f;
-		sf::Vector3f airStart = aStop.begin - DESCENT_LENGTH * unit;
-		airStart.z = PLANE_HEIGHT;
-		sf::Vector3f airEnd = aStop.end + unit * DESCENT_LENGTH;
-		airEnd.z = PLANE_HEIGHT;
-		return  { airStart, aStop.begin, aStop.end };
-	}
-	return {};
-}
-std::vector<sf::Vector3f> VehicleController::getDepartingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type) {
-	auto transit = e->transitStop;
-	// TODO: Once there are better depot types/more defined railways and driveways, this will be more complicated
-	switch (type) {
-	case TransitStop::TransitType::Car:
-	case TransitStop::TransitType::Train:
-		// This is a hacky temporary shortcut
-		return getArrivingTransitPath(e, type);
-	case TransitStop::TransitType::Airplane:
-		// Compute where we need to go
-		auto aStop = transit->getAirplaneStop();
-		auto dir = aStop.end - aStop.begin;
-		// TBA add z
-		sf::Vector3f unit = dir / (sqrt(dir.x * dir.x + dir.y * dir.y));
-		// Th horizontal distance to cover when descending
-		const float DESCENT_LENGTH = 5.0f;
-		const float PLANE_HEIGHT = 4.0f;
-		sf::Vector3f airStart = aStop.begin - DESCENT_LENGTH * unit;
-		airStart.z = PLANE_HEIGHT;
-		sf::Vector3f airEnd = aStop.end + unit * DESCENT_LENGTH;
-		airEnd.z = PLANE_HEIGHT;
-		return  { aStop.begin, aStop.end, airEnd };
-	}
-}
+
 void VehicleController::onArriveAtTile(sf::Vector2i point) {}
 void VehicleController::onArriveAtStop(size_t stopIndex) {}
 void VehicleController::onArriveAtDest() {}

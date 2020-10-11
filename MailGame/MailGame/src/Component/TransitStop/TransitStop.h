@@ -3,6 +3,7 @@
 #include <SFML/System/Vector3.hpp>
 #include "System/IsoRotation/IsoRotation.h"
 #include <optional>
+#include <vector>
 
 /*
  * Class for holding the details of a transit stop, that is, a place where a train, plane, or truck can stop
@@ -43,6 +44,10 @@ public:
 	CarStop getCarStop();
 	TrainStop getTrainStop();
 	AirplaneStop getAirplaneStop();
+	// Get the position to travel to for a given entity
+	// Split into arriving and departing
+	static std::vector<sf::Vector3f> getArrivingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type);
+	static std::vector<sf::Vector3f> getDepartingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type);
 
 	std::optional<SaveData> getSaveData() override;
 	void fromSaveData(SaveData data) override;

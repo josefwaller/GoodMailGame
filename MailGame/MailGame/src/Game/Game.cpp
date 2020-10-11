@@ -231,6 +231,9 @@ UiHandler* Game::getUi() {
 }
 gtime_t Game::getTime() { return this->time; }
 hour_t Game::getHour() { return (this->time / UNITS_IN_GAME_HOUR) % 24; }
+gtime_t Game::getMidnightTime() {
+	return this->time - (this->time % (UNITS_IN_GAME_HOUR * 24));
+}
 void Game::advanceTime() {
 	// Update mail records
 	Mail::onTimeChanged(this->time);
