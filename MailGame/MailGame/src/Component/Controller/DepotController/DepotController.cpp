@@ -247,8 +247,11 @@ void DepotController::resetRoutePoints() {
 				2.0f
 			);
 			stop->points.insert(stop->points.end(), path.begin(), path.end());
-			// Get arriving path
 			time = path.back().expectedTime;
+			// Wait a little bit
+			// This will eventually be determined by what vehicle is assigned to the route
+			time += 0.5f * Game::UNITS_IN_GAME_HOUR;
+			// Get arriving path
 			std::vector<RoutePoint> arrivalPath = toRoutePointVector(
 				arriving,
 				time
