@@ -198,7 +198,6 @@ void DepotController::fromSaveData(SaveData data) {
 		TransitRoute r = saveDataToTransitRoute(this->getEntity()->getGame(), d);
 		this->routes.insert({ r.id, r });
 	}
-	resetRoutePoints();
 }
 std::vector<RoutePoint> DepotController::toRoutePointVector(std::vector<sf::Vector3f> points, gtime_t time) {
 	std::vector<RoutePoint> toReturn;

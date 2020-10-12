@@ -12,7 +12,7 @@
 #include <map>
 #include <functional>
 
-VehicleController::VehicleController(gtime_t d) : departTime(d) {}
+VehicleController::VehicleController(gtime_t d) : departTime(d), stopIndex(0), pointIndex(0) {}
 
 void VehicleController::update(float delta) {
 	gtime_t travelTime = this->getEntity()->getGame()->getTime();// -this->departTime;
@@ -108,28 +108,18 @@ float VehicleController::getPathDistance(sf::Vector3f from, sf::Vector3f to) {
 }
 void VehicleController::setStops(std::vector<VehicleControllerStop> stops) {
 	this->stops = stops;
-	this->stopIndex = 0;
-	this->pointIndex = 0;
-	this->points = stops.front().points;
+	this->points = stops.empty() ? std::vector<RoutePoint>() : stops.front().points;
 }
 void VehicleController::fromSaveData(SaveData data) {
 	this->stopIndex = std::stoull(data.getValue("stopIndex"));
+	this->pointIndex = std::stoull(data.getValue("pointIndex"));
+	this->points = this->stops[this->stopIndex].points;
 	this->departTime = std::stoull(data.getValue("departTime"));
-	// Set the expected arrival time for each stop up to the one it's going to
-	float totalDistance = 0.0f;
-	for (size_t i = 1; i < this->stopIndex; i++) {
-		totalDistance += getPathDistance(this->stops[i - 1].pos, this->stops[i].pos) * Game::UNITS_IN_GAME_HOUR * getSpeed();
-		this->stops[i].expectedTime = totalDistance;
-	}
-	// Generate the points from the last stop to the next stop
-	if (stopIndex < 1) {
-		throw std::runtime_error("Invalid stopIndex, must be more than 0");
-	}
-	this->pathfindToPoint(this->stops[this->stopIndex - 1].pos, this->stops[this->stopIndex].pos);
 }
 std::optional<SaveData> VehicleController::getSaveData() {
 	SaveData data("VehicleController");
 	data.addValue("stopIndex", stopIndex);
+	data.addValue("pointIndex", pointIndex);
 	data.addValue("departTime", departTime);
 	return { data };
 }

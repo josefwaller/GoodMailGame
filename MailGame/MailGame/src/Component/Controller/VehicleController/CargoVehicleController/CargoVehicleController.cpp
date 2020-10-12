@@ -82,7 +82,7 @@ void CargoVehicleController::fromSaveData(SaveData data) {
 	if (data.hasValue("depotId")) {
 		this->depot = this->getEntity()->getGame()->getEntityById(std::stoull(data.getValue("depotId")));
 	}
-	this->setRouteStops();
+	setRouteStops();
 	VehicleController::fromSaveData(data);
 }
 

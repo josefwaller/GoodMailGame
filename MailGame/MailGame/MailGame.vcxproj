@@ -163,6 +163,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\PostalCodeDatabase\PostalCodeDatabase.cpp" />
     <ClCompile Include="src\ResourceLoader\ResourceLoader.cpp" />
+    <ClCompile Include="src\Routes\RoutePoint.cpp" />
     <ClCompile Include="src\Routes\TransitRoute\TransitRoute.cpp" />
     <ClCompile Include="src\Routes\MailTruckRoute\MailTruckRoute.cpp" />
     <ClCompile Include="src\System\SaveData\SaveData.cpp" />

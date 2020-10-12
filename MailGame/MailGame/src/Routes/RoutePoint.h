@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/System/Vector3.hpp>
 #include "Constants.h"
+#include "System/SaveData/SaveData.h"
 
 /*
  * A single point on a route
@@ -13,3 +14,6 @@ struct RoutePoint {
 	gtime_t expectedTime;
 	RoutePoint(sf::Vector3f pos, gtime_t time) : pos(pos), expectedTime(time) {};
 };
+
+SaveData routePointToSaveData(RoutePoint p);
+RoutePoint saveDataToRoutePoint(SaveData d);
