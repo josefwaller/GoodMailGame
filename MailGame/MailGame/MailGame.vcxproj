@@ -210,6 +210,7 @@
     <ClInclude Include="src\Mail\Mail.h" />
     <ClInclude Include="src\PostalCodeDatabase\PostalCodeDatabase.h" />
     <ClInclude Include="src\ResourceLoader\ResourceLoader.h" />
+    <ClInclude Include="src\Routes\RoutePoint.h" />
     <ClInclude Include="src\Routes\TransitRoute\TransitRoute.h" />
     <ClInclude Include="src\Routes\MailTruckRoute\MailTruckRoute.h" />
     <ClInclude Include="src\System\IsoRotation\IsoRotation.h" />

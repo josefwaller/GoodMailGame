@@ -296,6 +296,9 @@
     <ClInclude Include="src\Component\Controller\DepotController\DepotController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Routes\RoutePoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\GameMap\Tile.h" />
