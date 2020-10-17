@@ -1,7 +1,9 @@
 #pragma once
 #include <memory>
 #include <optional>
+#include <map>
 #include "System/IsoRotation/IsoRotation.h"
+#include "Constants.h"
 
 // Forward declaration
 class Entity;
@@ -38,11 +40,27 @@ struct Tile {
 	// The postal code assigned to the tile
 	long long postalCode;
 	// The railway, if it has one
-	std::optional<Railway> railway;
+	// Keyed by the time it switches to that railway
+	std::optional<std::map<hour_t, Railway>> railway;
 	// The road, if it has one
 	std::optional<Road> road;
 
 	Tile(TileType t = TileType::Land): postalCode(0) {
 		type = t;
+	}
+	// Get the railway at a certain hour of the day
+	std::optional<Railway> getRailwayAtHour(hour_t hour) {
+		if (!railway.has_value()) {
+			return {};
+		}
+		// TODO: This assumes that railways always have a set value at 0 (Midnight), which is subject to change
+		std::map<hour_t, Railway> r = railway.value();
+		hour_t prevHour = 0;
+		for (auto it = r.begin(); it != r.end(); it++) {
+			if (it->first > prevHour&& it->first < hour) {
+				prevHour = it->first;
+			}
+		}
+		return r.at(prevHour);
 	}
 };
