@@ -267,8 +267,7 @@ void UiHandler::render(sf::RenderWindow* w) {
 void UiHandler::drawArrow(sf::RenderWindow* window, sf::Vector2i tile, IsoRotation rot, bool isOutgoing) {
 	// Load the arrow sprite
 	std::string sprName = "arrow_";
-	rot = rot + game->getRotation();
-	switch(rot.getRotation()) {
+	switch((rot + game->getRotation()).getRotation()) {
 	case IsoRotation::NORTH:
 		sprName += "N";
 		break;
@@ -289,15 +288,15 @@ void UiHandler::drawArrow(sf::RenderWindow* window, sf::Vector2i tile, IsoRotati
 	sf::Sprite arrow = ResourceLoader::get()->getIndividualSprite(sprName);
 	// Set origin to bottom center
 	arrow.setOrigin(
-		arrow.getGlobalBounds().width / 2.0f,
-		arrow.getGlobalBounds().height
+		arrow.getGlobalBounds().width / 2,
+		arrow.getGlobalBounds().height / 2
 	);
 	// If not outgoing, position itself to point out of the tile
 	if (!isOutgoing)
 		rot = rot + 2;
 	arrow.setPosition(
 		this->game->worldToScreenPos(sf::Vector3f((float)tile.x, (float)tile.y, 0)
-			+ sf::Vector3f(1.0f, 1.0f, 0)
+			+ sf::Vector3f(0.5f, 0.5f, 0)
 			+ rot.getUnitVector3D() / 2.0f)
 	);
 	arrow.setScale(0.5f, 0.5f);
