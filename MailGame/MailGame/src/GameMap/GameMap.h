@@ -33,7 +33,7 @@ public:
 	// Set the postal code for a specific tile
 	void setCodeForTile(size_t x, size_t y, long long code);
 	// Add rail track at the tile given
-	void addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to);
+	void addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to, hour_t hour = 0);
 	// Check if there is a road on the given tile
 	bool hasRoadAt(size_t x, size_t y);
 	// check if there is a road leading in the given direction on a tile

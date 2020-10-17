@@ -32,6 +32,7 @@ struct Road {
 	Road() : hasNorth(false), hasEast(false), hasSouth(false), hasWest(false) {}
 };
 
+
 struct Tile {
 	// The type of tile
 	TileType type;
@@ -56,11 +57,26 @@ struct Tile {
 		// TODO: This assumes that railways always have a set value at 0 (Midnight), which is subject to change
 		std::map<hour_t, Railway> r = railway.value();
 		hour_t prevHour = 0;
+		bool prevHourSet = false;
 		for (auto it = r.begin(); it != r.end(); it++) {
-			if (it->first > prevHour&& it->first < hour) {
+			if (!prevHourSet) {
 				prevHour = it->first;
+				prevHourSet = true;
+			}
+			else {
+				if (getHourDiff(prevHour, hour) > getHourDiff(it->first, hour)) {
+					prevHour = it->first;
+				}
 			}
 		}
 		return r.at(prevHour);
+	}
+	hour_t getHourDiff(hour_t from, hour_t to) {
+		if (from <= to) {
+			return to - from;
+		}
+		else {
+			return 24 - (from - to);
+		}
 	}
 };

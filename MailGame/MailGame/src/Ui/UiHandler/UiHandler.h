@@ -62,4 +62,6 @@ private:
 	IsoRotation chooseDirection(const char* label, IsoRotation default);
 	// The railway currently being built
 	Railway toBuild;
+	// The time to set the railway being built to, used to build railway switches
+	hour_t toBuildTime;
 };

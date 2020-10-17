@@ -213,6 +213,9 @@ void DepotController::resetRoutePoints() {
 	for (auto kv : this->routes) {
 		TransitRoute route = kv.second;
 		gtime_t time = route.departureTime * Game::UNITS_IN_GAME_HOUR;
+		if (kv.second.stops.empty()) {
+			continue;
+		}
 		// Add paths between the stops
 		for (auto stop = this->routes.at(kv.first).stops.begin(); stop != this->routes.at(kv.first).stops.end(); stop++) {
 			if (!stop->target.lock())

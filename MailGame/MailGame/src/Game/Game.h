@@ -63,6 +63,8 @@ public:
 	gtime_t getTime();
 	// Get the hour as an uint between 0 and 23
 	hour_t getHour();
+	// Get the hour at a certain time
+	hour_t getHourAtTime(gtime_t time);
 	// Get the time at midnight of today
 	// Used by vehicles to determine where they should be with their departureTime
 	gtime_t getMidnightTime();

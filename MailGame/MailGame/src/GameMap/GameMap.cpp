@@ -280,9 +280,12 @@ void GameMap::setCodeForTile(size_t x, size_t y, long long id) {
 		this->tiles[x][y].postalCode = id;
 	}
 }
-void GameMap::addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to) {
+void GameMap::addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to, hour_t hour) {
 	if (this->getTileAt(x, y).type != TileType::OffMap) {
-		this->tiles[x][y].railway = { { 0, Railway(from, to) } };
+		if (!this->tiles[x][y].railway.has_value()) {
+			this->tiles[x][y].railway.emplace();
+		}
+		this->tiles[x][y].railway.value().insert({ hour, Railway(from, to) });
 	}
 }
 
@@ -405,8 +408,9 @@ void GameMap::loadFromSaveData(SaveData data) {
 			else if (rd.getName() == "Railway") {
 				IsoRotation from = IsoRotation(std::stoi(rd.getValue("from")));
 				IsoRotation to = IsoRotation(std::stoi(rd.getValue("to")));
+				hour_t hour = std::stoull(rd.getValue("time"));
 				Railway r = Railway(from, to);
-				this->tiles[x][y].railway = { { 0, r } };
+				this->addRailTrack(x, y, from, to, hour);
 			}
 		}
 	}

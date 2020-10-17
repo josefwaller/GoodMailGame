@@ -231,6 +231,9 @@ UiHandler* Game::getUi() {
 }
 gtime_t Game::getTime() { return this->time; }
 hour_t Game::getHour() { return (this->time / UNITS_IN_GAME_HOUR) % 24; }
+hour_t Game::getHourAtTime(gtime_t time) {
+	return (time % (Game::UNITS_IN_GAME_HOUR * 24)) / Game::UNITS_IN_GAME_HOUR;
+}
 gtime_t Game::getMidnightTime() {
 	return this->time - (this->time % (UNITS_IN_GAME_HOUR * 24));
 }
