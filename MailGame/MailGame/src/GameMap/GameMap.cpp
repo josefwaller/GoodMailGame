@@ -285,7 +285,17 @@ void GameMap::addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to,
 		if (!this->tiles[x][y].railway.has_value()) {
 			this->tiles[x][y].railway.emplace();
 		}
-		this->tiles[x][y].railway.value().insert({ hour, Railway(from, to) });
+		Railway toInsert = Railway(from, to);
+		// Check if there's already an entry for this hour
+		auto it = this->tiles[x][y].railway.value().find(hour);
+		if (it != this->tiles[x][y].railway.value().end()) {
+			// Replace it
+			it->second = toInsert;
+		}
+		else {
+			// Add a new entry
+			this->tiles[x][y].railway.value().insert({ hour, toInsert });
+		}
 	}
 }
 
