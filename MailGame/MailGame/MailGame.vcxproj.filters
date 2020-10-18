@@ -159,6 +159,9 @@
     <ClCompile Include="src\Routes\RoutePoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\VehicleModel\VehicleModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h">
@@ -300,6 +303,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Routes\RoutePoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VehicleModel\VehicleModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

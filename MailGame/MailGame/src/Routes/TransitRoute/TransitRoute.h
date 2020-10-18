@@ -3,6 +3,7 @@
 #include <vector>
 #include "Constants.h"
 #include "Routes/RoutePoint.h"
+#include "VehicleModel/VehicleModel.h"
 
 class Entity;
 class SaveData;
@@ -38,7 +39,9 @@ struct TransitRoute {
 	id_t id;
 	static id_t ROUTE_ID;
 	// Constructor
-	TransitRoute(hour_t time) : departureTime(time), id(ROUTE_ID++) {}
+	TransitRoute(hour_t time, VehicleModel m) : departureTime(time), id(ROUTE_ID++), model(m) {}
+	// The VehicleModel to use along the route
+	VehicleModel model;
 };
 
 SaveData transitRouteToSaveData(TransitRoute route);

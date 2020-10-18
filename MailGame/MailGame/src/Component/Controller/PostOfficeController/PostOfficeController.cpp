@@ -12,6 +12,7 @@
 #include "Mail/Mail.h"
 #include "System/Utils/Utils.h"
 #include "System/SaveData/SaveData.h"
+#include "VehicleModel/VehicleModel.h"
 #include <string>
 #include <imgui.h>
 
@@ -184,6 +185,7 @@ std::vector<RoutePoint> PostOfficeController::toRoutePointVector(std::vector<sf:
 	return toReturn;
 }
 void PostOfficeController::resetRoutePoints() {
+	const float SPEED = VehicleModelInfo::getModelInfo(VehicleModel::MailTruck).getSpeed();
 	for (auto r = this->routes.begin(); r != this->routes.end(); r++) {
 		MailTruckRoute route = *r;
 		gtime_t time = route.departTime * Game::UNITS_IN_GAME_HOUR;
@@ -201,7 +203,7 @@ void PostOfficeController::resetRoutePoints() {
 					path.back().pos,
 					sf::Vector3f(v.x, v.y, 0.0f),
 					time,
-					1.0f
+					SPEED * 0.75
 				);
 				path.insert(path.end(), newPath.begin(), newPath.end());
 				s->points = path;
@@ -212,7 +214,7 @@ void PostOfficeController::resetRoutePoints() {
 					sf::Vector3f(prevStop.x, prevStop.y, 0.0f),
 					sf::Vector3f(v.x, v.y, 0.0f),
 					time,
-					2.0f
+					SPEED
 				);
 			}
 			time = s->points.back().expectedTime;

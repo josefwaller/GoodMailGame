@@ -2,8 +2,9 @@
 #include "Entity/Entity.h"
 #include "Game/Game.h"
 #include "Component/Transform/Transform.h"
+#include "VehicleModel/VehicleModel.h"
 
-PlaneDepotController::PlaneDepotController() : DepotController(TransitStop::TransitType::Airplane) {}
+PlaneDepotController::PlaneDepotController() : DepotController(TransitStop::TransitType::Airplane, { VehicleModel::SlowAirplane, VehicleModel::FastAirplane }) {}
 
 void PlaneDepotController::spawnVehicleForRoute(TransitRoute route) {
 	this->getEntity()->getGame()->addEntity(

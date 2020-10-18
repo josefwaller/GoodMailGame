@@ -172,6 +172,7 @@
     <ClCompile Include="src\Ui\Construction\ConstructionRecipe\ConstructionLayout\ConstructionLayout.cpp" />
     <ClCompile Include="src\Ui\Construction\ConstructionRecipe\ConstructionRecipe.cpp" />
     <ClCompile Include="src\Ui\UiHandler\UiHandler.cpp" />
+    <ClCompile Include="src\VehicleModel\VehicleModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h" />
@@ -221,6 +222,7 @@
     <ClInclude Include="src\Ui\Construction\ConstructionRecipe\ConstructionLayout\ConstructionLayout.h" />
     <ClInclude Include="src\Ui\Construction\ConstructionRecipe\ConstructionRecipe.h" />
     <ClInclude Include="src\Ui\UiHandler\UiHandler.h" />
+    <ClInclude Include="src\VehicleModel\VehicleModel.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\GameMap\Tile.h" />

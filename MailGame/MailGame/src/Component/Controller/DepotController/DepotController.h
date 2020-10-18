@@ -2,6 +2,7 @@
 #include "Component/Controller/Controller.h"
 #include "Routes/TransitRoute/TransitRoute.h"
 #include "Component/TransitStop/TransitStop.h"
+#include "VehicleModel/VehicleModel.h"
 #include <map>
 #include <vector>
 
@@ -12,7 +13,7 @@
  */
 class DepotController : public Controller {
 public:
-	DepotController(TransitStop::TransitType type);
+	DepotController(TransitStop::TransitType type, std::vector<VehicleModel> availableModels);
 	virtual void update(float delta) override;
 	virtual void onHourChange(hour_t newHour) override;
 	// Spawn a vehicle for the given route
@@ -27,6 +28,8 @@ public:
 	void deleteRoute(size_t routeId);
 	// Set a route's depart time
 	void setRouteDepartTime(size_t routeId, int depTime);
+	// Set the model for a route
+	void setRouteModel(size_t routeId, VehicleModel model);
 	// Add a stop to the route by id
 	void addStop(TransitRouteStop stop, size_t routeId);
 	// Delete a stop by index from the route by id
@@ -52,9 +55,11 @@ private:
 	std::map<size_t, TransitRoute> routes;
 	// The routes to delete, done after drawing UI in order to prevent conflicts
 	std::vector<TransitRoute> toDelete;
+	// The models available
+	std::vector<VehicleModel> availableModels;
 	// Reset the points field in all the stops
 	void resetRoutePoints();
 	// The type of transit
 	TransitStop::TransitType type;
-	std::vector<RoutePoint> toRoutePointVector(std::vector<sf::Vector3f> points, gtime_t time);
+	std::vector<RoutePoint> toRoutePointVector(std::vector<sf::Vector3f> points, gtime_t time, float speed);
 };

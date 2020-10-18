@@ -9,7 +9,7 @@
 #include "Game/Game.h"
 #include "System/SaveData/SaveData.h"
 
-DepotController::DepotController(TransitStop::TransitType t) : type(t) {}
+DepotController::DepotController(TransitStop::TransitType t, std::vector<VehicleModel> models) : type(t), availableModels(models) {}
 
 void DepotController::update(float delta) {
 	ImGui::PushID((int)this->getEntity()->getId());
@@ -35,6 +35,16 @@ void DepotController::update(float delta) {
 					sprintf_s(buf, "%d:00", hr);
 					if (ImGui::Selectable(buf, hr == route.departureTime)) {
 						this->setRouteDepartTime(route.id, hr);
+					}
+				}
+				ImGui::EndCombo();
+			}
+			VehicleModelInfo modelInfo = VehicleModelInfo::getModelInfo(route.model);
+			if (ImGui::BeginCombo("Vehicle Model", modelInfo.getName().c_str())) {
+				for (auto it = this->availableModels.begin(); it != this->availableModels.end(); it++) {
+					VehicleModelInfo mInfo = VehicleModelInfo::getModelInfo(*it);
+					if (ImGui::Selectable(mInfo.getName().c_str(), *it == route.model)) {
+						this->setRouteModel(route.id, *it);
 					}
 				}
 				ImGui::EndCombo();
@@ -118,7 +128,9 @@ void DepotController::update(float delta) {
 	}
 	// Add Route button
 	if (ImGui::Button("Create new route")) {
-		this->addRoute(TransitRoute(0));
+		if (this->availableModels.empty())
+			throw std::runtime_error("No available models in DepotController!");
+		this->addRoute(TransitRoute(0, this->availableModels.front()));
 	}
 
 	ImGui::End();
@@ -157,6 +169,10 @@ void DepotController::deleteRoute(size_t id) {
 }
 void DepotController::setRouteDepartTime(size_t routeId, int depTime) {
 	this->routes.find(routeId)->second.departureTime = depTime;
+	resetRoutePoints();
+}
+void DepotController::setRouteModel(size_t routeId, VehicleModel model) {
+	this->routes.find(routeId)->second.model = model;
 	resetRoutePoints();
 }
 void DepotController::addStop(TransitRouteStop stop, size_t routeId) {
@@ -199,11 +215,11 @@ void DepotController::fromSaveData(SaveData data) {
 		this->routes.insert({ r.id, r });
 	}
 }
-std::vector<RoutePoint> DepotController::toRoutePointVector(std::vector<sf::Vector3f> points, gtime_t time) {
+std::vector<RoutePoint> DepotController::toRoutePointVector(std::vector<sf::Vector3f> points, gtime_t time, float speed) {
 	std::vector<RoutePoint> toReturn;
 	sf::Vector3f lastPos = points.front();
 	for (sf::Vector3f p : points) {
-		time += Utils::getVectorDistance(lastPos, p) * Game::UNITS_IN_GAME_HOUR;
+		time += Utils::getVectorDistance(lastPos, p) * Game::UNITS_IN_GAME_HOUR / speed;
 		toReturn.push_back(RoutePoint(p, time));
 		lastPos = p;
 	}
@@ -213,6 +229,7 @@ void DepotController::resetRoutePoints() {
 	for (auto kv : this->routes) {
 		TransitRoute route = kv.second;
 		gtime_t time = route.departureTime * Game::UNITS_IN_GAME_HOUR;
+		VehicleModelInfo modelInfo = VehicleModelInfo::getModelInfo(route.model);
 		if (kv.second.stops.empty()) {
 			continue;
 		}
@@ -232,7 +249,8 @@ void DepotController::resetRoutePoints() {
 			// Get the departing path
 			std::vector<RoutePoint> departPath = toRoutePointVector(
 				this->getEntity()->transitStop->getDepartingTransitPath(departBuilding.lock(), this->type),
-				time
+				time,
+				modelInfo.getSpeed()
 			);
 			time = departPath.back().expectedTime;
 			stop->points = departPath;
@@ -248,7 +266,7 @@ void DepotController::resetRoutePoints() {
 				departPath.back().pos,
 				arriving.front(),
 				time,
-				2.0f
+				modelInfo.getSpeed()
 			);
 			stop->points.insert(stop->points.end(), path.begin(), path.end());
 			time = path.back().expectedTime;
@@ -258,7 +276,8 @@ void DepotController::resetRoutePoints() {
 			// Get arriving path
 			std::vector<RoutePoint> arrivalPath = toRoutePointVector(
 				arriving,
-				time
+				time,
+				modelInfo.getSpeed()
 			);
 			stop->points.insert(stop->points.end(), arrivalPath.begin(), arrivalPath.end());
 			time = arrivalPath.back().expectedTime;

@@ -22,11 +22,11 @@
 	F(MailBox, BuildingPresets::mailBox(g, pos, rot)) \
 	F(MailTruck, VehiclePresets::mailTruck(g, pos, rot, MailTruckRoute(false, 0), {})) \
 	F(CargoTruckDepot, BuildingPresets::cargoTruckDepot(g, pos, rot)) \
-	F(CargoTruck, VehiclePresets::cargoTruck(g, pos, rot, TransitRoute(0), {})) \
+	F(CargoTruck, VehiclePresets::cargoTruck(g, pos, rot, TransitRoute(0, VehicleModel::SlowCargoTruck), {})) \
 	F(TrainStation, BuildingPresets::trainStation(g, pos, rot)) \
-	F(Train, VehiclePresets::train(g, pos, rot, TransitRoute(0), {})) \
+	F(Train, VehiclePresets::train(g, pos, rot, TransitRoute(0, VehicleModel::SlowTrain), {})) \
 	F(Airport, BuildingPresets::airport(g, pos, rot)) \
-	F(Airplane, VehiclePresets::plane(g, pos, rot, TransitRoute(0), {}))
+	F(Airplane, VehiclePresets::plane(g, pos, rot, TransitRoute(0, VehicleModel::SlowAirplane), {}))
 
 #define F(x, y) x,
 enum class EntityTag {
