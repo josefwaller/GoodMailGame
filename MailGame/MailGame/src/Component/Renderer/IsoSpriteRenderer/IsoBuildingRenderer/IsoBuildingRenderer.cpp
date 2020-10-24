@@ -4,20 +4,15 @@
 #include "Component/Transform/Transform.h"
 
 IsoBuildingRenderer::IsoBuildingRenderer(
-	sf::Sprite n,
-	sf::Sprite e,
-	sf::Sprite s,
-	sf::Sprite w,
+	IsoSprite sprs,
 	sf::Vector2i size,
 	sf::Vector3f off)
-	: IsoSpriteRenderer(n, e, s, w, off), size(size) {
-	for (auto it = this->sprites.begin(); it != this->sprites.end(); it++) {
-		*it = Utils::setupBuildingSprite(*it);
-	}
+	: IsoSpriteRenderer(sprs, off), size(size) {
 }
 
 void IsoBuildingRenderer::render(sf::RenderWindow* window) {
 	sf::Sprite toRender = getSpriteToRender();
+	toRender = Utils::setupBuildingSprite(toRender);
 	sf::Vector3f pos = this->getEntity()->transform->getPosition();
 	// Since buildings are origined around where the center of the tile is (~64px from the bottom), we want to draw
 	// the sprite at the center of the tile (i.e. pos + (0.5, 0.5)
@@ -47,6 +42,4 @@ void IsoBuildingRenderer::render(sf::RenderWindow* window) {
 		pos
 	) + sf::Vector2f(0, 32));
 	window->draw(toRender);
-	if (this->getEntity()->tag == EntityTag::Airport)
-		auto x = 0;
 }

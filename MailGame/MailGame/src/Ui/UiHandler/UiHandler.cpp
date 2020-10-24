@@ -132,23 +132,23 @@ void UiHandler::update() {
 	}
 	if (ImGui::CollapsingHeader("Build")) {
 		if (ImGui::Button("Post Office")) {
-			this->recipe = Construction::recipes[EntityTag::PostOffice];
+			this->recipe = Construction::recipes.at(EntityTag::PostOffice);
 			this->changeState(UiState::BuildingEntity);
 		}
 		if (ImGui::Button("MailBox")) {
-			this->recipe = Construction::recipes[EntityTag::MailBox];
+			this->recipe = Construction::recipes.at(EntityTag::MailBox);
 			this->changeState(UiState::BuildingEntity);
 		}
 		if (ImGui::Button("Cargo Truck Depot")) {
-			this->recipe = Construction::recipes[EntityTag::CargoTruckDepot];
+			this->recipe = Construction::recipes.at(EntityTag::CargoTruckDepot);
 			this->changeState(UiState::BuildingEntity);
 		}
 		if (ImGui::Button("Train Station")) {
-			this->recipe = Construction::recipes[EntityTag::TrainStation];
+			this->recipe = Construction::recipes.at(EntityTag::TrainStation);
 			this->changeState(UiState::BuildingEntity);
 		}
 		if (ImGui::Button("Airport")) {
-			this->recipe = Construction::recipes[EntityTag::Airport];
+			this->recipe = Construction::recipes.at(EntityTag::Airport);
 			this->changeState(UiState::BuildingEntity);
 		}
 		if (ImGui::Button("RailWay")) {

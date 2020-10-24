@@ -33,12 +33,12 @@ std::shared_ptr<Entity> BuildingPresets::residence(Game* g, sf::Vector3f pos, Is
 		g,
 		EntityTag::Residence,
 		new Transform(pos, rot),
-		new IsoBuildingRenderer(
+		new IsoBuildingRenderer(IsoSprite(
 			ResourceLoader::get()->getSprite("buildings/buildings", "building-NE-3"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "building-SE-3"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "building-SW-3"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "building-NW-3")
-		),
+		)),
 		new ResidenceController(g->getTime()),
 		new RectClickBox(sf::FloatRect(
 			0,
@@ -57,12 +57,12 @@ std::shared_ptr<Entity> BuildingPresets::postOffice(Game* g, sf::Vector3f pos, I
 		g,
 		EntityTag::PostOffice,
 		new Transform(pos, rot),
-		new IsoBuildingRenderer(
+		new IsoBuildingRenderer(IsoSprite(
 			ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-N"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-E"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-S"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-W")
-		),
+		)),
 		new PostOfficeController(),
 		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
 		new MailContainer(),
@@ -81,10 +81,12 @@ std::shared_ptr<Entity> BuildingPresets::mailBox(Game* g, sf::Vector3f pos, IsoR
 		EntityTag::MailBox,
 		new Transform(pos, rot),
 		new IsoSpriteRenderer(
-			ResourceLoader::get()->getSprite("buildings/buildings", "mailbox", true),
-			ResourceLoader::get()->getSprite("buildings/buildings", "mailbox", true),
-			ResourceLoader::get()->getSprite("buildings/buildings", "mailbox", true),
-			ResourceLoader::get()->getSprite("buildings/buildings", "mailbox", true),
+			IsoSprite(
+				ResourceLoader::get()->getSprite("buildings/buildings", "mailbox", true),
+				ResourceLoader::get()->getSprite("buildings/buildings", "mailbox", true),
+				ResourceLoader::get()->getSprite("buildings/buildings", "mailbox", true),
+				ResourceLoader::get()->getSprite("buildings/buildings", "mailbox", true)
+			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
 		nullptr,
@@ -102,12 +104,12 @@ std::shared_ptr<Entity> BuildingPresets::cargoTruckDepot(Game* g, sf::Vector3f p
 		g,
 		EntityTag::CargoTruckDepot,
 		new Transform(pos, rot),
-		new IsoBuildingRenderer(
+		new IsoBuildingRenderer(IsoSprite(
 			ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-N"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-E"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-S"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-W")
-		),
+		)),
 		new TruckDepotController(),
 		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
 		new MailContainer(),
@@ -129,12 +131,12 @@ std::shared_ptr<Entity> BuildingPresets::trainStation(Game* g, sf::Vector3f pos,
 		g,
 		EntityTag::TrainStation,
 		new Transform(pos, rot),
-		new IsoBuildingRenderer(
+		new IsoBuildingRenderer(IsoSprite(
 			ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-N"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-E"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-S"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-W")
-		),
+		)),
 		new TrainDepotController(),
 		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
 		new MailContainer(),
@@ -157,10 +159,12 @@ std::shared_ptr<Entity> BuildingPresets::airport(Game* g, sf::Vector3f pos, IsoR
 		EntityTag::Airport,
 		new Transform(pos, rot),
 		new IsoBuildingRenderer(
-			ResourceLoader::get()->getSprite("buildings/airport", "airport-N"),
-			ResourceLoader::get()->getSprite("buildings/airport", "airport-E"),
-			ResourceLoader::get()->getSprite("buildings/airport", "airport-S"),
-			ResourceLoader::get()->getSprite("buildings/airport", "airport-W"),
+			IsoSprite(
+				ResourceLoader::get()->getSprite("buildings/airport", "airport-N"),
+				ResourceLoader::get()->getSprite("buildings/airport", "airport-E"),
+				ResourceLoader::get()->getSprite("buildings/airport", "airport-S"),
+				ResourceLoader::get()->getSprite("buildings/airport", "airport-W")
+			),
 			sf::Vector2i(3, 2)
 		),
 		new PlaneDepotController(),

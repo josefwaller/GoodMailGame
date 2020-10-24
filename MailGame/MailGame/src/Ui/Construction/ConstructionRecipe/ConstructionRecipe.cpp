@@ -2,14 +2,12 @@
 #include "System/Utils/Utils.h"
 #include "Game/Game.h"
 
-ConstructionRecipe::ConstructionRecipe() : layout({}) {}
 ConstructionRecipe::ConstructionRecipe(
 	std::function<std::shared_ptr<Entity>(Game* g, sf::Vector3f pos, IsoRotation rot)> func,
-	std::vector<sf::Sprite> sprs,
+	IsoSprite sprs,
 	ConstructionLayout l
-): layout(l) {
+): layout(l), displaySprites(sprs) {
 	this->buildFunction = func;
-	this->displaySprites = sprs;
 }
 
 bool ConstructionRecipe::isValid(Game* g, sf::Vector3f pos3D, IsoRotation rot) {
@@ -39,13 +37,8 @@ bool ConstructionRecipe::isValid(Game* g, sf::Vector3f pos3D, IsoRotation rot) {
 
 void ConstructionRecipe::renderConstructionSprite(Game* g, sf::Vector3f pos, IsoRotation rot, sf::RenderWindow* w) {
 	// Get the index of the sprite it should draw
-	size_t i = 0;
 	IsoRotation r = rot + g->getRotation();
-	while (r.getRotation() != 0) {
-		r--;
-		i++;
-	}
-	sf::Sprite displaySprite = this->displaySprites[i % 4];
+	sf::Sprite displaySprite = this->displaySprites.getSprite(r);
 	// Set up for building
 	displaySprite = Utils::setupBuildingSprite(displaySprite);
 	// Set pos

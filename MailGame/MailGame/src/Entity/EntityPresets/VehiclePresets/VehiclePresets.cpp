@@ -29,10 +29,12 @@ std::shared_ptr<Entity> VehiclePresets::mailTruck(
 		EntityTag::MailTruck,
 		new Transform(pos, rot),
 		new IsoSpriteRenderer(
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-N", true),
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-E", true),
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-S", true),
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-W", true),
+			IsoSprite(
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-N", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-E", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-S", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-W", true)
+			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
 		new MailTruckController(route, postOffice, g->getTime()),
@@ -54,10 +56,12 @@ std::shared_ptr<Entity> VehiclePresets::cargoTruck(
 		EntityTag::CargoTruck,
 		new Transform(pos, rot),
 		new IsoSpriteRenderer(
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "cargoTruck_NE.png", true),
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "cargoTruck_SE.png", true),
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "cargoTruck_SW.png", true),
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "cargoTruck_NW.png", true),
+			IsoSprite(
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "cargoTruck_NE.png", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "cargoTruck_SE.png", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "cargoTruck_SW.png", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "cargoTruck_NW.png", true)
+			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
 		new CargoVehicleController(route, office, TransitStop::TransitType::Car, g->getTime()),
@@ -80,10 +84,12 @@ std::shared_ptr<Entity> VehiclePresets::train(
 		EntityTag::Train,
 		new Transform(pos, rot),
 		new IsoSpriteRenderer(
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "train-N.png", true),
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "train-E.png", true),
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "train-W.png", true),
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "train-S.png", true),
+			IsoSprite(
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "train-N.png", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "train-E.png", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "train-W.png", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "train-S.png", true)
+			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
 		new CargoVehicleController(route, depot, TransitStop::TransitType::Train, g->getTime()),
@@ -104,10 +110,12 @@ std::shared_ptr<Entity> VehiclePresets::plane(
 		EntityTag::Airplane,
 		new Transform(pos, rot),
 		new IsoSpriteRenderer(
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-N", true),
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-E", true),
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-W", true),
-			ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-S", true),
+			IsoSprite(
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-N", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-E", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-W", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-S", true)
+			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
 		new CargoVehicleController(route, depot, TransitStop::TransitType::Airplane, g->getTime()),

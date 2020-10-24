@@ -166,6 +166,7 @@
     <ClCompile Include="src\Routes\RoutePoint.cpp" />
     <ClCompile Include="src\Routes\TransitRoute\TransitRoute.cpp" />
     <ClCompile Include="src\Routes\MailTruckRoute\MailTruckRoute.cpp" />
+    <ClCompile Include="src\System\IsoSprite\IsoSprite.cpp" />
     <ClCompile Include="src\System\SaveData\SaveData.cpp" />
     <ClCompile Include="src\System\Utils\Utils.cpp" />
     <ClCompile Include="src\Ui\Construction\Construction.cpp" />
@@ -216,6 +217,7 @@
     <ClInclude Include="src\Routes\TransitRoute\TransitRoute.h" />
     <ClInclude Include="src\Routes\MailTruckRoute\MailTruckRoute.h" />
     <ClInclude Include="src\System\IsoRotation\IsoRotation.h" />
+    <ClInclude Include="src\System\IsoSprite\IsoSprite.h" />
     <ClInclude Include="src\System\SaveData\SaveData.h" />
     <ClInclude Include="src\System\Utils\Utils.h" />
     <ClInclude Include="src\Ui\Construction\Construction.h" />

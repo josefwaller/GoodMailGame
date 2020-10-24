@@ -10,12 +10,12 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 	{ EntityTag::PostOffice,
 		ConstructionRecipe(
 			&BuildingPresets::postOffice,
-			{
+			IsoSprite(
 				ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-N"),
 				ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-E"),
 				ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-S"),
 				ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-W")
-			},
+			),
 			ConstructionLayout({
 				{ TileType::Land }
 			})
@@ -24,12 +24,12 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 	{ EntityTag::MailBox,
 		ConstructionRecipe(
 			&BuildingPresets::mailBox,
-			{
+			IsoSprite(
 				ResourceLoader::get()->getSprite("buildings/buildings", "mailbox"),
 				ResourceLoader::get()->getSprite("buildings/buildings", "mailbox"),
 				ResourceLoader::get()->getSprite("buildings/buildings", "mailbox"),
 				ResourceLoader::get()->getSprite("buildings/buildings", "mailbox")
-			},
+			),
 			ConstructionLayout({
 				{ TileType::Land }
 			})
@@ -38,12 +38,12 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 	{ EntityTag::CargoTruckDepot,
 		ConstructionRecipe(
 			&BuildingPresets::cargoTruckDepot,
-			{
+			IsoSprite(
 				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-N"),
 				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-E"),
 				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-S"),
 				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-W")
-			},
+			),
 			ConstructionLayout({
 				{TileType::Land }
 			})
@@ -55,12 +55,12 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 				g->getGameMap()->addRailTrack((size_t)pos.x, (size_t)pos.y, rot + 1, rot + 3);
 				return BuildingPresets::trainStation(g, pos, rot);
 			},
-			{
+			IsoSprite(
 				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-N"),
 				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-E"),
 				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-S"),
 				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-W")
-			},
+			),
 			ConstructionLayout({
 				{ TileType::Land }
 			})
@@ -69,12 +69,12 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 	{ EntityTag::Airport,
 		ConstructionRecipe(
 			&BuildingPresets::airport,
-			{
-				ResourceLoader::get()->getSprite("buildings/buildings", "airport-N"),
-				ResourceLoader::get()->getSprite("buildings/buildings", "airport-E"),
-				ResourceLoader::get()->getSprite("buildings/buildings", "airport-S"),
-				ResourceLoader::get()->getSprite("buildings/buildings", "airport-W")
-			},
+			IsoSprite(
+				ResourceLoader::get()->getSprite("buildings/airport", "airport-N"),
+				ResourceLoader::get()->getSprite("buildings/airport", "airport-E"),
+				ResourceLoader::get()->getSprite("buildings/airport", "airport-S"),
+				ResourceLoader::get()->getSprite("buildings/airport", "airport-W")
+			),
 			ConstructionLayout({
 				{ TileType::Land }
 			})

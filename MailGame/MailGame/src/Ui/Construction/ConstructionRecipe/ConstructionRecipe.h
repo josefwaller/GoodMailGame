@@ -4,6 +4,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include "System/IsoRotation/IsoRotation.h"
 #include "ConstructionLayout/ConstructionLayout.h"
+#include "System/IsoSprite/IsoSprite.h"
 
 class Entity;
 class Game;
@@ -15,12 +16,11 @@ class Game;
  */
 class ConstructionRecipe{
 public:
-	ConstructionRecipe();
 	ConstructionRecipe(
 		// The EntityPresets function to build this entity
 		std::function<std::shared_ptr<Entity>(Game* g, sf::Vector3f pos, IsoRotation rot)> buildFunction,
-		// The sprites to display, ordered by rotation
-		std::vector<sf::Sprite> displaySprites,
+		// The sprites to display
+		IsoSprite sprites,
 		// The alyout required for a valid position for this building
 		ConstructionLayout layout
 	);
@@ -31,7 +31,7 @@ private:
 	// The function to build the entity
 	std::function<std::shared_ptr<Entity>(Game* g, sf::Vector3f pos, IsoRotation rot)> buildFunction;
 	// The sprites to display
-	std::vector<sf::Sprite> displaySprites;
+	IsoSprite displaySprites;
 	// The layout
 	ConstructionLayout layout;
 	// Get rounded coordinates
