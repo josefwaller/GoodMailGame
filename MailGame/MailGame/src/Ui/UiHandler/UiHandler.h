@@ -34,7 +34,9 @@ public:
 	// Also will deal with leaving the state it is currently in
 	void changeState(UiState state);
 	// Draw an arrow at the tile given in the direction given
-	void drawArrow(sf::RenderWindow* window, sf::Vector2i tile, IsoRotation rot, bool isOutgoing);
+	void drawArrow(sf::RenderWindow* window, sf::Vector2i tile, IsoRotation rot, bool isOutgoing, std::optional<sf::Color> color = {});
+	// Ad a path to draw next render cycle
+	void addPathToDraw(std::vector<RoutePoint> arrows);
 private:
 	Game* game;
 	// Current state of the Ui
@@ -64,4 +66,6 @@ private:
 	Railway toBuild;
 	// The time to set the railway being built to, used to build railway switches
 	hour_t toBuildTime;
+	// The paths to draw
+	std::vector<std::vector<RoutePoint>> pathsToDraw;
 };

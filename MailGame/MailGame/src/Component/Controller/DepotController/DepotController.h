@@ -59,4 +59,6 @@ private:
 	std::vector<VehicleModel> availableModels;
 	// The type of transit
 	TransitStop::TransitType type;
+	// This is basically a debug feature, but toggle to show the routes of this station on the UI
+	bool showRoutes;
 };

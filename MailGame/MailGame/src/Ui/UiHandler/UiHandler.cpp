@@ -11,6 +11,7 @@
 #include "PostalCodeDatabase/PostalCodeDatabase.h"
 #include "ResourceLoader/ResourceLoader.h"
 #include "System/SaveData/SaveData.h"
+#include "System/Utils/Utils.h"
 
 UiHandler::UiHandler(Game* g): game(g), currentState(UiState::Default), recipe(),
 	toBuild(IsoRotation::NORTH, IsoRotation::SOUTH) {}
@@ -262,9 +263,25 @@ void UiHandler::render(sf::RenderWindow* w) {
 	// Outline the sprite currently being hovered
 	sf::VertexArray vArr = getDrawableTile(this->getHoveredTile(), sf::PrimitiveType::LinesStrip, sf::Color::White);
 	w->draw(vArr);
+
+	for (std::vector<RoutePoint> path : this->pathsToDraw) {
+		if (path.empty())
+			continue;
+		RoutePoint prev = path.front();
+		for (auto it = path.begin() + 1; it != path.end(); it++) {
+			sf::Vector3f prevPos = prev.pos;
+			sf::Vector3f newPos = it->pos;
+			sf::Vector3f diff = newPos - prevPos;
+			IsoRotation rot = IsoRotation::fromUnitVector(sf::Vector2f(diff.x, diff.y));
+			drawArrow(w, sf::Vector2i(prevPos.x, prevPos.y), rot, true, Utils::getTimeColor(it->expectedTime));
+			prev = *it;
+		}
+	}
+
+	this->pathsToDraw = {};
 }
 
-void UiHandler::drawArrow(sf::RenderWindow* window, sf::Vector2i tile, IsoRotation rot, bool isOutgoing) {
+void UiHandler::drawArrow(sf::RenderWindow* window, sf::Vector2i tile, IsoRotation rot, bool isOutgoing, std::optional<sf::Color> color) {
 	// Load the arrow sprite
 	std::string sprName = "arrow_";
 	switch((rot + game->getRotation()).getRotation()) {
@@ -300,6 +317,9 @@ void UiHandler::drawArrow(sf::RenderWindow* window, sf::Vector2i tile, IsoRotati
 			+ rot.getUnitVector3D() / 2.0f)
 	);
 	arrow.setScale(0.5f, 0.5f);
+	if (color.has_value()) {
+		arrow.setColor(color.value());
+	}
 	window->draw(arrow);
 }
 void UiHandler::changeState(UiState state) {
@@ -337,4 +357,8 @@ IsoRotation UiHandler::chooseDirection(const char* label, IsoRotation def) {
 		ImGui::EndCombo();
 	}
 	return toReturn;
+}
+
+void UiHandler::addPathToDraw(std::vector<RoutePoint> path) {
+	this->pathsToDraw.push_back(path);
 }

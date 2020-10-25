@@ -18,9 +18,12 @@ void DepotController::update(float delta) {
 	std::string s = entityTagToString(this->getEntity()->tag);
 	sprintf_s(buf, "%s at (%f, %f)", s.c_str(), pos.x, pos.y);
 	ImGui::Begin(buf);
+	if (ImGui::Button(this->showRoutes ? "Hide Routes" : "Show Routes")) {
+		this->showRoutes = !this->showRoutes;
+	}
 
 	// Show gui for each route
-	for (auto kvp: this->routes) {
+	for (auto kvp : this->routes) {
 		TransitRoute route = kvp.second;
 		ImGui::PushID((int)route.id);
 
@@ -68,7 +71,7 @@ void DepotController::update(float delta) {
 						this->getEntity()->getGame()->getUi()->selectEntity(
 							[this, route, j](std::weak_ptr<Entity> e) {
 								this->setStopTarget(j, route.id, e);
-						});
+							});
 					}
 					// Pick up dropdown
 					if (ImGui::CollapsingHeader("Pick up")) {
@@ -141,6 +144,71 @@ void DepotController::update(float delta) {
 		this->routes.erase(r.id);
 	}
 	this->toDelete.clear();
+
+	if (this->showRoutes) {
+		for (auto kv : this->routes) {
+			std::vector<RoutePoint> routePoints;
+			TransitRoute route = kv.second;
+			gtime_t time = route.departureTime * Game::UNITS_IN_GAME_HOUR;
+			VehicleModelInfo modelInfo = VehicleModelInfo::getModelInfo(route.model);
+			if (kv.second.stops.empty()) {
+				continue;
+			}
+			// Add the depot as another stop
+			TransitRouteStop stop;
+			stop.target = this->getEntity();
+			route.stops.push_back(stop);
+			// Add paths between the stops
+			for (auto stop = route.stops.begin(); stop != route.stops.end(); stop++) {
+				if (!stop->target.lock())
+					continue;
+				// Get the departing building
+				std::weak_ptr<Entity> departBuilding;
+				if (stop == route.stops.begin()) {
+					departBuilding = this->getEntity();
+				}
+				else {
+					// Departs from the previous stop's building
+					departBuilding = (stop - 1)->target.lock();
+				}
+				// Get the departing path
+				std::vector<RoutePoint> departPath = Utils::toRoutePointVector(
+					this->getEntity()->transitStop->getDepartingTransitPath(departBuilding.lock(), this->type),
+					time,
+					modelInfo.getSpeed()
+				);
+				if (stop != route.stops.end() - 1) {
+					time = departPath.back().expectedTime;
+					routePoints.insert(routePoints.end(), departPath.begin(), departPath.end());
+				}
+				// Get the arriving path without time cause we don't know what time we'll be there yet
+				std::vector<sf::Vector3f> arriving = stop->target.lock()->transitStop->getArrivingTransitPath(
+					stop->target.lock(),
+					this->type
+				);
+				// Get the path between
+				// TODO: Fix speed
+				time = departPath.back().expectedTime;
+				std::vector<RoutePoint> path = this->getEntity()->pathfinder->findPathBetweenPoints(
+					departPath.back().pos,
+					arriving.front(),
+					time,
+					modelInfo.getSpeed()
+				);
+				routePoints.insert(routePoints.end(), path.begin(), path.end());
+				time = path.back().expectedTime;
+				// Get arriving path
+				std::vector<RoutePoint> arrivalPath = Utils::toRoutePointVector(
+					arriving,
+					time,
+					modelInfo.getSpeed()
+				);
+				routePoints.insert(routePoints.end(), arrivalPath.begin(), arrivalPath.end());
+				time = arrivalPath.back().expectedTime;
+			}
+			this->getEntity()->getGame()->getUi()->addPathToDraw(routePoints);
+		}
+	}
 }
 void DepotController::onHourChange(hour_t newHour) {
 	for (auto it : this->routes) {
