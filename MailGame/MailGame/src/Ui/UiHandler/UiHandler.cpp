@@ -284,6 +284,9 @@ void UiHandler::render(sf::RenderWindow* w) {
 void UiHandler::drawArrow(sf::RenderWindow* window, sf::Vector2i tile, IsoRotation rot, bool isOutgoing, std::optional<sf::Color> color) {
 	// Load the arrow sprite
 	std::string sprName = "arrow_";
+	if (color.has_value()) {
+		sprName = "whiteArrows/arrow_";
+	}
 	switch((rot + game->getRotation()).getRotation()) {
 	case IsoRotation::NORTH:
 		sprName += "N";

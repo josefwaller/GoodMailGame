@@ -17,9 +17,9 @@ float Utils::getVectorDistance(sf::Vector3f one, sf::Vector3f two) {
 sf::Color Utils::getTimeColor(gtime_t time) {
 	float percent = (float)(time % (Game::UNITS_IN_GAME_HOUR * 24)) / (float)(Game::UNITS_IN_GAME_HOUR * 24);
 	float hue = (percent * 360);
-	float sat = 0.64;
+	float sat = 1;
 	float v = 0.5;
-	float chroma = (1 - abs(2 * v - 1) * sat);
+	float chroma = ((1 - abs(2 * v - 1)) * sat);
 	float hPrime = hue / 60;
 	float X = chroma * (1 - abs(fmod(hPrime, 2) - 1));
 	float r = 0.0f;
@@ -50,7 +50,8 @@ sf::Color Utils::getTimeColor(gtime_t time) {
 		b = X;
 	}
 	float m = v - chroma / 2;
-	return sf::Color(255 * (r + m), 255 * (g + m), 255 * (b + m), 150);
+	sf::Color toReturn = sf::Color(255 * (r + m), 255 * (g + m), 255 * (b + m), 255);
+	return toReturn;
 }
 std::vector<RoutePoint> Utils::toRoutePointVector(std::vector<sf::Vector3f> points, gtime_t time, float speed) {
 	std::vector<RoutePoint> toReturn;

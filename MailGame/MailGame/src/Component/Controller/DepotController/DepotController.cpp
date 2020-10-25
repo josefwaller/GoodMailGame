@@ -195,8 +195,10 @@ void DepotController::update(float delta) {
 					time,
 					modelInfo.getSpeed()
 				);
-				routePoints.insert(routePoints.end(), path.begin(), path.end());
-				time = path.back().expectedTime;
+				if (!path.empty()) {
+					routePoints.insert(routePoints.end(), path.begin(), path.end());
+					time = path.back().expectedTime;
+				}
 				// Get arriving path
 				std::vector<RoutePoint> arrivalPath = Utils::toRoutePointVector(
 					arriving,
