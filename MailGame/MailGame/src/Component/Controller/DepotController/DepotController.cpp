@@ -151,12 +151,6 @@ void DepotController::onHourChange(hour_t newHour) {
 }
 
 TransitRoute DepotController::prepareRouteForVehicle(TransitRoute route) {
-	gtime_t mTime = this->getEntity()->getGame()->getMidnightTime();
-	for (auto s = route.stops.begin(); s != route.stops.end(); s++) {
-		for (auto p = s->points.begin(); p != s->points.end(); p++) {
-			p->expectedTime += mTime;
-		}
-	}
 	return route;
 }
 
@@ -165,27 +159,21 @@ void DepotController::addRoute(TransitRoute r) {
 }
 void DepotController::deleteRoute(size_t id) {
 	this->toDelete.push_back(this->routes.find(id)->second);
-	resetRoutePoints();
 }
 void DepotController::setRouteDepartTime(size_t routeId, int depTime) {
 	this->routes.find(routeId)->second.departureTime = depTime;
-	resetRoutePoints();
 }
 void DepotController::setRouteModel(size_t routeId, VehicleModel model) {
 	this->routes.find(routeId)->second.model = model;
-	resetRoutePoints();
 }
 void DepotController::addStop(TransitRouteStop stop, size_t routeId) {
 	this->routes.find(routeId)->second.stops.push_back(stop);
-	resetRoutePoints();
 }
 void DepotController::deleteStop(size_t stopIndex, size_t routeId) {
 	this->routes.find(routeId)->second.stops.erase(this->routes.find(routeId)->second.stops.begin() + stopIndex);
-	resetRoutePoints();
 }
 void DepotController::setStopTarget(size_t stopIndex, size_t routeId, std::weak_ptr<Entity> target) {
 	this->routes.find(routeId)->second.stops[stopIndex].target = target;
-	resetRoutePoints();
 }
 void DepotController::setStopPickUp(size_t stopIndex, size_t routeId, long long code) {
 	this->routes.find(routeId)->second.stops[stopIndex].toPickUp.push_back(code);
@@ -213,74 +201,5 @@ void DepotController::fromSaveData(SaveData data) {
 	for (SaveData d : data.getDatas()) {
 		TransitRoute r = saveDataToTransitRoute(this->getEntity()->getGame(), d);
 		this->routes.insert({ r.id, r });
-	}
-}
-std::vector<RoutePoint> DepotController::toRoutePointVector(std::vector<sf::Vector3f> points, gtime_t time, float speed) {
-	std::vector<RoutePoint> toReturn;
-	sf::Vector3f lastPos = points.front();
-	for (sf::Vector3f p : points) {
-		time += Utils::getVectorDistance(lastPos, p) * Game::UNITS_IN_GAME_HOUR / speed;
-		toReturn.push_back(RoutePoint(p, time));
-		lastPos = p;
-	}
-	return toReturn;
-}
-void DepotController::resetRoutePoints() {
-	for (auto kv : this->routes) {
-		TransitRoute route = kv.second;
-		gtime_t time = route.departureTime * Game::UNITS_IN_GAME_HOUR;
-		VehicleModelInfo modelInfo = VehicleModelInfo::getModelInfo(route.model);
-		if (kv.second.stops.empty()) {
-			continue;
-		}
-		// Add paths between the stops
-		for (auto stop = this->routes.at(kv.first).stops.begin(); stop != this->routes.at(kv.first).stops.end(); stop++) {
-			if (!stop->target.lock())
-				continue;
-			// Get the departing building
-			std::weak_ptr<Entity> departBuilding;
-			if (stop == this->routes.at(kv.first).stops.begin()) {
-				departBuilding = this->getEntity();
-			}
-			else {
-				// Departs from the previous stop's building
-				departBuilding = (stop - 1)->target.lock();
-			}
-			// Get the departing path
-			std::vector<RoutePoint> departPath = toRoutePointVector(
-				this->getEntity()->transitStop->getDepartingTransitPath(departBuilding.lock(), this->type),
-				time,
-				modelInfo.getSpeed()
-			);
-			time = departPath.back().expectedTime;
-			stop->points = departPath;
-			// Get the arriving path without time cause we don't know what time we'll be there yet
-			std::vector<sf::Vector3f> arriving = stop->target.lock()->transitStop->getArrivingTransitPath(
-				stop->target.lock(),
-				this->type
-			);
-			// Get the path between
-			// TODO: Fix speed
-			time = departPath.back().expectedTime;
-			std::vector<RoutePoint> path = this->getEntity()->pathfinder->findPathBetweenPoints(
-				departPath.back().pos,
-				arriving.front(),
-				time,
-				modelInfo.getSpeed()
-			);
-			stop->points.insert(stop->points.end(), path.begin(), path.end());
-			time = path.back().expectedTime;
-			// Wait a little bit
-			// This will eventually be determined by what vehicle is assigned to the route
-			time += 0.5f * Game::UNITS_IN_GAME_HOUR;
-			// Get arriving path
-			std::vector<RoutePoint> arrivalPath = toRoutePointVector(
-				arriving,
-				time,
-				modelInfo.getSpeed()
-			);
-			stop->points.insert(stop->points.end(), arrivalPath.begin(), arrivalPath.end());
-			time = arrivalPath.back().expectedTime;
-		}
 	}
 }

@@ -34,9 +34,6 @@ SaveData transitRouteStopToSaveData(TransitRouteStop stop) {
 	if (stop.target.lock()) {
 		sd.addValue("hasTarget", true);
 		sd.addValue("targetId", stop.target.lock()->getId());
-		for (RoutePoint p : stop.points) {
-			sd.addData(routePointToSaveData(p));
-		}
 	}
 	else {
 		sd.addValue("hasTarget", false);
@@ -58,9 +55,6 @@ TransitRouteStop saveDataToTransitRouteStop(Game* g, SaveData data) {
 	TransitRouteStop stop;
 	if (data.getValue("hasTarget") == "1") {
 		stop.target = g->getEntityById(std::stoull(data.getValue("targetId")));
-		for (SaveData d : data.getDatas()) {
-			stop.points.push_back(saveDataToRoutePoint(d));
-		}
 	}
 	// Set pick up/drop off
 	for (SaveData d : data.getDatas()) {

@@ -57,9 +57,6 @@ private:
 	std::vector<TransitRoute> toDelete;
 	// The models available
 	std::vector<VehicleModel> availableModels;
-	// Reset the points field in all the stops
-	void resetRoutePoints();
 	// The type of transit
 	TransitStop::TransitType type;
-	std::vector<RoutePoint> toRoutePointVector(std::vector<sf::Vector3f> points, gtime_t time, float speed);
 };

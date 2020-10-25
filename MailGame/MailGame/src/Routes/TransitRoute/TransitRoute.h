@@ -22,8 +22,6 @@ struct TransitRouteStop {
 	id_t id;
 	static id_t STOP_ID;
 	TransitRouteStop() : id(STOP_ID++) {}
-	// List of points to get to this stop from the previous stop
-	std::vector<RoutePoint> points;
 };
 
 /*

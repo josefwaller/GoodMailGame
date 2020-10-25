@@ -11,8 +11,6 @@ class SaveData;
 // The individual stop of a route
 struct MailTruckRouteStop {
 	std::optional<sf::Vector2i> target;
-	// The points to get to this stop from the previous stop
-	std::vector<RoutePoint> points;
 };
 
 // A route, with a list of stops and a depart time

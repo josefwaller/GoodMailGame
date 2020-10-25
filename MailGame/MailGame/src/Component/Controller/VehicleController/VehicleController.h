@@ -2,6 +2,7 @@
 #include "Component/Controller/Controller.h"
 #include "Component/TransitStop/TransitStop.h"
 #include "Routes/RoutePoint.h"
+#include "VehicleModel/VehicleModel.h"
 #include <vector>
 #include <SFML/System/Vector3.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -10,16 +11,19 @@ class GameMap;
 
 // Data structure for each stop
 struct VehicleControllerStop {
+	// The position the vehicle will go to
 	sf::Vector3f pos;
+	// The time the vehicle expects to arrive at this stop
+	// Set when the vehicle gets to the previous stop
 	gtime_t expectedTime;
 	std::vector<RoutePoint> points;
-	VehicleControllerStop(sf::Vector3f pos, gtime_t time, std::vector<RoutePoint> points)
-		: pos(pos), expectedTime(time), points(points) {}
+	VehicleControllerStop(sf::Vector3f pos, gtime_t time)
+		: pos(pos), expectedTime(time) {}
 };
 
 class VehicleController: public Controller {
 public:
-	VehicleController(gtime_t departTime);
+	VehicleController(gtime_t departTime, VehicleModel model);
 	virtual void update(float delta) override;
 protected:
 	// Set the stops
@@ -32,7 +36,7 @@ protected:
 	// When the truck arrives at the last stop, i.e. the route is complete
 	virtual void onArriveAtDest();
 	// Get the speed the truck should move at
-	virtual float getSpeed() = 0;
+	virtual float getSpeed();
 	// Children need access to this for saving/loading
 	size_t stopIndex;
 	// The time the vehicle departed the depot
@@ -56,5 +60,6 @@ private:
 	void goToNextStop();
 	// Get the distance to travel between two points, via the path returned by the pathfinder
 	float getPathDistance(sf::Vector3f from, sf::Vector3f to);
+	VehicleModel model;
 };
 

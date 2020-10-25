@@ -15,20 +15,34 @@ const float MailTruckController::SPEED = 1.0f;
 
 // Set stop to -1 to avoid skipping the first stop
 MailTruckController::MailTruckController(MailTruckRoute r, std::weak_ptr<Entity> o, gtime_t departTime)
-	: route(r), office(o), hasPickedUpMail(false), VehicleController(departTime) {
+	: route(r), office(o), hasPickedUpMail(false), VehicleController(departTime, VehicleModel::MailTruck) {
 	setRouteStops();
 }
 void MailTruckController::setRouteStops() {
-	std::vector<VehicleControllerStop> vStops;
+	std::vector<sf::Vector3f> stops;
+	// Add the depot
+	if (this->office.lock()) {
+		auto path = TransitStop::getDepartingTransitPath(this->office.lock(), TransitStop::TransitType::Car);
+		stops.insert(stops.end(), path.begin(), path.end());
+	}
 	for (MailTruckRouteStop stop : this->route.stops) {
 		// TODO: Clean this up too
 		if (!stop.target.has_value())
 			continue;
 
-		vStops.push_back(VehicleControllerStop(stop.points.back().pos, stop.points.back().expectedTime, stop.points));
+		// The time set here does not matter
+		sf::Vector2i p = stop.target.value();
+		stops.push_back(sf::Vector3f(p.x, p.y, 0));
+	}
+	if (this->office.lock()) {
+		auto path = TransitStop::getArrivingTransitPath(this->office.lock(), TransitStop::TransitType::Car);
+		stops.insert(stops.end(), path.begin(), path.end());
+	}
+	std::vector<VehicleControllerStop> vStops;
+	for (sf::Vector3f s : stops) {
+		vStops.push_back(VehicleControllerStop(s, 0));
 	}
 	this->setStops(vStops);
-	// Build and set the stops
 }
 
 void MailTruckController::update(float delta) {
@@ -118,9 +132,15 @@ void MailTruckController::pickupMailFromOffice() {
 	allStops.push_back(pos);
 	// Now gather all the tiles between the stops
 	std::vector<sf::Vector2i> allPoints;
+	sf::Vector2i prevPoint = route.stops[0].target.value();
+	sf::Vector3f prev(prevPoint.x, prevPoint.y, 0);
 	for (size_t i = 0; i < route.stops.size(); i++) {
+		if (!route.stops[i].target.has_value())
+			continue;
 		// Get the points
-		std::vector<RoutePoint> pointsBetween = this->route.stops[i].points;
+		sf::Vector3f nextPoint(route.stops[i].target.value().x, route.stops[i].target.value().y, 0);
+		std::vector<RoutePoint> pointsBetween = this->getEntity()->pathfinder->findPathBetweenPoints(prev, nextPoint, this->departTime, getSpeed());
+		prev = nextPoint;
 		// Add to all points
 		for (auto it = pointsBetween.begin(); it != pointsBetween.end(); it++) {
 			allPoints.push_back(sf::Vector2i(it->pos.x, it->pos.y));

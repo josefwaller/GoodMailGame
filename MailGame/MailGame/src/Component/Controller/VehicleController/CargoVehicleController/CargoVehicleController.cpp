@@ -12,14 +12,40 @@ CargoVehicleController::CargoVehicleController(
 	std::weak_ptr<Entity> d,
 	TransitStop::TransitType type,
 	gtime_t departTime
-) : depot(d), route(r), type(type), VehicleController(departTime) {
+) : depot(d), route(r), type(type), VehicleController(departTime, r.model) {
 	setRouteStops();
 }
 void CargoVehicleController::setRouteStops() {
+	std::vector<sf::Vector3f> stops;
+	std::vector<sf::Vector3f> path;
+	// Even though a truck should never not have a depot, if loading it may not start with a valid reference
+	// So we have to check
+	if (this->depot.lock()) {
+		path = TransitStop::getDepartingTransitPath(this->depot.lock(), this->type);
+		stops.insert(stops.end(), path.begin(), path.end());
+	}
+	// First add the departing path for the depot
+	for (auto it = this->route.stops.begin(); it != this->route.stops.end(); it++) {
+		// If the stop has a target
+		if (it->target.lock()) {
+			// Add the arriving path
+			path = TransitStop::getArrivingTransitPath(it->target.lock(), this->type);
+			stops.insert(stops.end(), path.begin(), path.end());
+			// Waiting would be done here
+			// Add the departing path
+			path = TransitStop::getDepartingTransitPath(it->target.lock(), this->type);
+			stops.insert(stops.end(), path.begin(), path.end());
+		}
+	}
+	// Go back to the depot
+	if (this->depot.lock()) {
+		path = TransitStop::getArrivingTransitPath(this->depot.lock(), this->type);
+		stops.insert(stops.end(), path.begin(), path.end());
+	}
+	// Change them into vehicle stops. The time doesn't matter, it will be overwritten
 	std::vector<VehicleControllerStop> vStops;
-	for (TransitRouteStop stop : this->route.stops) {
-		// TODO: Tidy this up
-		vStops.push_back(VehicleControllerStop(stop.points.back().pos, stop.points.back().expectedTime, stop.points));
+	for (sf::Vector3f s : stops) {
+		vStops.push_back(VehicleControllerStop(s, 0));
 	}
 	this->setStops(vStops);
 }
@@ -67,7 +93,6 @@ void CargoVehicleController::onArriveAtStop(size_t stopIndex) {
 	mail->transferSomeMailTo(toDropOff, otherMail);
 	otherMail->transferSomeMailTo(toPickUp, mail);
 }
-float CargoVehicleController::getSpeed() { return 1.0f; };
 
 std::optional<SaveData> CargoVehicleController::getSaveData() {
 	SaveData sd(componentTypeToStr(ComponentType::Controller));

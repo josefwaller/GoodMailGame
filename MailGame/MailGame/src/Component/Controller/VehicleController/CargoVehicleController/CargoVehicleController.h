@@ -14,7 +14,6 @@ public:
 	// Overridden methods, see TruckController
 	virtual void onArriveAtDest() override;
 	virtual void onArriveAtStop(size_t stopIndex) override;
-	virtual float getSpeed() override;
 	virtual std::optional<SaveData> getSaveData() override;
 	virtual void fromSaveData(SaveData data) override;
 private:

@@ -34,10 +34,6 @@ SaveData mailTruckRouteStopToSaveData(MailTruckRouteStop stop) {
 		stopData.addValue("hasTarget", true);
 		stopData.addValue("x", target.x);
 		stopData.addValue("y", target.y);
-		// Add the points
-		for (RoutePoint p : stop.points) {
-			stopData.addData(routePointToSaveData(p));
-		}
 	}
 	else {
 		stopData.addValue("hasTarget", false);
@@ -51,9 +47,6 @@ MailTruckRouteStop saveDataToMailTruckRouteStop(SaveData data) {
 			std::stoi(data.getValue("x")),
 			std::stoi(data.getValue("y"))
 		);
-		for (SaveData pData : data.getDatas()) {
-			stop.points.push_back(saveDataToRoutePoint(pData));
-		}
 	}
 	return stop;
 }
