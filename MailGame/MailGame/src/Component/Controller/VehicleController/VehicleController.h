@@ -11,14 +11,14 @@ class GameMap;
 
 // Data structure for each stop
 struct VehicleControllerStop {
-	// The position the vehicle will go to
-	sf::Vector3f pos;
+	// The path the vehicle must take to arrive at this stop
+	std::vector<sf::Vector3f> arrivingPath;
+	std::vector<sf::Vector3f> departingPath;
 	// The time the vehicle expects to arrive at this stop
 	// Set when the vehicle gets to the previous stop
 	gtime_t expectedTime;
-	std::vector<RoutePoint> points;
-	VehicleControllerStop(sf::Vector3f pos, gtime_t time)
-		: pos(pos), expectedTime(time) {}
+	VehicleControllerStop(std::vector<sf::Vector3f> departingPath, std::vector<sf::Vector3f> arrivingPath)
+		: arrivingPath(arrivingPath), departingPath(departingPath) {}
 };
 
 class VehicleController: public Controller {
@@ -54,8 +54,9 @@ private:
 	size_t pointIndex;
 	// The stops and the index of the current stop
 	std::vector<VehicleControllerStop> stops;
-	// Set points as the path from its current position to the point given
-	void pathfindToPoint(sf::Vector3f from, sf::Vector3f point);
+	// Get the path, as route points, between two stops
+	// Includes the departing path and the arriving path
+	std::vector<RoutePoint> getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to, gtime_t departTime);
 	// Go to the next stop along the route
 	void goToNextStop();
 	// Get the distance to travel between two points, via the path returned by the pathfinder

@@ -16,7 +16,7 @@
 VehicleController::VehicleController(gtime_t d, VehicleModel m) : departTime(d), stopIndex(0), pointIndex(0), model(m) {}
 
 void VehicleController::update(float delta) {
-	gtime_t travelTime = this->getEntity()->getGame()->getTime() - this->departTime;
+	gtime_t travelTime = this->getEntity()->getGame()->getTime();
 	if (this->pointIndex >= this->points.size()) {
 		// Go to next stop
 		this->goToNextStop();
@@ -30,6 +30,8 @@ void VehicleController::update(float delta) {
 			this->pointIndex++;
 			// Call callback
 			if (this->pointIndex >= this->points.size()) {
+				// Now we know when we arrive at that stop
+				this->stops[this->stopIndex].expectedTime = this->points.back().expectedTime;
 				this->onArriveAtStop(this->stopIndex);
 				this->goToNextStop();
 			}
@@ -50,30 +52,21 @@ void VehicleController::update(float delta) {
 		}
 	}
 }
-// This function will eventually be used if the vehicle's route is altered and it cannot complete it's original path
-// For now it is not used
-void VehicleController::pathfindToPoint(sf::Vector3f from, sf::Vector3f to){
-	// Get the path to the point
-	sf::Vector3f pos(from);
-	this->points = {};
-	sf::Vector3f lastPoint = pos;
-	float lastStopTime = this->stops[this->stopIndex - 1].expectedTime;
-	// Start at the from point
-	this->points.push_back(RoutePoint(from, lastStopTime));
-	// Add wait time if this is the first stop
-	if (this->stopIndex == 1) {
-		this->points.push_back(RoutePoint(from, lastStopTime));
-	}
-	auto path = this->getEntity()->pathfinder->findPathBetweenPoints(pos, to, lastStopTime, getSpeed());
-	if (path.empty()) {
-		// TODO
-		throw std::runtime_error("Path is empty, and this is not handled");
-	}
-	this->points.insert(this->points.end(), path.begin(), path.end());
-	// Now we can set the expected time for the stop
-	this->stops[this->stopIndex].expectedTime = path.back().expectedTime;
-	// Reset pathIndex
-	this->pointIndex = 1;
+
+std::vector<RoutePoint> VehicleController::getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to, gtime_t departTime) {
+	std::vector<RoutePoint> points;
+	// Add the departing path
+	auto path = Utils::toRoutePointVector(from.departingPath, departTime, getSpeed());
+	points.insert(points.end(), path.begin(), path.end());
+	departTime = points.back().expectedTime;
+	// Add the path between
+	path = this->getEntity()->pathfinder->findPathBetweenPoints(points.back().pos, to.arrivingPath.front(), departTime, getSpeed());
+	points.insert(points.end(), path.begin(), path.end());
+	departTime = points.back().expectedTime;
+	// Add the arriving path
+	path = Utils::toRoutePointVector(to.arrivingPath, departTime, getSpeed());
+	points.insert(points.end(), path.begin(), path.end());
+	return points;
 }
 void VehicleController::goToNextStop() {
 	sf::Vector3f stop;
@@ -84,10 +77,11 @@ void VehicleController::goToNextStop() {
 		this->onArriveAtDest();
 	}
 	else {
-		sf::Vector3f fromStop = this->stops[this->stopIndex - 1].pos;
-		sf::Vector3f toStop = this->stops[this->stopIndex].pos;
+		VehicleControllerStop fromStop = this->stops[this->stopIndex - 1];
+		VehicleControllerStop toStop = this->stops[this->stopIndex];
 		// Go to the stop
-		pathfindToPoint(fromStop, toStop);
+		this->points = getPathBetweenStops(fromStop, toStop, fromStop.expectedTime);
+		this->pointIndex = 1;
 	}
 }
 float VehicleController::getPathDistance(sf::Vector3f from, sf::Vector3f to) {
@@ -113,6 +107,10 @@ void VehicleController::setStops(std::vector<VehicleControllerStop> stops) {
 	this->stopIndex = 0;
 	this->points = {};
 	this->pointIndex = 0;
+	// The first stop (departing the depot) should have the same time as the route
+	if (!stops.empty()) {
+		this->stops[0].expectedTime = this->departTime;
+	}
 }
 float VehicleController::getSpeed() {
 	return VehicleModelInfo::getModelInfo(this->model).getSpeed();
@@ -120,7 +118,9 @@ float VehicleController::getSpeed() {
 void VehicleController::fromSaveData(SaveData data) {
 	this->stopIndex = std::stoull(data.getValue("stopIndex"));
 	this->departTime = std::stoull(data.getValue("departTime"));
-	this->pathfindToPoint(this->stops[this->stopIndex - 1].pos, this->stops[this->stopIndex].pos);
+	VehicleControllerStop fromStop = this->stops[this->stopIndex - 1];
+	VehicleControllerStop toStop = this->stops[this->stopIndex];
+	this->points = getPathBetweenStops(fromStop, toStop, fromStop.expectedTime);
 }
 std::optional<SaveData> VehicleController::getSaveData() {
 	SaveData data("VehicleController");

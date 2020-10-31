@@ -19,30 +19,39 @@ MailTruckController::MailTruckController(MailTruckRoute r, std::weak_ptr<Entity>
 	setRouteStops();
 }
 void MailTruckController::setRouteStops() {
-	std::vector<sf::Vector3f> stops;
-	// Add the depot
+	std::vector<VehicleControllerStop> stops;
+	VehicleModelInfo modelInfo = VehicleModelInfo::getModelInfo(VehicleModel::MailTruck);
+	// First add the departing path for the depot
+	// Even though a truck should never not have a depot, if loading it may not start with a valid reference
+	// So we have to check
 	if (this->office.lock()) {
-		auto path = TransitStop::getDepartingTransitPath(this->office.lock(), TransitStop::TransitType::Car);
-		stops.insert(stops.end(), path.begin(), path.end());
+		// Add the depot as the first stop
+		std::shared_ptr<Entity> d = this->office.lock();
+		stops.push_back(VehicleControllerStop(
+			TransitStop::getArrivingTransitPath(d, TransitStop::TransitType::Car),
+			TransitStop::getDepartingTransitPath(d, TransitStop::TransitType::Car)
+		));
 	}
-	for (MailTruckRouteStop stop : this->route.stops) {
-		// TODO: Clean this up too
-		if (!stop.target.has_value())
-			continue;
-
-		// The time set here does not matter
-		sf::Vector2i p = stop.target.value();
-		stops.push_back(sf::Vector3f(p.x, p.y, 0));
+	// Add a stop for every stop along the route
+	for (auto it = this->route.stops.begin(); it != this->route.stops.end(); it++) {
+		// If the stop has a target
+		if (it->target.has_value()) {
+			// Add the arriving path
+			sf::Vector2i pos = it->target.value();
+			std::vector<sf::Vector3f> p = { sf::Vector3f((float)pos.x, (float)pos.y, 0) };
+			stops.push_back(VehicleControllerStop(p, p));
+		}
 	}
+	// Go back to the depot
 	if (this->office.lock()) {
-		auto path = TransitStop::getArrivingTransitPath(this->office.lock(), TransitStop::TransitType::Car);
-		stops.insert(stops.end(), path.begin(), path.end());
+		// Add the depot as the first stop
+		std::shared_ptr<Entity> d = this->office.lock();
+		stops.push_back(VehicleControllerStop(
+			TransitStop::getArrivingTransitPath(d, TransitStop::TransitType::Car),
+			TransitStop::getDepartingTransitPath(d, TransitStop::TransitType::Car)
+		));
 	}
-	std::vector<VehicleControllerStop> vStops;
-	for (sf::Vector3f s : stops) {
-		vStops.push_back(VehicleControllerStop(s, 0));
-	}
-	this->setStops(vStops);
+	this->setStops(stops);
 }
 
 void MailTruckController::update(float delta) {
