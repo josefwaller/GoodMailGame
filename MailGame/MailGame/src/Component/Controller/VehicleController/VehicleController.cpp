@@ -53,10 +53,13 @@ void VehicleController::update(float delta) {
 	}
 }
 
-std::vector<RoutePoint> VehicleController::getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to, gtime_t departTime) {
+std::vector<RoutePoint> VehicleController::getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to) {
 	std::vector<RoutePoint> points;
-	// Add the departing path
-	auto path = Utils::toRoutePointVector(from.departingPath, departTime, getSpeed());
+	// First, it always starts at the first point in the departing path when departing from
+	points.push_back(RoutePoint(from.departingPath.front(), from.expectedTime));
+	gtime_t departTime = from.expectedTime;
+	// Add the departing path, the vehicle departs after waiting
+	auto path = Utils::toRoutePointVector(from.departingPath, departTime + from.waitTime, getSpeed());
 	points.insert(points.end(), path.begin(), path.end());
 	departTime = points.back().expectedTime;
 	// Add the path between
@@ -77,10 +80,11 @@ void VehicleController::goToNextStop() {
 		this->onArriveAtDest();
 	}
 	else {
+		VehicleModelInfo mInfo = VehicleModelInfo::getModelInfo(this->model);
 		VehicleControllerStop fromStop = this->stops[this->stopIndex - 1];
 		VehicleControllerStop toStop = this->stops[this->stopIndex];
 		// Go to the stop
-		this->points = getPathBetweenStops(fromStop, toStop, fromStop.expectedTime);
+		this->points = getPathBetweenStops(fromStop, toStop);
 		this->pointIndex = 1;
 	}
 }
@@ -120,7 +124,7 @@ void VehicleController::fromSaveData(SaveData data) {
 	this->departTime = std::stoull(data.getValue("departTime"));
 	VehicleControllerStop fromStop = this->stops[this->stopIndex - 1];
 	VehicleControllerStop toStop = this->stops[this->stopIndex];
-	this->points = getPathBetweenStops(fromStop, toStop, fromStop.expectedTime);
+	this->points = getPathBetweenStops(fromStop, toStop);
 }
 std::optional<SaveData> VehicleController::getSaveData() {
 	SaveData data("VehicleController");

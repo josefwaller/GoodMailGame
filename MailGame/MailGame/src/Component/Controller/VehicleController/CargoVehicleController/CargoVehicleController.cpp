@@ -26,7 +26,8 @@ void CargoVehicleController::setRouteStops() {
 		std::shared_ptr<Entity> d = this->depot.lock();
 		stops.push_back(VehicleControllerStop(
 			TransitStop::getDepartingTransitPath(d, this->type),
-			TransitStop::getArrivingTransitPath(d, this->type)
+			TransitStop::getArrivingTransitPath(d, this->type),
+			modelInfo.getLoadTime()
 		));
 	}
 	// Add a stop for every stop along the route
@@ -36,7 +37,8 @@ void CargoVehicleController::setRouteStops() {
 			// Add the arriving path
 			stops.push_back(VehicleControllerStop(
 				TransitStop::getDepartingTransitPath(it->target.lock(), this->type),
-				TransitStop::getArrivingTransitPath(it->target.lock(), this->type)
+				TransitStop::getArrivingTransitPath(it->target.lock(), this->type),
+				modelInfo.getUnloadTime() + modelInfo.getLoadTime()
 			));
 		}
 	}
@@ -46,7 +48,8 @@ void CargoVehicleController::setRouteStops() {
 		std::shared_ptr<Entity> d = this->depot.lock();
 		stops.push_back(VehicleControllerStop(
 			TransitStop::getArrivingTransitPath(d, this->type),
-			TransitStop::getDepartingTransitPath(d, this->type)
+			TransitStop::getDepartingTransitPath(d, this->type),
+			modelInfo.getUnloadTime()
 		));
 	}
 	this->setStops(stops);
