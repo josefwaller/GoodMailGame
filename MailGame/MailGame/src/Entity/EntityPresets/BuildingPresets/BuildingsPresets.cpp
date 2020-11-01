@@ -152,7 +152,9 @@ std::shared_ptr<Entity> BuildingPresets::airport(Game* g, sf::Vector3f pos, IsoR
 		// Stop at the beginning of the runway
 		sf::Vector3f(2, 1, 0) + pos,
 		// Stop at the end of the runway
-		sf::Vector3f(0, 1, 0) + pos
+		sf::Vector3f(0, 1, 0) + pos,
+		// Depot
+		sf::Vector3f(1, 0, 0) + pos
 	};
 	auto e = Entity::createEntity(
 		g,

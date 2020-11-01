@@ -20,7 +20,7 @@ struct VehicleControllerStop {
 	// The time to wait at this stop
 	gtime_t waitTime;
 	VehicleControllerStop(std::vector<sf::Vector3f> departingPath, std::vector<sf::Vector3f> arrivingPath, gtime_t waitTime = 0)
-		: arrivingPath(arrivingPath), departingPath(departingPath), waitTime(waitTime) {}
+		: arrivingPath(arrivingPath), departingPath(departingPath), waitTime(waitTime), expectedTime(0) {}
 };
 
 class VehicleController: public Controller {

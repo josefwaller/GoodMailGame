@@ -49,7 +49,7 @@ std::vector<sf::Vector3f> TransitStop::getArrivingTransitPath(std::shared_ptr<En
 		airStart.z = PLANE_HEIGHT;
 		sf::Vector3f airEnd = aStop.end + unit * DESCENT_LENGTH;
 		airEnd.z = PLANE_HEIGHT;
-		return  { airStart, aStop.begin, aStop.end };
+		return  { airStart, aStop.begin, aStop.end, aStop.depot };
 	}
 	return {};
 }
@@ -74,7 +74,7 @@ std::vector<sf::Vector3f> TransitStop::getDepartingTransitPath(std::shared_ptr<E
 		airStart.z = PLANE_HEIGHT;
 		sf::Vector3f airEnd = aStop.end + unit * DESCENT_LENGTH;
 		airEnd.z = PLANE_HEIGHT;
-		return  { aStop.begin, aStop.end, airEnd };
+		return  { aStop.depot, aStop.begin, aStop.end, airEnd };
 	}
 }
 

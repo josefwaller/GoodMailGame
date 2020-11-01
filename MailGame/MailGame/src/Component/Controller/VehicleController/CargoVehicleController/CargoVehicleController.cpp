@@ -47,8 +47,8 @@ void CargoVehicleController::setRouteStops() {
 		// Add the depot as the first stop
 		std::shared_ptr<Entity> d = this->depot.lock();
 		stops.push_back(VehicleControllerStop(
-			TransitStop::getArrivingTransitPath(d, this->type),
 			TransitStop::getDepartingTransitPath(d, this->type),
+			TransitStop::getArrivingTransitPath(d, this->type),
 			modelInfo.getUnloadTime()
 		));
 	}

@@ -28,6 +28,8 @@ public:
 		sf::Vector3f begin;
 		// The tile at the end of the runway, i.e. where the plane should take off from
 		sf::Vector3f end;
+		// The depot, i.e. where the airport loads/unloads letters
+		sf::Vector3f depot;
 	};
 	enum TransitType {
 		Car,
