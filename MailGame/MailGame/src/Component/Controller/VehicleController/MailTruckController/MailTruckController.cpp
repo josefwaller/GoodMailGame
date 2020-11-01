@@ -38,7 +38,7 @@ void MailTruckController::setRouteStops() {
 		if (it->target.has_value()) {
 			// Add the arriving path
 			sf::Vector2i pos = it->target.value();
-			std::vector<sf::Vector3f> p = { sf::Vector3f((float)pos.x, (float)pos.y, 0) };
+			std::vector<SpeedPoint> p = { sf::Vector3f((float)pos.x, (float)pos.y, 0) };
 			stops.push_back(VehicleControllerStop(p, p));
 		}
 	}

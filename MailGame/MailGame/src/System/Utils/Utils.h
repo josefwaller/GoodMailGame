@@ -4,6 +4,7 @@
 #include <SFML/Graphics/Color.hpp>
 #include "Constants.h"
 #include "Routes/RoutePoint.h"
+#include "System/SpeedPoint/SpeedPoint.h"
 
 // Misc Utils that I couldn't think to put anywhere else
 // Mostly temporary things that shouldn't make it into the final product
@@ -19,4 +20,6 @@ public:
 	static sf::Color getTimeColor(gtime_t time);
 
 	static std::vector<RoutePoint> toRoutePointVector(std::vector<sf::Vector3f> points, gtime_t time, float speed);
+	// Convert a list of SpeedPoints to a list of RoutePoints
+	static std::vector<RoutePoint> speedPointVectorToRoutePointVector(std::vector<SpeedPoint> points, gtime_t departTime, float defaultSpeed);
 };

@@ -165,6 +165,9 @@
     <ClCompile Include="src\System\IsoSprite\IsoSprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\System\SpeedPoint\SpeedPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h">
@@ -312,6 +315,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\System\IsoSprite\IsoSprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\System\SpeedPoint\SpeedPoint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

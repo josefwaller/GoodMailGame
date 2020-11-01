@@ -172,7 +172,7 @@ void DepotController::update(float delta) {
 					departBuilding = (stop - 1)->target.lock();
 				}
 				// Get the departing path
-				std::vector<RoutePoint> departPath = Utils::toRoutePointVector(
+				std::vector<RoutePoint> departPath = Utils::speedPointVectorToRoutePointVector(
 					this->getEntity()->transitStop->getDepartingTransitPath(departBuilding.lock(), this->type),
 					time,
 					modelInfo.getSpeed()
@@ -182,7 +182,7 @@ void DepotController::update(float delta) {
 					routePoints.insert(routePoints.end(), departPath.begin(), departPath.end());
 				}
 				// Get the arriving path without time cause we don't know what time we'll be there yet
-				std::vector<sf::Vector3f> arriving = stop->target.lock()->transitStop->getArrivingTransitPath(
+				std::vector<SpeedPoint> arriving = stop->target.lock()->transitStop->getArrivingTransitPath(
 					stop->target.lock(),
 					this->type
 				);
@@ -191,7 +191,7 @@ void DepotController::update(float delta) {
 				time = departPath.back().expectedTime;
 				std::vector<RoutePoint> path = this->getEntity()->pathfinder->findPathBetweenPoints(
 					departPath.back().pos,
-					arriving.front(),
+					arriving.front().getPos(),
 					time,
 					modelInfo.getSpeed()
 				);
@@ -200,7 +200,7 @@ void DepotController::update(float delta) {
 					time = path.back().expectedTime;
 				}
 				// Get arriving path
-				std::vector<RoutePoint> arrivalPath = Utils::toRoutePointVector(
+				std::vector<RoutePoint> arrivalPath = Utils::speedPointVectorToRoutePointVector(
 					arriving,
 					time,
 					modelInfo.getSpeed()

@@ -2,6 +2,7 @@
 #include "Component/Component.h"
 #include <SFML/System/Vector3.hpp>
 #include "System/IsoRotation/IsoRotation.h"
+#include "System/SpeedPoint/SpeedPoint.h"
 #include <optional>
 #include <vector>
 
@@ -48,8 +49,8 @@ public:
 	AirplaneStop getAirplaneStop();
 	// Get the position to travel to for a given entity
 	// Split into arriving and departing
-	static std::vector<sf::Vector3f> getArrivingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type);
-	static std::vector<sf::Vector3f> getDepartingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type);
+	static std::vector<SpeedPoint> getArrivingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type);
+	static std::vector<SpeedPoint> getDepartingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type);
 
 	std::optional<SaveData> getSaveData() override;
 	void fromSaveData(SaveData data) override;

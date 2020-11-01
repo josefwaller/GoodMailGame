@@ -4,6 +4,11 @@
 #include "Entity/Entity.h"
 #include <string>
 
+
+// Currently this is just the speed that all planes taxi at
+// Will it be plane individual or something? idk
+const float TAXI_SPEED = 0.6f;
+
 TransitStop::TransitStop(
 	std::optional<CarStop> carStop,
 	std::optional<TrainStop> trainStop,
@@ -29,7 +34,7 @@ TransitStop::AirplaneStop TransitStop::getAirplaneStop() {
 	}
 	throw std::runtime_error("getRoadTransitLocation called but not implemented!");
 }
-std::vector<sf::Vector3f> TransitStop::getArrivingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type) {
+std::vector<SpeedPoint> TransitStop::getArrivingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type) {
 	auto transit = e->transitStop;
 	switch (type) {
 	case TransitStop::TransitType::Car:
@@ -49,11 +54,11 @@ std::vector<sf::Vector3f> TransitStop::getArrivingTransitPath(std::shared_ptr<En
 		airStart.z = PLANE_HEIGHT;
 		sf::Vector3f airEnd = aStop.end + unit * DESCENT_LENGTH;
 		airEnd.z = PLANE_HEIGHT;
-		return  { airStart, aStop.begin, aStop.end, aStop.depot };
+		return  { airStart, aStop.begin, SpeedPoint(aStop.end, 0.0f), SpeedPoint(aStop.depot, TAXI_SPEED) };
 	}
 	return {};
 }
-std::vector<sf::Vector3f> TransitStop::getDepartingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type) {
+std::vector<SpeedPoint> TransitStop::getDepartingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type) {
 	auto transit = e->transitStop;
 	// TODO: Once there are better depot types/more defined railways and driveways, this will be more complicated
 	switch (type) {
@@ -74,7 +79,7 @@ std::vector<sf::Vector3f> TransitStop::getDepartingTransitPath(std::shared_ptr<E
 		airStart.z = PLANE_HEIGHT;
 		sf::Vector3f airEnd = aStop.end + unit * DESCENT_LENGTH;
 		airEnd.z = PLANE_HEIGHT;
-		return  { aStop.depot, aStop.begin, aStop.end, airEnd };
+		return  { SpeedPoint(aStop.depot, TAXI_SPEED), SpeedPoint(aStop.begin, 0.0f), aStop.end, airEnd };
 	}
 }
 

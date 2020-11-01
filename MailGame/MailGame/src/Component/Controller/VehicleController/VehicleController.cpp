@@ -56,18 +56,18 @@ void VehicleController::update(float delta) {
 std::vector<RoutePoint> VehicleController::getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to) {
 	std::vector<RoutePoint> points;
 	// First, it always starts at the first point in the departing path when departing from
-	points.push_back(RoutePoint(from.departingPath.front(), from.expectedTime));
+	points.push_back(RoutePoint(from.departingPath.front().getPos(), from.expectedTime));
 	gtime_t departTime = from.expectedTime;
 	// Add the departing path, the vehicle departs after waiting
-	auto path = Utils::toRoutePointVector(from.departingPath, departTime + from.waitTime, getSpeed());
+	auto path = Utils::speedPointVectorToRoutePointVector(from.departingPath, departTime + from.waitTime, getSpeed());
 	points.insert(points.end(), path.begin(), path.end());
 	departTime = points.back().expectedTime;
 	// Add the path between
-	path = this->getEntity()->pathfinder->findPathBetweenPoints(points.back().pos, to.arrivingPath.front(), departTime, getSpeed());
+	path = this->getEntity()->pathfinder->findPathBetweenPoints(points.back().pos, to.arrivingPath.front().getPos(), departTime, getSpeed());
 	points.insert(points.end(), path.begin(), path.end());
 	departTime = points.back().expectedTime;
 	// Add the arriving path
-	path = Utils::toRoutePointVector(to.arrivingPath, departTime, getSpeed());
+	path = Utils::speedPointVectorToRoutePointVector(to.arrivingPath, departTime, getSpeed());
 	points.insert(points.end(), path.begin(), path.end());
 	return points;
 }
