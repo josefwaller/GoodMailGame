@@ -56,6 +56,10 @@ void Game::loadFromSaveData(SaveData data) {
 		this->getEntityById(std::stoull(entData.getValue("id"))).lock()->loadComponentsFromSaveData(entData);
 	}
 	this->time = std::stoull(data.getValue("time"));
+	this->gameView.setCenter(sf::Vector2f(
+		data.getValuef("cameraX"),
+		data.getValuef("cameraY")
+	));
 }
 
 void Game::update(float delta) {
@@ -265,6 +269,8 @@ SaveData Game::getSaveData() {
 	}
 	sd.addData(entData);
 	sd.addValue("time", this->time);
+	sd.addValue("cameraX", this->gameView.getCenter().x);
+	sd.addValue("cameraY", this->gameView.getCenter().y);
 	return sd;
 }
 
