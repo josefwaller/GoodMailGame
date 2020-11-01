@@ -105,6 +105,8 @@ std::optional<SaveData> TransitStop::getSaveData() {
 		airplaneData.addValue("endX", airplaneStop.value().end.x);
 		airplaneData.addValue("endY", airplaneStop.value().end.y);
 		airplaneData.addValue("endZ", airplaneStop.value().end.z);
+		airplaneData.addValue("depotX", airplaneStop.value().depot.x);
+		airplaneData.addValue("depotY", airplaneStop.value().depot.y);
 		data.addData(airplaneData);
 	}
 	return { data };
@@ -123,6 +125,11 @@ void TransitStop::fromSaveData(SaveData data) {
 					std::stof(d.getValue("endX")),
 					std::stof(d.getValue("endY")),
 					std::stof(d.getValue("endZ"))
+				),
+				sf::Vector3f(
+					std::stof(d.getValue("depotX")),
+					std::stof(d.getValue("depotY")),
+					0.0f
 				)
 			};
 		}
