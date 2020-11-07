@@ -12,6 +12,7 @@
 #include "ResourceLoader/ResourceLoader.h"
 #include "System/SaveData/SaveData.h"
 #include "System/Utils/Utils.h"
+#include "TechTree/TechTree.h"
 
 UiHandler::UiHandler(Game* g): game(g), currentState(UiState::Default), recipe(),
 	toBuild(IsoRotation::NORTH, IsoRotation::SOUTH) {}
@@ -217,6 +218,8 @@ void UiHandler::update() {
 		}
 	}
 	ImGui::End();
+	// Draw the Tech tree window
+	TechTree::update();
 }
 
 void UiHandler::render(sf::RenderWindow* w) {

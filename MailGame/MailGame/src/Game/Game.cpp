@@ -9,6 +9,7 @@
 #include "Component/ClickBox/ClickBox.h"
 #include "System/SaveData/SaveData.h"
 #include "Ui/Construction/Construction.h"
+#include "TechTree/TechTree.h"
 #include <SFML/Graphics.hpp>
 #include <imgui.h>
 
@@ -33,6 +34,8 @@ void Game::generateNew() {
 	this->gameMap.generateNew();
 }
 void Game::loadFromSaveData(SaveData data) {
+	// Load the tech tree
+	TechTree::fromSaveData(data.getData("TechTree"));
 	// First, create entities with the id's given but don't load anything else
 	// So that entities referenced by id in the save data will be valid
 	for (SaveData entData : data.getData("Entities").getDatas()) {
@@ -271,6 +274,8 @@ SaveData Game::getSaveData() {
 	sd.addValue("time", this->time);
 	sd.addValue("cameraX", this->gameView.getCenter().x);
 	sd.addValue("cameraY", this->gameView.getCenter().y);
+	// Add technology save data
+	sd.addData(TechTree::getSaveData());
 	return sd;
 }
 

@@ -170,6 +170,9 @@
     <ClCompile Include="src\System\SaveData\SaveData.cpp" />
     <ClCompile Include="src\System\SpeedPoint\SpeedPoint.cpp" />
     <ClCompile Include="src\System\Utils\Utils.cpp" />
+    <ClCompile Include="src\TechTree\Technology\Technology.cpp" />
+    <ClCompile Include="src\TechTree\TechTree.cpp" />
+    <ClCompile Include="src\TechTree\TechTreeNode\TechTreeNode.cpp" />
     <ClCompile Include="src\Ui\Construction\Construction.cpp" />
     <ClCompile Include="src\Ui\Construction\ConstructionRecipe\ConstructionLayout\ConstructionLayout.cpp" />
     <ClCompile Include="src\Ui\Construction\ConstructionRecipe\ConstructionRecipe.cpp" />
@@ -222,6 +225,9 @@
     <ClInclude Include="src\System\SaveData\SaveData.h" />
     <ClInclude Include="src\System\SpeedPoint\SpeedPoint.h" />
     <ClInclude Include="src\System\Utils\Utils.h" />
+    <ClInclude Include="src\TechTree\Technology\Technology.h" />
+    <ClInclude Include="src\TechTree\TechTree.h" />
+    <ClInclude Include="src\TechTree\TechTreeNode\TechTreeNode.h" />
     <ClInclude Include="src\Ui\Construction\Construction.h" />
     <ClInclude Include="src\Ui\Construction\ConstructionRecipe\ConstructionLayout\ConstructionLayout.h" />
     <ClInclude Include="src\Ui\Construction\ConstructionRecipe\ConstructionRecipe.h" />
