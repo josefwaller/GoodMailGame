@@ -8,6 +8,7 @@
 #include "Entity/Entity.h"
 #include "Game/Game.h"
 #include "System/SaveData/SaveData.h"
+#include "TechTree/TechTree.h"
 
 DepotController::DepotController(TransitStop::TransitType t, std::vector<VehicleModel> models) : type(t), availableModels(models) {}
 
@@ -46,8 +47,10 @@ void DepotController::update(float delta) {
 			if (ImGui::BeginCombo("Vehicle Model", modelInfo.getName().c_str())) {
 				for (auto it = this->availableModels.begin(); it != this->availableModels.end(); it++) {
 					VehicleModelInfo mInfo = VehicleModelInfo::getModelInfo(*it);
-					if (ImGui::Selectable(mInfo.getName().c_str(), *it == route.model)) {
-						this->setRouteModel(route.id, *it);
+					if (TechTree::getTechUnlocked(mInfo.getRequiredTechnology())) {
+						if (ImGui::Selectable(mInfo.getName().c_str(), *it == route.model)) {
+							this->setRouteModel(route.id, *it);
+						}
 					}
 				}
 				ImGui::EndCombo();

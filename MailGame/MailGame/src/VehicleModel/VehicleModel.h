@@ -4,6 +4,7 @@
 #include <vector>
 #include "Component/TransitStop/TransitStop.h"
 #include "Constants.h"
+#include "TechTree/Technology/Technology.h"
 
 // The different Vehicle Models in the game
 #define Models \
@@ -34,11 +35,12 @@ const std::vector<std::pair<VehicleModel, std::string>> modelStrs = {
 class VehicleModelInfo {
 public:
 	static VehicleModelInfo getModelInfo(VehicleModel model);
-	VehicleModelInfo(float speed, gtime_t loadTime, gtime_t unloadTime, std::string name);
+	VehicleModelInfo(float speed, gtime_t loadTime, gtime_t unloadTime, std::string name, Technology requiredTech = Technology::Default);
 	float getSpeed();
 	gtime_t getLoadTime();
 	gtime_t getUnloadTime();
 	std::string getName();
+	Technology getRequiredTechnology();
 private:
 	const static std::map<VehicleModel, VehicleModelInfo> modelInfos;
 	// The speed the vehicle moves at
@@ -47,6 +49,7 @@ private:
 	gtime_t loadTime;
 	gtime_t unloadTime;
 	std::string name;
+	Technology requiredTechnology;
 };
 
 // Used for saving/loading

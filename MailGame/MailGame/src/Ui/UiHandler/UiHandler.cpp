@@ -133,7 +133,15 @@ void UiHandler::update() {
 		file.close();
 	}
 	if (ImGui::CollapsingHeader("Build")) {
-		if (ImGui::Button("Post Office")) {
+		for (auto kv : Construction::recipes) {
+			if (TechTree::getTechUnlocked(kv.second.getRequiredTech())) {
+				if (ImGui::Button(kv.second.getDisplayName().c_str())) {
+					this->recipe = kv.second;
+					this->changeState(UiState::BuildingEntity);
+				}
+			}
+		}
+/*		if (ImGui::Button("Post Office")) {
 			this->recipe = Construction::recipes.at(EntityTag::PostOffice);
 			this->changeState(UiState::BuildingEntity);
 		}
@@ -152,7 +160,7 @@ void UiHandler::update() {
 		if (ImGui::Button("Airport")) {
 			this->recipe = Construction::recipes.at(EntityTag::Airport);
 			this->changeState(UiState::BuildingEntity);
-		}
+		}*/
 		if (ImGui::Button("RailWay")) {
 			this->changeState(UiState::BuildingRailTracks);
 		}

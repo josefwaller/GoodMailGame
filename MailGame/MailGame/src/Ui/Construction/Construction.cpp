@@ -9,6 +9,7 @@
 std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 	{ EntityTag::PostOffice,
 		ConstructionRecipe(
+			"Post Office",
 			&BuildingPresets::postOffice,
 			IsoSprite(
 				ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-N"),
@@ -23,6 +24,7 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 	},
 	{ EntityTag::MailBox,
 		ConstructionRecipe(
+			"Mail Box",
 			&BuildingPresets::mailBox,
 			IsoSprite(
 				ResourceLoader::get()->getSprite("buildings/buildings", "mailbox"),
@@ -37,6 +39,7 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 	},
 	{ EntityTag::CargoTruckDepot,
 		ConstructionRecipe(
+			"Cargo Truck Depot",
 			&BuildingPresets::cargoTruckDepot,
 			IsoSprite(
 				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-N"),
@@ -46,11 +49,13 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 			),
 			ConstructionLayout({
 				{TileType::Land }
-			})
+			}),
+			Technology::CargoTrucks
 		)
 	},
 	{ EntityTag::TrainStation,
 		ConstructionRecipe(
+			"Train Station",
 			[&](Game* g, sf::Vector3f pos, IsoRotation rot) {
 				g->getGameMap()->addRailTrack((size_t)pos.x, (size_t)pos.y, rot + 1, rot + 3);
 				return BuildingPresets::trainStation(g, pos, rot);
@@ -63,11 +68,13 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 			),
 			ConstructionLayout({
 				{ TileType::Land }
-			})
+			}),
+			Technology::Trains
 		)
 	},
 	{ EntityTag::Airport,
 		ConstructionRecipe(
+			"Airport",
 			&BuildingPresets::airport,
 			IsoSprite(
 				ResourceLoader::get()->getSprite("buildings/airport", "airport-N"),
@@ -77,7 +84,8 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 			),
 			ConstructionLayout({
 				{ TileType::Land }
-			})
+			}),
+			Technology::Airplanes
 		)
 	}
 };

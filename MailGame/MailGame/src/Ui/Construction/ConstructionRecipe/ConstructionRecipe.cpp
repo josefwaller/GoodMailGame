@@ -3,10 +3,12 @@
 #include "Game/Game.h"
 
 ConstructionRecipe::ConstructionRecipe(
-	std::function<std::shared_ptr<Entity>(Game* g, sf::Vector3f pos, IsoRotation rot)> func,
+	std::string d,
+	std::function<std::shared_ptr<Entity>(Game * g, sf::Vector3f pos, IsoRotation rot)> func,
 	IsoSprite sprs,
-	ConstructionLayout l
-): layout(l), displaySprites(sprs) {
+	ConstructionLayout l,
+	Technology t
+) : layout(l), displaySprites(sprs), requiredTech(t), displayName(d) {
 	this->buildFunction = func;
 }
 
@@ -65,4 +67,11 @@ std::shared_ptr<Entity> ConstructionRecipe::buildRecipe(Game* g, sf::Vector3f po
 
 sf::Vector3i ConstructionRecipe::roundCoords(sf::Vector3f pos) {
 	return { (int)floor(pos.x), (int)floor(pos.y), (int)floor(pos.z) };
+}
+
+Technology ConstructionRecipe::getRequiredTech() {
+	return this->requiredTech;
+}
+std::string ConstructionRecipe::getDisplayName() {
+	return this->displayName;
 }
