@@ -35,12 +35,13 @@ const std::vector<std::pair<VehicleModel, std::string>> modelStrs = {
 class VehicleModelInfo {
 public:
 	static VehicleModelInfo getModelInfo(VehicleModel model);
-	VehicleModelInfo(float speed, gtime_t loadTime, gtime_t unloadTime, std::string name, Technology requiredTech = Technology::Default);
+	VehicleModelInfo(float speed, gtime_t loadTime, gtime_t unloadTime, std::string name, Technology requiredTech = Technology::Default, money_t money = 100);
 	float getSpeed();
 	gtime_t getLoadTime();
 	gtime_t getUnloadTime();
 	std::string getName();
 	Technology getRequiredTechnology();
+	money_t getCostPerRoute();
 private:
 	const static std::map<VehicleModel, VehicleModelInfo> modelInfos;
 	// The speed the vehicle moves at
@@ -50,6 +51,7 @@ private:
 	gtime_t unloadTime;
 	std::string name;
 	Technology requiredTechnology;
+	money_t cost;
 };
 
 // Used for saving/loading

@@ -11,3 +11,5 @@ typedef unsigned long long gtime_t;
 typedef unsigned long long id_t;
 // The in-game hour
 typedef unsigned int hour_t;
+// In-game money
+typedef long money_t;
