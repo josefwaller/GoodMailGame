@@ -223,6 +223,14 @@ void DepotController::onHourChange(hour_t newHour) {
 	}
 }
 
+money_t DepotController::getCost() {
+	money_t toReturn = 0;
+	for (auto it = this->routes.begin(); it != this->routes.end(); it++) {
+		toReturn += VehicleModelInfo::getModelInfo(it->second.model).getCostPerRoute();
+	}
+	return toReturn;
+}
+
 TransitRoute DepotController::prepareRouteForVehicle(TransitRoute route) {
 	return route;
 }
