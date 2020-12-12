@@ -26,7 +26,7 @@ const std::vector<EntityTag> Game::WHITELIST_ENTITY_TAG = {
 	EntityTag::Airport
 };
 // Initialize Game
-Game::Game(App* a, sf::RenderWindow* w): time(0), gameMap(this), uiHandler(this), window(w), rotation(IsoRotation::NORTH), entities() {
+Game::Game(App* a, sf::RenderWindow* w): time(0), gameMap(this), uiHandler(this), window(w), rotation(IsoRotation::NORTH), entities(), budget(400) {
 	this->gameView.setSize(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT));
 }
 void Game::generateNew() {
@@ -88,6 +88,13 @@ void Game::update(float delta) {
 		offset.x = CAMERA_SPEED;
 	}
 	this->gameView.setCenter(this->gameView.getCenter() + offset * delta);
+	// Compute the cost
+	expenses = 0;
+	for (auto it = this->entities.begin(); it != this->entities.end(); it++) {
+		if ((*it)->controller) {
+			expenses += (*it)->controller->getCost();
+		}
+	}
 
 	// Update UI
 	this->uiHandler.update();
@@ -286,4 +293,10 @@ std::weak_ptr<Entity> Game::getEntityById(size_t id) {
 		}
 	}
 	return {};
+}
+money_t Game::getExcessMoney() {
+	return this->budget - this->expenses;
+}
+money_t Game::getMonthlyBudget() {
+	return this->budget;
 }

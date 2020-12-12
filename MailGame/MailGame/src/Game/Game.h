@@ -78,6 +78,10 @@ public:
 	SaveData getSaveData();
 	// Toggle whether the game is paused or not
 	void togglePause();
+	// Get the excess money the player can spend
+	money_t getExcessMoney();
+	// Get the total monthly budget the player has
+	money_t getMonthlyBudget();
 private:
 	// The window for the game
 	sf::RenderWindow* window;
@@ -99,4 +103,8 @@ private:
 	gtime_t time;
 	// Whether the game is paused or not
 	bool isPaused;
+	// The monthly budget of the player
+	money_t budget;
+	// The amount of money the player spends per month, currently calculated each tick
+	money_t expenses;
 };

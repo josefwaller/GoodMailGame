@@ -110,6 +110,9 @@ void UiHandler::selectEntity(std::function<void(std::weak_ptr<Entity>)> callback
 void UiHandler::update() {
 	char buf[200];
 	ImGui::Begin("Game Controls");
+	// Print available money
+	sprintf_s(buf, "%d / %d CAD available", game->getExcessMoney(), game->getMonthlyBudget());
+	ImGui::Text(buf);
 	// Print percent of letters that have been delivered
 	sprintf_s(buf, "%f of letters delivered", Mail::getPercentDelivered() * 100.0f);
 	ImGui::Text(buf);
