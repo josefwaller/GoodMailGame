@@ -39,6 +39,9 @@ public:
 	size_t getId();
 	// Get the game
 	Game* getGame();
+	// Get the name of the entity
+	// Right now returns the name of the prefab used in the UI
+	std::string getName();
 	// Get the save data for this entities
 	SaveData getSaveData();
 	// Overwrite the entity with the save data given

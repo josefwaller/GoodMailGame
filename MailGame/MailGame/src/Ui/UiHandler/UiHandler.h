@@ -68,4 +68,6 @@ private:
 	hour_t toBuildTime;
 	// The paths to draw
 	std::vector<std::vector<RoutePoint>> pathsToDraw;
+	// The entities to render UI for
+	std::vector<std::weak_ptr<Entity>> toRenderUi;
 };

@@ -103,7 +103,6 @@ void Game::update(float delta) {
 	for (auto it = this->entities.begin(); it != this->entities.end(); it++) {
 		if ((*it)->controller) {
 			(*it)->controller->update(delta);
-			(*it)->controller->renderUi();
 		}
 	}
 

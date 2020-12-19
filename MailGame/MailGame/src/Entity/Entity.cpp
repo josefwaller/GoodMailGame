@@ -53,6 +53,10 @@ size_t Entity::getId() {
 	return this->id;
 }
 
+std::string Entity::getName() {
+	return entityTagToString(this->tag) + " " + std::to_string(this->getId());
+}
+
 Game* Entity::getGame() {
 	return this->game;
 }

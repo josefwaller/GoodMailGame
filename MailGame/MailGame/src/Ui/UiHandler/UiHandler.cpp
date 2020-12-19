@@ -13,6 +13,7 @@
 #include "System/SaveData/SaveData.h"
 #include "System/Utils/Utils.h"
 #include "TechTree/TechTree.h"
+#include "Component/Controller/Controller.h"
 
 UiHandler::UiHandler(Game* g): game(g), currentState(UiState::Default), recipe(),
 	toBuild(IsoRotation::NORTH, IsoRotation::SOUTH) {}
@@ -231,6 +232,38 @@ void UiHandler::update() {
 	ImGui::End();
 	// Draw the Tech tree window
 	TechTree::update();
+	// Render option to show/hide UI for entity
+	ImGui::Begin("Open Entity Ui");
+	std::vector<std::shared_ptr<Entity>> entities = this->game->getEntities();
+	for (auto it = entities.begin(); it != entities.end(); it++) {
+		if ((*it)->tag != EntityTag::Residence && ImGui::Button((*it)->getName().c_str())) {
+			std::shared_ptr<Entity> e(*it);
+			auto i = std::find_if(this->toRenderUi.begin(), this->toRenderUi.end(), [e](std::weak_ptr<Entity> a) {
+				if (a.lock() == e)
+					return true;
+				return false;
+			});
+			if (i == this->toRenderUi.end()) {
+				this->toRenderUi.push_back(e);
+			}
+			else {
+				this->toRenderUi.erase(i);
+			}
+		}
+	}
+	ImGui::End();
+	// Remove deleted entities
+	this->toRenderUi.erase(std::remove_if(this->toRenderUi.begin(), this->toRenderUi.end(), [](std::weak_ptr<Entity> a) {
+		if (a.lock())
+			return false;
+		return true;
+	}), this->toRenderUi.end());
+	// Render Ui for entities
+	for (auto it = this->toRenderUi.begin(); it != this->toRenderUi.end(); it++) {
+		if (it->lock()) {
+			it->lock()->controller->renderUi();
+		}
+	}
 }
 
 void UiHandler::render(sf::RenderWindow* w) {
