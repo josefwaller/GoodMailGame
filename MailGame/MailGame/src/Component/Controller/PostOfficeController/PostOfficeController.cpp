@@ -107,7 +107,7 @@ void PostOfficeController::update(float) {
 void PostOfficeController::onHourChange(hour_t newHour) {
 	// Check if any of the routes depart
 	for (auto it = this->routes.begin(); it != this->routes.end(); it++) {
-		if (it->departTime == newHour) {
+		if (it->departTime == newHour && it->stops.size() >= 1) {
 			// Spawn a new truck for that route
 			Game* game = this->getEntity()->getGame();
 			auto trans = this->getEntity()->transform;
