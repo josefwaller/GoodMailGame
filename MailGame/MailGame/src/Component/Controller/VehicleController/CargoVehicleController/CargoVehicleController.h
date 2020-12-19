@@ -11,7 +11,8 @@ public:
 	CargoVehicleController(TransitRoute route, std::weak_ptr<Entity> office, TransitStop::TransitType type, gtime_t departTime);
 	// Set stops in vehicle controller based on route
 	void setRouteStops();
-	// Overridden methods, see TruckController
+	virtual void renderUi() override;
+	// Overridden methods, see VehicleController
 	virtual void onArriveAtDest() override;
 	virtual void onArriveAtStop(size_t stopIndex) override;
 	virtual std::optional<SaveData> getSaveData() override;

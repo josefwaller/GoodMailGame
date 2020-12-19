@@ -12,7 +12,7 @@
 
 DepotController::DepotController(TransitStop::TransitType t, std::vector<VehicleModel> models) : type(t), availableModels(models) {}
 
-void DepotController::update(float delta) {
+void DepotController::renderUi() {
 	ImGui::PushID((int)this->getEntity()->getId());
 	char buf[200];
 	sf::Vector3f pos = this->getEntity()->transform->getPosition();
@@ -141,6 +141,9 @@ void DepotController::update(float delta) {
 
 	ImGui::End();
 	ImGui::PopID();
+
+}
+void DepotController::update(float) {
 
 	// Delete routes
 	for (TransitRoute r : this->toDelete) {

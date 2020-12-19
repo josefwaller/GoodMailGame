@@ -11,6 +11,7 @@ public:
 	MailTruckController(MailTruckRoute route, std::weak_ptr<Entity> office, gtime_t departTime);
 	static const float SPEED;
 	virtual void update(float delta) override;
+	virtual void renderUi() override;
 	virtual std::optional<SaveData> getSaveData() override;
 	void fromSaveData(SaveData data);
 private:

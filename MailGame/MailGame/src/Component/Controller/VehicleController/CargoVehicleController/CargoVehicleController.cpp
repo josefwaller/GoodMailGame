@@ -1,11 +1,13 @@
 #include "CargoVehicleController.h"
 #include "Entity/Entity.h"
+#include "Entity/EntityTag/EntityTag.h"
 #include "Component/TransitStop/TransitStop.h"
 #include "Component/MailContainer/MailContainer.h"
 #include "Component/ComponentType/ComponentType.h"
 #include "Game/Game.h"
 #include "System/SaveData/SaveData.h"
 #include <stdexcept>
+#include <imgui.h>
 
 CargoVehicleController::CargoVehicleController(
 	TransitRoute r,
@@ -14,6 +16,16 @@ CargoVehicleController::CargoVehicleController(
 	gtime_t departTime
 ) : depot(d), route(r), type(type), VehicleController(departTime, r.model) {
 	setRouteStops();
+}
+
+void CargoVehicleController::renderUi() {
+	ImGui::PushID(this->getEntity()->getId());
+	char buf[200];
+	sprintf_s(buf, "%s %llu", entityTagToString(this->getEntity()->tag).c_str(), this->getEntity()->getId());
+	ImGui::Begin(buf);
+
+	ImGui::End();
+	ImGui::PopID();
 }
 void CargoVehicleController::setRouteStops() {
 	std::vector<VehicleControllerStop> stops;

@@ -60,6 +60,9 @@ void MailTruckController::update(float delta) {
 		this->pickupMailFromOffice();
 	}
 	VehicleController::update(delta);
+}
+void MailTruckController::renderUi() {
+	ImGui::PushID(this->getEntity()->getId());
 	// Draw GUI
 	char buf[200];
 	sprintf_s(buf, "Mail Truck %llu", this->getEntity()->getId());
@@ -72,7 +75,7 @@ void MailTruckController::update(float delta) {
 	sprintf_s(buf, "Position (%f, %f, %f)", pos.x, pos.y, pos.z);
 	ImGui::Text(buf);
 	ImGui::End();
-
+	ImGui::PopID();
 }
 void MailTruckController::dropOffMail(sf::Vector2i pos) {
 	for (int x = -1; x < 2; x++) {

@@ -16,83 +16,84 @@
 #include <string>
 #include <imgui.h>
 
-void PostOfficeController::update(float delta) {
-	if (this->getEntity()->transform->isOnScreen()) {
-		ImGui::PushID((int)this->getEntity()->getId());
-		sf::Vector3f pos = this->getEntity()->transform->getPosition();
-		// Print num letters
-		char buf[200];
-		sprintf_s(buf, "Post Office at (%f, %f)", pos.x, pos.y);
-		ImGui::Begin(buf);
-		sprintf_s(buf, "%zu mail objects", this->getEntity()->mailContainer->getNumLetters());
-		ImGui::Text(buf);
-		for (auto it = this->routes.begin(); it != this->routes.end(); it++) {
-			// Get the route index
-			size_t index = (size_t)(it - this->routes.begin());
-			// Get the ID as a string, for labels
-			ImGui::PushID((int)it->id);
-			// Create a collapsing header
-			std::string routeName = "Route " + std::to_string(it->id);
-			if (ImGui::CollapsingHeader(routeName.c_str())) {
-				// Add dropdown for time
-				if (ImGui::BeginCombo("Departure Time", std::to_string(it->departTime).c_str())) {
-					for (size_t i = 0; i < 24; i++) {
-						if (ImGui::Selectable(std::to_string(i).c_str())) {
-							this->setRouteTime(index, (int)i);
-						}
-						if (it->departTime == i) {
-							ImGui::SetItemDefaultFocus();
-						}
+void PostOfficeController::renderUi() {
+	ImGui::PushID((int)this->getEntity()->getId());
+	sf::Vector3f pos = this->getEntity()->transform->getPosition();
+	// Print num letters
+	char buf[200];
+	sprintf_s(buf, "Post Office at (%f, %f)", pos.x, pos.y);
+	ImGui::Begin(buf);
+	sprintf_s(buf, "%zu mail objects", this->getEntity()->mailContainer->getNumLetters());
+	ImGui::Text(buf);
+	for (auto it = this->routes.begin(); it != this->routes.end(); it++) {
+		// Get the route index
+		size_t index = (size_t)(it - this->routes.begin());
+		// Get the ID as a string, for labels
+		ImGui::PushID((int)it->id);
+		// Create a collapsing header
+		std::string routeName = "Route " + std::to_string(it->id);
+		if (ImGui::CollapsingHeader(routeName.c_str())) {
+			// Add dropdown for time
+			if (ImGui::BeginCombo("Departure Time", std::to_string(it->departTime).c_str())) {
+				for (size_t i = 0; i < 24; i++) {
+					if (ImGui::Selectable(std::to_string(i).c_str())) {
+						this->setRouteTime(index, (int)i);
 					}
-					ImGui::EndCombo();
-				}
-				if (ImGui::BeginCombo("Type", it->isDelivering ? "Delivering" : "Picking Up")) {
-					if (ImGui::Selectable("Delivering")) {
-						this->setRouteType(index, true);
-					}
-					if (ImGui::Selectable("Picking Up")) {
-						this->setRouteType(index, false);
-					}
-					ImGui::EndCombo();
-				}
-				// Add the stops
-				for (size_t i = 0; i < it->stops.size(); i++) {
-					if (ImGui::CollapsingHeader(std::string("Stop " + std::to_string(i)).c_str())) {
-						ImGui::PushID((int)i);
-						// Add select target button
-						std::string btnText = "Select Target";
-						if (it->stops[i].target) {
-							sf::Vector2i target = it->stops[i].target.value();
-							btnText = "Target at (" + std::to_string(target.x) + ", " + std::to_string(target.y) + ")";
-						}
-						if (ImGui::Button(btnText.c_str())) {
-							this->getEntity()->getGame()->getUi()->selectTile([this, index, i](sf::Vector2i pos) {
-								this->setStopTile(index, i, pos);
-							});
-						}
-						// Add Delete stop button
-						if (ImGui::Button("Delete Stop")) {
-							this->deleteStop(index, i);
-						}
-						ImGui::PopID();
+					if (it->departTime == i) {
+						ImGui::SetItemDefaultFocus();
 					}
 				}
-				// Add stop button
-				if (ImGui::Button("Add New Stop")) {
-					this->addStop(index, MailTruckRouteStop());
+				ImGui::EndCombo();
+			}
+			if (ImGui::BeginCombo("Type", it->isDelivering ? "Delivering" : "Picking Up")) {
+				if (ImGui::Selectable("Delivering")) {
+					this->setRouteType(index, true);
 				}
-				if (ImGui::Button("Delete")) {
-					this->deleteRoute(index);
+				if (ImGui::Selectable("Picking Up")) {
+					this->setRouteType(index, false);
+				}
+				ImGui::EndCombo();
+			}
+			// Add the stops
+			for (size_t i = 0; i < it->stops.size(); i++) {
+				if (ImGui::CollapsingHeader(std::string("Stop " + std::to_string(i)).c_str())) {
+					ImGui::PushID((int)i);
+					// Add select target button
+					std::string btnText = "Select Target";
+					if (it->stops[i].target) {
+						sf::Vector2i target = it->stops[i].target.value();
+						btnText = "Target at (" + std::to_string(target.x) + ", " + std::to_string(target.y) + ")";
+					}
+					if (ImGui::Button(btnText.c_str())) {
+						this->getEntity()->getGame()->getUi()->selectTile([this, index, i](sf::Vector2i pos) {
+							this->setStopTile(index, i, pos);
+						});
+					}
+					// Add Delete stop button
+					if (ImGui::Button("Delete Stop")) {
+						this->deleteStop(index, i);
+					}
+					ImGui::PopID();
 				}
 			}
-			ImGui::PopID();
+			// Add stop button
+			if (ImGui::Button("Add New Stop")) {
+				this->addStop(index, MailTruckRouteStop());
+			}
+			if (ImGui::Button("Delete")) {
+				this->deleteRoute(index);
+			}
 		}
-		if (ImGui::Button("Create Route")) {
-			this->addRoute(MailTruckRoute(true, 0));
-		}
-		ImGui::End();
 		ImGui::PopID();
 	}
+	if (ImGui::Button("Create Route")) {
+		this->addRoute(MailTruckRoute(true, 0));
+	}
+	ImGui::End();
+	ImGui::PopID();
+}
+
+void PostOfficeController::update(float) {
 	// Delete any routes that are flagged for deletion
 	for (int i = (int)(routes.size() - 1); i >= 0; i--) {
 		// Check if the route should be deleted

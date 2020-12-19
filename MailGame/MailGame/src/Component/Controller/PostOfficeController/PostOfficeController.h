@@ -8,6 +8,7 @@ class PostOfficeController : public Controller {
 public:
 	virtual void update(float delta) override;
 	virtual void onHourChange(hour_t newHour) override;
+	virtual void renderUi() override;
 	virtual money_t getCost() override;
 
 	// Update the attributes from the Ui
