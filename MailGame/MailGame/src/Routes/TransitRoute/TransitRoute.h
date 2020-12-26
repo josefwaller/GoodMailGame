@@ -40,12 +40,14 @@ struct TransitRoute {
 	static id_t ROUTE_ID;
 	// Constructor
 	// This one will usually just leave out CargoCarModel
-	TransitRoute(hour_t time, VehicleModel m, std::optional<CargoCarModel> s = {}) : departureTime(time), id(ROUTE_ID++), model(m), cargoCarModel(s) {}
-	TransitRoute(hour_t time, VehicleModel m, CargoCarModel s) : TransitRoute(time, m, std::optional<CargoCarModel>(s)) {}
+	TransitRoute(hour_t time, VehicleModel m, std::optional<CargoCarModel> s = {}, unsigned int num = 0) : departureTime(time), id(ROUTE_ID++), model(m), cargoCarModel(s), numCargoCars(num) {}
+	TransitRoute(hour_t time, VehicleModel m, CargoCarModel s, unsigned int num) : TransitRoute(time, m, std::optional<CargoCarModel>(s), num) {}
 	// The VehicleModel to use along the route
 	VehicleModel model;
 	// The model of the cargo car, or none if there is none
 	std::optional<CargoCarModel> cargoCarModel;
+	// How many cargo cars to use, possibly 0
+	unsigned int numCargoCars;
 };
 
 SaveData transitRouteToSaveData(TransitRoute route);

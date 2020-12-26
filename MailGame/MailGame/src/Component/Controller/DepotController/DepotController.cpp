@@ -67,6 +67,11 @@ void DepotController::renderUi() {
 					}
 					ImGui::EndCombo();
 				}
+				int x = route.numCargoCars;
+				ImGui::SliderInt("Num Cars", &x, 0, modelInfo.getMaxNumCargoCars());
+				if (x != route.numCargoCars) {
+					this->setRouteNumberCargoCars(route.id, (unsigned int)x);
+				}
 			}
 
 			// GUI for the stops
@@ -265,6 +270,9 @@ void DepotController::setRouteModel(size_t routeId, VehicleModel model) {
 }
 void DepotController::setRouteCargoCarModel(size_t routeId, std::optional<CargoCarModel> model) {
 	this->routes.find(routeId)->second.cargoCarModel = model;
+}
+void DepotController::setRouteNumberCargoCars(size_t routeId, unsigned int num) {
+	this->routes.find(routeId)->second.numCargoCars = num;
 }
 void DepotController::addStop(TransitRouteStop stop, size_t routeId) {
 	this->routes.find(routeId)->second.stops.push_back(stop);

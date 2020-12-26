@@ -34,6 +34,8 @@ public:
 	void setRouteModel(size_t routeId, VehicleModel model);
 	// Set the cargo car model for a route
 	void setRouteCargoCarModel(size_t routeId, std::optional<CargoCarModel> model);
+	// Set the number of cargo cars for a route
+	void setRouteNumberCargoCars(size_t routeId, unsigned int num);
 	// Add a stop to the route by id
 	void addStop(TransitRouteStop stop, size_t routeId);
 	// Delete a stop by index from the route by id
