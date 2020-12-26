@@ -10,6 +10,8 @@ SaveData transitRouteToSaveData(TransitRoute route) {
 	sd.addValue("departureTime", route.departureTime);
 	sd.addValue("numStops", route.stops.size());
 	sd.addValue("model", vehicleModelToString(route.model));
+	if (route.secondaryModel.has_value())
+		sd.addValue("secondaryModel", vehicleModelToString(route.secondaryModel.value()));
 	for (size_t i = 0; i < route.stops.size(); i++) {
 		TransitRouteStop stop = route.stops[i];
 		SaveData d = transitRouteStopToSaveData(stop);
@@ -21,6 +23,8 @@ SaveData transitRouteToSaveData(TransitRoute route) {
 
 TransitRoute saveDataToTransitRoute(Game* g, SaveData data) {
 	TransitRoute route(std::stoi(data.getValue("departureTime")), stringToVehicleModel(data.getValue("model")));
+	if (data.hasValue("secondaryModel"))
+		route.secondaryModel = stringToVehicleModel(data.getValue("secondaryModel"));
 	route.stops.resize(std::stoull(data.getValue("numStops")));
 	for (SaveData d : data.getDatas()) {
 		size_t index = std::stoull(d.getValue("index"));
