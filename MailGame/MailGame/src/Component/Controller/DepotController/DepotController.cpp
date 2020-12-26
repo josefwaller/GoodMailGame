@@ -55,7 +55,7 @@ void DepotController::renderUi() {
 				}
 				ImGui::EndCombo();
 			}
-			if (!modelInfo.getAllowedCargoCars().empty()) {
+			if (modelInfo.getMaxNumCargoCars() != 0) {
 				sprintf_s(buf, "%s", route.cargoCarModel.has_value() ? CargoCarInfo::get(route.cargoCarModel.value()).getName().c_str() : "");
 				if (ImGui::BeginCombo("Cargo Car", buf)) {
 					const auto allowed = modelInfo.getAllowedCargoCars();
