@@ -55,6 +55,19 @@ void DepotController::renderUi() {
 				}
 				ImGui::EndCombo();
 			}
+			if (!modelInfo.getAllowedCargoCars().empty()) {
+				sprintf_s(buf, "%s", route.cargoCarModel.has_value() ? CargoCarInfo::get(route.cargoCarModel.value()).getName().c_str() : "");
+				if (ImGui::BeginCombo("Cargo Car", buf)) {
+					const auto allowed = modelInfo.getAllowedCargoCars();
+					for (auto it = allowed.begin(); it != allowed.end(); it++) {
+						CargoCarInfo cInfo = CargoCarInfo::get(*it);
+						if (ImGui::Selectable(cInfo.getName().c_str(), route.cargoCarModel.has_value() && *it == route.cargoCarModel.value())) {
+							this->setRouteCargoCarModel(route.id, { *it });
+						}
+					}
+					ImGui::EndCombo();
+				}
+			}
 
 			// GUI for the stops
 			for (size_t j = 0; j < route.stops.size(); j++) {
@@ -249,6 +262,9 @@ void DepotController::setRouteDepartTime(size_t routeId, int depTime) {
 }
 void DepotController::setRouteModel(size_t routeId, VehicleModel model) {
 	this->routes.find(routeId)->second.model = model;
+}
+void DepotController::setRouteCargoCarModel(size_t routeId, std::optional<CargoCarModel> model) {
+	this->routes.find(routeId)->second.cargoCarModel = model;
 }
 void DepotController::addStop(TransitRouteStop stop, size_t routeId) {
 	this->routes.find(routeId)->second.stops.push_back(stop);

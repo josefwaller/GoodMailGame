@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "Component/TransitStop/TransitStop.h"
+#include "CargoCarModel/CargoCarModel.h"
 #include "Constants.h"
 #include "TechTree/Technology/Technology.h"
 
@@ -35,13 +36,21 @@ const std::vector<std::pair<VehicleModel, std::string>> modelStrs = {
 class VehicleModelInfo {
 public:
 	static VehicleModelInfo getModelInfo(VehicleModel model);
-	VehicleModelInfo(float speed, gtime_t loadTime, gtime_t unloadTime, std::string name, Technology requiredTech = Technology::Default, money_t money = 100);
+	VehicleModelInfo(
+		float speed,
+		gtime_t loadTime,
+		gtime_t unloadTime,
+		std::string name,
+		Technology requiredTech = Technology::Default,
+		money_t money = 100,
+		std::vector<CargoCarModel> allowedCargoCars = {});
 	float getSpeed();
 	gtime_t getLoadTime();
 	gtime_t getUnloadTime();
 	std::string getName();
 	Technology getRequiredTechnology();
 	money_t getCostPerRoute();
+	std::vector<CargoCarModel> getAllowedCargoCars();
 private:
 	const static std::map<VehicleModel, VehicleModelInfo> modelInfos;
 	// The speed the vehicle moves at
@@ -52,6 +61,7 @@ private:
 	std::string name;
 	Technology requiredTechnology;
 	money_t cost;
+	std::vector<CargoCarModel> allowedCargoCars;
 };
 
 // Used for saving/loading

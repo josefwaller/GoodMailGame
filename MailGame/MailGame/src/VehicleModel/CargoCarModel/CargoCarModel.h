@@ -7,7 +7,9 @@
  */
 
 #define CARGO_CARS \
-    f(TrainCar)
+    f(TrainCar) \
+    f(BigTrainCar) \
+    f(SmallTrainCar)
 
 #define f(x) x,
 
@@ -16,7 +18,7 @@ enum class CargoCarModel {
 };
 
 #undef f
-#define f(x) { CargoCarModel::x, #x }
+#define f(x) { CargoCarModel::x, #x },
 
 const std::map<CargoCarModel, std::string> CARGO_CAR_STRINGS = {
     CARGO_CARS
@@ -27,8 +29,14 @@ const std::map<CargoCarModel, std::string> CARGO_CAR_STRINGS = {
 
 class CargoCarInfo {
 public:
-    CargoCarInfo(unsigned int capacity, float maxSpeed);
+    CargoCarInfo(std::string name, unsigned int capacity, float maxSpeed);
+    static CargoCarInfo get(CargoCarModel model);
+
+    std::string getName();
 private:
+    static const std::map<CargoCarModel, CargoCarInfo> INFOS;
+
+    std::string name;
     unsigned int capacity;
     float maxSpeed;
 };
