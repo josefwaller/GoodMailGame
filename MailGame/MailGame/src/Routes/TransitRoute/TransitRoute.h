@@ -4,6 +4,7 @@
 #include <optional>
 #include "Constants.h"
 #include "Routes/RoutePoint.h"
+#include "VehicleModel/CargoCarModel/CargoCarModel.h"
 #include "VehicleModel/VehicleModel.h"
 
 class Entity;
@@ -38,12 +39,13 @@ struct TransitRoute {
 	id_t id;
 	static id_t ROUTE_ID;
 	// Constructor
-	TransitRoute(hour_t time, VehicleModel m, std::optional<VehicleModel> s = {}) : departureTime(time), id(ROUTE_ID++), model(m), secondaryModel(s) {}
-	TransitRoute(hour_t time, VehicleModel m, VehicleModel s) : TransitRoute(time, m, std::optional<VehicleModel>(s)) {}
+	// This one will usually just leave out CargoCarModel
+	TransitRoute(hour_t time, VehicleModel m, std::optional<CargoCarModel> s = {}) : departureTime(time), id(ROUTE_ID++), model(m), cargoCarModel(s) {}
+	TransitRoute(hour_t time, VehicleModel m, CargoCarModel s) : TransitRoute(time, m, std::optional<CargoCarModel>(s)) {}
 	// The VehicleModel to use along the route
 	VehicleModel model;
-	// optional second vehicle model, for things like the train's cars
-	std::optional<VehicleModel> secondaryModel;
+	// The model of the cargo car, or none if there is none
+	std::optional<CargoCarModel> cargoCarModel;
 };
 
 SaveData transitRouteToSaveData(TransitRoute route);
