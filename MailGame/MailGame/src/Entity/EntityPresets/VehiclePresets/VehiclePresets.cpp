@@ -79,6 +79,12 @@ std::shared_ptr<Entity> VehiclePresets::train(
 	TransitRoute route,
 	std::weak_ptr<Entity> depot
 ) {
+	std::vector<std::weak_ptr<Entity>> trainCars;
+	for (size_t i = 0; i < route.numCargoCars; i++) {
+		auto car = VehiclePresets::trainCar(g, pos, rot);
+		g->addEntity(car);
+		trainCars.push_back(car);
+	}
 	return Entity::createEntity(
 		g,
 		EntityTag::Train,
@@ -92,7 +98,7 @@ std::shared_ptr<Entity> VehiclePresets::train(
 			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
-		new CargoVehicleController(route, depot, TransitStop::TransitType::Train, g->getTime()),
+		new CargoVehicleController(route, depot, TransitStop::TransitType::Train, g->getTime(), trainCars),
 		nullptr,
 		new MailContainer(),
 		nullptr,
@@ -123,5 +129,21 @@ std::shared_ptr<Entity> VehiclePresets::plane(
 		new MailContainer(),
 		nullptr,
 		new AirPathfinder()
+	);
+}
+std::shared_ptr<Entity> VehiclePresets::trainCar(Game* g, sf::Vector3f pos, IsoRotation rot) {
+	return Entity::createEntity(
+		g,
+		EntityTag::TrainCar,
+		new Transform(pos, rot),
+		new IsoSpriteRenderer(
+			IsoSprite(
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-N", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-E", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-W", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-S", true)
+			),
+			sf::Vector3f(0.5f, 0.5f, 0)
+		)
 	);
 }

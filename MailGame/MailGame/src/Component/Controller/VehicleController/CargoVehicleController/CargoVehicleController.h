@@ -2,13 +2,14 @@
 #include "Component/Controller/VehicleController/VehicleController.h"
 #include "Component/TransitStop/TransitStop.h"
 #include "Routes/TransitRoute/TransitRoute.h"
+#include <vector>
 #include <memory>
 
 class Entity;
 
 class CargoVehicleController : public VehicleController {
 public:
-	CargoVehicleController(TransitRoute route, std::weak_ptr<Entity> office, TransitStop::TransitType type, gtime_t departTime);
+	CargoVehicleController(TransitRoute route, std::weak_ptr<Entity> office, TransitStop::TransitType type, gtime_t departTime, std::vector<std::weak_ptr<Entity>> cargoCars = {});
 	// Set stops in vehicle controller based on route
 	void setRouteStops();
 	virtual void renderUi() override;

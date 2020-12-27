@@ -13,8 +13,9 @@ CargoVehicleController::CargoVehicleController(
 	TransitRoute r,
 	std::weak_ptr<Entity> d,
 	TransitStop::TransitType type,
-	gtime_t departTime
-) : depot(d), route(r), type(type), VehicleController(departTime, r.model) {
+	gtime_t departTime,
+	std::vector<std::weak_ptr<Entity>> cargoCars
+) : depot(d), route(r), type(type), VehicleController(departTime, r.model, cargoCars) {
 	setRouteStops();
 }
 
@@ -70,6 +71,7 @@ void CargoVehicleController::onArriveAtDest() {
 	// Give letters to depot and destory self
 	this->getEntity()->mailContainer->transferAllMailTo(this->depot.lock()->mailContainer);
 	this->getEntity()->getGame()->removeEntity(this->getEntity());
+	this->deleteCars();
 }
 void CargoVehicleController::onArriveAtStop(size_t stopIndex) {
 	// For the last stop (i.e. the depot) we don't need to transfer any letters
@@ -116,7 +118,7 @@ std::optional<SaveData> CargoVehicleController::getSaveData() {
 	sd.addData(transitRouteToSaveData(this->route));
 	if (depot.lock())
 		sd.addValue("depotId", depot.lock()->getId());
-	sd.addValuesFrom(VehicleController::getSaveData().value());
+	sd.addData(VehicleController::getSaveData().value());
 	return sd;
 }
 void CargoVehicleController::fromSaveData(SaveData data) {
@@ -125,7 +127,7 @@ void CargoVehicleController::fromSaveData(SaveData data) {
 		this->depot = this->getEntity()->getGame()->getEntityById(std::stoull(data.getValue("depotId")));
 	}
 	setRouteStops();
-	VehicleController::fromSaveData(data);
+	VehicleController::fromSaveData(data.getData("VehicleController"));
 }
 
 

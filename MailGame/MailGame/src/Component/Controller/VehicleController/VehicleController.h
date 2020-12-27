@@ -26,7 +26,7 @@ struct VehicleControllerStop {
 
 class VehicleController: public Controller {
 public:
-	VehicleController(gtime_t departTime, VehicleModel model);
+	VehicleController(gtime_t departTime, VehicleModel model, std::vector<std::weak_ptr<Entity>> cargoCars = {});
 	virtual void update(float delta) override;
 protected:
 	// Set the stops
@@ -44,11 +44,14 @@ protected:
 	size_t stopIndex;
 	// The time the vehicle departed the depot
 	gtime_t departTime;
+	// Delete the cars
+	// Called when the vehicle has reached its final destination
+	void deleteCars();
 	// Sets up the stops on load
 	// Mainly sets the expected time so that things will run smoothly
 	// Make sure to call this after setting the stops
 	virtual void fromSaveData(SaveData data) override;
-	// Get eth save data
+	// Get the save data
 	// For this class, it should be called by a child class and combined with another save data
 	std::optional<SaveData> getSaveData() override;
 private:
@@ -59,12 +62,17 @@ private:
 	std::vector<VehicleControllerStop> stops;
 	// The model that this vehicle is
 	VehicleModel model;
+	// The cars
+	std::vector<std::weak_ptr<Entity>> cargoCars;
 	// Get the path, as route points, between two stops
 	// Includes the departing path and the arriving path
-	std::vector<RoutePoint> getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to);
+	// Initialdistance may be excluded
+	std::vector<RoutePoint> getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to, float initialDistance = 0.0f);
 	// Go to the next stop along the route
 	void goToNextStop();
 	// Get the distance to travel between two points, via the path returned by the pathfinder
 	float getPathDistance(sf::Vector3f from, sf::Vector3f to);
+	// Get the position on the path after travelling the distance given
+	sf::Vector3f getPathPosAtDistance(float distance);
 };
 

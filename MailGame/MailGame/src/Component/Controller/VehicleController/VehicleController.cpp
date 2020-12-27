@@ -12,8 +12,9 @@
 #include <queue>
 #include <map>
 #include <functional>
+#include <math.h>
 
-VehicleController::VehicleController(gtime_t d, VehicleModel m) : departTime(d), stopIndex(0), pointIndex(0), model(m) {}
+VehicleController::VehicleController(gtime_t d, VehicleModel m, std::vector<std::weak_ptr<Entity>> cargoCars) : departTime(d), stopIndex(0), pointIndex(0), model(m), cargoCars(cargoCars) {}
 
 void VehicleController::update(float delta) {
 	gtime_t travelTime = this->getEntity()->getGame()->getTime();
@@ -49,14 +50,23 @@ void VehicleController::update(float delta) {
 			sf::Vector2f diff(nextPoint.pos.x - lastPoint.pos.x, nextPoint.pos.y - lastPoint.pos.y);
 			IsoRotation rot = IsoRotation::fromUnitVector(diff);
 			this->getEntity()->transform->setRotation(rot);
+			// Update cars
+			const float BETWEEN_CARS_DISTANCE = 0.3f;
+			float currentDistance = Utils::getVectorDistance(pos, lastPoint.pos) + lastPoint.distance;
+			for (std::weak_ptr<Entity> car : this->cargoCars) {
+				if (car.lock()) {
+					currentDistance -= BETWEEN_CARS_DISTANCE;
+					car.lock()->transform->setPosition(getPathPosAtDistance(currentDistance));
+				}
+			}
 		}
 	}
 }
 
-std::vector<RoutePoint> VehicleController::getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to) {
+std::vector<RoutePoint> VehicleController::getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to, float initialDistance) {
 	std::vector<RoutePoint> points;
 	// First, it always starts at the first point in the departing path when departing from
-	points.push_back(RoutePoint(from.departingPath.front().getPos(), from.expectedTime, 0));
+	points.push_back(RoutePoint(from.departingPath.front().getPos(), from.expectedTime, initialDistance));
 	gtime_t departTime = from.expectedTime;
 	// Add the departing path, the vehicle departs after waiting
 	auto path = Utils::speedPointVectorToRoutePointVector(from.departingPath, departTime + from.waitTime, getSpeed());
@@ -69,6 +79,7 @@ std::vector<RoutePoint> VehicleController::getPathBetweenStops(VehicleController
 	// Add the arriving path
 	path = Utils::speedPointVectorToRoutePointVector(to.arrivingPath, departTime, getSpeed());
 	points.insert(points.end(), path.begin(), path.end());
+
 	// Now just set the distance between all the points
 	for (auto it = points.begin() + 1; it != points.end(); it++) {
 		it->distance = (it - 1)->distance + Utils::getVectorDistance((it - 1)->pos, it->pos);
@@ -88,7 +99,8 @@ void VehicleController::goToNextStop() {
 		VehicleControllerStop fromStop = this->stops[this->stopIndex - 1];
 		VehicleControllerStop toStop = this->stops[this->stopIndex];
 		// Go to the stop
-		this->points = getPathBetweenStops(fromStop, toStop);
+		float distance = this->points.empty() ? 0.0f : this->points.back().distance;
+		this->points = getPathBetweenStops(fromStop, toStop, distance);
 		this->pointIndex = 1;
 	}
 }
@@ -129,13 +141,60 @@ void VehicleController::fromSaveData(SaveData data) {
 	VehicleControllerStop fromStop = this->stops[this->stopIndex - 1];
 	VehicleControllerStop toStop = this->stops[this->stopIndex];
 	this->points = getPathBetweenStops(fromStop, toStop);
+	// Load cargo cars
+	size_t numCargoCars = std::stoull(data.getValue("numCargoCars"));
+	this->cargoCars = std::vector<std::weak_ptr<Entity>>(numCargoCars);
+	for (SaveData d : data.getDatas()) {
+		if (d.getName() == "CargoCar") {
+			size_t index = std::stoull(d.getValue("index"));
+			size_t id = std::stoull(d.getValue("id"));
+			this->cargoCars[index] = this->getEntity()->getGame()->getEntityById(id);
+		}
+	}
 }
 std::optional<SaveData> VehicleController::getSaveData() {
 	SaveData data("VehicleController");
 	data.addValue("stopIndex", stopIndex);
 	data.addValue("pointIndex", pointIndex);
 	data.addValue("departTime", departTime);
+	data.addValue("numCargoCars", this->cargoCars.size());
+	for (auto it = this->cargoCars.begin(); it != this->cargoCars.end(); it++) {
+		if (it->lock()) {
+			SaveData cargoCarData("CargoCar");
+			cargoCarData.addValue("index", it - this->cargoCars.begin());
+			cargoCarData.addValue("id", it->lock()->getId());
+			data.addData(cargoCarData);
+		}
+	}
 	return { data };
+}
+
+sf::Vector3f VehicleController::getPathPosAtDistance(float distance) {
+	// First, find the first stop it would have passed
+	float initialDistance = 0.0f;
+	for (auto it = this->stops.begin(); it != this->stops.end() - 1; it++) {
+		auto path = getPathBetweenStops(*it, *(it + 1), initialDistance);
+		initialDistance = path.back().distance;
+		RoutePoint prevPoint = path.front();
+		for (auto p : path) {
+			if (p.distance > distance) {
+				// Get the vector of going to p from prevPoint
+				sf::Vector3f diff = p.pos - prevPoint.pos;
+				// Turn it into a unit vector
+				sf::Vector3f unit = diff / sqrt(pow(diff.x, 2) + pow(diff.y, 2) + pow(diff.z, 2));
+				// Calculate how far it would get
+				return prevPoint.pos + unit * (distance - prevPoint.distance);
+			}
+			else {
+				prevPoint = p;
+			}
+		}
+	}
+}
+void VehicleController::deleteCars() {
+	for (auto c : this->cargoCars) {
+		this->getEntity()->getGame()->removeEntity(c);
+	}
 }
 
 void VehicleController::onArriveAtTile(sf::Vector2i point) {}
