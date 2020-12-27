@@ -1,4 +1,8 @@
 <TextureAtlas imagePath="sheet.png">
+	<SubTexture name="trainCar-reg-E.png" x="173" y="117" width="31" height="31" />
+	<SubTexture name="trainCar-reg-W.png" x="204" y="207" width="31" height="31" />
+	<SubTexture name="trainCar-reg-N.png" x="369" y="142" width="31" height="29" />
+	<SubTexture name="trainCar-reg-S.png" x="203" y="379" width="32" height="29" />
 	<SubTexture name="ambulance_E.png" x="139" y="94" width="33" height="29"/>
 	<SubTexture name="ambulance_N.png" x="812" y="481" width="19" height="27"/>
 	<SubTexture name="mailTruck-N" x="0" y="296" width="35" height="31"/>

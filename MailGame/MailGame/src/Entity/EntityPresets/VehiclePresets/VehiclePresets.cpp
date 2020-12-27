@@ -138,10 +138,10 @@ std::shared_ptr<Entity> VehiclePresets::trainCar(Game* g, sf::Vector3f pos, IsoR
 		new Transform(pos, rot),
 		new IsoSpriteRenderer(
 			IsoSprite(
-				ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-N", true),
-				ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-E", true),
-				ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-W", true),
-				ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-S", true)
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "trainCar-reg-N.png", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "trainCar-reg-E.png", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "trainCar-reg-W.png", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "trainCar-reg-S.png", true)
 			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		)

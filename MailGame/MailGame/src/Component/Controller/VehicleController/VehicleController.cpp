@@ -56,7 +56,9 @@ void VehicleController::update(float delta) {
 			for (std::weak_ptr<Entity> car : this->cargoCars) {
 				if (car.lock()) {
 					currentDistance -= BETWEEN_CARS_DISTANCE;
-					car.lock()->transform->setPosition(getPathPosAtDistance(currentDistance));
+					auto pair = getPosAndRotAtDistance(currentDistance);
+					car.lock()->transform->setPosition(pair.first);
+					car.lock()->transform->setRotation(pair.second);
 				}
 			}
 		}
@@ -176,7 +178,7 @@ std::optional<SaveData> VehicleController::getSaveData() {
 	return { data };
 }
 
-sf::Vector3f VehicleController::getPathPosAtDistance(float distance) {
+std::pair<sf::Vector3f, IsoRotation> VehicleController::getPosAndRotAtDistance(float distance) {
 	// First, find the first stop it would have passed
 	float initialDistance = 0.0f;
 	for (auto it = this->stops.begin(); it != this->stops.end() - 1; it++) {
@@ -189,8 +191,11 @@ sf::Vector3f VehicleController::getPathPosAtDistance(float distance) {
 				sf::Vector3f diff = p.pos - prevPoint.pos;
 				// Turn it into a unit vector
 				sf::Vector3f unit = diff / sqrt(pow(diff.x, 2) + pow(diff.y, 2) + pow(diff.z, 2));
+				// Get the rotation
+				IsoRotation rot = IsoRotation::fromUnitVector(unit);
 				// Calculate how far it would get
-				return prevPoint.pos + unit * (distance - prevPoint.distance);
+				sf::Vector3f pos = prevPoint.pos + unit * (distance - prevPoint.distance);
+				return { pos, rot };
 			}
 			else {
 				prevPoint = p;

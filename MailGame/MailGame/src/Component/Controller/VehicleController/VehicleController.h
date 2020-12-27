@@ -72,7 +72,7 @@ private:
 	void goToNextStop();
 	// Get the distance to travel between two points, via the path returned by the pathfinder
 	float getPathDistance(sf::Vector3f from, sf::Vector3f to);
-	// Get the position on the path after travelling the distance given
-	sf::Vector3f getPathPosAtDistance(float distance);
+	// Get the position and rotation on the path after travelling the distance given
+	std::pair<sf::Vector3f, IsoRotation> getPosAndRotAtDistance(float distance);
 };
 

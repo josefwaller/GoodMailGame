@@ -89,6 +89,9 @@ public:
 		// ERROR but not crashing as planes will prob get here
 		return IsoRotation::NORTH;
 	}
+	static IsoRotation fromUnitVector(sf::Vector3f u) {
+		return fromUnitVector(sf::Vector2f(u.x, u.y));
+	}
 	// Get unit vector in 3D space (with Z = 0)
 	sf::Vector3f getUnitVector3D() {
 		return sf::Vector3f(getUnitVector().x, getUnitVector().y, 0);
