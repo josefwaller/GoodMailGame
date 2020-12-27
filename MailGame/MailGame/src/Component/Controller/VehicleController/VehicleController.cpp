@@ -138,9 +138,16 @@ float VehicleController::getSpeed() {
 void VehicleController::fromSaveData(SaveData data) {
 	this->stopIndex = std::stoull(data.getValue("stopIndex"));
 	this->departTime = std::stoull(data.getValue("departTime"));
+	// Update the expected time for every stop up to stopIndex
+	// Since we need that information to move accordingly
+	this->stops[0].expectedTime = departTime;
+	for (size_t i = 1; i < this->stopIndex; i++) {
+		this->stops[i].expectedTime = getPathBetweenStops(this->stops[i - 1], this->stops[i]).back().expectedTime;
+	}
 	VehicleControllerStop fromStop = this->stops[this->stopIndex - 1];
 	VehicleControllerStop toStop = this->stops[this->stopIndex];
 	this->points = getPathBetweenStops(fromStop, toStop);
+	this->pointIndex = std::stoull(data.getValue("pointIndex"));
 	// Load cargo cars
 	size_t numCargoCars = std::stoull(data.getValue("numCargoCars"));
 	this->cargoCars = std::vector<std::weak_ptr<Entity>>(numCargoCars);
