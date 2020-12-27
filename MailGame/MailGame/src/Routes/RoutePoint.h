@@ -12,7 +12,10 @@ struct RoutePoint {
 	sf::Vector3f pos;
 	// The expected arrival time of the point
 	gtime_t expectedTime;
-	RoutePoint(sf::Vector3f pos, gtime_t time) : pos(pos), expectedTime(time) {};
+	// The distance this point is along the route
+	// Todo: Make sure this is always set
+	float distance;
+	RoutePoint(sf::Vector3f pos, gtime_t time, float distance = 0.0f) : pos(pos), expectedTime(time), distance(distance) {};
 };
 
 SaveData routePointToSaveData(RoutePoint p);
