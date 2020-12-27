@@ -63,6 +63,7 @@ void Game::loadFromSaveData(SaveData data) {
 		data.getValuef("cameraX"),
 		data.getValuef("cameraY")
 	));
+	this->isPaused = data.getValue("isPaused") == "1";
 }
 
 void Game::update(float delta) {
@@ -281,6 +282,7 @@ SaveData Game::getSaveData() {
 	sd.addValue("time", this->time);
 	sd.addValue("cameraX", this->gameView.getCenter().x);
 	sd.addValue("cameraY", this->gameView.getCenter().y);
+	sd.addValue("isPaused", this->isPaused);
 	// Add technology save data
 	sd.addData(TechTree::getSaveData());
 	return sd;
