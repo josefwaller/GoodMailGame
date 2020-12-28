@@ -162,7 +162,7 @@ void GameMap::generateCityAt(sf::Vector2i pos) {
 	const size_t NUM_ROADS_PROPOSED = 5;
 
 	// TBA: Has this passed down from App so the player can set the seed
-	srand(50);
+	srand(18);
 	
 	std::vector<Line> addedLines;
 	// Add the initial road

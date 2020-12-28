@@ -33,6 +33,7 @@ void VehicleController::update(float delta) {
 			if (this->pointIndex >= this->points.size()) {
 				// Now we know when we arrive at that stop
 				this->stops[this->stopIndex].expectedTime = this->points.back().expectedTime;
+				this->stops[this->stopIndex].distance = this->points.back().distance;
 				this->onArriveAtStop(this->stopIndex);
 				this->goToNextStop();
 			}
@@ -65,10 +66,10 @@ void VehicleController::update(float delta) {
 	}
 }
 
-std::vector<RoutePoint> VehicleController::getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to, float initialDistance) {
+std::vector<RoutePoint> VehicleController::getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to) {
 	std::vector<RoutePoint> points;
 	// First, it always starts at the first point in the departing path when departing from
-	points.push_back(RoutePoint(from.departingPath.front().getPos(), from.expectedTime, initialDistance));
+	points.push_back(RoutePoint(from.departingPath.front().getPos(), from.expectedTime, from.distance));
 	gtime_t departTime = from.expectedTime;
 	// Add the departing path, the vehicle departs after waiting
 	auto path = Utils::speedPointVectorToRoutePointVector(from.departingPath, departTime + from.waitTime, getSpeed());
@@ -101,8 +102,7 @@ void VehicleController::goToNextStop() {
 		VehicleControllerStop fromStop = this->stops[this->stopIndex - 1];
 		VehicleControllerStop toStop = this->stops[this->stopIndex];
 		// Go to the stop
-		float distance = this->points.empty() ? 0.0f : this->points.back().distance;
-		this->points = getPathBetweenStops(fromStop, toStop, distance);
+		this->points = getPathBetweenStops(fromStop, toStop);
 		this->pointIndex = 1;
 	}
 }
@@ -132,6 +132,7 @@ void VehicleController::setStops(std::vector<VehicleControllerStop> stops) {
 	// The first stop (departing the depot) should have the same time as the route
 	if (!stops.empty()) {
 		this->stops[0].expectedTime = this->departTime;
+		this->stops[0].distance = 0;
 	}
 }
 float VehicleController::getSpeed() {
@@ -143,8 +144,11 @@ void VehicleController::fromSaveData(SaveData data) {
 	// Update the expected time for every stop up to stopIndex
 	// Since we need that information to move accordingly
 	this->stops[0].expectedTime = departTime;
+	this->stops[0].distance = 0;
 	for (size_t i = 1; i < this->stopIndex; i++) {
-		this->stops[i].expectedTime = getPathBetweenStops(this->stops[i - 1], this->stops[i]).back().expectedTime;
+		RoutePoint lastPointInPath = getPathBetweenStops(this->stops[i - 1], this->stops[i]).back();
+		this->stops[i].expectedTime = lastPointInPath.expectedTime;
+		this->stops[i].distance = lastPointInPath.distance;
 	}
 	VehicleControllerStop fromStop = this->stops[this->stopIndex - 1];
 	VehicleControllerStop toStop = this->stops[this->stopIndex];
@@ -182,7 +186,7 @@ std::pair<sf::Vector3f, IsoRotation> VehicleController::getPosAndRotAtDistance(f
 	// First, find the first stop it would have passed
 	float initialDistance = 0.0f;
 	for (auto it = this->stops.begin(); it != this->stops.end() - 1; it++) {
-		auto path = getPathBetweenStops(*it, *(it + 1), initialDistance);
+		auto path = getPathBetweenStops(*it, *(it + 1));
 		initialDistance = path.back().distance;
 		RoutePoint prevPoint = path.front();
 		for (auto p : path) {

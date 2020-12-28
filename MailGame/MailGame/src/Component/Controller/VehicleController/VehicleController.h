@@ -18,10 +18,13 @@ struct VehicleControllerStop {
 	// The time the vehicle expects to arrive at this stop
 	// Set when the vehicle gets to the previous stop
 	gtime_t expectedTime;
+	// The distance this stop is on the route
+	// i.e. how far between this stop and the first stop
+	float distance;
 	// The time to wait at this stop
 	gtime_t waitTime;
 	VehicleControllerStop(std::vector<SpeedPoint> departingPath, std::vector<SpeedPoint> arrivingPath, gtime_t waitTime = 0)
-		: arrivingPath(arrivingPath), departingPath(departingPath), waitTime(waitTime), expectedTime(0) {}
+		: arrivingPath(arrivingPath), departingPath(departingPath), waitTime(waitTime), expectedTime(0), distance(0) {}
 };
 
 class VehicleController: public Controller {
@@ -67,7 +70,7 @@ private:
 	// Get the path, as route points, between two stops
 	// Includes the departing path and the arriving path
 	// Initialdistance may be excluded
-	std::vector<RoutePoint> getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to, float initialDistance = 0.0f);
+	std::vector<RoutePoint> getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to);
 	// Go to the next stop along the route
 	void goToNextStop();
 	// Get the distance to travel between two points, via the path returned by the pathfinder

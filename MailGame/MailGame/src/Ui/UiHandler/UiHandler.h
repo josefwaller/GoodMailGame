@@ -49,6 +49,8 @@ private:
 	std::function<void(std::weak_ptr<Entity> e)> selectEntityCallback;
 	// Callback when selecting tile
 	std::function<void(sf::Vector2i)> selectTileCallback;
+	// Used for fps
+	sf::Clock deltaClock;
 	// The postal code the player is currently setting tiles to
 	long long pCode;
 	// Get the tile the mouse is currently hovering over

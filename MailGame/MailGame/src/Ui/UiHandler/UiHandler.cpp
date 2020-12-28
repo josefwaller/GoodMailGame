@@ -111,6 +111,9 @@ void UiHandler::selectEntity(std::function<void(std::weak_ptr<Entity>)> callback
 void UiHandler::update() {
 	char buf[200];
 	ImGui::Begin("Game Controls");
+	float fps = 1.0f / (float)deltaClock.restart().asMilliseconds();
+	sprintf_s(buf, "%f FPS", fps);
+	ImGui::Text(buf);
 	// Print available money
 	sprintf_s(buf, "%d / %d CAD available", game->getExcessMoney(), game->getMonthlyBudget());
 	ImGui::Text(buf);
