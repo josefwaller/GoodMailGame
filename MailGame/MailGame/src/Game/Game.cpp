@@ -178,16 +178,28 @@ void Game::render(sf::RenderWindow* w) {
 	w->setView(this->gameView);
 	this->gameMap.render(w);
 
+	// Sort the entities based on when they should be rendered
+	std::vector<std::shared_ptr<Entity>> toRender;
 	for (auto it = this->entities.begin(); it != this->entities.end(); it++) {
-		std::shared_ptr<Entity> e = *it;
 		const std::vector<EntityTag> v = WHITELIST_ENTITY_TAG;
-		if (std::find(v.begin(), v.end(), e->tag) != v.end()) {
+		if (std::find(v.begin(), v.end(), (*it)->tag) != v.end()) {
 			continue;
 		}
-		if (e->renderer) {
-			e->renderer->render(w);
+		if ((*it)->renderer) {
+			toRender.push_back(*it);
 		}
 	}
+
+	std::sort(toRender.begin(), toRender.end(), [&](std::shared_ptr<Entity> e1, std::shared_ptr<Entity> e2) {
+		sf::Vector3f e1Pos = e1->transform ? e1->transform->getPosition() : sf::Vector3f();
+		sf::Vector3f e2Pos = e2->transform ? e2->transform->getPosition() : sf::Vector3f();
+		return (e1Pos.x + e1Pos.y) < (e2Pos.x + e2Pos.y);
+	});
+
+	for (auto it = toRender.begin(); it != toRender.end(); it++) {
+		(*it)->renderer->render(w);
+	}
+
 #ifdef _DEBUG
 	// Render clickboxes
 	for (auto it = this->entities.begin(); it != this->entities.end(); it++) {
