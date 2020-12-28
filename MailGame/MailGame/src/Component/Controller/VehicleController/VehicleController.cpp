@@ -57,9 +57,11 @@ void VehicleController::update(float delta) {
 			for (std::weak_ptr<Entity> car : this->cargoCars) {
 				if (car.lock()) {
 					currentDistance -= BETWEEN_CARS_DISTANCE;
-					auto pair = getPosAndRotAtDistance(currentDistance);
-					car.lock()->transform->setPosition(pair.first);
-					car.lock()->transform->setRotation(pair.second);
+					if (currentDistance >= 0) {
+						auto pair = getPosAndRotAtDistance(currentDistance);
+						car.lock()->transform->setPosition(pair.first);
+						car.lock()->transform->setRotation(pair.second);
+					}
 				}
 			}
 		}
