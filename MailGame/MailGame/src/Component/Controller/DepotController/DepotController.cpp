@@ -56,7 +56,7 @@ void DepotController::renderUi() {
 				ImGui::EndCombo();
 			}
 			if (modelInfo.getMaxNumCargoCars() != 0) {
-				sprintf_s(buf, "%s", route.cargoCarModel.has_value() ? CargoCarInfo::get(route.cargoCarModel.value()).getName().c_str() : "");
+				sprintf_s(buf, "%s", route.cargoCarModel.has_value() ? CargoCarInfo::get(route.cargoCarModel.value()).getName().c_str() : "No cargo cars");
 				if (ImGui::BeginCombo("Cargo Car", buf)) {
 					const auto allowed = modelInfo.getAllowedCargoCars();
 					for (auto it = allowed.begin(); it != allowed.end(); it++) {
@@ -65,12 +65,17 @@ void DepotController::renderUi() {
 							this->setRouteCargoCarModel(route.id, { *it });
 						}
 					}
+					if (ImGui::Selectable("No cargo cars", !route.cargoCarModel.has_value())) {
+						this->setRouteCargoCarModel(route.id, {});
+					}
 					ImGui::EndCombo();
 				}
-				int x = route.numCargoCars;
-				ImGui::SliderInt("Num Cars", &x, 0, modelInfo.getMaxNumCargoCars());
-				if (x != route.numCargoCars) {
-					this->setRouteNumberCargoCars(route.id, (unsigned int)x);
+				if (route.cargoCarModel.has_value()) {
+					int x = route.numCargoCars;
+					ImGui::SliderInt("Num Cars", &x, 0, modelInfo.getMaxNumCargoCars());
+					if (x != route.numCargoCars) {
+						this->setRouteNumberCargoCars(route.id, (unsigned int)x);
+					}
 				}
 			}
 
