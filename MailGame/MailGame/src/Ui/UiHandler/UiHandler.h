@@ -37,6 +37,10 @@ public:
 	void drawArrow(sf::RenderWindow* window, sf::Vector2i tile, IsoRotation rot, bool isOutgoing, std::optional<sf::Color> color = {});
 	// Ad a path to draw next render cycle
 	void addPathToDraw(std::vector<RoutePoint> arrows);
+	// A selection dropdown to choose a rotation from the 4 cardinal directions
+	static IsoRotation chooseDirection(const char* label, IsoRotation default);
+	// Select an hour
+	static hour_t chooseHour(const char* label, hour_t default);
 private:
 	Game* game;
 	// Current state of the Ui
@@ -62,8 +66,6 @@ private:
 		sf::PrimitiveType t = sf::PrimitiveType::Quads,
 		sf::Color c = sf::Color::White
 	);
-	// A selection dropdown to choose a rotation from the 4 cardinal directions
-	IsoRotation chooseDirection(const char* label, IsoRotation default);
 	// The railway currently being built
 	Railway toBuild;
 	// The time to set the railway being built to, used to build railway switches

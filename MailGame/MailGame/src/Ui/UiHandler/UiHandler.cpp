@@ -412,6 +412,21 @@ IsoRotation UiHandler::chooseDirection(const char* label, IsoRotation def) {
 	return toReturn;
 }
 
+hour_t UiHandler::chooseHour(const char* label, hour_t hour) {
+	char buf[200];
+	sprintf_s(buf, "%d:00", hour);
+	if (ImGui::BeginCombo(label, buf)) {
+		for (size_t i = 0; i < 24; i++) {
+			sprintf_s(buf, "%d:00", i);
+			if (ImGui::Selectable(buf, i == hour)) {
+				hour = (hour_t)i;
+			}
+		}
+		ImGui::EndCombo();
+	}
+	return hour;
+}
+
 void UiHandler::addPathToDraw(std::vector<RoutePoint> path) {
 	this->pathsToDraw.push_back(path);
 }

@@ -16,6 +16,7 @@ public:
 	static std::shared_ptr<Entity> cargoTruckDepot(Game* g, sf::Vector3f pos, IsoRotation rot);
 	static std::shared_ptr<Entity> trainStation(Game* g, sf::Vector3f pos, IsoRotation rot);
 	static std::shared_ptr<Entity> airport(Game* g, sf::Vector3f pos, IsoRotation rot);
+	static std::shared_ptr<Entity> railwaySwitch(Game* g, sf::Vector3f pos, IsoRotation rot);
 private:
 	// Create a road leading into the building so that it can be accessed by cars
 	// Road is always going in from the front

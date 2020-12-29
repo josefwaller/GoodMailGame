@@ -183,6 +183,9 @@
     <ClCompile Include="src\VehicleModel\CargoCarModel\CargoCarModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Component\Controller\RailwaySwitchController\RailwaySwitchController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h">
@@ -345,6 +348,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\VehicleModel\CargoCarModel\CargoCarModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\Controller\RailwaySwitchController\RailwaySwitchController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

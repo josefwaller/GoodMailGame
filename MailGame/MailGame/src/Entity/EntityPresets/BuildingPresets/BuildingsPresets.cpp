@@ -15,6 +15,7 @@
 #include "Component/Controller/DepotController/TruckDepotController/TruckDepotController.h"
 #include "Component/Controller/DepotController/TrainDepotController/TrainDepotController.h"
 #include "Component/Controller/DepotController/PlaneDepotController/PlaneDepotController.h"
+#include "Component/Controller/RailwaySwitchController/RailwaySwitchController.h"
 // Pathfinders
 #include "Component/Pathfinder/RoadPathfinder/RoadPathfinder.h"
 #include "Component/Pathfinder/RailsPathfinder/RailsPathfinder.h"
@@ -177,6 +178,29 @@ std::shared_ptr<Entity> BuildingPresets::airport(Game* g, sf::Vector3f pos, IsoR
 	);
 	setTilesToBuilding(g, e, sf::IntRect((int)pos.x, (int)pos.y, 3, 2));
 	return e;
+}
+
+std::shared_ptr<Entity> BuildingPresets::railwaySwitch(Game* g, sf::Vector3f pos, IsoRotation rot) {
+	sf::Vector2f unit = rot.getUnitVector();
+	sf::Vector2i tile((int)floor(pos.x + unit.x), (int)floor(pos.y + unit.y));
+	// Add a straight, perpindicular railway
+	g->getGameMap()->addRailTrack((size_t)tile.x, (size_t)tile.y, (rot + 1), (rot - 1));
+	// Add the entity
+	return Entity::createEntity(
+		g,
+		EntityTag::RailwaySwitch,
+		new Transform(pos, rot),
+		new IsoSpriteRenderer(
+			IsoSprite(
+				ResourceLoader::get()->getSprite("buildings/buildings", "railwaySwitch"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "railwaySwitch"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "railwaySwitch"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "railwaySwitch")
+			),
+			sf::Vector3f(-0.5f, 0, 0)
+		),
+		new RailwaySwitchController(tile)
+	);
 }
 
 void BuildingPresets::addRoadForTransitBuilding(Game* g, sf::Vector3i pos, IsoRotation rot) {

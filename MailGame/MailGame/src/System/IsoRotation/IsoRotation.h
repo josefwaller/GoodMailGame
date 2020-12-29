@@ -53,6 +53,10 @@ public:
 	bool operator==(IsoRotation other) {
 		return this->getRotation() == other.getRotation();
 	}
+
+	bool operator!=(IsoRotation other) {
+		return !(*this == other);
+	}
 	// Get unit vector
 	sf::Vector2f getUnitVector() {
 		switch (this->getRotation()) {

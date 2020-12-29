@@ -298,6 +298,9 @@ void GameMap::addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to,
 		}
 	}
 }
+void GameMap::removeRailTrack(size_t x, size_t y, hour_t hour) {
+	this->tiles[x][y].railway.value().erase(hour);
+}
 
 Tile GameMap::getTileAt(size_t x, size_t y) {
 	if (x <= tiles.size() && y <= tiles[0].size()) {
