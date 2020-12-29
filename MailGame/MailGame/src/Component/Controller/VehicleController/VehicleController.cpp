@@ -7,10 +7,12 @@
 #include "Entity/Entity.h"
 #include "System/Utils/Utils.h"
 #include "System/SaveData/SaveData.h"
+#include "Component/Renderer/IsoSpriteRenderer/IsoSpriteRenderer.h"
 #include "VehicleModel/VehicleModel.h"
 #include <SFML/System/Vector3.hpp>
 #include <queue>
 #include <map>
+#include <memory>
 #include <functional>
 #include <math.h>
 
@@ -213,6 +215,11 @@ void VehicleController::deleteCars() {
 	for (auto c : this->cargoCars) {
 		this->getEntity()->getGame()->removeEntity(c);
 	}
+}
+
+void VehicleController::setCargoCars(std::vector<std::weak_ptr<Entity>> cc) {
+	//this->deleteCars();
+	this->cargoCars = cc;
 }
 
 void VehicleController::onArriveAtTile(sf::Vector2i point) {}

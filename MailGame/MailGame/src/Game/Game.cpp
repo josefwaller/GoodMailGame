@@ -299,7 +299,10 @@ SaveData Game::getSaveData() {
 	// Add all the entities' data
 	SaveData entData("Entities");
 	for (auto e : this->entities) {
-		entData.addData(e->getSaveData());
+		// Don't save train cars
+		// Eventually this will probably be expanded to lother things to not save as well
+		if (e->tag != EntityTag::TrainCar)
+			entData.addData(e->getSaveData());
 	}
 	sd.addData(entData);
 	sd.addValue("time", this->time);

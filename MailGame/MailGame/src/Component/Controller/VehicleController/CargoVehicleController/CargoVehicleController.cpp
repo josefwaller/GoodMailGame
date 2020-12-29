@@ -128,6 +128,17 @@ void CargoVehicleController::fromSaveData(SaveData data) {
 	}
 	setRouteStops();
 	VehicleController::fromSaveData(data.getData("VehicleController"));
+	// Create the train cars
+	if (this->route.cargoCarModel.has_value() && this->route.numCargoCars > 0) {
+		std::vector<std::weak_ptr<Entity>> cc;
+		CargoCarInfo cInfo = CargoCarInfo::get(this->route.cargoCarModel.value());
+		for (size_t i = 0; i < this->route.numCargoCars; i++) {
+			auto e = (VehiclePresets::trainCar(this->getEntity()->getGame(), sf::Vector3f(), IsoRotation::NORTH, cInfo.getSprites()));
+			this->getEntity()->getGame()->addEntity(e);
+			cc.push_back(e);
+		}
+		this->setCargoCars(cc);
+	}
 }
 
 

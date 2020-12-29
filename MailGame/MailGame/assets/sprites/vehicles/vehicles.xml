@@ -1,8 +1,16 @@
 <TextureAtlas imagePath="sheet.png">
-	<SubTexture name="trainCar-reg-E.png" x="173" y="117" width="31" height="31" />
-	<SubTexture name="trainCar-reg-W.png" x="204" y="207" width="31" height="31" />
-	<SubTexture name="trainCar-reg-N.png" x="369" y="142" width="31" height="29" />
-	<SubTexture name="trainCar-reg-S.png" x="203" y="379" width="32" height="29" />
+	<SubTexture name="trainCar-large-E.png" x="272" y="1" width="31" height="30" />
+	<SubTexture name="trainCar-large-S.png" x="269" y="292" width="32" height="29" />
+	<SubTexture name="trainCar-large-W.png" x="269" y="432" width="32" height="30" />
+	<SubTexture name="trainCar-large-N.png" x="367" y="330" width="32" height="29" />
+	<SubTexture name="trainCar-small-W.png" x="206" y="31" width="31" height="26" />
+	<SubTexture name="trainCar-small-E.png" x="370" y="0" width="31" height="26" />
+	<SubTexture name="trainCar-small-S.png" x="464" y="218" width="31" height="24" />
+	<SubTexture name="trainCar-small-N.png" x="431" y="169" width="31" height="25" />
+	<SubTexture name="trainCar-reg-E.png" x="140" y="32" width="31" height="24" />
+	<SubTexture name="trainCar-reg-S.png" x="496" y="79" width="32" height="25" />
+	<SubTexture name="trainCar-reg-N.png" x="496" y="23" width="32" height="25" />
+	<SubTexture name="trainCar-reg-W.png" x="495" y="401" width="32" height="24" />
 	<SubTexture name="ambulance_E.png" x="139" y="94" width="33" height="29"/>
 	<SubTexture name="ambulance_N.png" x="812" y="481" width="19" height="27"/>
 	<SubTexture name="mailTruck-N" x="0" y="296" width="35" height="31"/>

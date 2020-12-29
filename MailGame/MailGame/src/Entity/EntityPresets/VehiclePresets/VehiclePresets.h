@@ -23,7 +23,7 @@ public:
 	entity_ptr plane(
 		Game* g, sf::Vector3f pos, IsoRotation rot, TransitRoute route, std::weak_ptr<Entity> depot
 	);
-	entity_ptr trainCar(Game* g, sf::Vector3f pos, IsoRotation rot);
+	entity_ptr trainCar(Game* g, sf::Vector3f pos, IsoRotation rot, IsoSprite sprites);
 };
 
 #undef entity_ptr

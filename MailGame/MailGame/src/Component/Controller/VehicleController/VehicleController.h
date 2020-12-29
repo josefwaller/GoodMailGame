@@ -50,6 +50,8 @@ protected:
 	// Delete the cars
 	// Called when the vehicle has reached its final destination
 	void deleteCars();
+	// Sets the cargo cars
+	void setCargoCars(std::vector<std::weak_ptr<Entity>> cc);
 	// Sets up the stops on load
 	// Mainly sets the expected time so that things will run smoothly
 	// Make sure to call this after setting the stops

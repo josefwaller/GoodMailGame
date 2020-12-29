@@ -80,10 +80,13 @@ std::shared_ptr<Entity> VehiclePresets::train(
 	std::weak_ptr<Entity> depot
 ) {
 	std::vector<std::weak_ptr<Entity>> trainCars;
-	for (size_t i = 0; i < route.numCargoCars; i++) {
-		auto car = VehiclePresets::trainCar(g, pos, rot);
-		g->addEntity(car);
-		trainCars.push_back(car);
+	if (route.cargoCarModel.has_value()) {
+		CargoCarInfo cInfo = CargoCarInfo::get(route.cargoCarModel.value());
+		for (size_t i = 0; i < route.numCargoCars; i++) {
+			auto car = VehiclePresets::trainCar(g, pos, rot, cInfo.getSprites());
+			g->addEntity(car);
+			trainCars.push_back(car);
+		}
 	}
 	return Entity::createEntity(
 		g,
@@ -131,18 +134,13 @@ std::shared_ptr<Entity> VehiclePresets::plane(
 		new AirPathfinder()
 	);
 }
-std::shared_ptr<Entity> VehiclePresets::trainCar(Game* g, sf::Vector3f pos, IsoRotation rot) {
+std::shared_ptr<Entity> VehiclePresets::trainCar(Game* g, sf::Vector3f pos, IsoRotation rot, IsoSprite sprites) {
 	return Entity::createEntity(
 		g,
 		EntityTag::TrainCar,
 		new Transform(pos, rot),
 		new IsoSpriteRenderer(
-			IsoSprite(
-				ResourceLoader::get()->getSprite("vehicles/vehicles", "trainCar-reg-N.png", true),
-				ResourceLoader::get()->getSprite("vehicles/vehicles", "trainCar-reg-E.png", true),
-				ResourceLoader::get()->getSprite("vehicles/vehicles", "trainCar-reg-W.png", true),
-				ResourceLoader::get()->getSprite("vehicles/vehicles", "trainCar-reg-S.png", true)
-			),
+			sprites,
 			sf::Vector3f(0.5f, 0.5f, 0)
 		)
 	);

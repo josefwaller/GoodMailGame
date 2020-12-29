@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <map>
+#include "System/IsoSprite/IsoSprite.h"
 /*
  * A CargoCar is a vehicle attachment that holds cargo
  * i.e. a train car, or the trailer to an 18 wheeler
@@ -29,16 +30,18 @@ const std::map<CargoCarModel, std::string> CARGO_CAR_STRINGS = {
 
 class CargoCarInfo {
 public:
-    CargoCarInfo(std::string name, unsigned int capacity, float maxSpeed);
+    CargoCarInfo(std::string name, unsigned int capacity, float maxSpeed, IsoSprite sprites);
     static CargoCarInfo get(CargoCarModel model);
 
     std::string getName();
+    IsoSprite getSprites();
 private:
     static const std::map<CargoCarModel, CargoCarInfo> INFOS;
 
     std::string name;
     unsigned int capacity;
     float maxSpeed;
+    IsoSprite sprites;
 };
 
 std::string cargoCarModelToString(CargoCarModel car);
