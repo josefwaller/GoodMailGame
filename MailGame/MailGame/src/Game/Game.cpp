@@ -190,10 +190,21 @@ void Game::render(sf::RenderWindow* w) {
 		}
 	}
 
-	std::sort(toRender.begin(), toRender.end(), [&](std::shared_ptr<Entity> e1, std::shared_ptr<Entity> e2) {
+	IsoRotation rot = this->getRotation();
+	std::sort(toRender.begin(), toRender.end(), [&rot](std::shared_ptr<Entity> e1, std::shared_ptr<Entity> e2) {
 		sf::Vector3f e1Pos = e1->transform ? e1->transform->getPosition() : sf::Vector3f();
 		sf::Vector3f e2Pos = e2->transform ? e2->transform->getPosition() : sf::Vector3f();
-		return (e1Pos.x + e1Pos.y) < (e2Pos.x + e2Pos.y);
+		switch (rot.getRotation()) {
+		case IsoRotation::NORTH:
+			return (e1Pos.x + e1Pos.y) < (e2Pos.x + e2Pos.y);
+		case IsoRotation::SOUTH:
+			return (e1Pos.x + e1Pos.y) > (e2Pos.x + e2Pos.y);
+		case IsoRotation::EAST:
+			return (e1Pos.x - e1Pos.y) < (e2Pos.x - e2Pos.y);
+		case IsoRotation::WEST:
+		default:
+			return (e1Pos.x - e1Pos.y) > (e2Pos.x - e2Pos.y);
+		}
 	});
 
 	for (auto it = toRender.begin(); it != toRender.end(); it++) {
