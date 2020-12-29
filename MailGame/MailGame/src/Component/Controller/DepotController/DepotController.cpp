@@ -267,6 +267,9 @@ void DepotController::setRouteDepartTime(size_t routeId, int depTime) {
 }
 void DepotController::setRouteModel(size_t routeId, VehicleModel model) {
 	this->routes.find(routeId)->second.model = model;
+	// Make sure we don't go over the maximum number of cars
+	VehicleModelInfo mInfo = VehicleModelInfo::getModelInfo(model);
+	this->routes.find(routeId)->second.numCargoCars = std::min(mInfo.getMaxNumCargoCars(), this->routes.find(routeId)->second.numCargoCars);
 }
 void DepotController::setRouteCargoCarModel(size_t routeId, std::optional<CargoCarModel> model) {
 	this->routes.find(routeId)->second.cargoCarModel = model;
