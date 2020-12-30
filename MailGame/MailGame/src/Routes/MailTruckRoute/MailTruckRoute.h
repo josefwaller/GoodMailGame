@@ -4,6 +4,7 @@
 #include <optional>
 #include "Constants.h"
 #include "Routes/RoutePoint.h"
+#include "Routes/Route.h"
 
 class Entity;
 class SaveData;
@@ -14,18 +15,13 @@ struct MailTruckRouteStop {
 };
 
 // A route, with a list of stops and a depart time
-struct MailTruckRoute {
+struct MailTruckRoute : Route {
 	// Whether the route is delivering or picking up letters
 	bool isDelivering;
 	// The stops in the route
 	std::vector<MailTruckRouteStop> stops;
-	// The time of departure
-	int departTime;
-	// Unique Id
-	id_t id;
-	static id_t ROUTE_ID;
 	// Constructor
-	MailTruckRoute(bool isDeliv, hour_t time) : isDelivering(isDeliv), departTime(time), id(ROUTE_ID++) {};
+	MailTruckRoute(bool isDeliv, hour_t time) : isDelivering(isDeliv), Route(time, VehicleModel::MailTruck) {};
 };
 
 SaveData mailTruckRouteToSaveData(MailTruckRoute route);

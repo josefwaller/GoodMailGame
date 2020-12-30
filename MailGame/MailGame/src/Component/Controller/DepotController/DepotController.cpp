@@ -31,11 +31,11 @@ void DepotController::renderUi() {
 		sprintf_s(buf, "Route %zu", route.id);
 		if (ImGui::CollapsingHeader(buf)) {
 			// Departure time
-			sprintf_s(buf, "%d:00", route.departureTime);
+			sprintf_s(buf, "%d:00", route.departTime);
 			if (ImGui::BeginCombo("Departure Time", buf)) {
 				for (int hr = 0; hr < 24; hr++) {
 					sprintf_s(buf, "%d:00", hr);
-					if (ImGui::Selectable(buf, hr == route.departureTime)) {
+					if (ImGui::Selectable(buf, hr == route.departTime)) {
 						this->setRouteDepartTime(route.id, hr);
 					}
 				}
@@ -176,7 +176,7 @@ void DepotController::update(float) {
 		for (auto kv : this->routes) {
 			std::vector<RoutePoint> routePoints;
 			TransitRoute route = kv.second;
-			gtime_t time = route.departureTime * Game::UNITS_IN_GAME_HOUR;
+			gtime_t time = route.departTime * Game::UNITS_IN_GAME_HOUR;
 			VehicleModelInfo modelInfo = VehicleModelInfo::getModelInfo(route.model);
 			if (kv.second.stops.empty()) {
 				continue;
@@ -241,7 +241,7 @@ void DepotController::update(float) {
 }
 void DepotController::onHourChange(hour_t newHour) {
 	for (auto it : this->routes) {
-		if (it.second.departureTime == newHour) {
+		if (it.second.departTime == newHour) {
 			this->spawnVehicleForRoute(it.second);
 		}
 	}
@@ -266,7 +266,7 @@ void DepotController::deleteRoute(size_t id) {
 	this->toDelete.push_back(this->routes.find(id)->second);
 }
 void DepotController::setRouteDepartTime(size_t routeId, int depTime) {
-	this->routes.find(routeId)->second.departureTime = depTime;
+	this->routes.find(routeId)->second.departTime = depTime;
 }
 void DepotController::setRouteModel(size_t routeId, VehicleModel model) {
 	this->routes.find(routeId)->second.model = model;

@@ -1,13 +1,10 @@
 #include "MailTruckRoute.h"
 #include "System/SaveData/SaveData.h"
 
-// Initialize id to 0
-id_t MailTruckRoute::ROUTE_ID = 0;
-
 SaveData mailTruckRouteToSaveData(MailTruckRoute route) {
 	SaveData sd("MailTruckRoute");
 	sd.addValue("isDelivering", route.isDelivering);
-	sd.addValue("departTime", route.departTime);
+	sd.addValuesFrom(routeToSaveData(route));
 	sd.addValue("numStops", route.stops.size());
 	// Add the stops
 	for (auto it = route.stops.begin(); it != route.stops.end(); it++) {
@@ -19,8 +16,8 @@ SaveData mailTruckRouteToSaveData(MailTruckRoute route) {
 }
 MailTruckRoute saveDataToMailTruckRoute(SaveData data) {
 	bool isDelivering = data.getValue("isDelivering") == "1";
-	int departTime = std::stoi(data.getValue("departTime"));
-	MailTruckRoute r(isDelivering, departTime);
+	Route route = saveDataToRoute(data);
+	MailTruckRoute r(isDelivering, route.departTime);
 	r.stops.resize(std::stoull(data.getValue("numStops")));
 	for (SaveData d : data.getDatas()) {
 		r.stops[std::stoull(d.getValue("index"))] = saveDataToMailTruckRouteStop(d);

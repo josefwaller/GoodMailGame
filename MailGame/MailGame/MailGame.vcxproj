@@ -166,6 +166,7 @@
     <ClCompile Include="src\PostalCodeDatabase\PostalCodeDatabase.cpp" />
     <ClCompile Include="src\ResourceLoader\ResourceLoader.cpp" />
     <ClCompile Include="src\Routes\RoutePoint.cpp" />
+    <ClCompile Include="src\Routes\Route.cpp" />
     <ClCompile Include="src\Routes\TransitRoute\TransitRoute.cpp" />
     <ClCompile Include="src\Routes\MailTruckRoute\MailTruckRoute.cpp" />
     <ClCompile Include="src\System\IsoSprite\IsoSprite.cpp" />
@@ -221,6 +222,7 @@
     <ClInclude Include="src\Mail\Mail.h" />
     <ClInclude Include="src\PostalCodeDatabase\PostalCodeDatabase.h" />
     <ClInclude Include="src\ResourceLoader\ResourceLoader.h" />
+    <ClInclude Include="src\Routes\Route.h" />
     <ClInclude Include="src\Routes\RoutePoint.h" />
     <ClInclude Include="src\Routes\TransitRoute\TransitRoute.h" />
     <ClInclude Include="src\Routes\MailTruckRoute\MailTruckRoute.h" />

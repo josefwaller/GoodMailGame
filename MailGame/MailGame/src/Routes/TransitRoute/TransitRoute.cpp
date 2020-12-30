@@ -4,15 +4,9 @@
 #include "Game/Game.h"
 
 unsigned long long TransitRouteStop::STOP_ID = 0;
-unsigned long long TransitRoute::ROUTE_ID = 0;
 SaveData transitRouteToSaveData(TransitRoute route) {
 	SaveData sd = SaveData("TransitRoute");
-	sd.addValue("departureTime", route.departureTime);
-	sd.addValue("numStops", route.stops.size());
-	sd.addValue("model", vehicleModelToString(route.model));
-	sd.addValue("numCargoCars", route.numCargoCars);
-	if (route.cargoCarModel.has_value())
-		sd.addValue("cargoCarModel", cargoCarModelToString(route.cargoCarModel.value()));
+	sd.addValuesFrom(routeToSaveData(route));
 	for (size_t i = 0; i < route.stops.size(); i++) {
 		TransitRouteStop stop = route.stops[i];
 		SaveData d = transitRouteStopToSaveData(stop);
@@ -23,7 +17,8 @@ SaveData transitRouteToSaveData(TransitRoute route) {
 }
 
 TransitRoute saveDataToTransitRoute(Game* g, SaveData data) {
-	TransitRoute route(std::stoi(data.getValue("departureTime")), stringToVehicleModel(data.getValue("model")));
+	Route r = saveDataToRoute(data);
+	TransitRoute route(r.departTime, r.model, r.cargoCarModel, r.numCargoCars);
 	route.stops.resize(std::stoull(data.getValue("numStops")));
 	route.numCargoCars = std::stoi(data.getValue("numCargoCars"));
 	if (data.hasValue("cargoCarModel"))

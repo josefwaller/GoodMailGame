@@ -65,7 +65,7 @@ public:
 	// Get the hour at a certain time
 	hour_t getHourAtTime(gtime_t time);
 	// Get the time at midnight of today
-	// Used by vehicles to determine where they should be with their departureTime
+	// Used by vehicles to determine where they should be with their departTime
 	gtime_t getMidnightTime();
 	// Go to next hour
 	void advanceTime();
