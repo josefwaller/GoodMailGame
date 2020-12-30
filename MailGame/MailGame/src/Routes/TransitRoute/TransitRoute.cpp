@@ -4,30 +4,28 @@
 #include "Game/Game.h"
 
 unsigned long long TransitRouteStop::STOP_ID = 0;
-SaveData transitRouteToSaveData(TransitRoute route) {
-	SaveData sd = SaveData("TransitRoute");
-	sd.addValuesFrom(routeToSaveData(route));
-	for (size_t i = 0; i < route.stops.size(); i++) {
-		TransitRouteStop stop = route.stops[i];
+
+TransitRoute::TransitRoute(hour_t time, VehicleModel m, CargoCarModel s, unsigned int num) : Route(time, m, s, num) {}
+TransitRoute::TransitRoute(hour_t time, VehicleModel m) : Route(time, m) {}
+
+TransitRoute::TransitRoute(SaveData data, Game* g) : Route(data) {
+	this->stops.resize(std::stoull(data.getValue("numStops")));
+	for (SaveData d : data.getDatas()) {
+		size_t index = std::stoull(d.getValue("index"));
+		this->stops[index] = saveDataToTransitRouteStop(g, d);
+	}
+}
+
+SaveData TransitRoute::getSaveData() {
+	SaveData sd("TransitRoute");
+	sd.addValuesFrom(Route::getSaveData());
+	for (size_t i = 0; i < this->stops.size(); i++) {
+		TransitRouteStop stop = this->stops[i];
 		SaveData d = transitRouteStopToSaveData(stop);
 		d.addValue("index", i);
 		sd.addData(d);
 	}
 	return sd;
-}
-
-TransitRoute saveDataToTransitRoute(Game* g, SaveData data) {
-	Route r = saveDataToRoute(data);
-	TransitRoute route(r.departTime, r.model, r.cargoCarModel, r.numCargoCars);
-	route.stops.resize(std::stoull(data.getValue("numStops")));
-	route.numCargoCars = std::stoi(data.getValue("numCargoCars"));
-	if (data.hasValue("cargoCarModel"))
-		route.cargoCarModel = stringToCargoCarModel(data.getValue("cargoCarModel"));
-	for (SaveData d : data.getDatas()) {
-		size_t index = std::stoull(d.getValue("index"));
-		route.stops[index] = saveDataToTransitRouteStop(g, d);
-	}
-	return route;
 }
 
 SaveData transitRouteStopToSaveData(TransitRouteStop stop) {

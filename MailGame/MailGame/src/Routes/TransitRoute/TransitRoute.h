@@ -35,11 +35,12 @@ struct TransitRoute : public Route {
 	std::vector<TransitRouteStop> stops;
 	// Constructor
 	// This one will usually just leave out CargoCarModel
-	TransitRoute(hour_t time, VehicleModel m, std::optional<CargoCarModel> s = {}, unsigned int num = 0) : Route(time, m, s, num) {}
-	TransitRoute(hour_t time, VehicleModel m, CargoCarModel s, unsigned int num) : Route(time, m, std::optional<CargoCarModel>(s), num) {}
+	TransitRoute(hour_t time, VehicleModel m, CargoCarModel s, unsigned int num);
+	TransitRoute(hour_t time, VehicleModel m);
+	TransitRoute(SaveData data, Game* g);
+
+	SaveData getSaveData();
 };
 
-SaveData transitRouteToSaveData(TransitRoute route);
 SaveData transitRouteStopToSaveData(TransitRouteStop stop);
-TransitRoute saveDataToTransitRoute(Game* g, SaveData d);
 TransitRouteStop saveDataToTransitRouteStop(Game* g, SaveData d);

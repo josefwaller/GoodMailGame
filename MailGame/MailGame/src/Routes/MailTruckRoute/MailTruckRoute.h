@@ -22,9 +22,9 @@ struct MailTruckRoute : Route {
 	std::vector<MailTruckRouteStop> stops;
 	// Constructor
 	MailTruckRoute(bool isDeliv, hour_t time) : isDelivering(isDeliv), Route(time, VehicleModel::MailTruck) {};
+	MailTruckRoute(SaveData data);
+	SaveData getSaveData();
 };
 
-SaveData mailTruckRouteToSaveData(MailTruckRoute route);
 SaveData mailTruckRouteStopToSaveData(MailTruckRouteStop stop);
-MailTruckRoute saveDataToMailTruckRoute(SaveData data);
 MailTruckRouteStop saveDataToMailTruckRouteStop(SaveData data);

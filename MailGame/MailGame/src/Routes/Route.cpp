@@ -1,23 +1,23 @@
 #include "Route.h"
+#include "System/SaveData/SaveData.h"
 
 id_t Route::ROUTE_ID = 0;
 
-SaveData routeToSaveData(Route r) {
+Route::Route(hour_t departTime, VehicleModel model, std::optional<CargoCarModel>, unsigned int numCargoCars)
+	: departTime(departTime), model(model), cargoCarModel(cargoCarModel), numCargoCars(numCargoCars), id(ROUTE_ID++) {}
+SaveData Route::getSaveData() {
 	SaveData data("Route");
-	data.addValue("departTime", r.departTime);
-	data.addValue("vehicleModel", vehicleModelToString(r.model));
-	if (r.cargoCarModel.has_value())
-		data.addValue("cargoCarModel", cargoCarModelToString(r.cargoCarModel.value()));
-	data.addValue("numCargoCars", r.numCargoCars);
+	data.addValue("departTime", this->departTime);
+	data.addValue("vehicleModel", vehicleModelToString(this->model));
+	if (this->cargoCarModel.has_value())
+		data.addValue("cargoCarModel", cargoCarModelToString(this->cargoCarModel.value()));
+	data.addValue("numCargoCars", this->numCargoCars);
 	return data;
 }
 
-Route saveDataToRoute(SaveData data) {
-	std::optional<CargoCarModel> car = data.hasValue("cargoCarModel") ? stringToCargoCarModel(data.getValue("cargoCarModel")) : std::optional<CargoCarModel>();
-	return Route(
-		(gtime_t)std::stoull(data.getValue("departTime")),
+Route::Route(SaveData data)
+	: Route((hour_t)std::stoull(data.getValue("departTime")),
 		stringToVehicleModel(data.getValue("vehicleModel")),
-		car,
+		data.hasValue("cargoCarModel") ? stringToCargoCarModel(data.getValue("cargoCarModel")) : std::optional<CargoCarModel>(),
 		(unsigned int)std::stoi(data.getValue("numCargoCars"))
-	);
-}
+	) {}

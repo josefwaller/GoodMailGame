@@ -2,11 +2,13 @@
 #include "Constants.h"
 #include "VehicleModel/VehicleModel.h"
 #include "VehicleModel/CargoCarModel/CargoCarModel.h"
-#include "System/SaveData/SaveData.h"
 
-struct Route {
+class SaveData;
+
+class Route {
+public:
 	// The dparture time of the route
-	gtime_t departTime;
+	hour_t departTime;
 	// The model of the vehicle on the route
 	VehicleModel model;
 	// Optionally, the model and number of cargo cars
@@ -16,9 +18,9 @@ struct Route {
 	id_t id;
 	static id_t ROUTE_ID;
 	// Constructor
-	Route(gtime_t departTime, VehicleModel model, std::optional<CargoCarModel> cargoCarModel = {}, unsigned int numCargoCars = 0)
-		: departTime(departTime), model(model), cargoCarModel(cargoCarModel), numCargoCars(numCargoCars), id(ROUTE_ID++) {}
+	Route(hour_t departTime, VehicleModel model, std::optional<CargoCarModel> cargoCarModel = {}, unsigned int numCargoCars = 0);
+	// Constructor from save data
+	Route(SaveData data);
+	// Get save data
+	SaveData getSaveData();
 };
-
-SaveData routeToSaveData(Route route);
-Route saveDataToRoute(SaveData data);

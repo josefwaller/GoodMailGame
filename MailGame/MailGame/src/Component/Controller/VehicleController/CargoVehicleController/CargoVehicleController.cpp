@@ -115,14 +115,14 @@ void CargoVehicleController::onArriveAtStop(size_t stopIndex) {
 
 std::optional<SaveData> CargoVehicleController::getSaveData() {
 	SaveData sd(componentTypeToStr(ComponentType::Controller));
-	sd.addData(transitRouteToSaveData(this->route));
+	sd.addData(this->route.getSaveData());
 	if (depot.lock())
 		sd.addValue("depotId", depot.lock()->getId());
 	sd.addData(VehicleController::getSaveData().value());
 	return sd;
 }
 void CargoVehicleController::fromSaveData(SaveData data) {
-	this->route = saveDataToTransitRoute(this->getEntity()->getGame(), data.getData("TransitRoute"));
+	this->route = TransitRoute(data.getData("TransitRoute"), this->getEntity()->getGame());
 	if (data.hasValue("depotId")) {
 		this->depot = this->getEntity()->getGame()->getEntityById(std::stoull(data.getValue("depotId")));
 	}

@@ -1,28 +1,25 @@
 #include "MailTruckRoute.h"
 #include "System/SaveData/SaveData.h"
 
-SaveData mailTruckRouteToSaveData(MailTruckRoute route) {
+SaveData MailTruckRoute::getSaveData() {
 	SaveData sd("MailTruckRoute");
-	sd.addValue("isDelivering", route.isDelivering);
-	sd.addValuesFrom(routeToSaveData(route));
-	sd.addValue("numStops", route.stops.size());
+	sd.addValuesFrom(Route::getSaveData());
+	sd.addValue("isDelivering", this->isDelivering);
+	sd.addValue("numStops", this->stops.size());
 	// Add the stops
-	for (auto it = route.stops.begin(); it != route.stops.end(); it++) {
+	for (auto it = this->stops.begin(); it != this->stops.end(); it++) {
 		SaveData d = mailTruckRouteStopToSaveData(*it);
-		d.addValue("index", (it - route.stops.begin()));
+		d.addValue("index", (it - this->stops.begin()));
 		sd.addData(d);
 	}
 	return sd;
 }
-MailTruckRoute saveDataToMailTruckRoute(SaveData data) {
+MailTruckRoute::MailTruckRoute(SaveData data) : Route(data) {
 	bool isDelivering = data.getValue("isDelivering") == "1";
-	Route route = saveDataToRoute(data);
-	MailTruckRoute r(isDelivering, route.departTime);
-	r.stops.resize(std::stoull(data.getValue("numStops")));
+	this->stops.resize(std::stoull(data.getValue("numStops")));
 	for (SaveData d : data.getDatas()) {
-		r.stops[std::stoull(d.getValue("index"))] = saveDataToMailTruckRouteStop(d);
+		this->stops[std::stoull(d.getValue("index"))] = saveDataToMailTruckRouteStop(d);
 	}
-	return r;
 }
 SaveData mailTruckRouteStopToSaveData(MailTruckRouteStop stop) {
 	SaveData stopData("MailTruckRouteStop");

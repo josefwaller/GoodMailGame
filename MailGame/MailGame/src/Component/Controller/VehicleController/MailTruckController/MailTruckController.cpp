@@ -191,7 +191,7 @@ std::optional<SaveData> MailTruckController::getSaveData() {
 	if (this->office.lock()) {
 		sd.addValue("officeId", this->office.lock()->getId());
 	}
-	sd.addData(mailTruckRouteToSaveData(this->route));
+	sd.addData(this->route.getSaveData());
 	sd.addValuesFrom(VehicleController::getSaveData().value());
 	return sd;
 }
@@ -200,7 +200,7 @@ void MailTruckController::fromSaveData(SaveData data) {
 		this->office = this->getEntity()->getGame()->getEntityById(std::stoull(data.getValue("officeId")));
 	}
 	this->stopIndex = std::stoull(data.getValue("stopIndex"));
-	this->route = saveDataToMailTruckRoute(data.getDatas()[0]);
+	this->route = MailTruckRoute(data.getDatas()[0]);
 	setRouteStops();
 	VehicleController::fromSaveData(data);
 }

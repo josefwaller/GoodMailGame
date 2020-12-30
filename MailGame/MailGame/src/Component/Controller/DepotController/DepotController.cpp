@@ -307,13 +307,13 @@ void DepotController::removeStopDropOff(size_t stopIndex, size_t routeId, long l
 std::optional<SaveData> DepotController::getSaveData() {
 	SaveData sd(componentTypeToStr(ComponentType::Controller));
 	for (auto kv : this->routes) {
-		sd.addData(transitRouteToSaveData(kv.second));
+		sd.addData(kv.second.getSaveData());
 	}
 	return sd;
 }
 void DepotController::fromSaveData(SaveData data) {
 	for (SaveData d : data.getDatas()) {
-		TransitRoute r = saveDataToTransitRoute(this->getEntity()->getGame(), d);
+		TransitRoute r(d, this->getEntity()->getGame());
 		this->routes.insert({ r.id, r });
 	}
 }
