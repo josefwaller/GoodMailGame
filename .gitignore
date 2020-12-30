@@ -357,6 +357,7 @@ MigrationBackup/
 MailGame/SFML-2.5.1
 # ImGui folders
 MailGame/imgui
+MailGame/MailGame/src/imgui
 MailGame/imgui-sfml
 MailGame/MailGame/imgui.ini
 # Opengl lib
