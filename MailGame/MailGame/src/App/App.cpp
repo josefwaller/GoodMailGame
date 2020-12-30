@@ -45,7 +45,7 @@ void App::run() {
 				game.onEvent(e);
 			}
 		}
-			
+
 		// Set up delta time and update last time
 		sf::Time nowTime = deltaClock.restart();
 		float delta = nowTime.asMilliseconds() / 1000.0f;

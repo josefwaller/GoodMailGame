@@ -21,7 +21,6 @@ sf::FloatRect RectClickBox::getPositionedRect() {
 		pos = sf::Vector2f(trans->getPosition().x, trans->getPosition().y);
 	}
 	return sf::FloatRect(pos.x + rect.left, pos.y + rect.top, rect.width, rect.height);
-
 }
 
 #ifdef _DEBUG

@@ -4,7 +4,6 @@
 #include "Entity/Entity.h"
 #include <string>
 
-
 // Currently this is just the speed that all planes taxi at
 // Will it be plane individual or something? idk
 const float TAXI_SPEED = 0.6f;

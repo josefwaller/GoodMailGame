@@ -15,7 +15,7 @@ class Game;
  * and is snapped to grid
  * Should be every entity the play can build
  */
-class ConstructionRecipe{
+class ConstructionRecipe {
 public:
 	ConstructionRecipe(
 		// The display name
@@ -36,7 +36,7 @@ public:
 	std::string getDisplayName();
 private:
 	// The function to build the entity
-	std::function<std::shared_ptr<Entity>(Game* g, sf::Vector3f pos, IsoRotation rot)> buildFunction;
+	std::function<std::shared_ptr<Entity>(Game * g, sf::Vector3f pos, IsoRotation rot)> buildFunction;
 	// The sprites to display
 	IsoSprite displaySprites;
 	// The layout

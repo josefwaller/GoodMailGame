@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <sstream>
 
-SaveData::SaveData(std::string name): name(name) {}
+SaveData::SaveData(std::string name) : name(name) {}
 
 void SaveData::addData(SaveData data) {
 	this->datas.push_back(data);

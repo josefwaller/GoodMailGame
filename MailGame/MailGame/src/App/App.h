@@ -16,4 +16,3 @@ private:
 	// Used to calculate delta time
 	float lastTime;
 };
-

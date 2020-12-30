@@ -15,8 +15,8 @@
 #include "TechTree/TechTree.h"
 #include "Component/Controller/Controller.h"
 
-UiHandler::UiHandler(Game* g): game(g), currentState(UiState::Default), recipe(),
-	toBuild(IsoRotation::NORTH, IsoRotation::SOUTH) {}
+UiHandler::UiHandler(Game* g) : game(g), currentState(UiState::Default), recipe(),
+toBuild(IsoRotation::NORTH, IsoRotation::SOUTH) {}
 
 bool UiHandler::handleEvent(sf::Event e) {
 	sf::Vector2i tilePos;
@@ -26,7 +26,7 @@ bool UiHandler::handleEvent(sf::Event e) {
 		if (ImGui::GetIO().WantCaptureMouse) {
 			return true;
 		}
-		switch(this->currentState) {
+		switch (this->currentState) {
 		case UiState::BuildingEntity:
 			if (!this->recipe) {
 				throw std::runtime_error("BuildingEntity but with no ConstructionRecipe!");
@@ -71,7 +71,7 @@ bool UiHandler::handleEvent(sf::Event e) {
 			return true;
 		}
 		switch (e.key.code) {
-		// Rotate the building/track if R is pressed
+			// Rotate the building/track if R is pressed
 		case sf::Keyboard::R:
 			if (this->currentState == UiState::BuildingRailTracks) {
 				this->toBuild.from++;
@@ -148,26 +148,26 @@ void UiHandler::update() {
 				}
 			}
 		}
-/*		if (ImGui::Button("Post Office")) {
-			this->recipe = Construction::recipes.at(EntityTag::PostOffice);
-			this->changeState(UiState::BuildingEntity);
-		}
-		if (ImGui::Button("MailBox")) {
-			this->recipe = Construction::recipes.at(EntityTag::MailBox);
-			this->changeState(UiState::BuildingEntity);
-		}
-		if (ImGui::Button("Cargo Truck Depot")) {
-			this->recipe = Construction::recipes.at(EntityTag::CargoTruckDepot);
-			this->changeState(UiState::BuildingEntity);
-		}
-		if (ImGui::Button("Train Station")) {
-			this->recipe = Construction::recipes.at(EntityTag::TrainStation);
-			this->changeState(UiState::BuildingEntity);
-		}
-		if (ImGui::Button("Airport")) {
-			this->recipe = Construction::recipes.at(EntityTag::Airport);
-			this->changeState(UiState::BuildingEntity);
-		}*/
+		/*		if (ImGui::Button("Post Office")) {
+					this->recipe = Construction::recipes.at(EntityTag::PostOffice);
+					this->changeState(UiState::BuildingEntity);
+				}
+				if (ImGui::Button("MailBox")) {
+					this->recipe = Construction::recipes.at(EntityTag::MailBox);
+					this->changeState(UiState::BuildingEntity);
+				}
+				if (ImGui::Button("Cargo Truck Depot")) {
+					this->recipe = Construction::recipes.at(EntityTag::CargoTruckDepot);
+					this->changeState(UiState::BuildingEntity);
+				}
+				if (ImGui::Button("Train Station")) {
+					this->recipe = Construction::recipes.at(EntityTag::TrainStation);
+					this->changeState(UiState::BuildingEntity);
+				}
+				if (ImGui::Button("Airport")) {
+					this->recipe = Construction::recipes.at(EntityTag::Airport);
+					this->changeState(UiState::BuildingEntity);
+				}*/
 		if (ImGui::Button("RailWay")) {
 			this->changeState(UiState::BuildingRailTracks);
 		}
@@ -215,7 +215,7 @@ void UiHandler::update() {
 		if (ImGui::Button("New code")) {
 			PostalCodeDatabase::get()->createPostalCode({
 				sf::Color(rand() % 256, rand() % 256, rand() % 256, 100)
-			});
+				});
 		}
 
 		if (ImGui::Button("Done")) {
@@ -245,7 +245,7 @@ void UiHandler::update() {
 				if (a.lock() == e)
 					return true;
 				return false;
-			});
+				});
 			if (i == this->toRenderUi.end()) {
 				this->toRenderUi.push_back(e);
 			}
@@ -260,7 +260,7 @@ void UiHandler::update() {
 		if (a.lock())
 			return false;
 		return true;
-	}), this->toRenderUi.end());
+		}), this->toRenderUi.end());
 	// Render Ui for entities
 	for (auto it = this->toRenderUi.begin(); it != this->toRenderUi.end(); it++) {
 		if (it->lock()) {
@@ -337,7 +337,7 @@ void UiHandler::drawArrow(sf::RenderWindow* window, sf::Vector2i tile, IsoRotati
 	if (color.has_value()) {
 		sprName = "whiteArrows/arrow_";
 	}
-	switch((rot + game->getRotation()).getRotation()) {
+	switch ((rot + game->getRotation()).getRotation()) {
 	case IsoRotation::NORTH:
 		sprName += "N";
 		break;

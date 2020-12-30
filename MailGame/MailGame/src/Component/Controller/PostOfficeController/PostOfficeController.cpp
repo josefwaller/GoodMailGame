@@ -67,7 +67,7 @@ void PostOfficeController::renderUi() {
 					if (ImGui::Button(btnText.c_str())) {
 						this->getEntity()->getGame()->getUi()->selectTile([this, index, i](sf::Vector2i pos) {
 							this->setStopTile(index, i, pos);
-						});
+							});
 					}
 					// Add Delete stop button
 					if (ImGui::Button("Delete Stop")) {

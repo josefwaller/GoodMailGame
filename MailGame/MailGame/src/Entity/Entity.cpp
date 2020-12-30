@@ -22,7 +22,6 @@ std::shared_ptr<Entity> Entity::createEntity(
 	MailContainer* m,
 	TransitStop* ts,
 	Pathfinder* p) {
-
 	// Create the entity
 	std::shared_ptr<Entity> e(new Entity(g, tag));
 	// Utility macro for setting components
@@ -43,9 +42,8 @@ if (var) { \
 #undef SET_COMPONENT
 	// Return built entity
 	return e;
-
 }
-Entity::Entity(Game* g, EntityTag t): tag(t), id(entityId++) {
+Entity::Entity(Game* g, EntityTag t) : tag(t), id(entityId++) {
 	this->game = g;
 }
 
@@ -95,9 +93,9 @@ void Entity::loadComponentsFromSaveData(SaveData data) {
 	for (SaveData d : data.getDatas()) {
 		switch (strToComponentType(d.getName())) {
 			LOAD_COMPONENT(Transform, transform)
-			LOAD_COMPONENT(Controller, controller)
-			LOAD_COMPONENT(MailContainer, mailContainer)
-			LOAD_COMPONENT(TransitStop, transitStop)
+				LOAD_COMPONENT(Controller, controller)
+				LOAD_COMPONENT(MailContainer, mailContainer)
+				LOAD_COMPONENT(TransitStop, transitStop)
 		default: break; // Todo: Do something here
 		}
 	}

@@ -6,11 +6,11 @@
  */
 class IsoSprite {
 public:
-    IsoSprite(sf::Sprite north, sf::Sprite east, sf::Sprite south, sf::Sprite west);
-    sf::Sprite getSprite(IsoRotation rot);
+	IsoSprite(sf::Sprite north, sf::Sprite east, sf::Sprite south, sf::Sprite west);
+	sf::Sprite getSprite(IsoRotation rot);
 private:
-    sf::Sprite north;
-    sf::Sprite east;
-    sf::Sprite south;
-    sf::Sprite west;
+	sf::Sprite north;
+	sf::Sprite east;
+	sf::Sprite south;
+	sf::Sprite west;
 };

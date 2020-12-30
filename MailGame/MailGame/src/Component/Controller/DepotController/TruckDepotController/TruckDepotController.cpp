@@ -21,4 +21,3 @@ void TruckDepotController::spawnVehicleForRoute(TransitRoute route) {
 const char* TruckDepotController::getUiName() {
 	return "Truck Depot";
 }
-

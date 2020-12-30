@@ -32,7 +32,6 @@ struct Road {
 	Road() : hasNorth(false), hasEast(false), hasSouth(false), hasWest(false) {}
 };
 
-
 struct Tile {
 	// The type of tile
 	TileType type;
@@ -46,7 +45,7 @@ struct Tile {
 	// The road, if it has one
 	std::optional<Road> road;
 
-	Tile(TileType t = TileType::Land): postalCode(0) {
+	Tile(TileType t = TileType::Land) : postalCode(0) {
 		type = t;
 	}
 	// Get the railway at a certain hour of the day

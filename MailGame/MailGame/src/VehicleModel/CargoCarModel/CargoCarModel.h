@@ -15,14 +15,14 @@
 #define f(x) x,
 
 enum class CargoCarModel {
-    CARGO_CARS
+	CARGO_CARS
 };
 
 #undef f
 #define f(x) { CargoCarModel::x, #x },
 
 const std::map<CargoCarModel, std::string> CARGO_CAR_STRINGS = {
-    CARGO_CARS
+	CARGO_CARS
 };
 
 #undef f
@@ -30,18 +30,18 @@ const std::map<CargoCarModel, std::string> CARGO_CAR_STRINGS = {
 
 class CargoCarInfo {
 public:
-    CargoCarInfo(std::string name, unsigned int capacity, float maxSpeed, IsoSprite sprites);
-    static CargoCarInfo get(CargoCarModel model);
+	CargoCarInfo(std::string name, unsigned int capacity, float maxSpeed, IsoSprite sprites);
+	static CargoCarInfo get(CargoCarModel model);
 
-    std::string getName();
-    IsoSprite getSprites();
+	std::string getName();
+	IsoSprite getSprites();
 private:
-    static const std::map<CargoCarModel, CargoCarInfo> INFOS;
+	static const std::map<CargoCarModel, CargoCarInfo> INFOS;
 
-    std::string name;
-    unsigned int capacity;
-    float maxSpeed;
-    IsoSprite sprites;
+	std::string name;
+	unsigned int capacity;
+	float maxSpeed;
+	IsoSprite sprites;
 };
 
 std::string cargoCarModelToString(CargoCarModel car);

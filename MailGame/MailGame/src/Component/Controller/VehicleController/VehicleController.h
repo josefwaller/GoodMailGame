@@ -27,7 +27,7 @@ struct VehicleControllerStop {
 		: arrivingPath(arrivingPath), departingPath(departingPath), waitTime(waitTime), expectedTime(0), distance(0) {}
 };
 
-class VehicleController: public Controller {
+class VehicleController : public Controller {
 public:
 	VehicleController(gtime_t departTime, VehicleModel model, std::vector<std::weak_ptr<Entity>> cargoCars = {});
 	virtual void update(float delta) override;
@@ -80,4 +80,3 @@ private:
 	// Get the position and rotation on the path after travelling the distance given
 	std::pair<sf::Vector3f, IsoRotation> getPosAndRotAtDistance(float distance);
 };
-

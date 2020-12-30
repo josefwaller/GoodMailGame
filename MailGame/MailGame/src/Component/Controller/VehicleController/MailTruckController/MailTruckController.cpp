@@ -94,7 +94,6 @@ void MailTruckController::dropOffMail(sf::Vector2i pos) {
 	}
 }
 
-
 void MailTruckController::onArriveAtTile(sf::Vector2i point) {
 	// Pick up letters if a mailbox is on the point
 	if (!this->route.isDelivering) {

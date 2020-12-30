@@ -4,7 +4,6 @@
 #include "Component\Transform\Transform.h"
 
 SpriteRenderer::SpriteRenderer(sf::Sprite spr) : sprite(spr) {
-
 }
 
 void SpriteRenderer::render(sf::RenderWindow* window) {

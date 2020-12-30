@@ -28,7 +28,7 @@ std::vector<RoutePoint> RailsPathfinder::findPathBetweenPoints(
 		currentPos += sf::Vector3i(t.getRailwayAtHour(this->getEntity()->getGame()->getHourAtTime(departTime)).value().to.getUnitVector3D());
 		// TODO: Check the railway we are going to has to pointing to the railway we came from
 		// Check we haven't been in this tile before
-		for (RoutePoint p: visited) {
+		for (RoutePoint p : visited) {
 			if (p.pos == sf::Vector3f(currentPos))
 				return {};
 		}

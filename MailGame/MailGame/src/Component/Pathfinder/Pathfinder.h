@@ -8,7 +8,7 @@
  * A component that finds a path between two points
  * Used for vehicle transportation, can be implemented differently for different vehicles
  */
-class Pathfinder: public Component {
+class Pathfinder : public Component {
 public:
 	virtual std::vector<RoutePoint> findPathBetweenPoints(
 		sf::Vector3f from,

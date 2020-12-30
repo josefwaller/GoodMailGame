@@ -28,10 +28,8 @@ void DepotController::renderUi() {
 		TransitRoute route = kvp.second;
 		ImGui::PushID((int)route.id);
 
-
 		sprintf_s(buf, "Route %zu", route.id);
 		if (ImGui::CollapsingHeader(buf)) {
-
 			// Departure time
 			sprintf_s(buf, "%d:00", route.departureTime);
 			if (ImGui::BeginCombo("Departure Time", buf)) {
@@ -61,6 +59,7 @@ void DepotController::renderUi() {
 					const auto allowed = modelInfo.getAllowedCargoCars();
 					for (auto it = allowed.begin(); it != allowed.end(); it++) {
 						CargoCarInfo cInfo = CargoCarInfo::get(*it);
+
 						if (ImGui::Selectable(cInfo.getName().c_str(), route.cargoCarModel.has_value() && *it == route.cargoCarModel.value())) {
 							this->setRouteCargoCarModel(route.id, { *it });
 						}
@@ -72,6 +71,7 @@ void DepotController::renderUi() {
 				}
 				if (route.cargoCarModel.has_value()) {
 					int x = route.numCargoCars;
+
 					ImGui::SliderInt("Num Cars", &x, 0, modelInfo.getMaxNumCargoCars());
 					if (x != route.numCargoCars) {
 						this->setRouteNumberCargoCars(route.id, (unsigned int)x);
@@ -164,10 +164,8 @@ void DepotController::renderUi() {
 
 	ImGui::End();
 	ImGui::PopID();
-
 }
 void DepotController::update(float) {
-
 	// Delete routes
 	for (TransitRoute r : this->toDelete) {
 		this->routes.erase(r.id);

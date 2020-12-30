@@ -2,7 +2,6 @@
 #include <stdlib.h>
 
 Line::Line(sf::Vector2i start, unsigned len, bool isVertical) : start(start), len(len), isVertical(isVertical) {
-
 }
 
 bool Line::isNextTo(Line other) {

@@ -3,7 +3,7 @@
 #include "System/IsoRotation/IsoRotation.h"
 #include <SFML/System/Vector3.hpp>
 
-class Transform: public Component {
+class Transform : public Component {
 public:
 	Transform(sf::Vector3f initPos, IsoRotation rot = IsoRotation());
 	sf::Vector3f getPosition();

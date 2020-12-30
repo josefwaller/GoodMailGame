@@ -97,8 +97,6 @@ std::shared_ptr<Entity> BuildingPresets::mailBox(Game* g, sf::Vector3f pos, IsoR
 	);
 }
 
-
-
 std::shared_ptr<Entity> BuildingPresets::cargoTruckDepot(Game* g, sf::Vector3f pos, IsoRotation rot) {
 	addRoadForTransitBuilding(g, sf::Vector3i(pos), rot);
 	return Entity::createEntity(

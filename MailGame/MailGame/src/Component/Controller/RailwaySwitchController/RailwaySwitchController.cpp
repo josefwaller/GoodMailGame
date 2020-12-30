@@ -21,16 +21,18 @@ void RailwaySwitchController::renderUi() {
 		IsoRotation to = UiHandler::chooseDirection("To", kv.second.to);
 		if (ImGui::Button("Delete")) {
 			gMap->removeRailTrack(x, y, kv.first);
-		} else
-		if (hour != kv.first) {
-			// Remove old railway
-			gMap->removeRailTrack(x, y, kv.first);
-			// Add new railway
-			gMap->addRailTrack(x, y, from, to, hour);
-		} else
-		if (from != kv.second.from || to != kv.second.to) {
-			this->getEntity()->getGame()->getGameMap()->addRailTrack((size_t)tile.x, (size_t)tile.y, from, to, hour);
 		}
+		else
+			if (hour != kv.first) {
+				// Remove old railway
+				gMap->removeRailTrack(x, y, kv.first);
+				// Add new railway
+				gMap->addRailTrack(x, y, from, to, hour);
+			}
+			else
+				if (from != kv.second.from || to != kv.second.to) {
+					this->getEntity()->getGame()->getGameMap()->addRailTrack((size_t)tile.x, (size_t)tile.y, from, to, hour);
+				}
 		ImGui::PopID();
 	}
 	if (ImGui::Button("Add railway")) {

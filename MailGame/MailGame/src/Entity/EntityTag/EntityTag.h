@@ -8,7 +8,6 @@
 #include "System/IsoRotation/IsoRotation.h"
 #include <SFML/Graphics/Sprite.hpp>
 
-
 /*
  * This is the big boi macro that is used for doing meta stuff with entities
  * The first parameter is the name of the entity

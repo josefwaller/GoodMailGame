@@ -11,7 +11,6 @@ class App;
 class Entity;
 class SaveData;
 
-
 class Game {
 public:
 	// How fast the camera goes
@@ -30,7 +29,7 @@ public:
 	static const std::vector<EntityTag> WHITELIST_ENTITY_TAG;
 
 	// Create an "empty" game, i.e. no entities, etc
-	Game(App * a, sf::RenderWindow* window);
+	Game(App* a, sf::RenderWindow* window);
 	// Generate a new game, with a new map and everything
 	void generateNew();
 	// Load a game from the save data provided

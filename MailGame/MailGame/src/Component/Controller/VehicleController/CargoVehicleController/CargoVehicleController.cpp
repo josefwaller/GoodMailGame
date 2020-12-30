@@ -140,5 +140,3 @@ void CargoVehicleController::fromSaveData(SaveData data) {
 		this->setCargoCars(cc);
 	}
 }
-
-

@@ -22,7 +22,7 @@ const sf::Sprite GameMap::EMPTY_SPRITE = ResourceLoader::get()->getSprite("tiles
 std::vector<sf::Sprite> GameMap::ROAD_SPRITES;
 std::vector<sf::Sprite> GameMap::RAIL_TRACK_SPRITES;
 
-GameMap::GameMap(Game* g): game(g) {
+GameMap::GameMap(Game* g) : game(g) {
 	// Load the tile sprites
 	for (int i = 0; i < 16; i++) {
 		GameMap::ROAD_SPRITES.push_back(ResourceLoader::get()->getSprite("tiles/tiles", "road-" + std::bitset<4>(i).to_string()));
@@ -45,7 +45,7 @@ void GameMap::generateNew() {
 void GameMap::render(sf::RenderWindow* window) {
 	// Render all the tiles
 	int rotation = this->game->getRotation().getRotation();
-	switch(rotation) {
+	switch (rotation) {
 	case IsoRotation::NORTH:
 		for (size_t x = 0; x < MAP_WIDTH; x++) {
 			for (size_t y = 0; y < MAP_HEIGHT; y++) {
@@ -163,7 +163,7 @@ void GameMap::generateCityAt(sf::Vector2i pos) {
 
 	// TBA: Has this passed down from App so the player can set the seed
 	srand(18);
-	
+
 	std::vector<Line> addedLines;
 	// Add the initial road
 	std::queue<Line> potentialLines;
@@ -171,7 +171,7 @@ void GameMap::generateCityAt(sf::Vector2i pos) {
 	potentialLines.push(Line(sf::Vector2i(pos.x - initLen / 2, pos.y), initLen, false));
 
 	for (int i = 0; i < NUM_ROADS; i++) {
-		BEGIN_LOOP:
+	BEGIN_LOOP:
 		// Get the top line
 		Line topLine = potentialLines.front();
 		potentialLines.pop();
@@ -194,7 +194,7 @@ void GameMap::generateCityAt(sf::Vector2i pos) {
 			// Get some random point along the current line
 			// rand() % topLine.getLength() to get some point along topLine, and -rand() % newLineLen to shift newLine across topLine to form an intersection
 			if (topLine.getIsVertical()) {
-				newLineStart = topLine.getStart() + sf::Vector2i(- (int)(rand() % newLineLen), rand() % topLine.getLength());
+				newLineStart = topLine.getStart() + sf::Vector2i(-(int)(rand() % newLineLen), rand() % topLine.getLength());
 			}
 			else {
 				newLineStart = topLine.getStart() + sf::Vector2i(rand() % topLine.getLength(), -(int)(rand() % newLineLen));
@@ -254,7 +254,7 @@ void GameMap::generateCityAt(sf::Vector2i pos) {
 									rot = IsoRotation::WEST;
 									break;
 								case 0:
-									rot = yOff == 1 ? IsoRotation::NORTH: IsoRotation::SOUTH;
+									rot = yOff == 1 ? IsoRotation::NORTH : IsoRotation::SOUTH;
 								}
 								std::shared_ptr<Entity> e = BuildingPresets::residence(this->game, sf::Vector3f((float)(x + xOff), (float)(y + yOff), 0), rot);
 								this->game->addEntity(
@@ -428,4 +428,3 @@ void GameMap::loadFromSaveData(SaveData data) {
 		}
 	}
 }
-
