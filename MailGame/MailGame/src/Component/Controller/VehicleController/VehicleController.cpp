@@ -16,53 +16,56 @@
 #include <functional>
 #include <math.h>
 
-VehicleController::VehicleController(gtime_t d, VehicleModel m, std::vector<std::weak_ptr<Entity>> cargoCars) : departTime(d), stopIndex(0), pointIndex(0), model(m), cargoCars(cargoCars) {}
+VehicleController::VehicleController(gtime_t d, VehicleModel m, std::vector<std::weak_ptr<Entity>> cargoCars)
+	: departTime(d), stopIndex(0), pointIndex(0), model(m), cargoCars(cargoCars), delay(0), stopTime(0) {}
 
 void VehicleController::update(float delta) {
-	gtime_t travelTime = this->getEntity()->getGame()->getTime();
-	if (this->pointIndex >= this->points.size()) {
-		// Go to next stop
-		this->goToNextStop();
-	}
-	else {
-		// If the truck has gone through all the points
-		// Also called if the truck has no points, i.e. no path exists
-		if (travelTime >= this->points[this->pointIndex].expectedTime) {
-			sf::Vector3f point = this->points[this->pointIndex].pos;
-			// Go to the next point
-			this->pointIndex++;
-			// Call callback
-			if (this->pointIndex >= this->points.size()) {
-				// Now we know when we arrive at that stop
-				this->stops[this->stopIndex].expectedTime = this->points.back().expectedTime;
-				this->stops[this->stopIndex].distance = this->points.back().distance;
-				this->onArriveAtStop(this->stopIndex);
-				this->goToNextStop();
-			}
-			else {
-				this->onArriveAtTile(sf::Vector2i(point.x, point.y));
-			}
+	gtime_t travelTime = this->getEntity()->getGame()->getTime() - this->delay;
+	if (!this->isStopped) {
+		if (this->pointIndex >= this->points.size()) {
+			// Go to next stop
+			this->goToNextStop();
 		}
 		else {
-			RoutePoint lastPoint = this->points[this->pointIndex - 1];
-			RoutePoint nextPoint = this->points[this->pointIndex];
-			gtime_t timeSincePoint = travelTime - lastPoint.expectedTime;
-			sf::Vector3f pos = lastPoint.pos + (nextPoint.pos - lastPoint.pos) * (float)(timeSincePoint / (float)(nextPoint.expectedTime - lastPoint.expectedTime));
-			this->getEntity()->transform->setPosition(pos);
-			// Get rotation
-			sf::Vector2f diff(nextPoint.pos.x - lastPoint.pos.x, nextPoint.pos.y - lastPoint.pos.y);
-			IsoRotation rot = IsoRotation::fromUnitVector(diff);
-			this->getEntity()->transform->setRotation(rot);
-			// Update cars
-			const float BETWEEN_CARS_DISTANCE = 0.3f;
-			float currentDistance = Utils::getVectorDistance(pos, lastPoint.pos) + lastPoint.distance;
-			for (std::weak_ptr<Entity> car : this->cargoCars) {
-				if (car.lock()) {
-					currentDistance -= BETWEEN_CARS_DISTANCE;
-					if (currentDistance >= 0) {
-						auto pair = getPosAndRotAtDistance(currentDistance);
-						car.lock()->transform->setPosition(pair.first);
-						car.lock()->transform->setRotation(pair.second);
+			// If the truck has gone through all the points
+			// Also called if the truck has no points, i.e. no path exists
+			if (travelTime >= this->points[this->pointIndex].expectedTime) {
+				sf::Vector3f point = this->points[this->pointIndex].pos;
+				// Go to the next point
+				this->pointIndex++;
+				// Call callback
+				if (this->pointIndex >= this->points.size()) {
+					// Now we know when we arrive at that stop
+					this->stops[this->stopIndex].expectedTime = this->points.back().expectedTime;
+					this->stops[this->stopIndex].distance = this->points.back().distance;
+					this->onArriveAtStop(this->stopIndex);
+					this->goToNextStop();
+				}
+				else {
+					this->onArriveAtTile(sf::Vector2i(point.x, point.y));
+				}
+			}
+			else {
+				RoutePoint lastPoint = this->points[this->pointIndex - 1];
+				RoutePoint nextPoint = this->points[this->pointIndex];
+				gtime_t timeSincePoint = travelTime - lastPoint.expectedTime;
+				sf::Vector3f pos = lastPoint.pos + (nextPoint.pos - lastPoint.pos) * (float)(timeSincePoint / (float)(nextPoint.expectedTime - lastPoint.expectedTime));
+				this->getEntity()->transform->setPosition(pos);
+				// Get rotation
+				sf::Vector2f diff(nextPoint.pos.x - lastPoint.pos.x, nextPoint.pos.y - lastPoint.pos.y);
+				IsoRotation rot = IsoRotation::fromUnitVector(diff);
+				this->getEntity()->transform->setRotation(rot);
+				// Update cars
+				const float BETWEEN_CARS_DISTANCE = 0.3f;
+				float currentDistance = Utils::getVectorDistance(pos, lastPoint.pos) + lastPoint.distance;
+				for (std::weak_ptr<Entity> car : this->cargoCars) {
+					if (car.lock()) {
+						currentDistance -= BETWEEN_CARS_DISTANCE;
+						if (currentDistance >= 0) {
+							auto pair = getPosAndRotAtDistance(currentDistance);
+							car.lock()->transform->setPosition(pair.first);
+							car.lock()->transform->setRotation(pair.second);
+						}
 					}
 				}
 			}
@@ -138,6 +141,24 @@ void VehicleController::setStops(std::vector<VehicleControllerStop> stops) {
 		this->stops[0].expectedTime = this->departTime;
 		this->stops[0].distance = 0;
 	}
+}
+void VehicleController::stop() {
+#ifdef _DEBUG
+	if (this->isStopped) {
+		throw std::runtime_error("stop() called when the vehicle is already stoped!");
+	}
+#endif
+	this->isStopped = true;
+	this->stopTime = this->getEntity()->getGame()->getTime();
+}
+void VehicleController::resume() {
+#ifdef _DEBUG
+	if (!this->isStopped) {
+		throw std::runtime_error("resume() called when the vehicle is not stopped!");
+	}
+#endif
+	this->isStopped = false;
+	this->delay += this->getEntity()->getGame()->getTime() - this->stopTime;
 }
 float VehicleController::getSpeed() {
 	return VehicleModelInfo::getModelInfo(this->model).getSpeed();

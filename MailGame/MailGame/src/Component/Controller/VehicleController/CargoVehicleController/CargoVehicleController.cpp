@@ -25,6 +25,13 @@ void CargoVehicleController::renderUi() {
 	sprintf_s(buf, "%s %llu", entityTagToString(this->getEntity()->tag).c_str(), this->getEntity()->getId());
 	ImGui::Begin(buf);
 
+	if (ImGui::Button("Stop")) {
+		this->stop();
+	}
+	if (ImGui::Button("Resume")) {
+		this->resume();
+	}
+
 	ImGui::End();
 	ImGui::PopID();
 }

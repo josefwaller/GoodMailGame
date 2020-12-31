@@ -31,6 +31,9 @@ class VehicleController : public Controller {
 public:
 	VehicleController(gtime_t departTime, VehicleModel model, std::vector<std::weak_ptr<Entity>> cargoCars = {});
 	virtual void update(float delta) override;
+	// Stops/resumes the vehicle on its route
+	void stop();
+	void resume();
 protected:
 	// Set the stops
 	void setStops(std::vector<VehicleControllerStop> stops);
@@ -69,6 +72,12 @@ private:
 	VehicleModel model;
 	// The cars
 	std::vector<std::weak_ptr<Entity>> cargoCars;
+	// If the vehicle is stopped
+	bool isStopped;
+	gtime_t stopTime;
+	// The delay in the route's expected time vs the actual time hte vehicle should arrive there
+	// Can be caused by stopping
+	gtime_t delay;
 	// Get the path, as route points, between two stops
 	// Includes the departing path and the arriving path
 	// Initialdistance may be excluded
