@@ -47,8 +47,6 @@ public:
 private:
 	Game* game;
 	std::vector<std::vector<Tile>> tiles;
-	// Initialize the tile sprites
-	void initTileSprites();
 	// Render a single tile
 	void renderTile(sf::RenderWindow* window, size_t x, size_t y);
 	void generateCityAt(sf::Vector2i pos);
