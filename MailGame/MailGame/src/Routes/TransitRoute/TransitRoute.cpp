@@ -19,6 +19,7 @@ TransitRoute::TransitRoute(SaveData data, Game* g) : Route(data) {
 SaveData TransitRoute::getSaveData() {
 	SaveData sd("TransitRoute");
 	sd.addValuesFrom(Route::getSaveData());
+	sd.addValue("numStops", this->stops.size());
 	for (size_t i = 0; i < this->stops.size(); i++) {
 		TransitRouteStop stop = this->stops[i];
 		SaveData d = transitRouteStopToSaveData(stop);
