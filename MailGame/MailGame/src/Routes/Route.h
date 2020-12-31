@@ -18,7 +18,7 @@ public:
 	id_t id;
 	static id_t ROUTE_ID;
 	// Constructor
-	Route(hour_t departTime, VehicleModel model, std::optional<CargoCarModel> cargoCarModel = {}, unsigned int numCargoCars = 0);
+	Route(hour_t departTime, VehicleModel model, std::optional<CargoCarModel> cargoCarModel = std::optional<CargoCarModel>(), unsigned int numCargoCars = 0);
 	// Constructor from save data
 	Route(SaveData data);
 	// Get save data

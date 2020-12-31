@@ -3,7 +3,8 @@
 
 id_t Route::ROUTE_ID = 0;
 
-Route::Route(hour_t departTime, VehicleModel model, std::optional<CargoCarModel>, unsigned int numCargoCars)
+Route::Route(hour_t departTime, VehicleModel model, std::optional<CargoCarModel> cargoCarModel, unsigned int numCargoCars)
+
 	: departTime(departTime), model(model), cargoCarModel(cargoCarModel), numCargoCars(numCargoCars), id(ROUTE_ID++) {}
 SaveData Route::getSaveData() {
 	SaveData data("Route");
