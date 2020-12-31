@@ -32,7 +32,7 @@ public:
 		// The depot, i.e. where the airport loads/unloads letters
 		sf::Vector3f depot;
 	};
-	enum TransitType {
+	enum class TransitType {
 		Car,
 		Train,
 		Airplane
