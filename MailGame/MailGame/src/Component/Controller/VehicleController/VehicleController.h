@@ -78,6 +78,9 @@ private:
 	// The delay in the route's expected time vs the actual time hte vehicle should arrive there
 	// Can be caused by stopping
 	gtime_t delay;
+	// All the points the vehicle has gone to, in order
+	// Used for setting up the cargo cars
+	std::vector<RoutePoint> traversedPoints;
 	// Get the path, as route points, between two stops
 	// Includes the departing path and the arriving path
 	// Initialdistance may be excluded

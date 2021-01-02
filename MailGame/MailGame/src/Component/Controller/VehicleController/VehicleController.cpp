@@ -30,7 +30,7 @@ void VehicleController::update(float delta) {
 			// If the truck has gone through all the points
 			// Also called if the truck has no points, i.e. no path exists
 			if (travelTime >= this->points[this->pointIndex].expectedTime) {
-				sf::Vector3f point = this->points[this->pointIndex].pos;
+				RoutePoint point = this->points[this->pointIndex];
 				// Go to the next point
 				this->pointIndex++;
 				// Call callback
@@ -42,7 +42,9 @@ void VehicleController::update(float delta) {
 					this->goToNextStop();
 				}
 				else {
-					this->onArriveAtTile(sf::Vector2i(point.x, point.y));
+					this->onArriveAtTile(sf::Vector2i(point.pos.x, point.pos.y));
+					// Add the next tile to traversed points
+					this->traversedPoints.push_back(this->points[this->pointIndex]);
 				}
 			}
 			else {
@@ -52,9 +54,11 @@ void VehicleController::update(float delta) {
 				sf::Vector3f pos = lastPoint.pos + (nextPoint.pos - lastPoint.pos) * (float)(timeSincePoint / (float)(nextPoint.expectedTime - lastPoint.expectedTime));
 				this->getEntity()->transform->setPosition(pos);
 				// Get rotation
-				sf::Vector2f diff(nextPoint.pos.x - lastPoint.pos.x, nextPoint.pos.y - lastPoint.pos.y);
-				IsoRotation rot = IsoRotation::fromUnitVector(diff);
-				this->getEntity()->transform->setRotation(rot);
+				if (lastPoint.pos != nextPoint.pos) {
+					sf::Vector2f diff(nextPoint.pos.x - lastPoint.pos.x, nextPoint.pos.y - lastPoint.pos.y);
+					IsoRotation rot = IsoRotation::fromUnitVector(diff);
+					this->getEntity()->transform->setRotation(rot);
+				}
 				// Update cars
 				const float BETWEEN_CARS_DISTANCE = 0.3f;
 				float currentDistance = Utils::getVectorDistance(pos, lastPoint.pos) + lastPoint.distance;
@@ -210,25 +214,17 @@ std::optional<SaveData> VehicleController::getSaveData() {
 std::pair<sf::Vector3f, IsoRotation> VehicleController::getPosAndRotAtDistance(float distance) {
 	// First, find the first stop it would have passed
 	float initialDistance = 0.0f;
-	for (auto it = this->stops.begin(); it != this->stops.end() - 1; it++) {
-		auto path = getPathBetweenStops(*it, *(it + 1));
-		initialDistance = path.back().distance;
-		RoutePoint prevPoint = path.front();
-		for (auto p : path) {
-			if (p.distance > distance) {
-				// Get the vector of going to p from prevPoint
-				sf::Vector3f diff = p.pos - prevPoint.pos;
-				// Turn it into a unit vector
-				sf::Vector3f unit = diff / sqrt(pow(diff.x, 2) + pow(diff.y, 2) + pow(diff.z, 2));
-				// Get the rotation
-				IsoRotation rot = IsoRotation::fromUnitVector(unit);
-				// Calculate how far it would get
-				sf::Vector3f pos = prevPoint.pos + unit * (distance - prevPoint.distance);
-				return { pos, rot };
-			}
-			else {
-				prevPoint = p;
-			}
+	for (auto it = this->traversedPoints.begin() + 1; it != this->traversedPoints.end(); it++) {
+		if (it->distance > distance) {
+			auto prev = it - 1;
+			sf::Vector3f diff = it->pos - prev->pos;
+			// Turn it into a unit vector
+			sf::Vector3f unit = diff / sqrt(pow(diff.x, 2) + pow(diff.y, 2) + pow(diff.z, 2));
+			// Get the rotation
+			IsoRotation rot = IsoRotation::fromUnitVector(unit);
+			// Calculate how far it would get
+			sf::Vector3f pos = prev->pos + unit * (distance - prev->distance);
+			return { pos, rot };
 		}
 	}
 }
