@@ -8,6 +8,7 @@
 #include "Component/MailContainer/MailContainer.h"
 #include "Component/TransitStop/TransitStop.h"
 #include "Component/Pathfinder/Pathfinder.h"
+#include "Component/Ai/Ai.h"
 #include "System/SaveData/SaveData.h"
 
 size_t Entity::entityId = 0;
@@ -21,7 +22,8 @@ std::shared_ptr<Entity> Entity::createEntity(
 	ClickBox* cb,
 	MailContainer* m,
 	TransitStop* ts,
-	Pathfinder* p) {
+	Pathfinder* p,
+	Ai* a) {
 	// Create the entity
 	std::shared_ptr<Entity> e(new Entity(g, tag));
 	// Utility macro for setting components
@@ -38,6 +40,7 @@ if (var) { \
 	SET_COMPONENT(m, mailContainer, MailContainer);
 	SET_COMPONENT(ts, transitStop, TransitStop);
 	SET_COMPONENT(p, pathfinder, Pathfinder);
+	SET_COMPONENT(a, ai, Ai);
 
 #undef SET_COMPONENT
 	// Return built entity

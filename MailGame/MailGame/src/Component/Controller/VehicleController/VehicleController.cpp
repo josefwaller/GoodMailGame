@@ -17,7 +17,7 @@
 #include <math.h>
 
 VehicleController::VehicleController(gtime_t d, VehicleModel m, std::vector<std::weak_ptr<Entity>> cargoCars)
-	: departTime(d), stopIndex(0), pointIndex(0), model(m), cargoCars(cargoCars), delay(0), stopTime(0) {}
+	: departTime(d), stopIndex(0), pointIndex(0), model(m), cargoCars(cargoCars), delay(0), stopTime(0), isStopped(false) {}
 
 void VehicleController::update(float delta) {
 	gtime_t travelTime = this->getEntity()->getGame()->getTime() - this->delay;

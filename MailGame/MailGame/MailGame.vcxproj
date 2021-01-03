@@ -128,6 +128,7 @@
     <ClCompile Include="src\Component\ClickBox\RectClickBox\RectClickBox.cpp" />
     <ClCompile Include="src\Component\Component.cpp" />
     <ClCompile Include="src\Component\ComponentType\ComponentType.cpp" />
+    <ClCompile Include="src\Component\Ai\Ai.cpp" />
     <ClCompile Include="src\Component\Controller\Controller.cpp" />
     <ClCompile Include="src\Component\Controller\DepotController\DepotController.cpp" />
     <ClCompile Include="src\Component\Controller\DepotController\PlaneDepotController\PlaneDepotController.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="src\Component\ClickBox\RectClickBox\RectClickBox.h" />
     <ClInclude Include="src\Component\Component.h" />
     <ClInclude Include="src\Component\ComponentType\ComponentType.h" />
+    <ClInclude Include="src\Component\Ai\Ai.h" />
     <ClInclude Include="src\Component\Controller\DepotController\DepotController.h" />
     <ClInclude Include="src\Component\Controller\DepotController\PlaneDepotController\PlaneDepotController.h" />
     <ClInclude Include="src\Component\Controller\DepotController\TrainDepotController\TrainDepotController.h" />
