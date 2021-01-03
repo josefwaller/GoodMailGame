@@ -10,7 +10,7 @@
 #include "System/SaveData/SaveData.h"
 #include "TechTree/TechTree.h"
 
-DepotController::DepotController(TransitStop::TransitType t, std::vector<VehicleModel> models) : type(t), availableModels(models) {}
+DepotController::DepotController(TransitType t, std::vector<VehicleModel> models) : type(t), availableModels(models) {}
 
 void DepotController::renderUi() {
 	ImGui::PushID((int)this->getEntity()->getId());

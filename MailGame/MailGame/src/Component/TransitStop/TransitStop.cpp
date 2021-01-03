@@ -33,14 +33,14 @@ TransitStop::AirplaneStop TransitStop::getAirplaneStop() {
 	}
 	throw std::runtime_error("getRoadTransitLocation called but not implemented!");
 }
-std::vector<SpeedPoint> TransitStop::getArrivingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type) {
+std::vector<SpeedPoint> TransitStop::getArrivingTransitPath(std::shared_ptr<Entity> e, TransitType type) {
 	auto transit = e->transitStop;
 	switch (type) {
-	case TransitStop::TransitType::Car:
+	case TransitType::Car:
 		return { transit->getCarStop().tile };
-	case TransitStop::TransitType::Train:
+	case TransitType::Train:
 		return { transit->getTrainStop().tile };
-	case TransitStop::TransitType::Airplane:
+	case TransitType::Airplane:
 		// Compute where we need to go
 		auto aStop = transit->getAirplaneStop();
 		auto dir = aStop.end - aStop.begin;
@@ -57,15 +57,15 @@ std::vector<SpeedPoint> TransitStop::getArrivingTransitPath(std::shared_ptr<Enti
 	}
 	return {};
 }
-std::vector<SpeedPoint> TransitStop::getDepartingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type) {
+std::vector<SpeedPoint> TransitStop::getDepartingTransitPath(std::shared_ptr<Entity> e, TransitType type) {
 	auto transit = e->transitStop;
 	// TODO: Once there are better depot types/more defined railways and driveways, this will be more complicated
 	switch (type) {
-	case TransitStop::TransitType::Car:
-	case TransitStop::TransitType::Train:
+	case TransitType::Car:
+	case TransitType::Train:
 		// This is a hacky temporary shortcut
 		return getArrivingTransitPath(e, type);
-	case TransitStop::TransitType::Airplane:
+	case TransitType::Airplane:
 		// Compute where we need to go
 		auto aStop = transit->getAirplaneStop();
 		auto dir = aStop.end - aStop.begin;

@@ -2,6 +2,7 @@
 #include "Component/Ai/Ai.h"
 #include "Component/TransitStop/TransitStop.h"
 #include "Routes/TransitRoute/TransitRoute.h"
+#include "System/TransitType/TransitType.h"
 #include <vector>
 #include <memory>
 
@@ -9,7 +10,7 @@ class Entity;
 
 class TransitAi : public Ai {
 public:
-	TransitAi(TransitRoute route, std::weak_ptr<Entity> office, TransitStop::TransitType type);
+	TransitAi(TransitRoute route, std::weak_ptr<Entity> office, TransitType type);
 	// Overridden methods, see Ai
 	virtual void onArriveAtDest() override;
 	virtual void onArriveAtStop(size_t stopIndex) override;
@@ -23,5 +24,5 @@ private:
 	// The route the truck is following
 	TransitRoute route;
 	// The type of stop this vehicle will access
-	TransitStop::TransitType type;
+	TransitType type;
 };

@@ -3,6 +3,7 @@
 #include <SFML/System/Vector3.hpp>
 #include "System/IsoRotation/IsoRotation.h"
 #include "System/SpeedPoint/SpeedPoint.h"
+#include "System/TransitType/TransitType.h"
 #include <optional>
 #include <vector>
 
@@ -32,11 +33,7 @@ public:
 		// The depot, i.e. where the airport loads/unloads letters
 		sf::Vector3f depot;
 	};
-	enum class TransitType {
-		Car,
-		Train,
-		Airplane
-	};
+
 	TransitStop(
 		std::optional<CarStop> carStop = {},
 		std::optional<TrainStop> trainStop = {},
@@ -49,8 +46,8 @@ public:
 	AirplaneStop getAirplaneStop();
 	// Get the position to travel to for a given entity
 	// Split into arriving and departing
-	static std::vector<SpeedPoint> getArrivingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type);
-	static std::vector<SpeedPoint> getDepartingTransitPath(std::shared_ptr<Entity> e, TransitStop::TransitType type);
+	static std::vector<SpeedPoint> getArrivingTransitPath(std::shared_ptr<Entity> e, TransitType type);
+	static std::vector<SpeedPoint> getDepartingTransitPath(std::shared_ptr<Entity> e, TransitType type);
 
 	std::optional<SaveData> getSaveData() override;
 	void fromSaveData(SaveData data) override;

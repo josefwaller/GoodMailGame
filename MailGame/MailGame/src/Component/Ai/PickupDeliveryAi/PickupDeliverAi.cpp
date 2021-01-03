@@ -8,6 +8,7 @@
 #include "Component/Transform/Transform.h"
 #include "Component/Pathfinder/Pathfinder.h"
 #include "System/SaveData/SaveData.h"
+#include "System/TransitType/TransitType.h"
 #include "Mail/Mail.h"
 #include <imgui.h>
 
@@ -32,8 +33,8 @@ std::vector<VehicleControllerStop> PickupDeliveryAi::getStops() {
 		// Add the depot as the first stop
 		std::shared_ptr<Entity> d = this->office.lock();
 		stops.push_back(VehicleControllerStop(
-			TransitStop::getArrivingTransitPath(d, TransitStop::TransitType::Car),
-			TransitStop::getDepartingTransitPath(d, TransitStop::TransitType::Car)
+			TransitStop::getArrivingTransitPath(d, TransitType::Car),
+			TransitStop::getDepartingTransitPath(d, TransitType::Car)
 		));
 	}
 	// Add a stop for every stop along the route
@@ -51,8 +52,8 @@ std::vector<VehicleControllerStop> PickupDeliveryAi::getStops() {
 		// Add the depot as the first stop
 		std::shared_ptr<Entity> d = this->office.lock();
 		stops.push_back(VehicleControllerStop(
-			TransitStop::getArrivingTransitPath(d, TransitStop::TransitType::Car),
-			TransitStop::getDepartingTransitPath(d, TransitStop::TransitType::Car)
+			TransitStop::getArrivingTransitPath(d, TransitType::Car),
+			TransitStop::getDepartingTransitPath(d, TransitType::Car)
 		));
 	}
 	return stops;

@@ -12,7 +12,7 @@
 TransitAi::TransitAi(
 	TransitRoute r,
 	std::weak_ptr<Entity> d,
-	TransitStop::TransitType type
+	TransitType type
 ) : depot(d), route(r), type(type) {
 }
 

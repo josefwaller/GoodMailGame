@@ -5,7 +5,7 @@
 #include "Component/TransitStop/TransitStop.h"
 #include "Entity/EntityPresets/VehiclePresets/VehiclePresets.h"
 
-TrainDepotController::TrainDepotController() : DepotController(TransitStop::TransitType::Train, { VehicleModel::SlowTrain, VehicleModel::FastTrain }) {}
+TrainDepotController::TrainDepotController() : DepotController(TransitType::Train, { VehicleModel::SlowTrain, VehicleModel::FastTrain }) {}
 
 void TrainDepotController::spawnVehicleForRoute(TransitRoute route) {
 	this->getEntity()->getGame()->addEntity(

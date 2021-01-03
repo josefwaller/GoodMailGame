@@ -3,6 +3,7 @@
 #include "Routes/TransitRoute/TransitRoute.h"
 #include "Component/TransitStop/TransitStop.h"
 #include "VehicleModel/VehicleModel.h"
+#include "System/TransitType/TransitType.h"
 #include <map>
 #include <vector>
 
@@ -13,7 +14,7 @@
  */
 class DepotController : public Controller {
 public:
-	DepotController(TransitStop::TransitType type, std::vector<VehicleModel> availableModels);
+	DepotController(TransitType type, std::vector<VehicleModel> availableModels);
 	virtual void update(float delta) override;
 	virtual void onHourChange(hour_t newHour) override;
 	virtual void renderUi() override;
@@ -64,7 +65,7 @@ private:
 	// The models available
 	std::vector<VehicleModel> availableModels;
 	// The type of transit
-	TransitStop::TransitType type;
+	TransitType type;
 	// This is basically a debug feature, but toggle to show the routes of this station on the UI
 	bool showRoutes;
 };

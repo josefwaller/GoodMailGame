@@ -72,7 +72,7 @@ std::shared_ptr<Entity> VehiclePresets::cargoTruck(
 		new MailContainer(),
 		nullptr,
 		new RoadPathfinder(),
-		new TransitAi(route, office, TransitStop::TransitType::Car)
+		new TransitAi(route, office, TransitType::Car)
 	);
 }
 
@@ -110,7 +110,7 @@ std::shared_ptr<Entity> VehiclePresets::train(
 		new MailContainer(),
 		nullptr,
 		new RailsPathfinder(),
-		new TransitAi(route, depot, TransitStop::TransitType::Train)
+		new TransitAi(route, depot, TransitType::Train)
 	);
 }
 std::shared_ptr<Entity> VehiclePresets::plane(
@@ -137,7 +137,7 @@ std::shared_ptr<Entity> VehiclePresets::plane(
 		new MailContainer(),
 		nullptr,
 		new AirPathfinder(),
-		new TransitAi(route, depot, TransitStop::TransitType::Airplane)
+		new TransitAi(route, depot, TransitType::Airplane)
 	);
 }
 std::shared_ptr<Entity> VehiclePresets::trainCar(Game* g, sf::Vector3f pos, IsoRotation rot, IsoSprite sprites) {

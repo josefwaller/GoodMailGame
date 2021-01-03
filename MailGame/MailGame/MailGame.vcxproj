@@ -173,6 +173,7 @@
     <ClCompile Include="src\System\IsoSprite\IsoSprite.cpp" />
     <ClCompile Include="src\System\SaveData\SaveData.cpp" />
     <ClCompile Include="src\System\SpeedPoint\SpeedPoint.cpp" />
+    <ClCompile Include="src\System\TransitType\TransitType.h" />
     <ClCompile Include="src\System\Utils\Utils.cpp" />
     <ClCompile Include="src\TechTree\Technology\Technology.cpp" />
     <ClCompile Include="src\TechTree\TechTree.cpp" />

@@ -192,6 +192,9 @@
     <ClCompile Include="src\Component\Ai\PickupDeliveryAi\PickupDeliverAi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\System\TransitType\TransitType.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h">
