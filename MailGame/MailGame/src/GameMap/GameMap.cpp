@@ -142,6 +142,9 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 	sf::Vector3f pos((float)x + 0.5f, (float)y + 0.5f, 0);
 	s.setPosition(this->game->worldToScreenPos(pos));
 	s = Utils::setupBuildingSprite(s, false);
+	if (tile.isLocked) {
+		s.setColor(sf::Color::Red);
+	}
 	window->draw(s);
 	// If there's a railway, also draw that
 	if (tile.railway.has_value()) {
@@ -267,6 +270,22 @@ void GameMap::generateCityAt(sf::Vector2i pos) {
 				}
 			}
 		}
+	}
+}
+
+bool GameMap::canGetTileLock(size_t x, size_t y, TransitType type) {
+	return !this->getTileAt(x, y).isLocked;
+}
+
+void GameMap::getTileLock(size_t x, size_t y, TransitType type) {
+	if (this->getTileAt(x, y).isLocked) {
+		throw std::runtime_error("Tile is already locked");
+	}
+	this->tiles[x][y].isLocked = true;
+}
+void GameMap::releaseTileLock(size_t x, size_t y, TransitType type) {
+	if (this->getTileAt(x, y).isLocked) {
+		this->tiles[x][y].isLocked = false;
 	}
 }
 

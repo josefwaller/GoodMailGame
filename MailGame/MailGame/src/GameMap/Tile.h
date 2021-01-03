@@ -44,8 +44,10 @@ struct Tile {
 	std::optional<std::map<hour_t, Railway>> railway;
 	// The road, if it has one
 	std::optional<Road> road;
+	// The tile lock, currently just one for all transit types
+	bool isLocked;
 
-	Tile(TileType t = TileType::Land) : postalCode(0) {
+	Tile(TileType t = TileType::Land) : postalCode(0), isLocked(false) {
 		type = t;
 	}
 	// Get the railway at a certain hour of the day

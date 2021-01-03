@@ -1,5 +1,6 @@
 #pragma once
 #include "GameMap/Tile.h"
+#include "System/TransitType/TransitType.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <vector>
@@ -36,6 +37,13 @@ public:
 	void addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to, hour_t hour = 0);
 	// Remove a railway track at the position given
 	void removeRailTrack(size_t x, size_t y, hour_t hour);
+	// Check if a vehicle of the given type can go through the tile given
+	bool canGetTileLock(size_t x, size_t y, TransitType type);
+	// Get a lock on a tile
+	// Throws if it cannot, should check with canGetTileLock first
+	void getTileLock(size_t x, size_t y, TransitType type);
+	// Release a tile lock, throws if there is no lock on the tile
+	void releaseTileLock(size_t x, size_t y, TransitType type);
 	// Check if there is a road on the given tile
 	bool hasRoadAt(size_t x, size_t y);
 	// check if there is a road leading in the given direction on a tile
