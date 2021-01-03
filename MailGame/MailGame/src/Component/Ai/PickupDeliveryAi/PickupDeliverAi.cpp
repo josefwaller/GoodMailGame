@@ -14,10 +14,15 @@
 const float PickupDeliveryAi::SPEED = 1.0f;
 
 // Set stop to -1 to avoid skipping the first stop
-PickupDeliveryAi::PickupDeliveryAi(MailTruckRoute r, std::weak_ptr<Entity> o, gtime_t departTime)
+PickupDeliveryAi::PickupDeliveryAi(MailTruckRoute r, std::weak_ptr<Entity> o)
 	: route(r), office(o), hasPickedUpMail(false) {
 }
 std::vector<VehicleControllerStop> PickupDeliveryAi::getStops() {
+	// This is messy as hell, but oh well
+	if (!this->hasPickedUpMail) {
+		this->hasPickedUpMail = true;
+		pickupMailFromOffice();
+	}
 	std::vector<VehicleControllerStop> stops;
 	VehicleModelInfo modelInfo = VehicleModelInfo::getModelInfo(VehicleModel::MailTruck);
 	// First add the departing path for the depot

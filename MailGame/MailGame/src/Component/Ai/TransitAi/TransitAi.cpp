@@ -12,9 +12,7 @@
 TransitAi::TransitAi(
 	TransitRoute r,
 	std::weak_ptr<Entity> d,
-	TransitStop::TransitType type,
-	gtime_t departTime,
-	std::vector<std::weak_ptr<Entity>> cargoCars
+	TransitStop::TransitType type
 ) : depot(d), route(r), type(type) {
 }
 

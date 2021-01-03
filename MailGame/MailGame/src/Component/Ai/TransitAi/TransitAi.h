@@ -9,7 +9,7 @@ class Entity;
 
 class TransitAi : public Ai {
 public:
-	TransitAi(TransitRoute route, std::weak_ptr<Entity> office, TransitStop::TransitType type, gtime_t departTime, std::vector<std::weak_ptr<Entity>> cargoCars = {});
+	TransitAi(TransitRoute route, std::weak_ptr<Entity> office, TransitStop::TransitType type);
 	// Overridden methods, see Ai
 	virtual void onArriveAtDest() override;
 	virtual void onArriveAtStop(size_t stopIndex) override;

@@ -8,7 +8,7 @@ class GameMap;
 
 class PickupDeliveryAi : public Ai {
 public:
-	PickupDeliveryAi(MailTruckRoute route, std::weak_ptr<Entity> office, gtime_t departTime);
+	PickupDeliveryAi(MailTruckRoute route, std::weak_ptr<Entity> office);
 	static const float SPEED;
 	virtual void renderUi() override;
 	virtual std::optional<SaveData> getSaveData() override;
