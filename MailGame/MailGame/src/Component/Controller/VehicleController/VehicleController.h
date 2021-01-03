@@ -37,13 +37,6 @@ public:
 protected:
 	// Set the stops
 	void setStops(std::vector<VehicleControllerStop> stops);
-	// Methods to be overridden by subclass
-	// When the truck arrives at a tile
-	virtual void onArriveAtTile(sf::Vector2i point);
-	// When the truck arrives at a stop
-	virtual void onArriveAtStop(size_t stopIndex);
-	// When the truck arrives at the last stop, i.e. the route is complete
-	virtual void onArriveAtDest();
 	// Get the speed the truck should move at
 	virtual float getSpeed();
 	// Children need access to this for saving/loading

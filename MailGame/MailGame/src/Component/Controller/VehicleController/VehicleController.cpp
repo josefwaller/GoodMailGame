@@ -9,6 +9,7 @@
 #include "System/SaveData/SaveData.h"
 #include "Component/Renderer/IsoSpriteRenderer/IsoSpriteRenderer.h"
 #include "VehicleModel/VehicleModel.h"
+#include "Component/Ai/Ai.h"
 #include <SFML/System/Vector3.hpp>
 #include <queue>
 #include <map>
@@ -20,6 +21,9 @@ VehicleController::VehicleController(gtime_t d, VehicleModel m, std::vector<std:
 	: departTime(d), stopIndex(0), pointIndex(0), model(m), cargoCars(cargoCars), delay(0), stopTime(0), isStopped(false) {}
 
 void VehicleController::update(float delta) {
+	if (this->stops.empty()) {
+		this->setStops(this->getEntity()->ai->getStops());
+	}
 	gtime_t travelTime = this->getEntity()->getGame()->getTime() - this->delay;
 	if (!this->isStopped) {
 		if (this->pointIndex >= this->points.size()) {
@@ -38,11 +42,11 @@ void VehicleController::update(float delta) {
 					// Now we know when we arrive at that stop
 					this->stops[this->stopIndex].expectedTime = this->points.back().expectedTime;
 					this->stops[this->stopIndex].distance = this->points.back().distance;
-					this->onArriveAtStop(this->stopIndex);
+					this->getEntity()->ai->onArriveAtStop(this->stopIndex);
 					this->goToNextStop();
 				}
 				else {
-					this->onArriveAtTile(sf::Vector2i(point.pos.x, point.pos.y));
+					this->getEntity()->ai->onArriveAtTile(sf::Vector2i(point.pos.x, point.pos.y));
 					// Add the next tile to traversed points
 					this->traversedPoints.push_back(this->points[this->pointIndex]);
 				}
@@ -106,7 +110,7 @@ void VehicleController::goToNextStop() {
 	this->stopIndex++;
 	if (this->stopIndex >= this->stops.size()) {
 		// Arrive at dest
-		this->onArriveAtDest();
+		this->getEntity()->ai->onArriveAtDest();
 	}
 	else {
 		VehicleModelInfo mInfo = VehicleModelInfo::getModelInfo(this->model);
@@ -238,7 +242,3 @@ void VehicleController::setCargoCars(std::vector<std::weak_ptr<Entity>> cc) {
 	//this->deleteCars();
 	this->cargoCars = cc;
 }
-
-void VehicleController::onArriveAtTile(sf::Vector2i point) {}
-void VehicleController::onArriveAtStop(size_t stopIndex) {}
-void VehicleController::onArriveAtDest() {}

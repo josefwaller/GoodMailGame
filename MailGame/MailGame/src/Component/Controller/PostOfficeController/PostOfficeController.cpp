@@ -3,7 +3,6 @@
 #include "Component/Transform/Transform.h"
 #include "Component/ComponentType/ComponentType.h"
 #include "Component/TransitStop/TransitStop.h"
-#include "Component/Controller/VehicleController/MailTruckController/MailTruckController.h"
 #include "Game/Game.h"
 #include "Ui/UiHandler/UiHandler.h"
 #include "Entity/EntityPresets/VehiclePresets/VehiclePresets.h"

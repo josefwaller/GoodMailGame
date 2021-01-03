@@ -135,8 +135,8 @@
     <ClCompile Include="src\Component\Controller\DepotController\TrainDepotController\TrainDepotController.cpp" />
     <ClCompile Include="src\Component\Controller\RailwaySwitchController\RailwaySwitchController.cpp" />
     <ClCompile Include="src\Component\Controller\ResidenceController\ResidenceController.cpp" />
-    <ClCompile Include="src\Component\Controller\VehicleController\CargoVehicleController\CargoVehicleController.cpp" />
-    <ClCompile Include="src\Component\Controller\VehicleController\MailTruckController\MailTruckController.cpp" />
+    <ClCompile Include="src\Component\Ai\TransitAi\TransitAi.cpp" />
+    <ClCompile Include="src\Component\Ai\PickupDeliveryAi\PickupDeliverAi.cpp" />
     <ClCompile Include="src\Component\Controller\PostOfficeController\PostOfficeController.cpp" />
     <ClCompile Include="src\Component\Controller\VehicleController\VehicleController.cpp" />
     <ClCompile Include="src\Component\Controller\DepotController\TruckDepotController\TruckDepotController.cpp" />
@@ -197,8 +197,8 @@
     <ClInclude Include="src\Component\Controller\RailwaySwitchController\RailwaySwitchController.h" />
     <ClInclude Include="src\Component\Controller\ResidenceController\ResidenceController.h" />
     <ClInclude Include="src\Component\Controller\Controller.h" />
-    <ClInclude Include="src\Component\Controller\VehicleController\CargoVehicleController\CargoVehicleController.h" />
-    <ClInclude Include="src\Component\Controller\VehicleController\MailTruckController\MailTruckController.h" />
+    <ClInclude Include="src\Component\Ai\TransitAi\TransitAi.h" />
+    <ClInclude Include="src\Component\Ai\PickupDeliveryAi\PickupDeliveryAi.h" />
     <ClInclude Include="src\Component\Controller\PostOfficeController\PostOfficeController.h" />
     <ClInclude Include="src\Component\Controller\VehicleController\VehicleController.h" />
     <ClInclude Include="src\Component\Controller\DepotController\TruckDepotController\TruckDepotController.h" />

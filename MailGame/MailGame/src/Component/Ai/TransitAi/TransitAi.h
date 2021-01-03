@@ -1,5 +1,5 @@
 #pragma once
-#include "Component/Controller/VehicleController/VehicleController.h"
+#include "Component/Ai/Ai.h"
 #include "Component/TransitStop/TransitStop.h"
 #include "Routes/TransitRoute/TransitRoute.h"
 #include <vector>
@@ -7,15 +7,14 @@
 
 class Entity;
 
-class CargoVehicleController : public VehicleController {
+class TransitAi : public Ai {
 public:
-	CargoVehicleController(TransitRoute route, std::weak_ptr<Entity> office, TransitStop::TransitType type, gtime_t departTime, std::vector<std::weak_ptr<Entity>> cargoCars = {});
-	// Set stops in vehicle controller based on route
-	void setRouteStops();
-	virtual void renderUi() override;
-	// Overridden methods, see VehicleController
+	TransitAi(TransitRoute route, std::weak_ptr<Entity> office, TransitStop::TransitType type, gtime_t departTime, std::vector<std::weak_ptr<Entity>> cargoCars = {});
+	// Overridden methods, see Ai
 	virtual void onArriveAtDest() override;
 	virtual void onArriveAtStop(size_t stopIndex) override;
+	virtual void renderUi() override;
+	virtual std::vector<VehicleControllerStop> getStops();
 	virtual std::optional<SaveData> getSaveData() override;
 	virtual void fromSaveData(SaveData data) override;
 private:

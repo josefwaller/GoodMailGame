@@ -7,8 +7,7 @@
 // Renderers
 #include "Component/Renderer/IsoSpriteRenderer/IsoSpriteRenderer.h"
 // Controllers
-#include "Component/Controller/VehicleController/MailTruckController/MailTruckController.h"
-#include "Component/Controller/VehicleController/CargoVehicleController/CargoVehicleController.h"
+#include "Component/Controller/VehicleController/VehicleController.h"
 // Mail Container
 #include "Component/MailContainer/MailContainer.h"
 // Pathfinders
@@ -16,6 +15,9 @@
 #include "Component/Pathfinder/RailsPathfinder/RailsPathfinder.h"
 #include "Component/Pathfinder/AirPathfinder/AirPathfinder.h"
 #include "Game/Game.h"
+// Ai
+#include "Component/Ai/PickupDeliveryAi/PickupDeliveryAi.h"
+#include "Component/Ai/TransitAi/TransitAi.h"
 
 std::shared_ptr<Entity> VehiclePresets::mailTruck(
 	Game* g,
@@ -37,11 +39,12 @@ std::shared_ptr<Entity> VehiclePresets::mailTruck(
 			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
-		new MailTruckController(route, postOffice, g->getTime()),
+		new VehicleController(g->getTime(), route.model, {}),
 		nullptr,
 		new MailContainer(),
 		nullptr,
-		new RoadPathfinder()
+		new RoadPathfinder(),
+		new PickupDeliveryAi(route, postOffice, g->getTime())
 	);
 }
 
@@ -64,11 +67,12 @@ std::shared_ptr<Entity> VehiclePresets::cargoTruck(
 			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
-		new CargoVehicleController(route, office, TransitStop::TransitType::Car, g->getTime()),
+		new VehicleController(g->getTime(), route.model),
 		nullptr,
 		new MailContainer(),
 		nullptr,
-		new RoadPathfinder()
+		new RoadPathfinder(),
+		new TransitAi(route, office, TransitStop::TransitType::Car, route.departTime)
 	);
 }
 
@@ -101,11 +105,12 @@ std::shared_ptr<Entity> VehiclePresets::train(
 			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
-		new CargoVehicleController(route, depot, TransitStop::TransitType::Train, g->getTime(), trainCars),
+		new VehicleController(g->getTime(), route.model, trainCars),
 		nullptr,
 		new MailContainer(),
 		nullptr,
-		new RailsPathfinder()
+		new RailsPathfinder(),
+		new TransitAi(route, depot, TransitStop::TransitType::Train, route.departTime)
 	);
 }
 std::shared_ptr<Entity> VehiclePresets::plane(
@@ -127,11 +132,12 @@ std::shared_ptr<Entity> VehiclePresets::plane(
 			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
-		new CargoVehicleController(route, depot, TransitStop::TransitType::Airplane, g->getTime()),
+		new VehicleController(g->getTime(), route.model),
 		nullptr,
 		new MailContainer(),
 		nullptr,
-		new AirPathfinder()
+		new AirPathfinder(),
+		new TransitAi(route, depot, TransitStop::TransitType::Airplane, route.departTime)
 	);
 }
 std::shared_ptr<Entity> VehiclePresets::trainCar(Game* g, sf::Vector3f pos, IsoRotation rot, IsoSprite sprites) {

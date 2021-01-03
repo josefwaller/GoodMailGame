@@ -10,6 +10,7 @@
 class Ai : public Component {
 public:
 	virtual std::vector<VehicleControllerStop> getStops() = 0;
+	virtual void renderUi() = 0;
 	virtual void onArriveAtTile(sf::Vector2i tile);
 	virtual void onArriveAtStop(size_t stopIndex);
 	virtual void onArriveAtDest();

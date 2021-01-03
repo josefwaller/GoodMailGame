@@ -114,13 +114,7 @@
     <ClCompile Include="src\Component\Pathfinder\RoadPathfinder\RoadPathfinder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Component\Controller\VehicleController\MailTruckController\MailTruckController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Component\Controller\VehicleController\VehicleController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Component\Controller\VehicleController\CargoVehicleController\CargoVehicleController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Component\Pathfinder\RailsPathfinder\RailsPathfinder.cpp">
@@ -190,6 +184,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Component\Ai\Ai.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\Ai\TransitAi\TransitAi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\Ai\PickupDeliveryAi\PickupDeliverAi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -299,13 +299,7 @@
     <ClInclude Include="src\Component\Pathfinder\RoadPathfinder\RoadPathfinder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Component\Controller\VehicleController\MailTruckController\MailTruckController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Component\Controller\VehicleController\VehicleController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Component\Controller\VehicleController\CargoVehicleController\CargoVehicleController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Component\Pathfinder\RailsPathfinder\RailsPathfinder.h">
@@ -363,6 +357,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Component\Ai\Ai.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\Ai\TransitAi\TransitAi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\Ai\PickupDeliveryAi\PickupDeliveryAi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

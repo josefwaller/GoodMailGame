@@ -1,4 +1,4 @@
-#include "CargoVehicleController.h"
+#include "TransitAi.h"
 #include "Entity/Entity.h"
 #include "Entity/EntityTag/EntityTag.h"
 #include "Component/TransitStop/TransitStop.h"
@@ -9,33 +9,25 @@
 #include <stdexcept>
 #include <imgui.h>
 
-CargoVehicleController::CargoVehicleController(
+TransitAi::TransitAi(
 	TransitRoute r,
 	std::weak_ptr<Entity> d,
 	TransitStop::TransitType type,
 	gtime_t departTime,
 	std::vector<std::weak_ptr<Entity>> cargoCars
-) : depot(d), route(r), type(type), VehicleController(departTime, r.model, cargoCars) {
-	setRouteStops();
+) : depot(d), route(r), type(type) {
 }
 
-void CargoVehicleController::renderUi() {
+void TransitAi::renderUi() {
 	ImGui::PushID(this->getEntity()->getId());
 	char buf[200];
 	sprintf_s(buf, "%s %llu", entityTagToString(this->getEntity()->tag).c_str(), this->getEntity()->getId());
 	ImGui::Begin(buf);
 
-	if (ImGui::Button("Stop")) {
-		this->stop();
-	}
-	if (ImGui::Button("Resume")) {
-		this->resume();
-	}
-
 	ImGui::End();
 	ImGui::PopID();
 }
-void CargoVehicleController::setRouteStops() {
+std::vector<VehicleControllerStop> TransitAi::getStops() {
 	std::vector<VehicleControllerStop> stops;
 	VehicleModelInfo modelInfo = VehicleModelInfo::getModelInfo(this->route.model);
 	// First add the departing path for the depot
@@ -72,15 +64,14 @@ void CargoVehicleController::setRouteStops() {
 			modelInfo.getUnloadTime()
 		));
 	}
-	this->setStops(stops);
+	return stops;
 }
-void CargoVehicleController::onArriveAtDest() {
+void TransitAi::onArriveAtDest() {
 	// Give letters to depot and destory self
 	this->getEntity()->mailContainer->transferAllMailTo(this->depot.lock()->mailContainer);
 	this->getEntity()->getGame()->removeEntity(this->getEntity());
-	this->deleteCars();
 }
-void CargoVehicleController::onArriveAtStop(size_t stopIndex) {
+void TransitAi::onArriveAtStop(size_t stopIndex) {
 	// For the last stop (i.e. the depot) we don't need to transfer any letters
 	if (stopIndex >= this->route.stops.size())
 		return;
@@ -120,30 +111,16 @@ void CargoVehicleController::onArriveAtStop(size_t stopIndex) {
 	otherMail->transferSomeMailTo(toPickUp, mail);
 }
 
-std::optional<SaveData> CargoVehicleController::getSaveData() {
+std::optional<SaveData> TransitAi::getSaveData() {
 	SaveData sd(componentTypeToStr(ComponentType::Controller));
 	sd.addData(this->route.getSaveData());
 	if (depot.lock())
 		sd.addValue("depotId", depot.lock()->getId());
-	sd.addData(VehicleController::getSaveData().value());
 	return sd;
 }
-void CargoVehicleController::fromSaveData(SaveData data) {
+void TransitAi::fromSaveData(SaveData data) {
 	this->route = TransitRoute(data.getData("TransitRoute"), this->getEntity()->getGame());
 	if (data.hasValue("depotId")) {
 		this->depot = this->getEntity()->getGame()->getEntityById(std::stoull(data.getValue("depotId")));
-	}
-	setRouteStops();
-	VehicleController::fromSaveData(data.getData("VehicleController"));
-	// Create the train cars
-	if (this->route.cargoCarModel.has_value() && this->route.numCargoCars > 0) {
-		std::vector<std::weak_ptr<Entity>> cc;
-		CargoCarInfo cInfo = CargoCarInfo::get(this->route.cargoCarModel.value());
-		for (size_t i = 0; i < this->route.numCargoCars; i++) {
-			auto e = (VehiclePresets::trainCar(this->getEntity()->getGame(), sf::Vector3f(), IsoRotation::NORTH, cInfo.getSprites()));
-			this->getEntity()->getGame()->addEntity(e);
-			cc.push_back(e);
-		}
-		this->setCargoCars(cc);
 	}
 }

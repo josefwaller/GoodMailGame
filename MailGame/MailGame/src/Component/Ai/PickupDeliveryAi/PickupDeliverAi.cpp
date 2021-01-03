@@ -1,4 +1,4 @@
-#include "MailTruckController.h"
+#include "PickupDeliveryAi.h"
 #include "Game/Game.h"
 #include <stdexcept>
 #include "Entity/Entity.h"
@@ -11,14 +11,13 @@
 #include "Mail/Mail.h"
 #include <imgui.h>
 
-const float MailTruckController::SPEED = 1.0f;
+const float PickupDeliveryAi::SPEED = 1.0f;
 
 // Set stop to -1 to avoid skipping the first stop
-MailTruckController::MailTruckController(MailTruckRoute r, std::weak_ptr<Entity> o, gtime_t departTime)
-	: route(r), office(o), hasPickedUpMail(false), VehicleController(departTime, VehicleModel::MailTruck) {
-	setRouteStops();
+PickupDeliveryAi::PickupDeliveryAi(MailTruckRoute r, std::weak_ptr<Entity> o, gtime_t departTime)
+	: route(r), office(o), hasPickedUpMail(false) {
 }
-void MailTruckController::setRouteStops() {
+std::vector<VehicleControllerStop> PickupDeliveryAi::getStops() {
 	std::vector<VehicleControllerStop> stops;
 	VehicleModelInfo modelInfo = VehicleModelInfo::getModelInfo(VehicleModel::MailTruck);
 	// First add the departing path for the depot
@@ -51,17 +50,10 @@ void MailTruckController::setRouteStops() {
 			TransitStop::getDepartingTransitPath(d, TransitStop::TransitType::Car)
 		));
 	}
-	this->setStops(stops);
+	return stops;
 }
 
-void MailTruckController::update(float delta) {
-	if (!hasPickedUpMail && this->route.isDelivering) {
-		hasPickedUpMail = true;
-		this->pickupMailFromOffice();
-	}
-	VehicleController::update(delta);
-}
-void MailTruckController::renderUi() {
+void PickupDeliveryAi::renderUi() {
 	ImGui::PushID(this->getEntity()->getId());
 	// Draw GUI
 	char buf[200];
@@ -77,7 +69,7 @@ void MailTruckController::renderUi() {
 	ImGui::End();
 	ImGui::PopID();
 }
-void MailTruckController::dropOffMail(sf::Vector2i pos) {
+void PickupDeliveryAi::dropOffMail(sf::Vector2i pos) {
 	for (int x = -1; x < 2; x++) {
 		for (int y = -1; y < 2; y++) {
 			if ((x == 0 || y == 0) && x != y) {
@@ -94,7 +86,7 @@ void MailTruckController::dropOffMail(sf::Vector2i pos) {
 	}
 }
 
-void MailTruckController::onArriveAtTile(sf::Vector2i point) {
+void PickupDeliveryAi::onArriveAtTile(sf::Vector2i point) {
 	// Pick up letters if a mailbox is on the point
 	if (!this->route.isDelivering) {
 		auto entities = this->getEntity()->getGame()->getEntities();
@@ -117,7 +109,7 @@ void MailTruckController::onArriveAtTile(sf::Vector2i point) {
 	}
 }
 // When done, the truck should be back at the post office
-void MailTruckController::onArriveAtDest() {
+void PickupDeliveryAi::onArriveAtDest() {
 	// If we were going back to the office, just delete yourself
 	// Give all the letters back to the post office
 	if (auto o = this->office.lock()) {
@@ -126,10 +118,7 @@ void MailTruckController::onArriveAtDest() {
 	// Delete self
 	this->getEntity()->getGame()->removeEntity(this->getEntity());
 }
-float MailTruckController::getSpeed() {
-	return SPEED;
-}
-void MailTruckController::pickupMailFromOffice() {
+void PickupDeliveryAi::pickupMailFromOffice() {
 	// Get the position of the post office
 	TransitStop::CarStop carStop = this->office.lock()->transitStop->getCarStop();
 	sf::Vector3f pos3D(carStop.tile + carStop.dir.value().getUnitVector3D());
@@ -145,12 +134,13 @@ void MailTruckController::pickupMailFromOffice() {
 	std::vector<sf::Vector2i> allPoints;
 	sf::Vector2i prevPoint = route.stops[0].target.value();
 	sf::Vector3f prev(prevPoint.x, prevPoint.y, 0);
+	VehicleModelInfo mInfo = VehicleModelInfo::getModelInfo(this->route.model);
 	for (size_t i = 0; i < route.stops.size(); i++) {
 		if (!route.stops[i].target.has_value())
 			continue;
 		// Get the points
 		sf::Vector3f nextPoint(route.stops[i].target.value().x, route.stops[i].target.value().y, 0);
-		std::vector<RoutePoint> pointsBetween = this->getEntity()->pathfinder->findPathBetweenPoints(prev, nextPoint, this->departTime, getSpeed());
+		std::vector<RoutePoint> pointsBetween = this->getEntity()->pathfinder->findPathBetweenPoints(prev, nextPoint, this->route.departTime, mInfo.getSpeed());
 		prev = nextPoint;
 		// Add to all points
 		for (auto it = pointsBetween.begin(); it != pointsBetween.end(); it++) {
@@ -186,21 +176,17 @@ void MailTruckController::pickupMailFromOffice() {
 	this->office.lock()->mailContainer->transferSomeMailTo(mailForRoute, this->getEntity()->mailContainer);
 }
 
-std::optional<SaveData> MailTruckController::getSaveData() {
+std::optional<SaveData> PickupDeliveryAi::getSaveData() {
 	SaveData sd(componentTypeToStr(ComponentType::Controller));
 	if (this->office.lock()) {
 		sd.addValue("officeId", this->office.lock()->getId());
 	}
 	sd.addData(this->route.getSaveData());
-	sd.addValuesFrom(VehicleController::getSaveData().value());
 	return sd;
 }
-void MailTruckController::fromSaveData(SaveData data) {
+void PickupDeliveryAi::fromSaveData(SaveData data) {
 	if (data.hasValue("officeId")) {
 		this->office = this->getEntity()->getGame()->getEntityById(std::stoull(data.getValue("officeId")));
 	}
-	this->stopIndex = std::stoull(data.getValue("stopIndex"));
 	this->route = MailTruckRoute(data.getDatas()[0]);
-	setRouteStops();
-	VehicleController::fromSaveData(data);
 }
