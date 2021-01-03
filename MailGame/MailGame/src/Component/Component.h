@@ -8,6 +8,8 @@ class SaveData;
 // A component in an entity
 class Component {
 public:
+	// Method ran on deletion
+	virtual void onDelete();
 	// Set/Get Entity
 	void setEntity(std::shared_ptr<Entity> e);
 	std::shared_ptr<Entity> getEntity();

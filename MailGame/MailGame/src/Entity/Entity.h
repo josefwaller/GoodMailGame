@@ -52,6 +52,8 @@ public:
 	// Set connections between components/entities using id
 	// Can assume the correct ids have been set here
 	void loadComponentsFromSaveData(SaveData d);
+	// Called on deletion
+	void onDelete();
 private:
 	// The ID of the entity
 	size_t id;

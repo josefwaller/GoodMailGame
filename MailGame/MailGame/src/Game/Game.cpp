@@ -108,9 +108,11 @@ void Game::update(float delta) {
 	}
 
 	// Remove entities
-	for (auto it = this->toRemove.begin(); it != this->toRemove.end(); ++it) {
+	for (size_t i = 0; i < this->toRemove.size(); i++) {
+		auto r = this->toRemove[i];
+		r.lock()->onDelete();
 		this->entities.erase(
-			std::remove(this->entities.begin(), this->entities.end(), it->lock())
+			std::remove(this->entities.begin(), this->entities.end(), r.lock())
 		);
 	}
 	this->toRemove.clear();

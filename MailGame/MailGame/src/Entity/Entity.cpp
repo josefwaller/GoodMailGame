@@ -104,3 +104,11 @@ void Entity::loadComponentsFromSaveData(SaveData data) {
 	}
 }
 #undef LOAD_COMPONENT
+
+#define CALL_ON_DELETE(comp) if (this->comp) \
+this->comp->onDelete();
+
+void Entity::onDelete() {
+	CALL_ON_DELETE(controller);
+}
+#undef CALL_ON_DELETE

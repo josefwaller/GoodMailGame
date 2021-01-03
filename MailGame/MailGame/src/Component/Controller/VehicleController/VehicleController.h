@@ -34,6 +34,7 @@ public:
 	// Stops/resumes the vehicle on its route
 	void stop();
 	void resume();
+	virtual void onDelete() override;
 protected:
 	// Set the stops
 	void setStops(std::vector<VehicleControllerStop> stops);

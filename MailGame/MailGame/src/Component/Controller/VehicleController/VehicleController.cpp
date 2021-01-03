@@ -232,6 +232,9 @@ std::pair<sf::Vector3f, IsoRotation> VehicleController::getPosAndRotAtDistance(f
 		}
 	}
 }
+void VehicleController::onDelete() {
+	this->deleteCars();
+}
 void VehicleController::deleteCars() {
 	for (auto c : this->cargoCars) {
 		this->getEntity()->getGame()->removeEntity(c);
