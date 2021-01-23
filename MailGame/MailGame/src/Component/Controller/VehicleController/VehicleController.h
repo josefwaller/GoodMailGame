@@ -36,8 +36,11 @@ public:
 	void resume();
 	virtual void onDelete() override;
 protected:
-	// Set the stops
-	void setStops(std::vector<VehicleControllerStop> stops);
+	virtual void initStops();
+	virtual void onArriveAtPoint(size_t pointIndex);
+	virtual void onArriveAtStop(VehicleControllerStop stop);
+	virtual void beforeArriveAtStop(VehicleControllerStop stop);
+	virtual void beforeDepartFromStop(VehicleControllerStop stop);
 	// Get the speed the truck should move at
 	virtual float getSpeed();
 	// Children need access to this for saving/loading
@@ -56,10 +59,10 @@ protected:
 	// Get the save data
 	// For this class, it should be called by a child class and combined with another save data
 	std::optional<SaveData> getSaveData() override;
-private:
 	// The points the truck is currently going through on its route
 	std::vector<RoutePoint> points;
 	size_t pointIndex;
+private:
 	// The stops and the index of the current stop
 	std::vector<VehicleControllerStop> stops;
 	// The model that this vehicle is

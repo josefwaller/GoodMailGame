@@ -22,7 +22,7 @@ VehicleController::VehicleController(gtime_t d, VehicleModel m, std::vector<std:
 
 void VehicleController::update(float delta) {
 	if (this->stops.empty()) {
-		this->setStops(this->getEntity()->ai->getStops());
+		this->initStops();
 	}
 	gtime_t travelTime = this->getEntity()->getGame()->getTime() - this->delay;
 	if (!this->isStopped) {
@@ -49,6 +49,8 @@ void VehicleController::update(float delta) {
 					this->getEntity()->ai->onArriveAtTile(sf::Vector2i(point.pos.x, point.pos.y));
 					// Add the next tile to traversed points
 					this->traversedPoints.push_back(this->points[this->pointIndex]);
+					// Callback for children classes
+					this->onArriveAtPoint(this->pointIndex - 1);
 				}
 			}
 			else {
@@ -135,8 +137,8 @@ float VehicleController::getPathDistance(sf::Vector3f from, sf::Vector3f to) {
 	return toReturn;
 	return 0.0f;
 }
-void VehicleController::setStops(std::vector<VehicleControllerStop> stops) {
-	this->stops = stops;
+void VehicleController::initStops() {
+	this->stops = this->getEntity()->ai->getStops();
 	// This method may be called before this->getEntity() is set
 	// So we set stopIndex to 0 and then have pointIndex = points.size()
 	// So next tick, it will pathfind from stops[0] to stops[1]
@@ -245,3 +247,7 @@ void VehicleController::setCargoCars(std::vector<std::weak_ptr<Entity>> cc) {
 	//this->deleteCars();
 	this->cargoCars = cc;
 }
+void VehicleController::onArriveAtPoint(size_t pointIndex) {}
+void VehicleController::onArriveAtStop(VehicleControllerStop stop) {}
+void VehicleController::beforeArriveAtStop(VehicleControllerStop stop) {}
+void VehicleController::beforeDepartFromStop(VehicleControllerStop stop) {}
