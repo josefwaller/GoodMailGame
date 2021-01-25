@@ -7,7 +7,7 @@
 // Renderers
 #include "Component/Renderer/IsoSpriteRenderer/IsoSpriteRenderer.h"
 // Controllers
-#include "Component/Controller/VehicleController/VehicleController.h"
+#include "Component/Controller/VehicleController/TempVehicleController/TempVehicleController.h"
 // Mail Container
 #include "Component/MailContainer/MailContainer.h"
 // Pathfinders
@@ -39,7 +39,7 @@ std::shared_ptr<Entity> VehiclePresets::mailTruck(
 			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
-		new VehicleController(g->getTime(), route.model, {}),
+		new TempVehicleController(g->getTime(), route.model, {}),
 		nullptr,
 		new MailContainer(),
 		nullptr,
@@ -67,7 +67,7 @@ std::shared_ptr<Entity> VehiclePresets::cargoTruck(
 			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
-		new VehicleController(g->getTime(), route.model),
+		new TempVehicleController(g->getTime(), route.model),
 		nullptr,
 		new MailContainer(),
 		nullptr,
@@ -105,7 +105,7 @@ std::shared_ptr<Entity> VehiclePresets::train(
 			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
-		new VehicleController(g->getTime(), route.model, trainCars),
+		new TempVehicleController(g->getTime(), route.model, trainCars),
 		nullptr,
 		new MailContainer(),
 		nullptr,
@@ -132,7 +132,7 @@ std::shared_ptr<Entity> VehiclePresets::plane(
 			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
-		new VehicleController(g->getTime(), route.model),
+		new TempVehicleController(g->getTime(), route.model),
 		nullptr,
 		new MailContainer(),
 		nullptr,

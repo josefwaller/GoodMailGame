@@ -31,22 +31,14 @@ class VehicleController : public Controller {
 public:
 	VehicleController(gtime_t departTime, VehicleModel model, std::vector<std::weak_ptr<Entity>> cargoCars = {});
 	virtual void update(float delta) override;
-	// Stops/resumes the vehicle on its route
-	void stop();
-	void resume();
 	virtual void onDelete() override;
 protected:
-	virtual void initStops();
-	virtual void onArriveAtPoint(size_t pointIndex);
-	virtual void onArriveAtStop(VehicleControllerStop stop);
-	virtual void beforeArriveAtStop(VehicleControllerStop stop);
-	virtual void beforeDepartFromStop(VehicleControllerStop stop);
-	// Get the speed the truck should move at
-	virtual float getSpeed();
-	// Children need access to this for saving/loading
-	size_t stopIndex;
-	// The time the vehicle departed the depot
-	gtime_t departTime;
+	// Callback every time the vehicle reaches a point
+	virtual void onArriveAtPoint(size_t pointIndex, gtime_t arriveTime);
+	// Callback when the vehicle finishes its current path
+	virtual void onArriveAtDest(gtime_t arriveTime);
+	// Set the points to traverse between
+	void setPoints(std::vector<RoutePoint> points);
 	// Delete the cars
 	// Called when the vehicle has reached its final destination
 	void deleteCars();
@@ -62,28 +54,16 @@ protected:
 	// The points the truck is currently going through on its route
 	std::vector<RoutePoint> points;
 	size_t pointIndex;
-private:
-	// The stops and the index of the current stop
-	std::vector<VehicleControllerStop> stops;
 	// The model that this vehicle is
 	VehicleModel model;
 	// The cars
 	std::vector<std::weak_ptr<Entity>> cargoCars;
-	// If the vehicle is stopped
-	bool isStopped;
-	gtime_t stopTime;
-	// The delay in the route's expected time vs the actual time hte vehicle should arrive there
-	// Can be caused by stopping
-	gtime_t delay;
 	// All the points the vehicle has gone to, in order
 	// Used for setting up the cargo cars
 	std::vector<RoutePoint> traversedPoints;
-	// Get the path, as route points, between two stops
-	// Includes the departing path and the arriving path
-	// Initialdistance may be excluded
-	std::vector<RoutePoint> getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to);
-	// Go to the next stop along the route
-	void goToNextStop();
+
+	gtime_t departTime;
+private:
 	// Get the distance to travel between two points, via the path returned by the pathfinder
 	float getPathDistance(sf::Vector3f from, sf::Vector3f to);
 	// Get the position and rotation on the path after travelling the distance given
