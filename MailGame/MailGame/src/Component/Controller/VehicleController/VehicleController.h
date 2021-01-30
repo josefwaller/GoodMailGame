@@ -48,6 +48,9 @@ protected:
 	// Mainly sets the expected time so that things will run smoothly
 	// Make sure to call this after setting the stops
 	virtual void fromSaveData(SaveData data) override;
+	// Get the speed
+	// Just shorthand for going through the model etc
+	float getSpeed();
 	// Get the save data
 	// For this class, it should be called by a child class and combined with another save data
 	std::optional<SaveData> getSaveData() override;
@@ -58,8 +61,10 @@ protected:
 	VehicleModel model;
 	// The cars
 	std::vector<std::weak_ptr<Entity>> cargoCars;
-	// All the points the vehicle has gone to, in order
-	// Used for setting up the cargo cars
+	/**
+	 * All the points the vehicle has gone through plus the one it is currently going to
+	 * Used to properly position the cargo cars
+	 */
 	std::vector<RoutePoint> traversedPoints;
 
 	gtime_t departTime;

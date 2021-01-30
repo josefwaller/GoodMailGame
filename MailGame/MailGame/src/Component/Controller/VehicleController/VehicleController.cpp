@@ -70,46 +70,6 @@ void VehicleController::update(float delta) {
 	}
 }
 
-/*std::vector<RoutePoint> VehicleController::getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to) {
-	std::vector<RoutePoint> points;
-	// First, it always starts at the first point in the departing path when departing from
-	points.push_back(RoutePoint(from.departingPath.front().getPos(), from.expectedTime, from.distance));
-	gtime_t departTime = from.expectedTime;
-	// Add the departing path, the vehicle departs after waiting
-	auto path = Utils::speedPointVectorToRoutePointVector(from.departingPath, departTime + from.waitTime, getSpeed());
-	points.insert(points.end(), path.begin(), path.end());
-	departTime = points.back().expectedTime;
-	// Add the path between
-	path = this->getEntity()->pathfinder->findPathBetweenPoints(points.back().pos, to.arrivingPath.front().getPos(), departTime, getSpeed());
-	points.insert(points.end(), path.begin(), path.end());
-	departTime = points.back().expectedTime;
-	// Add the arriving path
-	path = Utils::speedPointVectorToRoutePointVector(to.arrivingPath, departTime, getSpeed());
-	points.insert(points.end(), path.begin(), path.end());
-
-	// Now just set the distance between all the points
-	for (auto it = points.begin() + 1; it != points.end(); it++) {
-		it->distance = (it - 1)->distance + Utils::getVectorDistance((it - 1)->pos, it->pos);
-	}
-	return points;
-}
-void VehicleController::goToNextStop() {
-	sf::Vector3f stop;
-	// Go to next stop
-	this->stopIndex++;
-	if (this->stopIndex >= this->stops.size()) {
-		// Arrive at dest
-		this->getEntity()->ai->onArriveAtDest();
-	}
-	else {
-		VehicleModelInfo mInfo = VehicleModelInfo::getModelInfo(this->model);
-		VehicleControllerStop fromStop = this->stops[this->stopIndex - 1];
-		VehicleControllerStop toStop = this->stops[this->stopIndex];
-		// Go to the stop
-		this->points = getPathBetweenStops(fromStop, toStop);
-		this->pointIndex = 1;
-	}
-}*/
 float VehicleController::getPathDistance(sf::Vector3f from, sf::Vector3f to) {
 	float toReturn = 0.0f;
 	std::vector<sf::Vector3f> points;// = this->getEntity()->pathfinder->findPathBetweenPoints(from, to);
@@ -124,42 +84,7 @@ float VehicleController::getPathDistance(sf::Vector3f from, sf::Vector3f to) {
 	return toReturn;
 	return 0.0f;
 }
-/*void VehicleController::initStops() {
-	this->stops = this->getEntity()->ai->getStops();
-	// This method may be called before this->getEntity() is set
-	// So we set stopIndex to 0 and then have pointIndex = points.size()
-	// So next tick, it will pathfind from stops[0] to stops[1]
-	// And will not crash since getEntity() will be set
-	this->stopIndex = 0;
-	this->points = {};
-	this->pointIndex = 0;
-	// The first stop (departing the depot) should have the same time as the route
-	if (!stops.empty()) {
-		this->stops[0].expectedTime = this->departTime;
-		this->stops[0].distance = 0;
-	}
-}
-void VehicleController::stop() {
-#ifdef _DEBUG
-	if (this->isStopped) {
-		throw std::runtime_error("stop() called when the vehicle is already stoped!");
-	}
-#endif
-	this->isStopped = true;
-	this->stopTime = this->getEntity()->getGame()->getTime();
-}
-void VehicleController::resume() {
-#ifdef _DEBUG
-	if (!this->isStopped) {
-		throw std::runtime_error("resume() called when the vehicle is not stopped!");
-	}
-#endif
-	this->isStopped = false;
-	this->delay += this->getEntity()->getGame()->getTime() - this->stopTime;
-}
-float VehicleController::getSpeed() {
-	return VehicleModelInfo::getModelInfo(this->model).getSpeed();
-}*/
+
 std::vector<RoutePoint> VehicleController::getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to, gtime_t d) {
 	std::vector<RoutePoint> points;
 	float speed = VehicleModelInfo::getModelInfo(this->model).getSpeed();
@@ -185,6 +110,9 @@ std::vector<RoutePoint> VehicleController::getPathBetweenStops(VehicleController
 	return points;
 }
 
+float VehicleController::getSpeed() {
+	return VehicleModelInfo::getModelInfo(this->model).getSpeed();
+}
 void VehicleController::fromSaveData(SaveData data) {
 	this->departTime = std::stoull(data.getValue("departTime"));
 	// Update the expected time for every stop up to stopIndex
@@ -250,6 +178,20 @@ void VehicleController::setCargoCars(std::vector<std::weak_ptr<Entity>> cc) {
 void VehicleController::onArriveAtPoint(size_t pointIndex, gtime_t arriveTime) {}
 void VehicleController::onArriveAtDest(gtime_t arriveTime) {}
 void VehicleController::setPoints(std::vector<RoutePoint> points) {
+	// Set the points' distance, using traversed points
+	RoutePoint prevPoint = this->traversedPoints.empty() ? points.front() : this->traversedPoints.back();
+	for (auto it = points.begin(); it != points.end(); it++) {
+		it->distance = prevPoint.distance + Utils::getVectorDistance(prevPoint.pos, it->pos);
+		prevPoint = *it;
+	}
 	this->points = points;
 	this->pointIndex = 1;
+	// Since we skip this point
+	// This will crash if points isn't at least 2 long
+	if (!this->points.empty()) {
+		this->traversedPoints.push_back(this->points.front());
+		if (this->points.size() > 1) {
+			this->traversedPoints.push_back(this->points.at(1));
+		}
+	}
 }
