@@ -12,6 +12,7 @@ class Pathfinder;
 class Ai;
 class Game;
 class SaveData;
+class GameMap;
 
 class Entity {
 public:
@@ -54,6 +55,8 @@ public:
 	void loadComponentsFromSaveData(SaveData d);
 	// Called on deletion
 	void onDelete();
+	// Shorthand methods so that not every file needs to include Game.h
+	GameMap* getGameMap();
 private:
 	// The ID of the entity
 	size_t id;

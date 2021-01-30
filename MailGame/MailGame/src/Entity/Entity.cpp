@@ -9,6 +9,7 @@
 #include "Component/TransitStop/TransitStop.h"
 #include "Component/Pathfinder/Pathfinder.h"
 #include "Component/Ai/Ai.h"
+#include "Game/Game.h"
 #include "System/SaveData/SaveData.h"
 
 size_t Entity::entityId = 0;
@@ -112,3 +113,7 @@ void Entity::onDelete() {
 	CALL_ON_DELETE(controller);
 }
 #undef CALL_ON_DELETE
+
+GameMap* Entity::getGameMap() {
+	return this->game->getGameMap();
+}
