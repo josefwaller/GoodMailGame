@@ -11,5 +11,4 @@ protected:
 private:
 	std::vector<VehicleControllerStop> stops;
 	size_t stopIndex;
-	std::vector<RoutePoint> getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to, gtime_t departTime);
 };

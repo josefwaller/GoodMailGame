@@ -160,6 +160,31 @@ void VehicleController::resume() {
 float VehicleController::getSpeed() {
 	return VehicleModelInfo::getModelInfo(this->model).getSpeed();
 }*/
+std::vector<RoutePoint> VehicleController::getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to, gtime_t d) {
+	std::vector<RoutePoint> points;
+	float speed = VehicleModelInfo::getModelInfo(this->model).getSpeed();
+	// First, it always starts at the first point in the departing path when departing from
+	points.push_back(RoutePoint(from.departingPath.front().getPos(), from.expectedTime, from.distance));
+	gtime_t departTime = from.expectedTime;
+	// Add the departing path, the vehicle departs after waiting
+	auto path = Utils::speedPointVectorToRoutePointVector(from.departingPath, departTime + from.waitTime, speed);
+	points.insert(points.end(), path.begin(), path.end());
+	departTime = points.back().expectedTime;
+	// Add the path between
+	path = this->getEntity()->pathfinder->findPathBetweenPoints(points.back().pos, to.arrivingPath.front().getPos(), departTime, speed);
+	points.insert(points.end(), path.begin(), path.end());
+	departTime = points.back().expectedTime;
+	// Add the arriving path
+	path = Utils::speedPointVectorToRoutePointVector(to.arrivingPath, departTime, speed);
+	points.insert(points.end(), path.begin(), path.end());
+
+	// Now just set the distance between all the points
+	for (auto it = points.begin() + 1; it != points.end(); it++) {
+		it->distance = (it - 1)->distance + Utils::getVectorDistance((it - 1)->pos, it->pos);
+	}
+	return points;
+}
+
 void VehicleController::fromSaveData(SaveData data) {
 	this->departTime = std::stoull(data.getValue("departTime"));
 	// Update the expected time for every stop up to stopIndex

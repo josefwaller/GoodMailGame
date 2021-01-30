@@ -63,6 +63,8 @@ protected:
 	std::vector<RoutePoint> traversedPoints;
 
 	gtime_t departTime;
+
+	std::vector<RoutePoint> getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to, gtime_t departTime);
 private:
 	// Get the distance to travel between two points, via the path returned by the pathfinder
 	float getPathDistance(sf::Vector3f from, sf::Vector3f to);

@@ -8,6 +8,7 @@
 #include "Component/Renderer/IsoSpriteRenderer/IsoSpriteRenderer.h"
 // Controllers
 #include "Component/Controller/VehicleController/TempVehicleController/TempVehicleController.h"
+#include "Component/Controller/VehicleController/TrainController/TrainController.h"
 // Mail Container
 #include "Component/MailContainer/MailContainer.h"
 // Pathfinders
@@ -105,7 +106,7 @@ std::shared_ptr<Entity> VehiclePresets::train(
 			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
-		new TempVehicleController(g->getTime(), route.model, trainCars),
+		new TrainController(g->getTime(), route.model, trainCars),
 		nullptr,
 		new MailContainer(),
 		nullptr,

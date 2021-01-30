@@ -22,4 +22,7 @@ public:
 	static std::vector<RoutePoint> toRoutePointVector(std::vector<sf::Vector3f> points, gtime_t time, float speed);
 	// Convert a list of SpeedPoints to a list of RoutePoints
 	static std::vector<RoutePoint> speedPointVectorToRoutePointVector(std::vector<SpeedPoint> points, gtime_t departTime, float defaultSpeed);
+	// Convert vector2f to 2i
+	static sf::Vector2i toVector2i(sf::Vector2f p);
+	static sf::Vector2i toVector2i(sf::Vector3f p);
 };

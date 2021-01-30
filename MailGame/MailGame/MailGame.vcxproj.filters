@@ -198,6 +198,9 @@
     <ClCompile Include="src\Component\Controller\VehicleController\TempVehicleController\TempVehicleController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Component\Controller\VehicleController\TrainController\TrainController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h">
@@ -372,6 +375,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Component\Controller\VehicleController\TempVehicleController\TempVehicleController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\Controller\VehicleController\TrainController\TrainController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
