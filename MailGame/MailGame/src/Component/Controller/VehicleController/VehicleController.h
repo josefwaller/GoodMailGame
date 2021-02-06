@@ -7,14 +7,16 @@
 #include <vector>
 #include <SFML/System/Vector3.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <variant>
 
 class GameMap;
 
 // Data structure for each stop
 struct VehicleControllerStop {
-	// The path the vehicle must take to arrive at this stop
-	std::vector<SpeedPoint> arrivingPath;
-	std::vector<SpeedPoint> departingPath;
+private:
+	// The target, either a tile or an entity
+	std::variant <std::weak_ptr<Entity>, sf::Vector2i > target;
+public:
 	// The time the vehicle expects to arrive at this stop
 	// Set when the vehicle gets to the previous stop
 	gtime_t expectedTime;
@@ -23,8 +25,12 @@ struct VehicleControllerStop {
 	float distance;
 	// The time to wait at this stop
 	gtime_t waitTime;
-	VehicleControllerStop(std::vector<SpeedPoint> departingPath, std::vector<SpeedPoint> arrivingPath, gtime_t waitTime = 0)
-		: arrivingPath(arrivingPath), departingPath(departingPath), waitTime(waitTime), expectedTime(0), distance(0) {}
+	VehicleControllerStop(std::weak_ptr<Entity> target, gtime_t waitTime = 0)
+		: target(target), waitTime(waitTime), expectedTime(0), distance(0) {}
+	VehicleControllerStop(sf::Vector2i target) : target(target), waitTime(0), expectedTime(0), distance(0) {}
+
+	std::weak_ptr<Entity> getEntityTarget();
+	sf::Vector2i getTileTarget();
 };
 
 class VehicleController : public Controller {

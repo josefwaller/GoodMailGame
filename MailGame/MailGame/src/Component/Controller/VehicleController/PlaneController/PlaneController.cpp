@@ -15,15 +15,15 @@ void PlaneController::onArriveAtDest(gtime_t arriveTime) {
 		}
 		this->stopIndex++;
 		this->state = State::Departing;
-		this->setPoints(Utils::speedPointVectorToRoutePointVector(this->stops.at(this->stopIndex - 1).departingPath, arriveTime, this->getSpeed()));
+		this->setPoints(Utils::speedPointVectorToRoutePointVector(TransitStop::getDepartingTransitPath(this->stops.at(this->stopIndex - 1).getEntityTarget().lock(), TransitType::Airplane), arriveTime, this->getSpeed()));
 		break;
 	case State::Departing:
 		this->state = State::InTransit;
-		this->setPoints(this->getEntity()->pathfinder->findPathBetweenPoints(this->points.back().pos, this->stops.at(this->stopIndex).arrivingPath.front().getPos(), arriveTime, this->getSpeed()));
+		this->setPoints(this->getEntity()->pathfinder->findPathBetweenPoints(this->points.back().pos, TransitStop::getArrivingTransitPath(this->stops.at(this->stopIndex).getEntityTarget().lock(), TransitType::Airplane).front().getPos(), arriveTime, this->getSpeed()));
 		break;
 	case State::InTransit:
 		this->state = State::ArrivingAtRunway;
-		this->setPoints(Utils::speedPointVectorToRoutePointVector(this->stops.at(this->stopIndex).arrivingPath, arriveTime, this->getSpeed()));
+		this->setPoints(Utils::speedPointVectorToRoutePointVector(TransitStop::getArrivingTransitPath(this->stops.at(this->stopIndex).getEntityTarget().lock(), TransitType::Airplane), arriveTime, this->getSpeed()));
 		break;
 	case State::ArrivingAtRunway:
 		this->state = State::InDepot;

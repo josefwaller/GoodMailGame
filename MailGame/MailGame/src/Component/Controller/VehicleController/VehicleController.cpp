@@ -17,6 +17,13 @@
 #include <functional>
 #include <math.h>
 
+std::weak_ptr<Entity> VehicleControllerStop::getEntityTarget() {
+	return std::get<std::weak_ptr<Entity>>(this->target);
+}
+sf::Vector2i VehicleControllerStop::getTileTarget() {
+	return std::get<sf::Vector2i>(this->target);
+}
+
 VehicleController::VehicleController(gtime_t d, VehicleModel m, std::vector<std::weak_ptr<Entity>> cargoCars)
 	: departTime(d), pointIndex(0), model(m), cargoCars(cargoCars) {}
 
@@ -92,18 +99,18 @@ std::vector<RoutePoint> VehicleController::getPathBetweenStops(VehicleController
 	std::vector<RoutePoint> points;
 	float speed = VehicleModelInfo::getModelInfo(this->model).getSpeed();
 	// First, it always starts at the first point in the departing path when departing from
-	points.push_back(RoutePoint(from.departingPath.front().getPos(), from.expectedTime, from.distance));
+	points.push_back(RoutePoint(TransitStop::getArrivingTransitPath(from.getEntityTarget().lock(), TransitType::Car).front().getPos(), from.expectedTime, from.distance));
 	gtime_t departTime = from.expectedTime;
 	// Add the departing path, the vehicle departs after waiting
-	auto path = Utils::speedPointVectorToRoutePointVector(from.departingPath, departTime + from.waitTime, speed);
+	auto path = Utils::speedPointVectorToRoutePointVector(TransitStop::getDepartingTransitPath(from.getEntityTarget().lock(), TransitType::Car), departTime + from.waitTime, speed);
 	points.insert(points.end(), path.begin(), path.end());
 	departTime = points.back().expectedTime;
 	// Add the path between
-	path = this->getEntity()->pathfinder->findPathBetweenPoints(points.back().pos, to.arrivingPath.front().getPos(), departTime, speed);
+	path = this->getEntity()->pathfinder->findPathBetweenPoints(points.back().pos, TransitStop::getArrivingTransitPath(to.getEntityTarget().lock(), TransitType::Car).front().getPos(), departTime, speed);
 	points.insert(points.end(), path.begin(), path.end());
 	departTime = points.back().expectedTime;
 	// Add the arriving path
-	path = Utils::speedPointVectorToRoutePointVector(to.arrivingPath, departTime, speed);
+	path = Utils::speedPointVectorToRoutePointVector(TransitStop::getArrivingTransitPath(to.getEntityTarget().lock(), TransitType::Car), departTime, speed);
 	points.insert(points.end(), path.begin(), path.end());
 
 	// Now just set the distance between all the points

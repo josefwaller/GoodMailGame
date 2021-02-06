@@ -15,10 +15,12 @@ void TrainController::update(float delta) {
 		this->stops = this->getEntity()->ai->getStops();
 		this->stopIndex = 1;
 		// Depart from the first station
-		this->setPoints(Utils::speedPointVectorToRoutePointVector(this->stops.front().departingPath, this->departTime, this->getSpeed()));
+		std::weak_ptr<Entity> station = this->stops.front().getEntityTarget();
+		this->setPoints(Utils::speedPointVectorToRoutePointVector(TransitStop::getDepartingTransitPath(station.lock(), TransitType::Train), this->departTime, this->getSpeed()));
 	}
 	if (this->isBlocked) {
-		std::vector<RoutePoint> points = this->getEntity()->pathfinder->findPathBetweenPoints(this->getEntity()->transform->getPosition(), this->stops.at(this->stopIndex).arrivingPath.front().getPos(), this->getEntity()->getGame()->getTime(), this->getSpeed());
+		std::vector<SpeedPoint> arrivingPath = TransitStop::getArrivingTransitPath(this->stops.at(this->stopIndex).getEntityTarget().lock(), TransitType::Train);
+		std::vector<RoutePoint> points = this->getEntity()->pathfinder->findPathBetweenPoints(this->getEntity()->transform->getPosition(), arrivingPath.front().getPos(), this->getEntity()->getGame()->getTime(), this->getSpeed());
 		sf::Vector2i nextTile = Utils::toVector2i(points.at(1).pos);
 		if (std::find(this->lockedTiles.begin(), this->lockedTiles.end(), nextTile) != this->lockedTiles.end()) {
 			this->isBlocked = false;
@@ -45,14 +47,14 @@ void TrainController::onArriveAtDest(gtime_t arriveTime) {
 		this->state = State::InTransit;
 		// Now set points to the path between stations
 		from = this->points.back().pos;
-		to = this->stops.at(this->stopIndex).arrivingPath.front().getPos();
+		to = TransitStop::getArrivingTransitPath(this->stops.at(this->stopIndex).getEntityTarget().lock(), TransitType::Train).front().getPos();
 		this->setPoints(this->getEntity()->pathfinder->findPathBetweenPoints(from, to, arriveTime, this->getSpeed()));
 		break;
 	case State::InTransit:
 		this->state = State::ArriveAtStation;
 		// Arrive at the station
 		// Eventually there will be some cool logic here to determine where at the station to arrive at
-		this->setPoints(Utils::speedPointVectorToRoutePointVector(this->stops.at(this->stopIndex).arrivingPath, arriveTime, this->getSpeed()));
+		this->setPoints(Utils::speedPointVectorToRoutePointVector(TransitStop::getArrivingTransitPath(this->stops.at(this->stopIndex).getEntityTarget().lock(), TransitType::Train), arriveTime, this->getSpeed()));
 		break;
 	case State::ArriveAtStation:
 		this->state = State::DepartingStation;
@@ -63,7 +65,7 @@ void TrainController::onArriveAtDest(gtime_t arriveTime) {
 		}
 		else {
 			this->getEntity()->ai->onArriveAtStop(this->stopIndex - 1);
-			this->setPoints(Utils::speedPointVectorToRoutePointVector(this->stops.at(this->stopIndex - 1).departingPath, arriveTime, this->getSpeed()));
+			this->setPoints(Utils::speedPointVectorToRoutePointVector(TransitStop::getDepartingTransitPath(this->stops.at(this->stopIndex - 1).getEntityTarget().lock(), TransitType::Train), arriveTime, this->getSpeed()));
 		}
 		break;
 	}

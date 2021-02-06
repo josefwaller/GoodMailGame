@@ -35,8 +35,7 @@ std::vector<VehicleControllerStop> TransitAi::getStops() {
 		// Add the depot as the first stop
 		std::shared_ptr<Entity> d = this->depot.lock();
 		stops.push_back(VehicleControllerStop(
-			TransitStop::getDepartingTransitPath(d, this->type),
-			TransitStop::getArrivingTransitPath(d, this->type),
+			d,
 			modelInfo.getLoadTime()
 		));
 	}
@@ -46,8 +45,7 @@ std::vector<VehicleControllerStop> TransitAi::getStops() {
 		if (it->target.lock()) {
 			// Add the arriving path
 			stops.push_back(VehicleControllerStop(
-				TransitStop::getDepartingTransitPath(it->target.lock(), this->type),
-				TransitStop::getArrivingTransitPath(it->target.lock(), this->type),
+				it->target,
 				modelInfo.getUnloadTime() + modelInfo.getLoadTime()
 			));
 		}
@@ -57,8 +55,7 @@ std::vector<VehicleControllerStop> TransitAi::getStops() {
 		// Add the depot as the first stop
 		std::shared_ptr<Entity> d = this->depot.lock();
 		stops.push_back(VehicleControllerStop(
-			TransitStop::getDepartingTransitPath(d, this->type),
-			TransitStop::getArrivingTransitPath(d, this->type),
+			d,
 			modelInfo.getUnloadTime()
 		));
 	}

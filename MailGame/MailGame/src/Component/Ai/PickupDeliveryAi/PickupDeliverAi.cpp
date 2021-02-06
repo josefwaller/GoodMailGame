@@ -33,8 +33,7 @@ std::vector<VehicleControllerStop> PickupDeliveryAi::getStops() {
 		// Add the depot as the first stop
 		std::shared_ptr<Entity> d = this->office.lock();
 		stops.push_back(VehicleControllerStop(
-			TransitStop::getArrivingTransitPath(d, TransitType::Car),
-			TransitStop::getDepartingTransitPath(d, TransitType::Car)
+			d
 		));
 	}
 	// Add a stop for every stop along the route
@@ -43,8 +42,7 @@ std::vector<VehicleControllerStop> PickupDeliveryAi::getStops() {
 		if (it->target.has_value()) {
 			// Add the arriving path
 			sf::Vector2i pos = it->target.value();
-			std::vector<SpeedPoint> p = { sf::Vector3f((float)pos.x, (float)pos.y, 0) };
-			stops.push_back(VehicleControllerStop(p, p));
+			stops.push_back(VehicleControllerStop(pos));
 		}
 	}
 	// Go back to the depot
@@ -52,8 +50,7 @@ std::vector<VehicleControllerStop> PickupDeliveryAi::getStops() {
 		// Add the depot as the first stop
 		std::shared_ptr<Entity> d = this->office.lock();
 		stops.push_back(VehicleControllerStop(
-			TransitStop::getArrivingTransitPath(d, TransitType::Car),
-			TransitStop::getDepartingTransitPath(d, TransitType::Car)
+			d
 		));
 	}
 	return stops;
