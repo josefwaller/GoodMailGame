@@ -23,7 +23,10 @@ VehicleController::VehicleController(gtime_t d, VehicleModel m, std::vector<std:
 void VehicleController::update(float delta) {
 	gtime_t travelTime = this->getEntity()->getGame()->getTime();// -this->departTime;
 	if (this->pointIndex >= this->points.size()) {
-		this->onArriveAtDest(this->points.back().expectedTime);
+		if (!this->points.empty())
+			this->onArriveAtDest(this->points.back().expectedTime);
+		else
+			this->onArriveAtDest(this->departTime);
 	}
 	else {
 		// If the truck has gone through all the points

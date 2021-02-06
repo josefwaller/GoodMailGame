@@ -9,6 +9,7 @@
 // Controllers
 #include "Component/Controller/VehicleController/TempVehicleController/TempVehicleController.h"
 #include "Component/Controller/VehicleController/TrainController/TrainController.h"
+#include "Component/Controller/VehicleController/PlaneController/PlaneController.h"
 // Mail Container
 #include "Component/MailContainer/MailContainer.h"
 // Pathfinders
@@ -133,7 +134,7 @@ std::shared_ptr<Entity> VehiclePresets::plane(
 			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
-		new TempVehicleController(g->getTime(), route.model),
+		new PlaneController(g->getTime(), route.model),
 		nullptr,
 		new MailContainer(),
 		nullptr,
