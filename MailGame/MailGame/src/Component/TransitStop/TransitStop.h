@@ -32,6 +32,8 @@ public:
 		sf::Vector3f end;
 		// The depot, i.e. where the airport loads/unloads letters
 		sf::Vector3f depot;
+		// Whether the runway is in use
+		bool isLocked;
 	};
 
 	TransitStop(
@@ -44,6 +46,9 @@ public:
 	CarStop getCarStop();
 	TrainStop getTrainStop();
 	AirplaneStop getAirplaneStop();
+	// Get a lock on the type of transit
+	bool getRunwayLock();
+	void releaseRunwayLock();
 	// Get the position to travel to for a given entity
 	// Split into arriving and departing
 	static std::vector<SpeedPoint> getArrivingTransitPath(std::shared_ptr<Entity> e, TransitType type);

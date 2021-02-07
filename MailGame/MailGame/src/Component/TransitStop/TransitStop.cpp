@@ -33,6 +33,18 @@ TransitStop::AirplaneStop TransitStop::getAirplaneStop() {
 	}
 	throw std::runtime_error("getRoadTransitLocation called but not implemented!");
 }
+
+bool TransitStop::getRunwayLock() {
+	if (this->airplaneStop.value().isLocked) {
+		return false;
+	}
+	this->airplaneStop.value().isLocked = true;
+	return true;
+}
+
+void TransitStop::releaseRunwayLock() {
+	this->airplaneStop.value().isLocked = false;
+}
 std::vector<SpeedPoint> TransitStop::getArrivingTransitPath(std::shared_ptr<Entity> e, TransitType type) {
 	auto transit = e->transitStop;
 	switch (type) {
