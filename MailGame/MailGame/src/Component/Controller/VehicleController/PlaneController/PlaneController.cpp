@@ -13,11 +13,16 @@ void PlaneController::update(float delta) {
 		if (this->stopIndex == 0) {
 			this->stops = this->getEntity()->ai->getStops();
 		}
-		if (this->stops.at(this->stopIndex).getEntityTarget().lock()->transitStop->getRunwayLock()) {
-			this->stopIndex++;
-			this->state = State::Departing;
-			this->setPoints(Utils::speedPointVectorToRoutePointVector(TransitStop::getDepartingTransitPath(this->stops.at(this->stopIndex - 1).getEntityTarget().lock(), TransitType::Airplane), this->getEntity()->getGame()->getTime(), this->getSpeed()));
+		if (this->stopIndex == this->stops.size() - 1) {
+			// Done
+			this->getEntity()->getGame()->removeEntity(this->getEntity());
 		}
+		else
+			if (this->stops.at(this->stopIndex).getEntityTarget().lock()->transitStop->getRunwayLock()) {
+				this->stopIndex++;
+				this->state = State::Departing;
+				this->setPoints(Utils::speedPointVectorToRoutePointVector(TransitStop::getDepartingTransitPath(this->stops.at(this->stopIndex - 1).getEntityTarget().lock(), TransitType::Airplane), this->getEntity()->getGame()->getTime(), this->getSpeed()));
+			}
 	}
 	else {
 		VehicleController::update(delta);
