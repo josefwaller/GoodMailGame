@@ -57,6 +57,8 @@ void VehicleController::update(float delta) {
 			sf::Vector3f unit = Utils::getUnitVector(nextPoint.pos - lastPoint.pos);
 			float timeSincePoint = (travelTime - lastPoint.expectedTime) / (float)Game::UNITS_IN_GAME_HOUR;
 			// Calculate position based on d = v * t + 1 / 2 * a * t ^ 2
+			// Note that this may note reach the next point by nextPoint.expectedTime
+			// That is ok, we just hope at this point that the numbers add up
 			sf::Vector3f pos = lastPoint.pos + unit * (lastPoint.speedAtPoint * timeSincePoint + 0.5f * lastPoint.accelerationAtPoint * powf(timeSincePoint, 2));
 			this->getEntity()->transform->setPosition(pos);
 			// Get rotation

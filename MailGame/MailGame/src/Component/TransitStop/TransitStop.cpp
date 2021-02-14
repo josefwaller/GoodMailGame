@@ -65,7 +65,8 @@ std::vector<SpeedPoint> TransitStop::getArrivingTransitPath(std::shared_ptr<Enti
 		airStart.z = PLANE_HEIGHT;
 		sf::Vector3f airEnd = aStop.end + unit * DESCENT_LENGTH;
 		airEnd.z = PLANE_HEIGHT;
-		return  { airStart, aStop.begin, SpeedPoint(aStop.end, 0.0f), SpeedPoint(aStop.depot, TAXI_SPEED) };
+		sf::Vector3f halfway((aStop.end + aStop.depot) / 2.0f);
+		return  { airStart, aStop.begin, SpeedPoint(aStop.end, 0.0f), SpeedPoint(halfway, TAXI_SPEED), SpeedPoint(aStop.depot, 0.0f) };
 	}
 	return {};
 }
@@ -90,7 +91,8 @@ std::vector<SpeedPoint> TransitStop::getDepartingTransitPath(std::shared_ptr<Ent
 		airStart.z = PLANE_HEIGHT;
 		sf::Vector3f airEnd = aStop.end + unit * DESCENT_LENGTH;
 		airEnd.z = PLANE_HEIGHT;
-		return  { SpeedPoint(aStop.depot, TAXI_SPEED), SpeedPoint(aStop.begin, 0.0f), aStop.end, airEnd };
+		sf::Vector3f halfway((aStop.begin + aStop.depot) / 2.0f);
+		return  { SpeedPoint(aStop.depot, 0.0f), SpeedPoint(halfway, TAXI_SPEED), SpeedPoint(aStop.begin, 0.0f), aStop.end, airEnd };
 	}
 }
 

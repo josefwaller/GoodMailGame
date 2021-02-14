@@ -67,7 +67,7 @@ std::vector<RoutePoint> Utils::toRoutePointVector(std::vector<sf::Vector3f> poin
 	}
 	return toReturn;
 }
-std::vector<RoutePoint> Utils::speedPointVectorToRoutePointVector(std::vector<SpeedPoint> points, gtime_t departTime, float defaultSpeed, float acceleration, float startingSpeed) {
+std::vector<RoutePoint> Utils::speedPointVectorToRoutePointVector(std::vector<SpeedPoint> points, gtime_t departTime, float vehicleMaxSpeed, float acceleration, float startingSpeed) {
 	// Always return an empty array when given no points
 	if (points.empty())
 		return {};
@@ -75,10 +75,38 @@ std::vector<RoutePoint> Utils::speedPointVectorToRoutePointVector(std::vector<Sp
 	// We can now assume that there is at least 1 point
 	// And the first point is always at departTime
 	std::vector<RoutePoint> toReturn;
-	toReturn.push_back(RoutePoint(points.front().getPos(), departTime, defaultSpeed, 0.0f));
-	// Add the rest of the points
-	for (auto it = points.begin() + 1; it != points.end(); it++) {
-		toReturn.push_back(RoutePoint(it->getPos(), toReturn.back().expectedTime + Utils::getVectorDistance(toReturn.back().pos, it->getPos()) / defaultSpeed * Game::UNITS_IN_GAME_HOUR, defaultSpeed, 0.0f));
+	// Go through the points and add them
+	float speedAtPoint = startingSpeed;
+	gtime_t expectedTime = departTime;
+	// TODO: This should also eventually include distance
+	for (auto it = points.begin(); it != points.end(); it++) {
+		if (it == points.end() - 1) {
+			// The last point, we don't need acceleration, which simplifies our equations significantly
+			toReturn.push_back(RoutePoint(it->getPos(), expectedTime, speedAtPoint, 0.0f));
+		}
+		else {
+			// Get the next point
+			SpeedPoint nextPoint = *(it + 1);
+			float distance = Utils::getVectorDistance(it->getPos(), nextPoint.getPos());
+			// The speed if it accelerated as fast as it could between the two points
+			// vf^2 = vi^2 + 2ad
+			float maxSpeed = sqrtf(powf(speedAtPoint, 2) + 2 * acceleration * distance);
+			float speedAtNextPoint = nextPoint.getSpeed().value_or(std::min(maxSpeed, vehicleMaxSpeed));
+			// It will acceleration up to the speed at the point
+			// a = (vf^2 - vi^2) / (2d);
+			float acc = (powf(speedAtNextPoint, 2) - powf(speedAtPoint, 2)) / (2 * distance);
+			// Now we can add the route point
+			toReturn.push_back(RoutePoint(it->getPos(), expectedTime, speedAtPoint, acc));
+			// Finally, we compute when it should arrive at the next point
+			// using the quadratic formula if there is acceleration, and just moving linearly if there is no acceleration
+			float a = 0.5 * acc;
+			float b = speedAtPoint;
+			float c = -distance;
+			float timeToGoToPoint = acc != 0 ?
+				(-b + sqrtf(powf(b, 2.0f) - 4.0f * a * c)) / (2.0f * a) : (distance / speedAtPoint);
+			expectedTime += (gtime_t)(timeToGoToPoint * ((float)Game::UNITS_IN_GAME_HOUR));
+			speedAtPoint = speedAtNextPoint;
+		}
 	}
 	return toReturn;
 }

@@ -21,7 +21,7 @@ void PlaneController::update(float delta) {
 			if (this->stops.at(this->stopIndex).getEntityTarget().lock()->transitStop->getRunwayLock()) {
 				this->stopIndex++;
 				this->state = State::Departing;
-				this->setPoints(Utils::speedPointVectorToRoutePointVector(TransitStop::getDepartingTransitPath(this->stops.at(this->stopIndex - 1).getEntityTarget().lock(), TransitType::Airplane), this->getEntity()->getGame()->getTime(), this->getSpeed()));
+				this->setPoints(Utils::speedPointVectorToRoutePointVector(TransitStop::getDepartingTransitPath(this->stops.at(this->stopIndex - 1).getEntityTarget().lock(), TransitType::Airplane), this->getEntity()->getGame()->getTime(), this->getSpeed(), 20.0f));
 			}
 	}
 	else {
@@ -44,7 +44,7 @@ void PlaneController::onArriveAtDest(gtime_t arriveTime) {
 	case State::WaitingForLock:
 		if (this->stops.at(this->stopIndex).getEntityTarget().lock()->transitStop->getRunwayLock()) {
 			this->state = State::ArrivingAtRunway;
-			this->setPoints(Utils::speedPointVectorToRoutePointVector(TransitStop::getArrivingTransitPath(this->stops.at(this->stopIndex).getEntityTarget().lock(), TransitType::Airplane), arriveTime, this->getSpeed()));
+			this->setPoints(Utils::speedPointVectorToRoutePointVector(TransitStop::getArrivingTransitPath(this->stops.at(this->stopIndex).getEntityTarget().lock(), TransitType::Airplane), arriveTime, this->getSpeed(), 20.0f, this->points.back().speedAtPoint));
 		}
 		else {
 			this->state = State::WaitingForLock;
@@ -62,9 +62,9 @@ void PlaneController::onArriveAtDest(gtime_t arriveTime) {
 std::vector<RoutePoint> PlaneController::getLoopPath(RoutePoint p) {
 	return {
 		p,
-		RoutePoint(p.pos + sf::Vector3f(3.0f, 0.0f, 0.0f), p.expectedTime + 3.0f * Game::UNITS_IN_GAME_HOUR / this->getSpeed(), 1.0f, 0.0f),
-		RoutePoint(p.pos + sf::Vector3f(3.0f, 2.0f, 0.0f), p.expectedTime + 5 * Game::UNITS_IN_GAME_HOUR / this->getSpeed(), 1.0f, 0.0f),
-		RoutePoint(p.pos + sf::Vector3f(0.0f, 2.0f, 0.0f), p.expectedTime + 8 * Game::UNITS_IN_GAME_HOUR / this->getSpeed(), 1.0f, 0.0f),
-		RoutePoint(p.pos, p.expectedTime + 10 * Game::UNITS_IN_GAME_HOUR / this->getSpeed(), 1.0f, 0.0f)
+		RoutePoint(p.pos + sf::Vector3f(3.0f, 0.0f, 0.0f), p.expectedTime + 3.0f * Game::UNITS_IN_GAME_HOUR / this->getSpeed(), this->getSpeed(), 0.0f),
+		RoutePoint(p.pos + sf::Vector3f(3.0f, 2.0f, 0.0f), p.expectedTime + 5 * Game::UNITS_IN_GAME_HOUR / this->getSpeed(), this->getSpeed(), 0.0f),
+		RoutePoint(p.pos + sf::Vector3f(0.0f, 2.0f, 0.0f), p.expectedTime + 8 * Game::UNITS_IN_GAME_HOUR / this->getSpeed(), this->getSpeed(), 0.0f),
+		RoutePoint(p.pos, p.expectedTime + 10 * Game::UNITS_IN_GAME_HOUR / this->getSpeed(), this->getSpeed(), 0.0f)
 	};
 }
