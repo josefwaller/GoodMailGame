@@ -38,7 +38,10 @@ void PlaneController::onArriveAtDest(gtime_t arriveTime) {
 	case State::Departing:
 		this->stops.at(this->stopIndex - 1).getEntityTarget().lock()->transitStop->releaseRunwayLock();
 		this->state = State::InTransit;
-		this->setPoints(this->getEntity()->pathfinder->findPathBetweenPoints(this->points.back().pos, TransitStop::getArrivingTransitPath(this->stops.at(this->stopIndex).getEntityTarget().lock(), TransitType::Airplane).front().getPos(), arriveTime, this->getSpeed()));
+		this->setPoints(
+			Utils::speedPointVectorToRoutePointVector(
+				this->getEntity()->pathfinder->findPathBetweenPoints(this->points.back().pos, TransitStop::getArrivingTransitPath(this->stops.at(this->stopIndex).getEntityTarget().lock(), TransitType::Airplane).front().getPos(), arriveTime, this->getSpeed()),
+				this->points.back().expectedTime, this->getSpeed(), 20.0f, this->points.back().speedAtPoint));
 		break;
 	case State::InTransit:
 	case State::WaitingForLock:

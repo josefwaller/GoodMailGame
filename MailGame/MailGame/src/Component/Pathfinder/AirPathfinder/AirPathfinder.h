@@ -3,7 +3,7 @@
 
 class AirPathfinder : public Pathfinder {
 public:
-	virtual std::vector<RoutePoint> findPathBetweenPoints(
+	virtual std::vector<SpeedPoint> findPathBetweenPoints(
 		sf::Vector3f start,
 		sf::Vector3f end,
 		gtime_t departTime,

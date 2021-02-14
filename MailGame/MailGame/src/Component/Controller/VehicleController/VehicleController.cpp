@@ -110,7 +110,13 @@ std::vector<RoutePoint> VehicleController::getPathBetweenStops(VehicleController
 	points.insert(points.end(), path.begin(), path.end());
 	departTime = points.back().expectedTime;
 	// Add the path between
-	path = this->getEntity()->pathfinder->findPathBetweenPoints(points.back().pos, TransitStop::getArrivingTransitPath(to.getEntityTarget().lock(), TransitType::Car).front().getPos(), departTime, speed);
+	path = Utils::speedPointVectorToRoutePointVector(
+		this->getEntity()->pathfinder->findPathBetweenPoints(points.back().pos, TransitStop::getArrivingTransitPath(to.getEntityTarget().lock(), TransitType::Car).front().getPos(), departTime, speed),
+		departTime,
+		speed,
+		10.0f,
+		points.back().speedAtPoint
+	);
 	points.insert(points.end(), path.begin(), path.end());
 	departTime = points.back().expectedTime;
 	// Add the arriving path

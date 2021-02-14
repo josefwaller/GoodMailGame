@@ -143,11 +143,11 @@ void PickupDeliveryAi::pickupMailFromOffice() {
 			continue;
 		// Get the points
 		sf::Vector3f nextPoint(route.stops[i].target.value().x, route.stops[i].target.value().y, 0);
-		std::vector<RoutePoint> pointsBetween = this->getEntity()->pathfinder->findPathBetweenPoints(prev, nextPoint, this->route.departTime, mInfo.getSpeed());
+		std::vector<SpeedPoint> pointsBetween = this->getEntity()->pathfinder->findPathBetweenPoints(prev, nextPoint, this->route.departTime, mInfo.getSpeed());
 		prev = nextPoint;
 		// Add to all points
 		for (auto it = pointsBetween.begin(); it != pointsBetween.end(); it++) {
-			allPoints.push_back(sf::Vector2i(it->pos.x, it->pos.y));
+			allPoints.push_back(sf::Vector2i(it->getPos().x, it->getPos().y));
 		}
 	}
 	// Add all the points beside these points

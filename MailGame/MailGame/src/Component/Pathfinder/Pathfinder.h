@@ -2,7 +2,8 @@
 #include <SFML/System/Vector3.hpp>
 #include <vector>
 #include "Component/Component.h"
-#include "Routes/RoutePoint.h"
+#include "System/SpeedPoint/SpeedPoint.h"
+#include "System/Utils/Utils.h"
 
 /*
  * A component that finds a path between two points
@@ -10,7 +11,7 @@
  */
 class Pathfinder : public Component {
 public:
-	virtual std::vector<RoutePoint> findPathBetweenPoints(
+	virtual std::vector<SpeedPoint> findPathBetweenPoints(
 		sf::Vector3f from,
 		sf::Vector3f to,
 		gtime_t departTime,

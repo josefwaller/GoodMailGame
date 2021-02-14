@@ -6,14 +6,14 @@
 #include <algorithm>
 #include "GameMap/GameMap.h"
 
-std::vector<RoutePoint> RailsPathfinder::findPathBetweenPoints(
+std::vector<SpeedPoint> RailsPathfinder::findPathBetweenPoints(
 	sf::Vector3f from,
 	sf::Vector3f to,
 	gtime_t departTime,
 	float speed) {
 	// The tiles the vehicle has already gone through
 	// TODO: It should be able to if it is not going in the same direction (i.e. go through north and then east)
-	std::vector<RoutePoint> visited = { RoutePoint(from, departTime, speed, 0.0f) };
+	std::vector<SpeedPoint> visited = { from };
 	// Go through the rail system
 	sf::Vector3i currentPos(from);
 	IsoRotation currentRot;
@@ -28,17 +28,14 @@ std::vector<RoutePoint> RailsPathfinder::findPathBetweenPoints(
 		currentPos += sf::Vector3i(t.getRailwayAtHour(this->getEntity()->getGame()->getHourAtTime(departTime)).value().to.getUnitVector3D());
 		// TODO: Check the railway we are going to has to pointing to the railway we came from
 		// Check we haven't been in this tile before
-		for (RoutePoint p : visited) {
-			if (p.pos == sf::Vector3f(currentPos))
+		for (SpeedPoint p : visited) {
+			if (p.getPos() == sf::Vector3f(currentPos))
 				return {};
 		}
-		departTime += getTimeBetween(sf::Vector3f(currentPos), visited.back().pos, speed);
-		visited.push_back(RoutePoint(
-			sf::Vector3f(currentPos),
-			departTime,
-			speed,
-			0.0f
-		));
+		departTime += getTimeBetween(sf::Vector3f(currentPos), visited.back().getPos(), speed);
+		visited.push_back(
+			sf::Vector3f(currentPos)
+		);
 	}
 	return visited;
 }

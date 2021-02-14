@@ -3,7 +3,7 @@
 
 class RailsPathfinder : public Pathfinder {
 public:
-	virtual std::vector<RoutePoint> findPathBetweenPoints(
+	virtual std::vector<SpeedPoint> findPathBetweenPoints(
 		sf::Vector3f from,
 		sf::Vector3f to,
 		gtime_t departTime,

@@ -4,7 +4,7 @@
 #include "Game/Game.h"
 #include "GameMap/GameMap.h"
 
-std::vector<RoutePoint> RoadPathfinder::findPathBetweenPoints(
+std::vector<SpeedPoint> RoadPathfinder::findPathBetweenPoints(
 	sf::Vector3f from,
 	sf::Vector3f to,
 	gtime_t departTime,
@@ -41,10 +41,9 @@ std::vector<RoutePoint> RoadPathfinder::findPathBetweenPoints(
 				point = previous[point];
 			}
 			std::reverse(pathPoints.begin(), pathPoints.end());
-			std::vector<RoutePoint> toReturn = { RoutePoint(from, departTime, speed, 0.0f) };
+			std::vector<SpeedPoint> toReturn = { from };
 			for (auto it = pathPoints.begin(); it != pathPoints.end(); it++) {
-				departTime += getTimeBetween(*it, toReturn.back().pos, speed);
-				toReturn.push_back(RoutePoint(*it, departTime, speed, 0.0f));
+				toReturn.push_back(SpeedPoint(*it));
 			}
 			return toReturn;
 		}

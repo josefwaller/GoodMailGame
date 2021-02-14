@@ -20,18 +20,21 @@ void TrainController::update(float delta) {
 	}
 	if (this->isBlocked) {
 		std::vector<SpeedPoint> arrivingPath = TransitStop::getArrivingTransitPath(this->stops.at(this->stopIndex).getEntityTarget().lock(), TransitType::Train);
-		std::vector<RoutePoint> points = this->getEntity()->pathfinder->findPathBetweenPoints(this->getEntity()->transform->getPosition(), arrivingPath.front().getPos(), this->getEntity()->getGame()->getTime(), this->getSpeed());
-		sf::Vector2i nextTile = Utils::toVector2i(points.at(1).pos);
+		std::vector<SpeedPoint> points = this->getEntity()->pathfinder->findPathBetweenPoints(this->getEntity()->transform->getPosition(), arrivingPath.front().getPos(), this->getEntity()->getGame()->getTime(), this->getSpeed());
+		sf::Vector2i nextTile = Utils::toVector2i(points.at(1).getPos());
+		// Check if we already have a lock on the tile we need to go to
+		// (Can sometimes happen when leaving a station)
 		if (std::find(this->lockedTiles.begin(), this->lockedTiles.end(), nextTile) != this->lockedTiles.end()) {
 			this->isBlocked = false;
-			this->setPoints(points);
+			this->setPoints(Utils::speedPointVectorToRoutePointVector(points, this->getEntity()->getGame()->getTime(), this->getSpeed(), 10.0f, 0.0f));
 		}
 		else
+			// Try to get a lock on the tile
 			if (this->getEntity()->getGameMap()->canGetTileLock(nextTile.x, nextTile.y, TransitType::Train)) {
 				this->getEntity()->getGameMap()->getTileLock(nextTile.x, nextTile.y, TransitType::Train);
 				this->lockedTiles.push_back(nextTile);
 				this->isBlocked = false;
-				this->setPoints(points);
+				this->setPoints(Utils::speedPointVectorToRoutePointVector(points, this->getEntity()->getGame()->getTime(), this->getSpeed(), 10.0f, 0.0f));
 			}
 	}
 	else {
@@ -48,7 +51,12 @@ void TrainController::onArriveAtDest(gtime_t arriveTime) {
 		// Now set points to the path between stations
 		from = this->points.back().pos;
 		to = TransitStop::getArrivingTransitPath(this->stops.at(this->stopIndex).getEntityTarget().lock(), TransitType::Train).front().getPos();
-		this->setPoints(this->getEntity()->pathfinder->findPathBetweenPoints(from, to, arriveTime, this->getSpeed()));
+		this->setPoints(Utils::speedPointVectorToRoutePointVector(
+			this->getEntity()->pathfinder->findPathBetweenPoints(from, to, arriveTime, this->getSpeed()),
+			this->points.back().expectedTime,
+			this->getSpeed(),
+			10.0f,
+			0.0f));
 		break;
 	case State::InTransit:
 		this->state = State::ArriveAtStation;

@@ -216,12 +216,12 @@ void DepotController::update(float) {
 				// Get the path between
 				// TODO: Fix speed
 				time = departPath.back().expectedTime;
-				std::vector<RoutePoint> path = this->getEntity()->pathfinder->findPathBetweenPoints(
+				std::vector<RoutePoint> path = Utils::speedPointVectorToRoutePointVector(this->getEntity()->pathfinder->findPathBetweenPoints(
 					departPath.back().pos,
 					arriving.front().getPos(),
 					time,
 					modelInfo.getSpeed()
-				);
+				), time, modelInfo.getSpeed(), 10.0f);
 				if (!path.empty()) {
 					routePoints.insert(routePoints.end(), path.begin(), path.end());
 					time = path.back().expectedTime;
