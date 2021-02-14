@@ -99,7 +99,7 @@ std::vector<RoutePoint> VehicleController::getPathBetweenStops(VehicleController
 	std::vector<RoutePoint> points;
 	float speed = VehicleModelInfo::getModelInfo(this->model).getSpeed();
 	// First, it always starts at the first point in the departing path when departing from
-	points.push_back(RoutePoint(TransitStop::getArrivingTransitPath(from.getEntityTarget().lock(), TransitType::Car).front().getPos(), from.expectedTime, from.distance));
+	points.push_back(RoutePoint(TransitStop::getArrivingTransitPath(from.getEntityTarget().lock(), TransitType::Car).front().getPos(), from.expectedTime, from.distance, getSpeed(), 0.0f));
 	gtime_t departTime = from.expectedTime;
 	// Add the departing path, the vehicle departs after waiting
 	auto path = Utils::speedPointVectorToRoutePointVector(TransitStop::getDepartingTransitPath(from.getEntityTarget().lock(), TransitType::Car), departTime + from.waitTime, speed);

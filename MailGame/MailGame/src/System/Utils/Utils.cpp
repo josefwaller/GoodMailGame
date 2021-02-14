@@ -58,12 +58,12 @@ std::vector<RoutePoint> Utils::toRoutePointVector(std::vector<sf::Vector3f> poin
 	sf::Vector3f lastPos = points.front();
 	for (sf::Vector3f p : points) {
 		time += Utils::getVectorDistance(lastPos, p) * Game::UNITS_IN_GAME_HOUR / speed;
-		toReturn.push_back(RoutePoint(p, time));
+		toReturn.push_back(RoutePoint(p, time, speed, 0.0f));
 		lastPos = p;
 	}
 	return toReturn;
 }
-std::vector<RoutePoint> Utils::speedPointVectorToRoutePointVector(std::vector<SpeedPoint> points, gtime_t departTime, float defaultSpeed) {
+std::vector<RoutePoint> Utils::speedPointVectorToRoutePointVector(std::vector<SpeedPoint> points, gtime_t departTime, float defaultSpeed, float acceleration, float startingSpeed) {
 	// Always return an empty array when given no points
 	if (points.empty())
 		return {};
@@ -71,16 +71,10 @@ std::vector<RoutePoint> Utils::speedPointVectorToRoutePointVector(std::vector<Sp
 	// We can now assume that there is at least 1 point
 	// And the first point is always at departTime
 	std::vector<RoutePoint> toReturn;
-	toReturn.push_back(RoutePoint(points.front().getPos(), departTime));
+	toReturn.push_back(RoutePoint(points.front().getPos(), departTime, defaultSpeed, 0.0f));
 	// Add the rest of the points
 	for (auto it = points.begin() + 1; it != points.end(); it++) {
-		// Uses the formula `t = 2 * d / (vf - vi)` to get the time between points
-		// Where d = distance, vf = final velocity, vi = initial velocity
-		SpeedPoint prev = *std::prev(it);
-		float vi = prev.getSpeed().value_or(defaultSpeed);
-		float vf = it->getSpeed().value_or(defaultSpeed);
-		float d = getVectorDistance(prev.getPos(), it->getPos());
-		toReturn.push_back(RoutePoint(it->getPos(), toReturn.back().expectedTime + Game::UNITS_IN_GAME_HOUR * 2 * d / (vf + vi)));
+		toReturn.push_back(RoutePoint(it->getPos(), toReturn.back().expectedTime + Utils::getVectorDistance(toReturn.back().pos, it->getPos()) / defaultSpeed * Game::UNITS_IN_GAME_HOUR, defaultSpeed, 0.0f));
 	}
 	return toReturn;
 }

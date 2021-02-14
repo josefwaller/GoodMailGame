@@ -10,7 +10,7 @@ std::vector<RoutePoint> AirPathfinder::findPathBetweenPoints(
 	float speed) {
 	std::vector<RoutePoint> path;
 	// Add the start
-	path.push_back(RoutePoint(start, departTime));
-	path.push_back(RoutePoint(end, departTime + this->getTimeBetween(start, end, speed)));
+	path.push_back(RoutePoint(start, departTime, speed, 0.0f));
+	path.push_back(RoutePoint(end, departTime + this->getTimeBetween(start, end, speed), speed, 0.0f));
 	return path;
 }

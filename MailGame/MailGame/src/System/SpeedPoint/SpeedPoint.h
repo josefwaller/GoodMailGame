@@ -2,7 +2,7 @@
 #include <SFML/System/Vector3.hpp>
 #include <optional>
 
-// A point with a speed that the vehicle should be going at that point
+// A point with a maximum speed
 class SpeedPoint {
 public:
 	SpeedPoint(sf::Vector3f);

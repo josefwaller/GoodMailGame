@@ -13,9 +13,12 @@ struct RoutePoint {
 	// The expected arrival time of the point
 	gtime_t expectedTime;
 	// The distance this point is along the route
-	// Todo: Make sure this is always set
 	float distance;
-	RoutePoint(sf::Vector3f pos, gtime_t time, float distance = 0.0f) : pos(pos), expectedTime(time), distance(distance) {};
+	// These are mostly used for computing where the sprite should be
+	// Just visual
+	float speedAtPoint;
+	float accelerationAtPoint;
+	RoutePoint(sf::Vector3f pos, gtime_t time, float s, float a, float distance = 0.0f);
 };
 
 SaveData routePointToSaveData(RoutePoint p);

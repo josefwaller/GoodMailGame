@@ -53,7 +53,7 @@ void PlaneController::onArriveAtDest(gtime_t arriveTime) {
 		break;
 	case State::ArrivingAtRunway:
 		this->state = State::InDepot;
-		this->setPoints({ this->points.back(), RoutePoint(this->points.back().pos, this->points.back().expectedTime + modelInfo.getLoadTime() + modelInfo.getUnloadTime()) });
+		this->setPoints({ this->points.back(), RoutePoint(this->points.back().pos, this->points.back().expectedTime + modelInfo.getLoadTime() + modelInfo.getUnloadTime(), 0.0f, 0.0f) });
 		this->stops.at(this->stopIndex).getEntityTarget().lock()->transitStop->releaseRunwayLock();
 		break;
 	}
@@ -62,9 +62,9 @@ void PlaneController::onArriveAtDest(gtime_t arriveTime) {
 std::vector<RoutePoint> PlaneController::getLoopPath(RoutePoint p) {
 	return {
 		p,
-		RoutePoint(p.pos + sf::Vector3f(3.0f, 0.0f, 0.0f), p.expectedTime + 3.0f * Game::UNITS_IN_GAME_HOUR / this->getSpeed()),
-		RoutePoint(p.pos + sf::Vector3f(3.0f, 2.0f, 0.0f), p.expectedTime + 5 * Game::UNITS_IN_GAME_HOUR / this->getSpeed()),
-		RoutePoint(p.pos + sf::Vector3f(0.0f, 2.0f, 0.0f), p.expectedTime + 8 * Game::UNITS_IN_GAME_HOUR / this->getSpeed()),
-		RoutePoint(p.pos, p.expectedTime + 10 * Game::UNITS_IN_GAME_HOUR / this->getSpeed())
+		RoutePoint(p.pos + sf::Vector3f(3.0f, 0.0f, 0.0f), p.expectedTime + 3.0f * Game::UNITS_IN_GAME_HOUR / this->getSpeed(), 1.0f, 0.0f),
+		RoutePoint(p.pos + sf::Vector3f(3.0f, 2.0f, 0.0f), p.expectedTime + 5 * Game::UNITS_IN_GAME_HOUR / this->getSpeed(), 1.0f, 0.0f),
+		RoutePoint(p.pos + sf::Vector3f(0.0f, 2.0f, 0.0f), p.expectedTime + 8 * Game::UNITS_IN_GAME_HOUR / this->getSpeed(), 1.0f, 0.0f),
+		RoutePoint(p.pos, p.expectedTime + 10 * Game::UNITS_IN_GAME_HOUR / this->getSpeed(), 1.0f, 0.0f)
 	};
 }

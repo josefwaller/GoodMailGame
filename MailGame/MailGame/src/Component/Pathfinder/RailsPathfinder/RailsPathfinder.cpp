@@ -13,7 +13,7 @@ std::vector<RoutePoint> RailsPathfinder::findPathBetweenPoints(
 	float speed) {
 	// The tiles the vehicle has already gone through
 	// TODO: It should be able to if it is not going in the same direction (i.e. go through north and then east)
-	std::vector<RoutePoint> visited = { RoutePoint(from, departTime) };
+	std::vector<RoutePoint> visited = { RoutePoint(from, departTime, speed, 0.0f) };
 	// Go through the rail system
 	sf::Vector3i currentPos(from);
 	IsoRotation currentRot;
@@ -35,7 +35,9 @@ std::vector<RoutePoint> RailsPathfinder::findPathBetweenPoints(
 		departTime += getTimeBetween(sf::Vector3f(currentPos), visited.back().pos, speed);
 		visited.push_back(RoutePoint(
 			sf::Vector3f(currentPos),
-			departTime
+			departTime,
+			speed,
+			0.0f
 		));
 	}
 	return visited;

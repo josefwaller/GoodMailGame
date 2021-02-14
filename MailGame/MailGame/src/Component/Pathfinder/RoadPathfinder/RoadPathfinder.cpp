@@ -41,10 +41,10 @@ std::vector<RoutePoint> RoadPathfinder::findPathBetweenPoints(
 				point = previous[point];
 			}
 			std::reverse(pathPoints.begin(), pathPoints.end());
-			std::vector<RoutePoint> toReturn = { RoutePoint(from, departTime) };
+			std::vector<RoutePoint> toReturn = { RoutePoint(from, departTime, speed, 0.0f) };
 			for (auto it = pathPoints.begin(); it != pathPoints.end(); it++) {
 				departTime += getTimeBetween(*it, toReturn.back().pos, speed);
-				toReturn.push_back(RoutePoint(*it, departTime));
+				toReturn.push_back(RoutePoint(*it, departTime, speed, 0.0f));
 			}
 			return toReturn;
 		}
