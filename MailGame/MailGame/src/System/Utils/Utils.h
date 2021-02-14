@@ -16,6 +16,8 @@ public:
 	static sf::Sprite setupBuildingSprite(sf::Sprite spr, bool isBuilding = true);
 	// Get distance between vector3fs
 	static float getVectorDistance(sf::Vector3f one, sf::Vector3f two);
+	// Get unit vector
+	static sf::Vector3f getUnitVector(sf::Vector3f vector);
 	// Get the color to represent a certain time of day
 	static sf::Color getTimeColor(gtime_t time);
 

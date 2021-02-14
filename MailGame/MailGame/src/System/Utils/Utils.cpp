@@ -14,6 +14,10 @@ float Utils::getVectorDistance(sf::Vector3f one, sf::Vector3f two) {
 	return sqrtf(powf(one.x - two.x, 2) + powf(one.y - two.y, 2) + powf(one.z - two.z, 2));
 }
 
+sf::Vector3f Utils::getUnitVector(sf::Vector3f vector) {
+	return vector / Utils::getVectorDistance(vector, sf::Vector3f());
+}
+
 sf::Color Utils::getTimeColor(gtime_t time) {
 	float percent = (float)(time % (Game::UNITS_IN_GAME_HOUR * 24)) / (float)(Game::UNITS_IN_GAME_HOUR * 24);
 	float hue = (percent * 360);
