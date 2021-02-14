@@ -12,6 +12,8 @@ VehicleModelInfo::VehicleModelInfo(float s, gtime_t l, gtime_t u, std::string n,
 	maxNumCargoCars(mCc) {}
 
 float VehicleModelInfo::getSpeed() { return this->speed; }
+// TODO
+float VehicleModelInfo::getAcceleration() { return 4.0f; };
 gtime_t VehicleModelInfo::getLoadTime() { return this->loadTime; }
 gtime_t VehicleModelInfo::getUnloadTime() { return this->unloadTime; }
 std::string VehicleModelInfo::getName() { return this->name; }
@@ -32,7 +34,7 @@ const std::map<VehicleModel, VehicleModelInfo> VehicleModelInfo::modelInfos = {
 	{ VehicleModel::SlowTrain, VehicleModelInfo(1.0f, Game::UNITS_IN_GAME_HOUR * 0.2, Game::UNITS_IN_GAME_HOUR * 0.2, "Slow Train", Technology::Trains, 200, TRAIN_CARS, 8) },
 	{ VehicleModel::FastTrain, VehicleModelInfo(3.5f, Game::UNITS_IN_GAME_HOUR * 0.2, Game::UNITS_IN_GAME_HOUR * 0.2, "Fast Train", Technology::FastTrains, 400, TRAIN_CARS, 4) },
 	{ VehicleModel::SlowAirplane, VehicleModelInfo(5.0f, Game::UNITS_IN_GAME_HOUR * 0.2, Game::UNITS_IN_GAME_HOUR * 0.2, "Slow Plane", Technology::Airplanes) },
-	{ VehicleModel::FastAirplane, VehicleModelInfo(6.0f, Game::UNITS_IN_GAME_HOUR * 0.2, Game::UNITS_IN_GAME_HOUR * 0.2, "Fast Plane", Technology::FastAirplanes) }
+	{ VehicleModel::FastAirplane, VehicleModelInfo(10.0f, Game::UNITS_IN_GAME_HOUR * 0.2, Game::UNITS_IN_GAME_HOUR * 0.2, "Fast Plane", Technology::FastAirplanes) }
 };
 
 VehicleModelInfo VehicleModelInfo::getModelInfo(VehicleModel m) {

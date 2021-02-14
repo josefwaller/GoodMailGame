@@ -46,6 +46,7 @@ public:
 		std::vector<CargoCarModel> allowedCargoCars = {},
 		unsigned int maxNumCargoCars = 0);
 	float getSpeed();
+	float getAcceleration();
 	gtime_t getLoadTime();
 	gtime_t getUnloadTime();
 	std::string getName();

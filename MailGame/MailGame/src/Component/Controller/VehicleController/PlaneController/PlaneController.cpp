@@ -21,7 +21,7 @@ void PlaneController::update(float delta) {
 			if (this->stops.at(this->stopIndex).getEntityTarget().lock()->transitStop->getRunwayLock()) {
 				this->stopIndex++;
 				this->state = State::Departing;
-				this->setPoints(Utils::speedPointVectorToRoutePointVector(TransitStop::getDepartingTransitPath(this->stops.at(this->stopIndex - 1).getEntityTarget().lock(), TransitType::Airplane), this->getEntity()->getGame()->getTime(), this->getSpeed(), 20.0f));
+				this->setPoints(Utils::speedPointVectorToRoutePointVector(TransitStop::getDepartingTransitPath(this->stops.at(this->stopIndex - 1).getEntityTarget().lock(), TransitType::Airplane), this->getEntity()->getGame()->getTime(), this->model));
 			}
 	}
 	else {
@@ -41,13 +41,13 @@ void PlaneController::onArriveAtDest(gtime_t arriveTime) {
 		this->setPoints(
 			Utils::speedPointVectorToRoutePointVector(
 				this->getEntity()->pathfinder->findPathBetweenPoints(this->points.back().pos, TransitStop::getArrivingTransitPath(this->stops.at(this->stopIndex).getEntityTarget().lock(), TransitType::Airplane).front().getPos(), arriveTime, this->getSpeed()),
-				this->points.back().expectedTime, this->getSpeed(), 20.0f, this->points.back().speedAtPoint));
+				this->points.back().expectedTime, this->model, this->points.back().speedAtPoint));
 		break;
 	case State::InTransit:
 	case State::WaitingForLock:
 		if (this->stops.at(this->stopIndex).getEntityTarget().lock()->transitStop->getRunwayLock()) {
 			this->state = State::ArrivingAtRunway;
-			this->setPoints(Utils::speedPointVectorToRoutePointVector(TransitStop::getArrivingTransitPath(this->stops.at(this->stopIndex).getEntityTarget().lock(), TransitType::Airplane), arriveTime, this->getSpeed(), 20.0f, this->points.back().speedAtPoint));
+			this->setPoints(Utils::speedPointVectorToRoutePointVector(TransitStop::getArrivingTransitPath(this->stops.at(this->stopIndex).getEntityTarget().lock(), TransitType::Airplane), arriveTime, this->model, this->points.back().speedAtPoint));
 		}
 		else {
 			this->state = State::WaitingForLock;

@@ -5,6 +5,7 @@
 #include "Constants.h"
 #include "Routes/RoutePoint.h"
 #include "System/SpeedPoint/SpeedPoint.h"
+#include "VehicleModel/VehicleModel.h"
 
 // Misc Utils that I couldn't think to put anywhere else
 // Mostly temporary things that shouldn't make it into the final product
@@ -23,7 +24,7 @@ public:
 
 	static std::vector<RoutePoint> toRoutePointVector(std::vector<sf::Vector3f> points, gtime_t time, float speed);
 	// Convert a list of SpeedPoints to a list of RoutePoints
-	static std::vector<RoutePoint> speedPointVectorToRoutePointVector(std::vector<SpeedPoint> points, gtime_t departTime, float defaultSpeed, float acceleration = 0.0f, float startingSpeed = 0.0f);
+	static std::vector<RoutePoint> speedPointVectorToRoutePointVector(std::vector<SpeedPoint> points, gtime_t departTime, VehicleModel model, float startingSpeed = 0.0f);
 	// Convert vector2f to 2i
 	static sf::Vector2i toVector2i(sf::Vector2f p);
 	static sf::Vector2i toVector2i(sf::Vector3f p);

@@ -67,10 +67,14 @@ std::vector<RoutePoint> Utils::toRoutePointVector(std::vector<sf::Vector3f> poin
 	}
 	return toReturn;
 }
-std::vector<RoutePoint> Utils::speedPointVectorToRoutePointVector(std::vector<SpeedPoint> points, gtime_t departTime, float vehicleMaxSpeed, float acceleration, float startingSpeed) {
+std::vector<RoutePoint> Utils::speedPointVectorToRoutePointVector(std::vector<SpeedPoint> points, gtime_t departTime, VehicleModel model, float startingSpeed) {
 	// Always return an empty array when given no points
 	if (points.empty())
 		return {};
+
+	VehicleModelInfo mInfo = VehicleModelInfo::getModelInfo(model);
+	float acceleration = mInfo.getAcceleration();
+	float vehicleMaxSpeed = mInfo.getSpeed();
 
 	// We can now assume that there is at least 1 point
 	// And the first point is always at departTime

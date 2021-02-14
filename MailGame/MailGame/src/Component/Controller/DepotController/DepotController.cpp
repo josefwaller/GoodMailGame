@@ -202,7 +202,7 @@ void DepotController::update(float) {
 				std::vector<RoutePoint> departPath = Utils::speedPointVectorToRoutePointVector(
 					this->getEntity()->transitStop->getDepartingTransitPath(departBuilding.lock(), this->type),
 					time,
-					modelInfo.getSpeed()
+					route.model
 				);
 				if (stop != route.stops.end() - 1) {
 					time = departPath.back().expectedTime;
@@ -221,7 +221,7 @@ void DepotController::update(float) {
 					arriving.front().getPos(),
 					time,
 					modelInfo.getSpeed()
-				), time, modelInfo.getSpeed(), 10.0f);
+				), time, route.model, 10.0f);
 				if (!path.empty()) {
 					routePoints.insert(routePoints.end(), path.begin(), path.end());
 					time = path.back().expectedTime;
@@ -230,7 +230,7 @@ void DepotController::update(float) {
 				std::vector<RoutePoint> arrivalPath = Utils::speedPointVectorToRoutePointVector(
 					arriving,
 					time,
-					modelInfo.getSpeed()
+					route.model
 				);
 				routePoints.insert(routePoints.end(), arrivalPath.begin(), arrivalPath.end());
 				time = arrivalPath.back().expectedTime;

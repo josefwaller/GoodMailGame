@@ -106,21 +106,20 @@ std::vector<RoutePoint> VehicleController::getPathBetweenStops(VehicleController
 	points.push_back(RoutePoint(TransitStop::getArrivingTransitPath(from.getEntityTarget().lock(), TransitType::Car).front().getPos(), from.expectedTime, from.distance, getSpeed(), 0.0f));
 	gtime_t departTime = from.expectedTime;
 	// Add the departing path, the vehicle departs after waiting
-	auto path = Utils::speedPointVectorToRoutePointVector(TransitStop::getDepartingTransitPath(from.getEntityTarget().lock(), TransitType::Car), departTime + from.waitTime, speed);
+	auto path = Utils::speedPointVectorToRoutePointVector(TransitStop::getDepartingTransitPath(from.getEntityTarget().lock(), TransitType::Car), departTime + from.waitTime, this->model);
 	points.insert(points.end(), path.begin(), path.end());
 	departTime = points.back().expectedTime;
 	// Add the path between
 	path = Utils::speedPointVectorToRoutePointVector(
 		this->getEntity()->pathfinder->findPathBetweenPoints(points.back().pos, TransitStop::getArrivingTransitPath(to.getEntityTarget().lock(), TransitType::Car).front().getPos(), departTime, speed),
 		departTime,
-		speed,
-		10.0f,
+		this->model,
 		points.back().speedAtPoint
 	);
 	points.insert(points.end(), path.begin(), path.end());
 	departTime = points.back().expectedTime;
 	// Add the arriving path
-	path = Utils::speedPointVectorToRoutePointVector(TransitStop::getArrivingTransitPath(to.getEntityTarget().lock(), TransitType::Car), departTime, speed);
+	path = Utils::speedPointVectorToRoutePointVector(TransitStop::getArrivingTransitPath(to.getEntityTarget().lock(), TransitType::Car), departTime, this->model);
 	points.insert(points.end(), path.begin(), path.end());
 
 	// Now just set the distance between all the points
