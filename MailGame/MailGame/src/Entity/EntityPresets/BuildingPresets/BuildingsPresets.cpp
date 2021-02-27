@@ -224,6 +224,31 @@ std::shared_ptr<Entity> BuildingPresets::warehouse(Game* g, sf::Vector3f pos, Is
 	return e;
 }
 
+std::shared_ptr<Entity> BuildingPresets::carDock(Game* g, sf::Vector3f pos, IsoRotation rot) {
+	return dock(g, pos, rot, EntityTag::CarDock);
+}
+std::shared_ptr<Entity> BuildingPresets::trainDock(Game* g, sf::Vector3f pos, IsoRotation rot) {
+	return dock(g, pos, rot, EntityTag::TrainDock);
+}
+std::shared_ptr<Entity> BuildingPresets::airplaneDock(Game* g, sf::Vector3f pos, IsoRotation rot) {
+	return dock(g, pos, rot, EntityTag::AirplaneDock);
+}
+std::shared_ptr<Entity> BuildingPresets::dock(Game* g, sf::Vector3f pos, IsoRotation rot, EntityTag tag) {
+	auto e = Entity::createEntity(
+		g,
+		tag,
+		new Transform(pos, rot),
+		new IsoBuildingRenderer(IsoSprite(
+			ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-N"),
+			ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-E"),
+			ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-S"),
+			ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-W")
+		))
+	);
+	setTilesToBuilding(g, e, sf::IntRect(floor(pos.x), floor(pos.y), 1, 1));
+	return e;
+}
+
 void BuildingPresets::addRoadForTransitBuilding(Game* g, sf::Vector3i pos, IsoRotation rot) {
 	sf::Vector3i inFront = pos + sf::Vector3i(rot.getUnitVector3D());
 	g->getGameMap()->addRoadInDirection(inFront.x, inFront.y, rot + 2);

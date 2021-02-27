@@ -7,6 +7,7 @@
 
 class Entity;
 class Game;
+enum class EntityTag;
 
 class BuildingPresets {
 public:
@@ -18,7 +19,12 @@ public:
 	static std::shared_ptr<Entity> airport(Game* g, sf::Vector3f pos, IsoRotation rot);
 	static std::shared_ptr<Entity> railwaySwitch(Game* g, sf::Vector3f pos, IsoRotation rot);
 	static std::shared_ptr<Entity> warehouse(Game* g, sf::Vector3f pos, IsoRotation rot);
+	static std::shared_ptr<Entity> carDock(Game* g, sf::Vector3f pos, IsoRotation rot);
+	static std::shared_ptr<Entity> airplaneDock(Game* g, sf::Vector3f pos, IsoRotation rot);
+	static std::shared_ptr<Entity> trainDock(Game* g, sf::Vector3f pos, IsoRotation rot);
 private:
+	// Get a dock with the entity tag given, since they're all pretty much the same
+	static std::shared_ptr<Entity> dock(Game* g, sf::Vector3f pos, IsoRotation rot, EntityTag tag);
 	// Create a road leading into the building so that it can be accessed by cars
 	// Road is always going in from the front
 	static void addRoadForTransitBuilding(Game* g, sf::Vector3i pos, IsoRotation rot);

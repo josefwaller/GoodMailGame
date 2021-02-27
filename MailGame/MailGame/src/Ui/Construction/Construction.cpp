@@ -121,5 +121,47 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 			}),
 			Technology::Default
 		)
-	}
+	},
+	{ EntityTag::CarDock,
+		ConstructionRecipe(
+			"CarDock",
+			&BuildingPresets::carDock,
+			IsoSprite(
+				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-N"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-E"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-S"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-W")
+			),
+			ConstructionLayout({{ TileType::Land }}),
+			Technology::Default
+		)
+	},
+	{ EntityTag::TrainDock,
+		ConstructionRecipe(
+			"TrainDock",
+			&BuildingPresets::trainDock,
+			IsoSprite(
+				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-N"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-E"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-S"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-W")
+			),
+			ConstructionLayout({{ TileType::Land }}),
+			Technology::Trains
+		)
+	},
+	{ EntityTag::AirplaneDock,
+		ConstructionRecipe(
+			"AirplaneDock",
+			&BuildingPresets::airplaneDock,
+			IsoSprite(
+				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-N"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-E"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-S"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-W")
+			),
+			ConstructionLayout({{ TileType::Land }}),
+			Technology::Airplanes
+		)
+	},
 };
