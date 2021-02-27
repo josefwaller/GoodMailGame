@@ -227,6 +227,7 @@
     <ClInclude Include="src\Entity\EntityTag\EntityTag.h" />
     <ClInclude Include="src\GameMap\GameMap.h" />
     <ClInclude Include="src\GameMap\Line\Line.h" />
+    <ClInclude Include="src\GameMap\Tile\Railway\Railway.h" />
     <ClInclude Include="src\Game\Game.h" />
     <ClInclude Include="src\Mail\Mail.h" />
     <ClInclude Include="src\PostalCodeDatabase\PostalCodeDatabase.h" />
@@ -251,7 +252,7 @@
     <ClInclude Include="src\VehicleModel\VehicleModel.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\GameMap\Tile.h" />
+    <None Include="src\GameMap\Tile\Tile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

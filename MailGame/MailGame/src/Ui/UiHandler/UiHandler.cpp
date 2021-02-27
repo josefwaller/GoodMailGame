@@ -41,13 +41,22 @@ bool UiHandler::handleEvent(sf::Event e) {
 			return true;
 		case UiState::BuildingRailTracks:
 			tilePos = sf::Vector2i(this->game->getMousePosition());
-			this->game->getGameMap()->addRailTrack(
-				(size_t)tilePos.x,
-				(size_t)tilePos.y,
-				this->toBuild.from,
-				this->toBuild.to,
-				this->toBuildTime
-			);
+			if (this->toBuild.isStation) {
+				this->game->getGameMap()->addRailwayStation(
+					(size_t)tilePos.x,
+					(size_t)tilePos.y,
+					this->toBuild.to
+				);
+			}
+			else {
+				this->game->getGameMap()->addRailTrack(
+					(size_t)tilePos.x,
+					(size_t)tilePos.y,
+					this->toBuild.from,
+					this->toBuild.to,
+					this->toBuildTime
+				);
+			}
 			break;
 		case UiState::SelectingEntity:
 			// Get the entity
@@ -174,13 +183,18 @@ void UiHandler::update() {
 		if (this->currentState == UiState::BuildingRailTracks) {
 			this->toBuild.from = this->chooseDirection("From:", this->toBuild.from);
 			this->toBuild.to = this->chooseDirection("To:", this->toBuild.to);
-			if (ImGui::BeginCombo("Hour", std::to_string(this->toBuildTime).c_str())) {
-				for (size_t i = 0; i < 24; i++) {
-					if (ImGui::Selectable(std::to_string(i).c_str(), i == this->toBuildTime)) {
-						this->toBuildTime = i;
+			if (ImGui::Button(this->toBuild.isStation ? "Station" : "Rail")) {
+				this->toBuild.isStation = !this->toBuild.isStation;
+			}
+			if (!this->toBuild.isStation) {
+				if (ImGui::BeginCombo("Hour", std::to_string(this->toBuildTime).c_str())) {
+					for (size_t i = 0; i < 24; i++) {
+						if (ImGui::Selectable(std::to_string(i).c_str(), i == this->toBuildTime)) {
+							this->toBuildTime = i;
+						}
 					}
+					ImGui::EndCombo();
 				}
-				ImGui::EndCombo();
 			}
 			if (ImGui::Button("Cancel")) {
 				this->changeState(UiState::Default);

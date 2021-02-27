@@ -386,8 +386,11 @@
     <ClInclude Include="src\Component\Controller\VehicleController\PlaneController\PlaneController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\GameMap\Tile\Railway\Railway.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\GameMap\Tile.h" />
+    <None Include="src\GameMap\Tile\Tile.h" />
   </ItemGroup>
 </Project>

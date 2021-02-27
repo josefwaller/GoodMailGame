@@ -21,6 +21,7 @@ const size_t GameMap::MAP_WIDTH = 50;
 const sf::Sprite GameMap::EMPTY_SPRITE = ResourceLoader::get()->getSprite("tiles/tiles", "empty");
 std::vector<sf::Sprite> GameMap::ROAD_SPRITES;
 std::vector<sf::Sprite> GameMap::RAIL_TRACK_SPRITES;
+std::vector<sf::Sprite> GameMap::RAIL_STATION_SPRITES;
 
 GameMap::GameMap(Game* g) : game(g) {
 	// Load the tile sprites
@@ -116,6 +117,9 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 			index = 0b1111 & ((index >> rotation) | (index << (4 - rotation)));
 			// Get the sprite
 			s = RAIL_TRACK_SPRITES[index];
+			if (r.isStation) {
+				s.setColor(sf::Color::Yellow);
+			}
 		}
 		else {
 			s = EMPTY_SPRITE;
@@ -319,6 +323,12 @@ void GameMap::addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to,
 }
 void GameMap::removeRailTrack(size_t x, size_t y, hour_t hour) {
 	this->tiles[x][y].railway.value().erase(hour);
+}
+
+void GameMap::addRailwayStation(size_t x, size_t y, IsoRotation direction) {
+	if (this->getTileAt(x, y).type != TileType::OffMap) {
+		this->tiles[x][y].railway = { { 0, Railway(direction + 2, direction, true)} };
+	}
 }
 
 Tile GameMap::getTileAt(size_t x, size_t y) {

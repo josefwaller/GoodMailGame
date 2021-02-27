@@ -1,5 +1,5 @@
 #pragma once
-#include "GameMap/Tile.h"
+#include "GameMap/Tile/Tile.h"
 #include <SFML/System/Vector2.hpp>
 #include <vector>
 

@@ -3,6 +3,7 @@
 #include <optional>
 #include <map>
 #include "System/IsoRotation/IsoRotation.h"
+#include "Railway/Railway.h"
 #include "Constants.h"
 
 // Forward declaration
@@ -15,13 +16,6 @@ enum class TileType {
 	OffMap
 };
 
-// The railway on a tile
-struct Railway {
-	// The two directions the railway goes through
-	IsoRotation from;
-	IsoRotation to;
-	Railway(IsoRotation from, IsoRotation to) : from(from), to(to) {}
-};
 // The road on a tile
 struct Road {
 	// Whether it has road going in any of the 4 directions

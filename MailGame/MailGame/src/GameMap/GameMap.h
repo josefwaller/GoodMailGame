@@ -1,5 +1,5 @@
 #pragma once
-#include "GameMap/Tile.h"
+#include "GameMap/Tile/Tile.h"
 #include "System/TransitType/TransitType.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -35,6 +35,8 @@ public:
 	void setCodeForTile(size_t x, size_t y, long long code);
 	// Add rail track at the tile given
 	void addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to, hour_t hour = 0);
+	// Add a railway station at the position given in the direction given, currently stations must be straight
+	void addRailwayStation(size_t x, size_t y, IsoRotation direction);
 	// Remove a railway track at the position given
 	void removeRailTrack(size_t x, size_t y, hour_t hour);
 	// Check if a vehicle of the given type can go through the tile given

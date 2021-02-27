@@ -3,7 +3,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <map>
 #include "System/IsoRotation/IsoRotation.h"
-#include "GameMap/Tile.h"
+#include "GameMap/Tile/Tile.h"
 
 class RailwaySwitchController : public Controller {
 public:

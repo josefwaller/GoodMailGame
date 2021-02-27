@@ -1,6 +1,6 @@
 #include "RailsPathfinder.h"
 #include "System/IsoRotation/IsoRotation.h"
-#include "GameMap/Tile.h"
+#include "GameMap/Tile/Tile.h"
 #include "Entity/Entity.h"
 #include "Game/Game.h"
 #include <algorithm>
