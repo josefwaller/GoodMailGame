@@ -103,5 +103,23 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 			}),
 			Technology::Trains
 		)
+	},
+	{
+		EntityTag::Warehouse,
+		ConstructionRecipe(
+			"Warehouse",
+			&BuildingPresets::warehouse,
+			IsoSprite(
+				ResourceLoader::get()->getSprite("buildings/warehouse", "warehouse"),
+				ResourceLoader::get()->getSprite("buildings/warehouse", "warehouse"),
+				ResourceLoader::get()->getSprite("buildings/warehouse", "warehouse"),
+				ResourceLoader::get()->getSprite("buildings/warehouse", "warehouse")
+			),
+			ConstructionLayout({
+				{ TileType::Land, TileType::Land },
+				{ TileType::Land, TileType::Land }
+			}),
+			Technology::Default
+		)
 	}
 };

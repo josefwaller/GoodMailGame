@@ -29,7 +29,8 @@
 	F(TrainCar, VehiclePresets::trainCar(g, pos, rot, IsoSprite(sf::Sprite(), sf::Sprite(), sf::Sprite(), sf::Sprite()))) \
 	F(Airport, BuildingPresets::airport(g, pos, rot)) \
 	F(Airplane, VehiclePresets::plane(g, pos, rot, TransitRoute(0, VehicleModel::SlowAirplane), {}))\
-	F(RailwaySwitch, BuildingPresets::railwaySwitch(g, pos, rot))
+	F(RailwaySwitch, BuildingPresets::railwaySwitch(g, pos, rot))\
+	F(Warehouse, BuildingPresets::warehouse(g, pos, rot))
 
 #define F(x, y) x,
 enum class EntityTag {

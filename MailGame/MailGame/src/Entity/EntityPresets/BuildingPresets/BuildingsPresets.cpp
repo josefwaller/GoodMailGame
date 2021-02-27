@@ -201,6 +201,29 @@ std::shared_ptr<Entity> BuildingPresets::railwaySwitch(Game* g, sf::Vector3f pos
 	);
 }
 
+std::shared_ptr<Entity> BuildingPresets::warehouse(Game* g, sf::Vector3f pos, IsoRotation rot) {
+	auto e = Entity::createEntity(
+		g,
+		EntityTag::Warehouse,
+		new Transform(pos, rot),
+		new IsoBuildingRenderer(
+			IsoSprite(
+				ResourceLoader::get()->getSprite("buildings/warehouse", "warehouse"),
+				ResourceLoader::get()->getSprite("buildings/warehouse", "warehouse"),
+				ResourceLoader::get()->getSprite("buildings/warehouse", "warehouse"),
+				ResourceLoader::get()->getSprite("buildings/warehouse", "warehouse")
+			),
+			sf::Vector2i(2, 2),
+			sf::Vector3f(-1, -0.5, 0)
+		),
+		nullptr,
+		new RectClickBox(sf::FloatRect(0, 0, 2, 2)),
+		new MailContainer()
+	);
+	setTilesToBuilding(g, e, sf::IntRect(floor(pos.x), floor(pos.y), 2, 2));
+	return e;
+}
+
 void BuildingPresets::addRoadForTransitBuilding(Game* g, sf::Vector3i pos, IsoRotation rot) {
 	sf::Vector3i inFront = pos + sf::Vector3i(rot.getUnitVector3D());
 	g->getGameMap()->addRoadInDirection(inFront.x, inFront.y, rot + 2);
