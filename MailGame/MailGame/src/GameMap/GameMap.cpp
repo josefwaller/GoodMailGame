@@ -21,7 +21,6 @@ const size_t GameMap::MAP_WIDTH = 50;
 const sf::Sprite GameMap::EMPTY_SPRITE = ResourceLoader::get()->getSprite("tiles/tiles", "empty");
 std::vector<sf::Sprite> GameMap::ROAD_SPRITES;
 std::vector<sf::Sprite> GameMap::RAIL_TRACK_SPRITES;
-std::vector<sf::Sprite> GameMap::RAIL_STATION_SPRITES;
 
 GameMap::GameMap(Game* g) : game(g) {
 	// Load the tile sprites
@@ -416,6 +415,7 @@ SaveData GameMap::getSaveData() {
 					rwd.addValue("to", std::to_string(rw.to.getRotation()));
 					rwd.addValue("from", std::to_string(rw.from.getRotation()));
 					rwd.addValue("time", std::to_string(it->first));
+					rwd.addValue("isStation", std::to_string(rw.isStation));
 					td.addData(rwd);
 				}
 			}
@@ -451,8 +451,13 @@ void GameMap::loadFromSaveData(SaveData data) {
 				IsoRotation from = IsoRotation(std::stoi(rd.getValue("from")));
 				IsoRotation to = IsoRotation(std::stoi(rd.getValue("to")));
 				hour_t hour = std::stoull(rd.getValue("time"));
-				Railway r = Railway(from, to);
-				this->addRailTrack(x, y, from, to, hour);
+				bool isStation = rd.getValue("isStation") == "1";
+				if (isStation) {
+					this->addRailwayStation(x, y, to);
+				}
+				else {
+					this->addRailTrack(x, y, from, to, hour);
+				}
 			}
 		}
 	}

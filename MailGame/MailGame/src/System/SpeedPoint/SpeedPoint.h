@@ -8,6 +8,7 @@ public:
 	SpeedPoint(sf::Vector3f);
 	SpeedPoint(sf::Vector3f pos, float speed);
 	std::optional<float> getSpeed();
+	void setSpeed(float s);
 	sf::Vector3f getPos();
 private:
 	sf::Vector3f pos;
