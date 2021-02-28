@@ -75,6 +75,25 @@ void GameMap::render(sf::RenderWindow* window) {
 		}
 	}
 }
+
+sf::Sprite GameMap::getRoadSprite(Road road, IsoRotation gameRotation) {
+	int index = 0;
+	if (road.hasNorth) {
+		index |= 0b1000;
+	}
+	if (road.hasEast) {
+		index |= 0b0100;
+	}
+	if (road.hasSouth) {
+		index |= 0b0010;
+	}
+	if (road.hasWest) {
+		index |= 0b0001;
+	}
+	unsigned int rotation = gameRotation.getRotation();
+	index = 0b1111 & ((index >> rotation) | (index << (4 - rotation)));
+	return ROAD_SPRITES[index];
+}
 void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 	if (auto e = this->tiles[x][y].building.lock()) {
 		// A bit messy, but hopefully this will be removed before the final product
@@ -124,22 +143,11 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 			s = EMPTY_SPRITE;
 		}
 		if (tile.road.has_value()) {
-			int index = 0;
-			if (tile.road.value().hasNorth) {
-				index |= 0b1000;
-			}
-			if (tile.road.value().hasEast) {
-				index |= 0b0100;
-			}
-			if (tile.road.value().hasSouth) {
-				index |= 0b0010;
-			}
-			if (tile.road.value().hasWest) {
-				index |= 0b0001;
-			}
-			unsigned int rotation = game->getRotation().getRotation();
-			index = 0b1111 & ((index >> rotation) | (index << (4 - rotation)));
-			s = ROAD_SPRITES[index];
+			s = getRoadSprite(tile.road.value(), this->game->getRotation());
+		}
+		else if (tile.airplaneRoad.has_value()) {
+			s = getRoadSprite(tile.airplaneRoad.value(), this->game->getRotation());
+			s.setColor(tile.airplaneRoad.value().isRunway ? sf::Color::Blue : sf::Color::Red);
 		}
 	}
 	sf::Vector3f pos((float)x + 0.5f, (float)y + 0.5f, 0);
@@ -330,6 +338,17 @@ void GameMap::addRailwayStation(size_t x, size_t y, IsoRotation direction) {
 	}
 }
 
+void GameMap::addAirplaneRoad(size_t x, size_t y, AirplaneRoad road) {
+	if (this->getTileAt(x, y).type != TileType::OffMap) {
+		this->tiles[x][y].airplaneRoad = road;
+	}
+}
+void GameMap::removeAirplaneRoad(size_t x, size_t y) {
+	if (this->getTileAt(x, y).type != TileType::OffMap) {
+		this->tiles[x][y].airplaneRoad.reset();
+	}
+}
+
 Tile GameMap::getTileAt(size_t x, size_t y) {
 	if (x <= tiles.size() && y <= tiles[0].size()) {
 		return tiles[x][y];
@@ -399,12 +418,7 @@ SaveData GameMap::getSaveData() {
 			// Add data for road
 			if (t.road.has_value()) {
 				Road r = t.road.value();
-				SaveData rd("Road");
-				rd.addValue("hasNorth", std::to_string(r.hasNorth));
-				rd.addValue("hasEast", std::to_string(r.hasEast));
-				rd.addValue("hasSouth", std::to_string(r.hasSouth));
-				rd.addValue("hasWest", std::to_string(r.hasWest));
-				td.addData(rd);
+				td.addData(r.getSaveData());
 			}
 			// Add data for railway
 			if (t.railway.has_value()) {
@@ -418,6 +432,11 @@ SaveData GameMap::getSaveData() {
 					rwd.addValue("isStation", std::to_string(rw.isStation));
 					td.addData(rwd);
 				}
+			}
+			// Add data for airplane road
+			if (t.airplaneRoad.has_value()) {
+				auto r = t.airplaneRoad.value();
+				td.addData(r.getSaveData());
 			}
 			sd.addData(td);
 		}
@@ -440,12 +459,7 @@ void GameMap::loadFromSaveData(SaveData data) {
 		// Will be for a road/railway
 		for (SaveData rd : d.getDatas()) {
 			if (rd.getName() == "Road") {
-				Road r = Road();
-				r.hasNorth = (rd.getValue("hasNorth") == "1");
-				r.hasSouth = (rd.getValue("hasSouth") == "1");
-				r.hasEast = (rd.getValue("hasEast") == "1");
-				r.hasWest = (rd.getValue("hasWest") == "1");
-				this->tiles[x][y].road = r;
+				this->tiles[x][y].road = Road(rd);
 			}
 			else if (rd.getName() == "Railway") {
 				IsoRotation from = IsoRotation(std::stoi(rd.getValue("from")));
@@ -458,6 +472,9 @@ void GameMap::loadFromSaveData(SaveData data) {
 				else {
 					this->addRailTrack(x, y, from, to, hour);
 				}
+			}
+			else if (rd.getName() == "AirplaneRoad") {
+				this->tiles[x][y].airplaneRoad = AirplaneRoad(rd);
 			}
 		}
 	}

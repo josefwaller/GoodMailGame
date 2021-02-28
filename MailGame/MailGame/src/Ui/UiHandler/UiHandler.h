@@ -19,7 +19,8 @@ public:
 		BuildingRailTracks,
 		SelectingEntity,
 		SelectingTile,
-		EditingPostalCodes
+		EditingPostalCodes,
+		BuildingAirplaneRoad
 	};
 
 	UiHandler(Game* g);
@@ -68,6 +69,7 @@ private:
 	);
 	// The railway currently being built
 	Railway toBuild;
+	AirplaneRoad airplaneRoadToBuild;
 	// The time to set the railway being built to, used to build railway switches
 	hour_t toBuildTime;
 	// The paths to draw

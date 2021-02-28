@@ -392,6 +392,9 @@
     <ClInclude Include="src\GameMap\Tile\Road\Road.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\GameMap\Tile\Road\AirplaneRoad\AirplaneRoad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\GameMap\Tile\Tile.h" />

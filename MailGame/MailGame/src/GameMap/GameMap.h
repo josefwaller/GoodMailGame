@@ -18,6 +18,8 @@ public:
 	static std::vector<sf::Sprite> ROAD_SPRITES;
 	static std::vector<sf::Sprite> RAIL_TRACK_SPRITES;
 	static const sf::Sprite EMPTY_SPRITE;
+	// Get the corresponding ROAD_SPRITE for the road given
+	static sf::Sprite getRoadSprite(Road road, IsoRotation gameRotation);
 	// Create an empty game map, i.e. all tiles are empty
 	GameMap(Game* g);
 	// Generate a new map
@@ -39,6 +41,9 @@ public:
 	void addRailwayStation(size_t x, size_t y, IsoRotation direction);
 	// Remove a railway track at the position given
 	void removeRailTrack(size_t x, size_t y, hour_t hour);
+	// Add/remove airplane road
+	void addAirplaneRoad(size_t x, size_t y, AirplaneRoad road);
+	void removeAirplaneRoad(size_t x, size_t y);
 	// Check if a vehicle of the given type can go through the tile given
 	bool canGetTileLock(size_t x, size_t y, TransitType type);
 	// Get a lock on a tile

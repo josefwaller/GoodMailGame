@@ -6,6 +6,7 @@
 #include "Railway/Railway.h"
 #include "Constants.h"
 #include "./Road/Road.h"
+#include "./Road/AirplaneRoad/AirplaneRoad.h"
 
 // Forward declaration
 class Entity;
@@ -29,6 +30,8 @@ struct Tile {
 	std::optional<std::map<hour_t, Railway>> railway;
 	// The road, if it has one
 	std::optional<Road> road;
+	// The road for airplanes, if it has one
+	std::optional<AirplaneRoad> airplaneRoad;
 	// The tile lock, currently just one for all transit types
 	bool isLocked;
 

@@ -58,6 +58,11 @@ bool UiHandler::handleEvent(sf::Event e) {
 				);
 			}
 			break;
+		case UiState::BuildingAirplaneRoad: {
+			sf::Vector2i tile = this->getHoveredTile();
+			this->game->getGameMap()->addAirplaneRoad(tile.x, tile.y, this->airplaneRoadToBuild);
+			break;
+		}
 		case UiState::SelectingEntity:
 			// Get the entity
 			for (auto e : this->game->getEntities()) {
@@ -157,28 +162,12 @@ void UiHandler::update() {
 				}
 			}
 		}
-		/*		if (ImGui::Button("Post Office")) {
-					this->recipe = Construction::recipes.at(EntityTag::PostOffice);
-					this->changeState(UiState::BuildingEntity);
-				}
-				if (ImGui::Button("MailBox")) {
-					this->recipe = Construction::recipes.at(EntityTag::MailBox);
-					this->changeState(UiState::BuildingEntity);
-				}
-				if (ImGui::Button("Cargo Truck Depot")) {
-					this->recipe = Construction::recipes.at(EntityTag::CargoTruckDepot);
-					this->changeState(UiState::BuildingEntity);
-				}
-				if (ImGui::Button("Train Station")) {
-					this->recipe = Construction::recipes.at(EntityTag::TrainStation);
-					this->changeState(UiState::BuildingEntity);
-				}
-				if (ImGui::Button("Airport")) {
-					this->recipe = Construction::recipes.at(EntityTag::Airport);
-					this->changeState(UiState::BuildingEntity);
-				}*/
 		if (ImGui::Button("RailWay")) {
 			this->changeState(UiState::BuildingRailTracks);
+		}
+		if (ImGui::Button("Airplane roads")) {
+			this->changeState(UiState::BuildingAirplaneRoad);
+			this->airplaneRoadToBuild = AirplaneRoad();
 		}
 		if (this->currentState == UiState::BuildingRailTracks) {
 			this->toBuild.from = this->chooseDirection("From:", this->toBuild.from);
@@ -199,6 +188,13 @@ void UiHandler::update() {
 			if (ImGui::Button("Cancel")) {
 				this->changeState(UiState::Default);
 			}
+		}
+		else if (this->currentState == UiState::BuildingAirplaneRoad) {
+			ImGui::Checkbox("North", &this->airplaneRoadToBuild.hasNorth);
+			ImGui::Checkbox("East", &this->airplaneRoadToBuild.hasEast);
+			ImGui::Checkbox("South", &this->airplaneRoadToBuild.hasSouth);
+			ImGui::Checkbox("West", &this->airplaneRoadToBuild.hasWest);
+			ImGui::Checkbox("Is Runway", &this->airplaneRoadToBuild.isRunway);
 		}
 
 		if (this->currentState == UiState::BuildingEntity) {
@@ -288,7 +284,7 @@ void UiHandler::render(sf::RenderWindow* w) {
 	bool isValid;
 	sf::Vector2f mousePos;
 	switch (this->currentState) {
-	case UiState::BuildingEntity:
+	case UiState::BuildingEntity: {
 		// Draw the recipe being build
 		if (!this->recipe) {
 			throw std::runtime_error("Tried to draw a construction sprite with no recipe!");
@@ -301,12 +297,23 @@ void UiHandler::render(sf::RenderWindow* w) {
 			this->currentRotation,
 			w);
 		break;
-	case UiState::BuildingRailTracks:
+	}
+	case UiState::BuildingRailTracks: {
 		// Draw 2 lines that correspond with the direction
 		this->drawArrow(w, this->getHoveredTile(), this->toBuild.from + 2, false);
 		this->drawArrow(w, this->getHoveredTile(), this->toBuild.to, true);
 		break;
-	case UiState::EditingPostalCodes:
+	}
+	case UiState::BuildingAirplaneRoad: {
+		sf::Sprite toRender = GameMap::getRoadSprite(this->airplaneRoadToBuild, this->game->getRotation());
+		toRender.setColor(sf::Color(255, 130, 25));
+		sf::Vector2i tile = this->getHoveredTile();
+		toRender = Utils::setupBuildingSprite(toRender);
+		toRender.setPosition(this->game->worldToScreenPos(sf::Vector3f(tile.x + 0.5f, tile.y + 0.5f, 0.0f)));
+		w->draw(toRender);
+		break;
+	}
+	case UiState::EditingPostalCodes: {
 		// Draw all the postal codes
 		GameMap* gMap = this->game->getGameMap();
 		for (size_t x = 0; x < gMap->MAP_WIDTH; x++) {
@@ -323,6 +330,7 @@ void UiHandler::render(sf::RenderWindow* w) {
 			}
 		}
 		break;
+	}
 	}
 	// Outline the sprite currently being hovered
 	sf::VertexArray vArr = getDrawableTile(this->getHoveredTile(), sf::PrimitiveType::LinesStrip, sf::Color::White);
