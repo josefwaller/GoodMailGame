@@ -5,6 +5,7 @@
 #include "System/IsoRotation/IsoRotation.h"
 #include "Railway/Railway.h"
 #include "Constants.h"
+#include "./Road/Road.h"
 
 // Forward declaration
 class Entity;
@@ -14,16 +15,6 @@ enum class TileType {
 	Land,
 	Water,
 	OffMap
-};
-
-// The road on a tile
-struct Road {
-	// Whether it has road going in any of the 4 directions
-	bool hasNorth;
-	bool hasEast;
-	bool hasSouth;
-	bool hasWest;
-	Road() : hasNorth(false), hasEast(false), hasSouth(false), hasWest(false) {}
 };
 
 struct Tile {

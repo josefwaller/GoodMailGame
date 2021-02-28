@@ -228,6 +228,7 @@
     <ClInclude Include="src\GameMap\GameMap.h" />
     <ClInclude Include="src\GameMap\Line\Line.h" />
     <ClInclude Include="src\GameMap\Tile\Railway\Railway.h" />
+    <ClInclude Include="src\GameMap\Tile\Road\Road.h" />
     <ClInclude Include="src\Game\Game.h" />
     <ClInclude Include="src\Mail\Mail.h" />
     <ClInclude Include="src\PostalCodeDatabase\PostalCodeDatabase.h" />
