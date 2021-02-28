@@ -19,4 +19,7 @@ private:
 	State state;
 	// Get the path of a loop above an airport while waiting for the runway to be free
 	std::vector<RoutePoint> getLoopPath(RoutePoint start);
+	// Get the path to arrive at/depart from a target
+	std::vector<SpeedPoint> getArrivingPath(std::shared_ptr<Entity> target);
+	std::vector<SpeedPoint> getDepartingPath(std::shared_ptr<Entity> target);
 };

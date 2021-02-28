@@ -10,6 +10,7 @@
 #include <variant>
 
 class GameMap;
+enum class EntityTag;
 
 // Data structure for each stop
 struct VehicleControllerStop {
@@ -76,6 +77,8 @@ protected:
 	gtime_t departTime;
 
 	std::vector<RoutePoint> getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to, gtime_t departTime);
+	// Get the connected docks from a warehouse
+	std::vector < sf::Vector2i> getConnectedDocks(std::shared_ptr<Entity> warehouse, EntityTag dockTag);
 private:
 	// Get the distance to travel between two points, via the path returned by the pathfinder
 	float getPathDistance(sf::Vector3f from, sf::Vector3f to);

@@ -214,3 +214,28 @@ void VehicleController::setPoints(std::vector<RoutePoint> points) {
 		}
 	}
 }
+
+std::vector<sf::Vector2i> VehicleController::getConnectedDocks(std::shared_ptr<Entity> e, EntityTag dockTag) {
+	// Find all the docks attached to the warehouse
+	std::vector<sf::Vector2i> availableDocks;
+	sf::Vector2i targetPos = Utils::toVector2i(e->transform->getPosition());
+	std::vector<sf::Vector2i> warehousePos = {
+		sf::Vector2i(targetPos.x, targetPos.y),
+		sf::Vector2i(targetPos.x, targetPos.y + 1),
+		sf::Vector2i(targetPos.x + 1, targetPos.y),
+		sf::Vector2i(targetPos.x + 1, targetPos.y + 1)
+	};
+	for (sf::Vector2i pos : warehousePos) {
+		for (int x = -1; x < 2; x++) {
+			for (int y = -1; y < 2; y++) {
+				if (x == 0 || y == 0) {
+					std::weak_ptr<Entity> building = this->getEntity()->getGameMap()->getTileAt((size_t)(pos.x + x), (size_t)(pos.y + y)).building;
+					if (building.lock() && building.lock()->tag == dockTag) {
+						availableDocks.push_back(sf::Vector2i(pos.x + x, pos.y + y));
+					}
+				}
+			}
+		}
+	}
+	return availableDocks;
+}
