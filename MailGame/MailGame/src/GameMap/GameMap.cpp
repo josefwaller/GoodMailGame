@@ -154,7 +154,7 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 	s.setPosition(this->game->worldToScreenPos(pos));
 	s = Utils::setupBuildingSprite(s, false);
 	if (tile.isLocked) {
-		s.setColor(sf::Color::Red);
+		s.setColor(sf::Color(0, 255, 51));
 	}
 	window->draw(s);
 	// If there's a railway, also draw that
