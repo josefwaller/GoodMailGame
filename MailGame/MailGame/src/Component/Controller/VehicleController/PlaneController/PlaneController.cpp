@@ -88,6 +88,7 @@ void PlaneController::onArriveAtDest(gtime_t arriveTime) {
 				this->points.back().expectedTime, this->model, this->points.back().speedAtPoint));
 		break;
 	}
+	case State::WaitingForArrivalLock:
 	case State::InTransit: {
 		// Handled by update
 		this->state = State::WaitingForArrivalLock;

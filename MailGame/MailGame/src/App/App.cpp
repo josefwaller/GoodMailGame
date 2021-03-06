@@ -19,7 +19,7 @@ void App::run() {
 	// Create game
 	Game game(this, &this->window);
 	// Just change this flag to either load the save file or generate a new map
-	const bool GENERATE_NEW_GAME = true;
+	const bool GENERATE_NEW_GAME = false;
 	if (GENERATE_NEW_GAME) {
 		game.generateNew();
 	}
