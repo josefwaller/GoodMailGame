@@ -23,23 +23,34 @@ void PlaneController::update(float delta) {
 			this->getEntity()->getGame()->removeEntity(this->getEntity());
 		}
 		else {
-			// Currently at stops[stopIndex]
-			// So try and find a runway to take off from
-			std::vector<Runway> runways = getAllRunwaysForEntity(this->stops.at(this->stopIndex).getEntityTarget().lock());
-			// Right now we just care if a runway exists
-			for (Runway r : runways) {
-				if (this->tryGetLockOnRunway(r)) {
-					this->runway = r;
-					this->stopIndex++;
-					this->state = State::TaxiingToRunway;
-					// TODO: Right now we just round position
-					// Shouldn't probably do this
-					sf::Vector3f pos = this->getEntity()->transform->getPosition();
-					sf::Vector2i p(round(pos.x), round(pos.y));
-					std::vector<sf::Vector3f> path = this->getTaxiPathToRunway(p, this->runway);
-					// Set the points
-					this->setPoints(Utils::speedPointVectorToRoutePointVector(setupTaxiPath(path), this->getEntity()->getGame()->getTime(), this->model, 0.0f));
-					break;
+			// Try to taxi to the destination first
+			sf::Vector3f fromPoint = this->traversedPoints.empty() ? this->getEntity()->transform->getPosition() : this->traversedPoints.back().pos;
+			auto path = this->getTaxiPathToEntity(Utils::toVector2i(fromPoint), this->stops.at(this->stopIndex + 1).getEntityTarget().lock());
+			if (!path.empty()) {
+				this->stopIndex++;
+				this->state = State::TaxiingToDest;
+				gtime_t time = this->traversedPoints.empty() ? this->getEntity()->getGame()->getTime() : this->traversedPoints.back().expectedTime;
+				this->setPoints(Utils::speedPointVectorToRoutePointVector(this->setupTaxiPath(path), time, this->model, 0.0f));
+			}
+			else {
+				// Currently at stops[stopIndex]
+				// So try and find a runway to take off from
+				std::vector<Runway> runways = getAllRunwaysForEntity(this->stops.at(this->stopIndex).getEntityTarget().lock());
+				// Right now we just care if a runway exists
+				for (Runway r : runways) {
+					if (this->tryGetLockOnRunway(r)) {
+						this->runway = r;
+						this->stopIndex++;
+						this->state = State::TaxiingToRunway;
+						// TODO: Right now we just round position
+						// Shouldn't probably do this
+						sf::Vector3f pos = this->getEntity()->transform->getPosition();
+						sf::Vector2i p(round(pos.x), round(pos.y));
+						std::vector<sf::Vector3f> path = this->getTaxiPathToRunway(p, this->runway);
+						// Set the points
+						this->setPoints(Utils::speedPointVectorToRoutePointVector(setupTaxiPath(path), this->getEntity()->getGame()->getTime(), this->model, 0.0f));
+						break;
+					}
 				}
 			}
 		}
@@ -75,9 +86,9 @@ void PlaneController::update(float delta) {
 void PlaneController::onArriveAtDest(gtime_t arriveTime) {
 	VehicleModelInfo modelInfo = VehicleModelInfo::getModelInfo(this->model);
 	switch (this->state) {
-	case State::InDepot:
-		// Handled by update
+	case State::InDepot: {
 		break;
+	}
 	case State::Departing: {
 		this->state = State::InTransit;
 		this->releaseLocks();
@@ -229,7 +240,7 @@ std::vector<sf::Vector3f> PlaneController::getTaxiPath(sf::Vector2i from, sf::Ve
 			}
 		}
 	}
-	return { Utils::toVector3f(from), Utils::toVector3f(from + to) / 2.0f, Utils::toVector3f(to) };
+	return {};
 }
 std::vector<sf::Vector3f> PlaneController::getTaxiPathToRunway(sf::Vector2i pos, Runway to) {
 	return getTaxiPath(pos, to.start);
