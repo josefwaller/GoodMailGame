@@ -9,7 +9,7 @@ public:
 		TaxiingToRunway,
 		Departing,
 		InTransit,
-		WaitingForLock,
+		WaitingForArrivalLock,
 	};
 	PlaneController(gtime_t departTime, VehicleModel model);
 protected:
@@ -29,8 +29,10 @@ private:
 	State state;
 	// The runway the plane currently has a lock on for taking off/landing
 	Runway runway;
+	// The tiles this plane has locked
+	std::vector<sf::Vector2i> lockedTiles;
 	// Get the path of a loop above an airport while waiting for the runway to be free
-	std::vector<RoutePoint> getLoopPath(RoutePoint start);
+	std::vector<SpeedPoint> getLoopPath(RoutePoint start);
 	// Get all the runways connected to an entity given
 	std::vector<Runway> getAllRunwaysForEntity(std::shared_ptr<Entity> e);
 	// Get the taxiing path to a runway
@@ -41,6 +43,12 @@ private:
 	std::vector<sf::Vector3f> getTaxiPath(sf::Vector2i from, sf::Vector2i to);
 	// Get the points to arrive at a runway
 	std::vector<SpeedPoint> getRunwayArrivePoints(Runway r);
+	// Get a lock on the runway if possible
+	// Return whether the plane was able to get a lock
+	bool tryGetLockOnRunway(Runway r);
+	// Release the locked tiles
+	void releaseLocks();
+	// Get the depart points for a given runway
 	std::vector<SpeedPoint> getRunwayDepartPoints(Runway r);
 	// This method is probably temporary, but maybe not
 	std::vector<SpeedPoint> setupTaxiPath(std::vector<sf::Vector3f> taxiPath);

@@ -19,6 +19,7 @@ public:
 	static float getVectorDistance(sf::Vector3f one, sf::Vector3f two);
 	// Get unit vector
 	static sf::Vector3f getUnitVector(sf::Vector3f vector);
+	static sf::Vector2i getUnitVector(sf::Vector2i v);
 	// Get the color to represent a certain time of day
 	static sf::Color getTimeColor(gtime_t time);
 

@@ -115,6 +115,10 @@ std::vector<RoutePoint> Utils::speedPointVectorToRoutePointVector(std::vector<Sp
 	return toReturn;
 }
 
+sf::Vector2i Utils::getUnitVector(sf::Vector2i v) {
+	return toVector2i(getUnitVector(toVector3f(v)));
+}
+
 sf::Vector2i Utils::toVector2i(sf::Vector2f p) {
 	return sf::Vector2i(floor(p.x), floor(p.y));
 }

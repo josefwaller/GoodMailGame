@@ -40,6 +40,7 @@ void App::run() {
 			// Poll for events
 			if (e.type == sf::Event::Closed) {
 				window.close();
+				break;
 			}
 			else {
 				game.onEvent(e);

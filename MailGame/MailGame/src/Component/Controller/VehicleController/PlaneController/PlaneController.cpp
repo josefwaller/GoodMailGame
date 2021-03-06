@@ -27,19 +27,45 @@ void PlaneController::update(float delta) {
 			// So try and find a runway to take off from
 			std::vector<Runway> runways = getAllRunwaysForEntity(this->stops.at(this->stopIndex).getEntityTarget().lock());
 			// Right now we just care if a runway exists
-			if (!runways.empty()) {
-				this->runway = runways.front();
-				this->stopIndex++;
-				this->state = State::TaxiingToRunway;
-				// TODO: Right now we just round position
-				// Shouldn't probably do this
-				sf::Vector3f pos = this->getEntity()->transform->getPosition();
-				sf::Vector2i p(round(pos.x), round(pos.y));
-				std::vector<sf::Vector3f> path = this->getTaxiPathToRunway(p, this->runway);
-				// Set the points
-				this->setPoints(Utils::speedPointVectorToRoutePointVector(setupTaxiPath(path), this->getEntity()->getGame()->getTime(), this->model, 0.0f));
+			for (Runway r : runways) {
+				if (this->tryGetLockOnRunway(r)) {
+					this->runway = r;
+					this->stopIndex++;
+					this->state = State::TaxiingToRunway;
+					// TODO: Right now we just round position
+					// Shouldn't probably do this
+					sf::Vector3f pos = this->getEntity()->transform->getPosition();
+					sf::Vector2i p(round(pos.x), round(pos.y));
+					std::vector<sf::Vector3f> path = this->getTaxiPathToRunway(p, this->runway);
+					// Set the points
+					this->setPoints(Utils::speedPointVectorToRoutePointVector(setupTaxiPath(path), this->getEntity()->getGame()->getTime(), this->model, 0.0f));
+					break;
+				}
 			}
 		}
+	}
+	else if (this->state == State::WaitingForArrivalLock) {
+		std::vector<Runway> runways = this->getAllRunwaysForEntity(this->stops.at(this->stopIndex).getEntityTarget().lock());
+		for (Runway r : runways) {
+			if (this->tryGetLockOnRunway(r)) {
+				this->runway = r;
+				this->state = State::ArrivingAtRunway;
+				// We actually need the last 2 points since we may have not arrived at this point yet
+				std::vector<SpeedPoint> points = { SpeedPoint(this->traversedPoints.back().pos) };
+				auto runwayPoints = getRunwayArrivePoints(this->runway);
+				points.insert(points.end(), runwayPoints.begin(), runwayPoints.end());
+				auto rPoints = (Utils::speedPointVectorToRoutePointVector(
+					points,
+					this->traversedPoints.back().expectedTime,
+					this->model,
+					this->traversedPoints.back().speedAtPoint
+				));
+				rPoints.insert(rPoints.begin(), this->traversedPoints.at(this->traversedPoints.size() - 2));
+				this->setPoints(rPoints);
+				break;
+			}
+		}
+		VehicleController::update(delta);
 	}
 	else {
 		VehicleController::update(delta);
@@ -54,6 +80,7 @@ void PlaneController::onArriveAtDest(gtime_t arriveTime) {
 		break;
 	case State::Departing: {
 		this->state = State::InTransit;
+		this->releaseLocks();
 		std::shared_ptr<Entity> e = this->stops.at(this->stopIndex).getEntityTarget().lock();
 		this->setPoints(
 			Utils::speedPointVectorToRoutePointVector(
@@ -61,21 +88,15 @@ void PlaneController::onArriveAtDest(gtime_t arriveTime) {
 				this->points.back().expectedTime, this->model, this->points.back().speedAtPoint));
 		break;
 	}
-	case State::InTransit:
-	case State::WaitingForLock: {
-		// Will eventually be handled by update
-		this->state = State::ArrivingAtRunway;
-		// Get the attached runway
-		std::vector<Runway> runways = this->getAllRunwaysForEntity(this->stops.at(this->stopIndex).getEntityTarget().lock());
-		this->runway = runways.front();
-		std::vector<SpeedPoint> points = { SpeedPoint(this->points.back().pos) };
-		auto runwayPoints = getRunwayArrivePoints(this->runway);
-		points.insert(points.end(), runwayPoints.begin(), runwayPoints.end());
-		this->setPoints(Utils::speedPointVectorToRoutePointVector(points, this->points.back().expectedTime, this->model, this->points.back().speedAtPoint));
+	case State::InTransit: {
+		// Handled by update
+		this->state = State::WaitingForArrivalLock;
+		this->setPoints(Utils::speedPointVectorToRoutePointVector(this->getLoopPath(this->points.back()), this->points.back().expectedTime, this->model, this->points.back().speedAtPoint));
 		break;
 	}
 	case State::ArrivingAtRunway:
 		this->state = State::TaxiingToDest;
+		this->releaseLocks();
 		this->setPoints(Utils::speedPointVectorToRoutePointVector(this->setupTaxiPath(this->getTaxiPathToEntity(this->runway.start, this->stops.at(this->stopIndex).getEntityTarget().lock())), this->points.back().expectedTime, this->model, this->points.back().speedAtPoint));
 		break;
 	case State::TaxiingToRunway:
@@ -89,13 +110,15 @@ void PlaneController::onArriveAtDest(gtime_t arriveTime) {
 	}
 }
 
-std::vector<RoutePoint> PlaneController::getLoopPath(RoutePoint p) {
+std::vector<SpeedPoint> PlaneController::getLoopPath(RoutePoint p) {
+	const float X_OFF = 3.0f;
+	const float Y_OFF = 3.0f;
 	return {
-		p,
-		RoutePoint(p.pos + sf::Vector3f(3.0f, 0.0f, 0.0f), p.expectedTime + 3.0f * Game::UNITS_IN_GAME_HOUR / this->getSpeed(), this->getSpeed(), 0.0f),
-		RoutePoint(p.pos + sf::Vector3f(3.0f, 2.0f, 0.0f), p.expectedTime + 5 * Game::UNITS_IN_GAME_HOUR / this->getSpeed(), this->getSpeed(), 0.0f),
-		RoutePoint(p.pos + sf::Vector3f(0.0f, 2.0f, 0.0f), p.expectedTime + 8 * Game::UNITS_IN_GAME_HOUR / this->getSpeed(), this->getSpeed(), 0.0f),
-		RoutePoint(p.pos, p.expectedTime + 10 * Game::UNITS_IN_GAME_HOUR / this->getSpeed(), this->getSpeed(), 0.0f)
+		SpeedPoint(p.pos),
+		SpeedPoint(p.pos + sf::Vector3f(X_OFF, 0, 0)),
+		SpeedPoint(p.pos + sf::Vector3f(X_OFF, Y_OFF, 0)),
+		SpeedPoint(p.pos + sf::Vector3f(0, Y_OFF, 0)),
+		SpeedPoint(p.pos)
 	};
 }
 
@@ -269,6 +292,33 @@ std::vector<SpeedPoint> PlaneController::getRunwayArrivePoints(Runway r) {
 		SpeedPoint(from),
 		SpeedPoint(to, 0.0f)
 	};
+}
+
+bool PlaneController::tryGetLockOnRunway(Runway r) {
+	sf::Vector2i unit = Utils::getUnitVector(r.end - r.start);
+	sf::Vector2i pos = r.start;
+	while (true) {
+		if (!this->getEntity()->getGameMap()->canGetTileLock(pos.x, pos.y, TransitType::Airplane)) {
+			return false;
+		}
+		if (pos == r.end) {
+			break;
+		}
+		pos += unit;
+	}
+	// Now actually get the lock
+	for (pos = r.start; pos != r.end + unit; pos += unit) {
+		this->getEntity()->getGameMap()->getTileLock(pos.x, pos.y, TransitType::Airplane);
+		this->lockedTiles.push_back(pos);
+	}
+	return true;
+}
+
+void PlaneController::releaseLocks() {
+	for (sf::Vector2i p : this->lockedTiles) {
+		this->getEntity()->getGameMap()->releaseTileLock(p.x, p.y, TransitType::Airplane);
+	}
+	this->lockedTiles.clear();
 }
 
 std::vector<SpeedPoint> PlaneController::getRunwayDepartPoints(Runway r) {
