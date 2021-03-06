@@ -7,7 +7,7 @@
 // Renderers
 #include "Component/Renderer/IsoSpriteRenderer/IsoSpriteRenderer.h"
 // Controllers
-#include "Component/Controller/VehicleController/TempVehicleController/TempVehicleController.h"
+#include "Component/Controller/VehicleController/CarController/CarController.h"
 #include "Component/Controller/VehicleController/TrainController/TrainController.h"
 #include "Component/Controller/VehicleController/PlaneController/PlaneController.h"
 // Mail Container
@@ -41,7 +41,7 @@ std::shared_ptr<Entity> VehiclePresets::mailTruck(
 			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
-		new TempVehicleController(g->getTime(), route.model, {}),
+		new CarController(g->getTime(), route.model, {}),
 		nullptr,
 		new MailContainer(),
 		nullptr,
@@ -69,7 +69,7 @@ std::shared_ptr<Entity> VehiclePresets::cargoTruck(
 			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
-		new TempVehicleController(g->getTime(), route.model),
+		new CarController(g->getTime(), route.model),
 		nullptr,
 		new MailContainer(),
 		nullptr,

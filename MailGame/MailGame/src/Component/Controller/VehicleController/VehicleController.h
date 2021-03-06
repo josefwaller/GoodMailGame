@@ -76,7 +76,6 @@ protected:
 
 	gtime_t departTime;
 
-	std::vector<RoutePoint> getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to, gtime_t departTime);
 	// Get the connected docks from a warehouse
 	std::vector < sf::Vector2i> getConnectedDocks(std::shared_ptr<Entity> warehouse, EntityTag dockTag);
 private:

@@ -195,13 +195,13 @@
     <ClCompile Include="src\System\TransitType\TransitType.h">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Component\Controller\VehicleController\TempVehicleController\TempVehicleController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Component\Controller\VehicleController\TrainController\TrainController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Component\Controller\VehicleController\PlaneController\PlaneController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\Controller\VehicleController\CarController\CarController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -377,9 +377,6 @@
     <ClInclude Include="src\Component\Ai\PickupDeliveryAi\PickupDeliveryAi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Component\Controller\VehicleController\TempVehicleController\TempVehicleController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Component\Controller\VehicleController\TrainController\TrainController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -393,6 +390,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\GameMap\Tile\Road\AirplaneRoad\AirplaneRoad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\Controller\VehicleController\CarController\CarController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
