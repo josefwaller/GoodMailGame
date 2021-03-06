@@ -144,37 +144,25 @@ std::shared_ptr<Entity> BuildingPresets::trainStation(Game* g, sf::Vector3f pos,
 	);
 }
 std::shared_ptr<Entity> BuildingPresets::airport(Game* g, sf::Vector3f pos, IsoRotation rot) {
-	addRoadForTransitBuilding(g, sf::Vector3i(pos), rot);
-	TransitStop::CarStop carStop = getDefaultBuildingTransitStop(pos, rot);
-	// TODO: Make this account for rotation
-	TransitStop::AirplaneStop airplaneStop = {
-		// Stop at the beginning of the runway
-		sf::Vector3f(2, 1, 0) + pos,
-		// Stop at the end of the runway
-		sf::Vector3f(0, 1, 0) + pos,
-		// Depot
-		sf::Vector3f(1, 0, 0) + pos
-	};
 	auto e = Entity::createEntity(
 		g,
 		EntityTag::Airport,
 		new Transform(pos, rot),
 		new IsoBuildingRenderer(
 			IsoSprite(
-				ResourceLoader::get()->getSprite("buildings/airport", "airport-N"),
-				ResourceLoader::get()->getSprite("buildings/airport", "airport-E"),
-				ResourceLoader::get()->getSprite("buildings/airport", "airport-S"),
-				ResourceLoader::get()->getSprite("buildings/airport", "airport-W")
-			),
-			sf::Vector2i(3, 2)
+				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-N"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-E"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-S"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-W")
+			)
 		),
 		new PlaneDepotController(),
-		new RectClickBox(sf::FloatRect(0, 0, 3, 2)),
+		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
 		new MailContainer(),
-		new TransitStop(carStop, {}, airplaneStop),
+		nullptr,
 		new AirPathfinder()
 	);
-	setTilesToBuilding(g, e, sf::IntRect((int)pos.x, (int)pos.y, 3, 2));
+	setTilesToBuilding(g, e, sf::IntRect((int)pos.x, (int)pos.y, 1, 1));
 	return e;
 }
 

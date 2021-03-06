@@ -125,74 +125,73 @@ std::vector<SpeedPoint> PlaneController::getLoopPath(RoutePoint p) {
 PlaneController::Runway::Runway(sf::Vector2i start, sf::Vector2i end) : start(start), end(end) {}
 
 std::vector<PlaneController::Runway> PlaneController::getAllRunwaysForEntity(std::shared_ptr<Entity> e) {
+	std::vector<sf::Vector2i> startingPoints;
 	if (e->tag == EntityTag::Warehouse) {
 		// Find a connected dock
-		std::vector<sf::Vector2i> availableDocks = getConnectedDocks(e, EntityTag::AirplaneDock);
-		// Simply do a search
-		std::vector<sf::Vector2i> possible = availableDocks;
-		std::vector<sf::Vector2i> visited;
-		std::vector<sf::Vector2i> runwayStarts;
-		GameMap* gMap = this->getEntity()->getGameMap();
-		// this algorithm currently assumes all taxi roads point in all directions
-		while (!possible.empty()) {
-			sf::Vector2i current = possible.back();
-			possible.pop_back();
-			for (int x = -1; x < 2; x++) {
-				for (int y = -1; y < 2; y++) {
-					if (x == 0 || y == 0) {
-						sf::Vector2i newPos(current.x + x, current.y + y);
-						if (std::find(visited.begin(), visited.end(), newPos) == visited.end()) {
-							visited.push_back(newPos);
-							if (gMap->getTileAt(newPos.x, newPos.y).airplaneRoad.has_value()) {
-								AirplaneRoad r = gMap->getTileAt(newPos.x, newPos.y).airplaneRoad.value();
-								if (r.isRunway) {
-									if (std::find(runwayStarts.begin(), runwayStarts.end(), newPos) == runwayStarts.end()) {
-										runwayStarts.push_back(newPos);
-									}
+		startingPoints = getConnectedDocks(e, EntityTag::AirplaneDock);
+	}
+	else if (e->tag == EntityTag::Airport) {
+		startingPoints.push_back(Utils::toVector2i(e->transform->getPosition()));
+	}
+	// Simply do a search
+	std::vector<sf::Vector2i> possible = startingPoints;
+	std::vector<sf::Vector2i> visited;
+	std::vector<sf::Vector2i> runwayStarts;
+	GameMap* gMap = this->getEntity()->getGameMap();
+	// this algorithm currently assumes all taxi roads point in all directions
+	while (!possible.empty()) {
+		sf::Vector2i current = possible.back();
+		possible.pop_back();
+		for (int x = -1; x < 2; x++) {
+			for (int y = -1; y < 2; y++) {
+				if (x == 0 || y == 0) {
+					sf::Vector2i newPos(current.x + x, current.y + y);
+					if (std::find(visited.begin(), visited.end(), newPos) == visited.end()) {
+						visited.push_back(newPos);
+						if (gMap->getTileAt(newPos.x, newPos.y).airplaneRoad.has_value()) {
+							AirplaneRoad r = gMap->getTileAt(newPos.x, newPos.y).airplaneRoad.value();
+							if (r.isRunway) {
+								if (std::find(runwayStarts.begin(), runwayStarts.end(), newPos) == runwayStarts.end()) {
+									runwayStarts.push_back(newPos);
 								}
-								else {
-									possible.push_back(newPos);
-								}
+							}
+							else {
+								possible.push_back(newPos);
 							}
 						}
 					}
 				}
 			}
 		}
-		if (runwayStarts.empty()) {
-			// damn
-			throw std::runtime_error(":(");
-		}
-		// Now get the runway from the possible starts
-		std::vector<Runway> toReturn;
-		for (sf::Vector2i pos : runwayStarts) {
-			sf::Vector2i start = pos;
-			AirplaneRoad r = gMap->getTileAt(pos.x, pos.y).airplaneRoad.value();
-			sf::Vector2i unit;
-			if (r.hasNorth && gMap->getTileAt(pos.x, pos.y - 1).airplaneRoad.value_or(AirplaneRoad()).isRunway) {
-				unit = sf::Vector2i(0, -1);
-			}
-			else if (r.hasSouth && gMap->getTileAt(pos.x, pos.y + 1).airplaneRoad.value_or(AirplaneRoad()).isRunway) {
-				unit = sf::Vector2i(0, 1);
-			}
-			else if (r.hasEast && gMap->getTileAt(pos.x - 1, pos.y).airplaneRoad.value_or(AirplaneRoad()).isRunway) {
-				unit = sf::Vector2i(-1, 0);
-			}
-			else {
-				unit = sf::Vector2i(1, 0);
-			}
-			while (gMap->getTileAt(pos.x + unit.x, pos.y + unit.y).airplaneRoad.value_or(AirplaneRoad()).isRunway) {
-				pos += unit;
-			}
-			toReturn.push_back(Runway(start, pos));
-		}
-		return toReturn;
 	}
-	else {
-		return {
-			Runway(Utils::toVector2i(e->transform->getPosition()) + sf::Vector2i(-1, 1), Utils::toVector2i(e->transform->getPosition()) + sf::Vector2i(1, 1))
-		};
+	if (runwayStarts.empty()) {
+		// damn
+		throw std::runtime_error(":(");
 	}
+	// Now get the runway from the possible starts
+	std::vector<Runway> toReturn;
+	for (sf::Vector2i pos : runwayStarts) {
+		sf::Vector2i start = pos;
+		AirplaneRoad r = gMap->getTileAt(pos.x, pos.y).airplaneRoad.value();
+		sf::Vector2i unit;
+		if (r.hasNorth && gMap->getTileAt(pos.x, pos.y - 1).airplaneRoad.value_or(AirplaneRoad()).isRunway) {
+			unit = sf::Vector2i(0, -1);
+		}
+		else if (r.hasSouth && gMap->getTileAt(pos.x, pos.y + 1).airplaneRoad.value_or(AirplaneRoad()).isRunway) {
+			unit = sf::Vector2i(0, 1);
+		}
+		else if (r.hasEast && gMap->getTileAt(pos.x - 1, pos.y).airplaneRoad.value_or(AirplaneRoad()).isRunway) {
+			unit = sf::Vector2i(-1, 0);
+		}
+		else {
+			unit = sf::Vector2i(1, 0);
+		}
+		while (gMap->getTileAt(pos.x + unit.x, pos.y + unit.y).airplaneRoad.value_or(AirplaneRoad()).isRunway) {
+			pos += unit;
+		}
+		toReturn.push_back(Runway(start, pos));
+	}
+	return toReturn;
 }
 std::vector<sf::Vector3f> PlaneController::getTaxiPath(sf::Vector2i from, sf::Vector2i to) {
 	std::vector<sf::Vector2i> potential = { from };
@@ -235,45 +234,48 @@ std::vector<sf::Vector3f> PlaneController::getTaxiPathToRunway(sf::Vector2i pos,
 	return getTaxiPath(pos, to.start);
 }
 std::vector<sf::Vector3f> PlaneController::getTaxiPathToEntity(sf::Vector2i pos, std::shared_ptr<Entity> e) {
+	std::vector<sf::Vector2i> startingPoints;
 	if (e->tag == EntityTag::Warehouse) {
-		auto docks = getConnectedDocks(e, EntityTag::AirplaneDock);
-		std::vector<sf::Vector2i> potential = docks;
-		std::vector<sf::Vector2i> visited;
-		auto previous = std::map<sf::Vector2i, sf::Vector2i, std::function<bool(sf::Vector2i one, sf::Vector2i two)>>{
-			[](sf::Vector2i one, sf::Vector2i two) {
-				return 1000 * one.x + one.y > 1000 * two.x + two.y;
-			}
-		};
-		while (!potential.empty()) {
-			sf::Vector2i current = potential.back();
-			potential.pop_back();
-			if (std::find(visited.begin(), visited.end(), current) == visited.end()) {
-				visited.push_back(current);
-				for (int x = -1; x < 2; x++) {
-					for (int y = -1; y < 2; y++) {
-						if (x == 0 || y == 0) {
-							sf::Vector2i newPos(current.x + x, current.y + y);
-							if (newPos == pos) {
-								std::vector<sf::Vector3f> toReturn = { Utils::toVector3f(newPos), Utils::toVector3f(current) };
-								while (previous.find(current) != previous.end()) {
-									current = previous.at(current);
-									toReturn.push_back(Utils::toVector3f(current));
-								}
-								return toReturn;
+		startingPoints = getConnectedDocks(e, EntityTag::AirplaneDock);
+	}
+	else if (e->tag == EntityTag::Airport) {
+		startingPoints.push_back(Utils::toVector2i(e->transform->getPosition()));
+	}
+	std::vector<sf::Vector2i> potential = startingPoints;
+	std::vector<sf::Vector2i> visited;
+	auto previous = std::map<sf::Vector2i, sf::Vector2i, std::function<bool(sf::Vector2i one, sf::Vector2i two)>>{
+		[](sf::Vector2i one, sf::Vector2i two) {
+			return 1000 * one.x + one.y > 1000 * two.x + two.y;
+		}
+	};
+	while (!potential.empty()) {
+		sf::Vector2i current = potential.back();
+		potential.pop_back();
+		if (std::find(visited.begin(), visited.end(), current) == visited.end()) {
+			visited.push_back(current);
+			for (int x = -1; x < 2; x++) {
+				for (int y = -1; y < 2; y++) {
+					if (x == 0 || y == 0) {
+						sf::Vector2i newPos(current.x + x, current.y + y);
+						if (newPos == pos) {
+							std::vector<sf::Vector3f> toReturn = { Utils::toVector3f(newPos), Utils::toVector3f(current) };
+							while (previous.find(current) != previous.end()) {
+								current = previous.at(current);
+								toReturn.push_back(Utils::toVector3f(current));
 							}
-							if (this->getEntity()->getGameMap()->getTileAt(newPos.x, newPos.y).airplaneRoad.has_value()) {
-								// Add to potential
-								potential.push_back(newPos);
-								previous.insert({ newPos, current });
-							}
+							return toReturn;
+						}
+						if (this->getEntity()->getGameMap()->getTileAt(newPos.x, newPos.y).airplaneRoad.has_value()) {
+							// Add to potential
+							potential.push_back(newPos);
+							previous.insert({ newPos, current });
 						}
 					}
 				}
 			}
 		}
-		return {};
 	}
-	return { Utils::toVector3f(pos), (Utils::toVector3f(pos) + e->transform->getPosition()) / 2.0f, e->transform->getPosition() };
+	return {};
 }
 std::vector<SpeedPoint> PlaneController::setupTaxiPath(std::vector<sf::Vector3f> path) {
 	std::vector<SpeedPoint> speedPath = { SpeedPoint(path.front(), 0.0f) };

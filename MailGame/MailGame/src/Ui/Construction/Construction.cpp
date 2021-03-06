@@ -77,10 +77,10 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 			"Airport",
 			&BuildingPresets::airport,
 			IsoSprite(
-				ResourceLoader::get()->getSprite("buildings/airport", "airport-N"),
-				ResourceLoader::get()->getSprite("buildings/airport", "airport-E"),
-				ResourceLoader::get()->getSprite("buildings/airport", "airport-S"),
-				ResourceLoader::get()->getSprite("buildings/airport", "airport-W")
+				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-N"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-E"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-S"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-W")
 			),
 			ConstructionLayout({
 				{ TileType::Land }
