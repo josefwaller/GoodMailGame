@@ -214,15 +214,15 @@ std::shared_ptr<Entity> BuildingPresets::warehouse(Game* g, sf::Vector3f pos, Is
 
 std::shared_ptr<Entity> BuildingPresets::carDock(Game* g, sf::Vector3f pos, IsoRotation rot) {
 	addRoadForTransitBuilding(g, sf::Vector3i(pos), rot);
-	return dock(g, pos, rot, EntityTag::CarDock);
+	return dock(g, pos, rot, EntityTag::CarDock, sf::Color(255, 0, 238));
 }
 std::shared_ptr<Entity> BuildingPresets::trainDock(Game* g, sf::Vector3f pos, IsoRotation rot) {
-	return dock(g, pos, rot, EntityTag::TrainDock);
+	return dock(g, pos, rot, EntityTag::TrainDock, sf::Color(255, 174, 0));
 }
 std::shared_ptr<Entity> BuildingPresets::airplaneDock(Game* g, sf::Vector3f pos, IsoRotation rot) {
-	return dock(g, pos, rot, EntityTag::AirplaneDock);
+	return dock(g, pos, rot, EntityTag::AirplaneDock, sf::Color(52, 235, 229));
 }
-std::shared_ptr<Entity> BuildingPresets::dock(Game* g, sf::Vector3f pos, IsoRotation rot, EntityTag tag) {
+std::shared_ptr<Entity> BuildingPresets::dock(Game* g, sf::Vector3f pos, IsoRotation rot, EntityTag tag, sf::Color color) {
 	auto e = Entity::createEntity(
 		g,
 		tag,
@@ -231,7 +231,8 @@ std::shared_ptr<Entity> BuildingPresets::dock(Game* g, sf::Vector3f pos, IsoRota
 			ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-N"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-E"),
 			ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-S"),
-			ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-W")
+			ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-W"),
+			color
 		))
 	);
 	setTilesToBuilding(g, e, sf::IntRect(floor(pos.x), floor(pos.y), 1, 1));

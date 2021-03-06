@@ -4,6 +4,7 @@
 #include "System/IsoRotation/IsoRotation.h"
 #include "Component/TransitStop/TransitStop.h"
 #include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/Color.hpp>
 
 class Entity;
 class Game;
@@ -24,7 +25,7 @@ public:
 	static std::shared_ptr<Entity> trainDock(Game* g, sf::Vector3f pos, IsoRotation rot);
 private:
 	// Get a dock with the entity tag given, since they're all pretty much the same
-	static std::shared_ptr<Entity> dock(Game* g, sf::Vector3f pos, IsoRotation rot, EntityTag tag);
+	static std::shared_ptr<Entity> dock(Game* g, sf::Vector3f pos, IsoRotation rot, EntityTag tag, sf::Color color);
 	// Create a road leading into the building so that it can be accessed by cars
 	// Road is always going in from the front
 	static void addRoadForTransitBuilding(Game* g, sf::Vector3i pos, IsoRotation rot);
