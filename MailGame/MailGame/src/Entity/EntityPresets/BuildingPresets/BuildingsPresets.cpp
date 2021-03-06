@@ -213,6 +213,7 @@ std::shared_ptr<Entity> BuildingPresets::warehouse(Game* g, sf::Vector3f pos, Is
 }
 
 std::shared_ptr<Entity> BuildingPresets::carDock(Game* g, sf::Vector3f pos, IsoRotation rot) {
+	addRoadForTransitBuilding(g, sf::Vector3i(pos), rot);
 	return dock(g, pos, rot, EntityTag::CarDock);
 }
 std::shared_ptr<Entity> BuildingPresets::trainDock(Game* g, sf::Vector3f pos, IsoRotation rot) {

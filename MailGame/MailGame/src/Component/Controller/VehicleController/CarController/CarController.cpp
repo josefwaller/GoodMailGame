@@ -1,6 +1,7 @@
 #include "CarController.h"
 #include "Entity/Entity.h"
 #include "Component/Ai/Ai.h"
+#include "Component/Transform/Transform.h"
 #include "Game/Game.h"
 #include "System/Utils/Utils.h"
 #include "Component/Pathfinder/Pathfinder.h"
@@ -12,7 +13,10 @@ void CarController::update(float delta) {
 		this->stops = this->getEntity()->ai->getStops();
 		this->stopIndex = 1;
 		this->stops[0].expectedTime = this->departTime;
-		this->setPoints(this->getPathBetweenStops(this->stops[0], this->stops[1], this->departTime));
+		this->setPoints(Utils::speedPointVectorToRoutePointVector(
+			this->getPathBetweenStops(this->stops[0], this->stops[1]),
+			this->departTime,
+			this->model));
 	}
 	VehicleController::update(delta);
 }
@@ -28,36 +32,30 @@ void CarController::onArriveAtDest(gtime_t arriveTime) {
 	}
 	else {
 		this->getEntity()->ai->onArriveAtStop(this->stopIndex - 1);
-		this->setPoints(this->getPathBetweenStops(this->stops[this->stopIndex - 1], this->stops[this->stopIndex], arriveTime));
+		this->setPoints(Utils::speedPointVectorToRoutePointVector(
+			this->getPathBetweenStops(this->stops[this->stopIndex - 1], this->stops[this->stopIndex]),
+			this->points.back().expectedTime,
+			this->model,
+			this->points.back().speedAtPoint));
 	}
 }
 
-std::vector<RoutePoint> CarController::getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to, gtime_t d) {
-	std::vector<RoutePoint> points;
+std::vector<SpeedPoint> CarController::getPathBetweenStops(VehicleControllerStop fromStop, VehicleControllerStop toStop) {
 	float speed = VehicleModelInfo::getModelInfo(this->model).getSpeed();
-	// First, it always starts at the first point in the departing path when departing from
-	points.push_back(RoutePoint(TransitStop::getArrivingTransitPath(from.getEntityTarget().lock(), TransitType::Car).front().getPos(), from.expectedTime, from.distance, getSpeed(), 0.0f));
-	gtime_t departTime = from.expectedTime;
-	// Add the departing path, the vehicle departs after waiting
-	auto path = Utils::speedPointVectorToRoutePointVector(TransitStop::getDepartingTransitPath(from.getEntityTarget().lock(), TransitType::Car), departTime + from.waitTime, this->model);
-	points.insert(points.end(), path.begin(), path.end());
-	departTime = points.back().expectedTime;
+	std::vector<sf::Vector2i> fromTiles = fromStop.getEntityTarget().lock() ? this->getDockTiles(fromStop.getEntityTarget().lock()) : std::vector<sf::Vector2i>({ fromStop.getTileTarget() });
+	std::vector<sf::Vector2i> toTiles = toStop.getEntityTarget().lock() ? this->getDockTiles(toStop.getEntityTarget().lock()) : std::vector<sf::Vector2i>({ toStop.getTileTarget() });
+	// TODO: Add checking if a valid dock even exists for both targets
+	// For now, we just go to the first
+	sf::Vector2i from = fromTiles.front();
+	sf::Vector2i to = toTiles.front();
 	// Add the path between
-	path = Utils::speedPointVectorToRoutePointVector(
-		this->getEntity()->pathfinder->findPathBetweenPoints(points.back().pos, TransitStop::getArrivingTransitPath(to.getEntityTarget().lock(), TransitType::Car).front().getPos(), departTime, speed),
-		departTime,
-		this->model,
-		points.back().speedAtPoint
-	);
-	points.insert(points.end(), path.begin(), path.end());
-	departTime = points.back().expectedTime;
-	// Add the arriving path
-	path = Utils::speedPointVectorToRoutePointVector(TransitStop::getArrivingTransitPath(to.getEntityTarget().lock(), TransitType::Car), departTime, this->model);
-	points.insert(points.end(), path.begin(), path.end());
+	return this->getEntity()->pathfinder->findPathBetweenPoints(Utils::toVector3f(from), Utils::toVector3f(to), this->departTime, speed);
+}
 
-	// Now just set the distance between all the points
-	for (auto it = points.begin() + 1; it != points.end(); it++) {
-		it->distance = (it - 1)->distance + Utils::getVectorDistance((it - 1)->pos, it->pos);
+std::vector<sf::Vector2i> CarController::getDockTiles(std::shared_ptr<Entity> e) {
+	// Basically just returns the car docks if we'rek going to a warehouse
+	switch (e->tag) {
+	case EntityTag::Warehouse: return this->getConnectedDocks(e, EntityTag::CarDock);
+	default: return { Utils::toVector2i(e->transform->getPosition()) };
 	}
-	return points;
 }

@@ -11,6 +11,8 @@ protected:
 private:
 	std::vector<VehicleControllerStop> stops;
 	size_t stopIndex;
-
-	std::vector<RoutePoint> getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to, gtime_t t);
+	// Get the path between two stops
+	std::vector<SpeedPoint> getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to);
+	// Get the dock coordinates for a given entity
+	std::vector<sf::Vector2i> getDockTiles(std::shared_ptr<Entity> e);
 };

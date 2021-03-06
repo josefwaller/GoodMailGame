@@ -141,7 +141,7 @@ std::pair<sf::Vector3f, IsoRotation> VehicleController::getPosAndRotAtDistance(f
 			auto prev = it - 1;
 			sf::Vector3f diff = it->pos - prev->pos;
 			// Turn it into a unit vector
-			sf::Vector3f unit = diff / sqrt(pow(diff.x, 2) + pow(diff.y, 2) + pow(diff.z, 2));
+			sf::Vector3f unit = diff / (float)(sqrt(pow(diff.x, 2) + pow(diff.y, 2) + pow(diff.z, 2)));
 			// Get the rotation
 			IsoRotation rot = IsoRotation::fromUnitVector(unit);
 			// Calculate how far it would get
