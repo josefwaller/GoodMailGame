@@ -111,7 +111,7 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 	case TileType::Land:
 		// Draw the railway if it has one
 		if (tile.railway.has_value()) {
-			Railway r = tiles[x][y].getRailwayAtHour(game->getHour()).value();
+			Railway r = tile.railway.value();
 			// Get the binary number representing the intersection at the til
 			int index = 0;
 			for (IsoRotation rot : { r.from, r.to}) {
@@ -159,7 +159,7 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 	window->draw(s);
 	// If there's a railway, also draw that
 	if (tile.railway.has_value()) {
-		Railway r = tile.getRailwayAtHour(game->getHour()).value();
+		Railway r = tile.railway.value();
 		game->getUi()->drawArrow(window, sf::Vector2i(x, y), r.from + 2, false);
 		game->getUi()->drawArrow(window, sf::Vector2i(x, y), r.to, true);
 	}
@@ -310,31 +310,18 @@ void GameMap::setCodeForTile(size_t x, size_t y, long long id) {
 		this->tiles[x][y].postalCode = id;
 	}
 }
-void GameMap::addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to, hour_t hour) {
+void GameMap::addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to) {
 	if (this->getTileAt(x, y).type != TileType::OffMap) {
-		if (!this->tiles[x][y].railway.has_value()) {
-			this->tiles[x][y].railway.emplace();
-		}
-		Railway toInsert = Railway(from, to);
-		// Check if there's already an entry for this hour
-		auto it = this->tiles[x][y].railway.value().find(hour);
-		if (it != this->tiles[x][y].railway.value().end()) {
-			// Replace it
-			it->second = toInsert;
-		}
-		else {
-			// Add a new entry
-			this->tiles[x][y].railway.value().insert({ hour, toInsert });
-		}
+		this->tiles[x][y].railway = Railway(from, to);
 	}
 }
-void GameMap::removeRailTrack(size_t x, size_t y, hour_t hour) {
-	this->tiles[x][y].railway.value().erase(hour);
+void GameMap::removeRailTrack(size_t x, size_t y) {
+	this->tiles[x][y].railway.reset();
 }
 
 void GameMap::addRailwayStation(size_t x, size_t y, IsoRotation direction) {
 	if (this->getTileAt(x, y).type != TileType::OffMap) {
-		this->tiles[x][y].railway = { { 0, Railway(direction + 2, direction, true)} };
+		this->tiles[x][y].railway = Railway(direction + 2, direction, true);
 	}
 }
 
@@ -422,16 +409,12 @@ SaveData GameMap::getSaveData() {
 			}
 			// Add data for railway
 			if (t.railway.has_value()) {
-				auto m = t.railway.value();
-				for (auto it = m.begin(); it != m.end(); it++) {
-					Railway rw = it->second;
-					SaveData rwd("Railway");
-					rwd.addValue("to", std::to_string(rw.to.getRotation()));
-					rwd.addValue("from", std::to_string(rw.from.getRotation()));
-					rwd.addValue("time", std::to_string(it->first));
-					rwd.addValue("isStation", std::to_string(rw.isStation));
-					td.addData(rwd);
-				}
+				Railway rw = t.railway.value();
+				SaveData rwd("Railway");
+				rwd.addValue("to", std::to_string(rw.to.getRotation()));
+				rwd.addValue("from", std::to_string(rw.from.getRotation()));
+				rwd.addValue("isStation", std::to_string(rw.isStation));
+				td.addData(rwd);
 			}
 			// Add data for airplane road
 			if (t.airplaneRoad.has_value()) {
@@ -464,13 +447,12 @@ void GameMap::loadFromSaveData(SaveData data) {
 			else if (rd.getName() == "Railway") {
 				IsoRotation from = IsoRotation(std::stoi(rd.getValue("from")));
 				IsoRotation to = IsoRotation(std::stoi(rd.getValue("to")));
-				hour_t hour = std::stoull(rd.getValue("time"));
 				bool isStation = rd.getValue("isStation") == "1";
 				if (isStation) {
 					this->addRailwayStation(x, y, to);
 				}
 				else {
-					this->addRailTrack(x, y, from, to, hour);
+					this->addRailTrack(x, y, from, to);
 				}
 			}
 			else if (rd.getName() == "AirplaneRoad") {

@@ -118,13 +118,13 @@ std::vector<SpeedPoint> TrainController::getDockPath(std::shared_ptr<Entity> e) 
 			for (int y = -1; y < 2; y++) {
 				if (x == 0 || y == 0) {
 					auto r = this->getEntity()->getGameMap()->getTileAt(pos.x + x, pos.y + y).railway;
-					if (r.has_value() && r.value().begin()->second.isStation) {
+					if (r.has_value() && r.value().isStation) {
 						// Find how far back the train station goes
 						pos = sf::Vector2i(pos.x + x, pos.y + y);
 						std::vector<SpeedPoint> points;// = { SpeedPoint(sf::Vector3f(pos.x + x, pos.y + y, 0.0f), 0.5f) };
-						while (r.has_value() && r.value().begin()->second.isStation) {
+						while (r.has_value() && r.value().isStation) {
 							points.push_back(SpeedPoint(sf::Vector3f(pos.x, pos.y, 0), 0.5f));
-							pos = pos + Utils::toVector2i(r.value().begin()->second.from.getUnitVector());
+							pos = pos + Utils::toVector2i(r.value().from.getUnitVector());
 							r = e->getGameMap()->getTileAt(pos.x, pos.y).railway;
 						}
 						points[0] = SpeedPoint(points.at(0).getPos(), 0.0f);

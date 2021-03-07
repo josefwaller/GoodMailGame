@@ -8,7 +8,7 @@ RailwaySwitchController::RailwaySwitchController(sf::Vector2i t) : tile(t) {}
 
 void RailwaySwitchController::update(float delta) {}
 void RailwaySwitchController::renderUi() {
-	GameMap* gMap = this->getEntity()->getGame()->getGameMap();
+	/*GameMap* gMap = this->getEntity()->getGame()->getGameMap();
 	size_t x = (size_t)this->tile.x;
 	size_t y = (size_t)this->tile.y;
 	Tile t = gMap->getTileAt(x, y);
@@ -43,5 +43,5 @@ void RailwaySwitchController::renderUi() {
 			}
 		}
 	}
-	ImGui::End();
+	ImGui::End();*/
 }

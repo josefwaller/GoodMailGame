@@ -36,11 +36,11 @@ public:
 	// Set the postal code for a specific tile
 	void setCodeForTile(size_t x, size_t y, long long code);
 	// Add rail track at the tile given
-	void addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to, hour_t hour = 0);
+	void addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to);
 	// Add a railway station at the position given in the direction given, currently stations must be straight
 	void addRailwayStation(size_t x, size_t y, IsoRotation direction);
 	// Remove a railway track at the position given
-	void removeRailTrack(size_t x, size_t y, hour_t hour);
+	void removeRailTrack(size_t x, size_t y);
 	// Add/remove airplane road
 	void addAirplaneRoad(size_t x, size_t y, AirplaneRoad road);
 	void removeAirplaneRoad(size_t x, size_t y);

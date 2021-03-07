@@ -53,8 +53,7 @@ bool UiHandler::handleEvent(sf::Event e) {
 					(size_t)tilePos.x,
 					(size_t)tilePos.y,
 					this->toBuild.from,
-					this->toBuild.to,
-					this->toBuildTime
+					this->toBuild.to
 				);
 			}
 			break;
@@ -174,16 +173,6 @@ void UiHandler::update() {
 			this->toBuild.to = this->chooseDirection("To:", this->toBuild.to);
 			if (ImGui::Button(this->toBuild.isStation ? "Station" : "Rail")) {
 				this->toBuild.isStation = !this->toBuild.isStation;
-			}
-			if (!this->toBuild.isStation) {
-				if (ImGui::BeginCombo("Hour", std::to_string(this->toBuildTime).c_str())) {
-					for (size_t i = 0; i < 24; i++) {
-						if (ImGui::Selectable(std::to_string(i).c_str(), i == this->toBuildTime)) {
-							this->toBuildTime = i;
-						}
-					}
-					ImGui::EndCombo();
-				}
 			}
 			if (ImGui::Button("Cancel")) {
 				this->changeState(UiState::Default);
