@@ -118,6 +118,12 @@ void PlaneController::onArriveAtDest(gtime_t arriveTime) {
 	case State::TaxiingToDest:
 		this->state = State::InDepot;
 		this->setPoints({ this->points.back(), RoutePoint(this->points.back().pos, this->points.back().expectedTime + modelInfo.getLoadTime() + modelInfo.getUnloadTime(), 0.0f, 0.0f) });
+		if (this->stopIndex < this->stops.size()) {
+			this->getEntity()->ai->onArriveAtStop(this->stopIndex);
+		}
+		else {
+			this->getEntity()->ai->onArriveAtDest();
+		}
 		break;
 	}
 }

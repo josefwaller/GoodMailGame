@@ -273,7 +273,7 @@ void UiHandler::update() {
 		}), this->toRenderUi.end());
 	// Render Ui for entities
 	for (auto it = this->toRenderUi.begin(); it != this->toRenderUi.end(); it++) {
-		if (it->lock()) {
+		if (it->lock() && it->lock()->controller) {
 			it->lock()->controller->renderUi();
 		}
 	}

@@ -67,6 +67,8 @@ void TransitAi::onArriveAtDest() {
 	this->getEntity()->getGame()->removeEntity(this->getEntity());
 }
 void TransitAi::onArriveAtStop(size_t stopIndex) {
+	// Account for stopping at the depot
+	stopIndex--;
 	// For the last stop (i.e. the depot) we don't need to transfer any letters
 	if (stopIndex >= this->route.stops.size())
 		return;

@@ -15,7 +15,7 @@ SaveData MailTruckRoute::getSaveData() {
 	return sd;
 }
 MailTruckRoute::MailTruckRoute(SaveData data) : Route(data) {
-	bool isDelivering = data.getValue("isDelivering") == "1";
+	this->isDelivering = data.getValue("isDelivering") == "1";
 	this->stops.resize(std::stoull(data.getValue("numStops")));
 	for (SaveData d : data.getDatas()) {
 		this->stops[std::stoull(d.getValue("index"))] = saveDataToMailTruckRouteStop(d);

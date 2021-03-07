@@ -20,7 +20,7 @@ PickupDeliveryAi::PickupDeliveryAi(MailTruckRoute r, std::weak_ptr<Entity> o)
 }
 std::vector<VehicleControllerStop> PickupDeliveryAi::getStops() {
 	// This is messy as hell, but oh well
-	if (!this->hasPickedUpMail) {
+	if (this->route.isDelivering && !this->hasPickedUpMail) {
 		this->hasPickedUpMail = true;
 		pickupMailFromOffice();
 	}

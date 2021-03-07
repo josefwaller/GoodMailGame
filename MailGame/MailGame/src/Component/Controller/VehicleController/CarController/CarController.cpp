@@ -42,8 +42,8 @@ void CarController::onArriveAtDest(gtime_t arriveTime) {
 
 std::vector<SpeedPoint> CarController::getPathBetweenStops(VehicleControllerStop fromStop, VehicleControllerStop toStop) {
 	float speed = VehicleModelInfo::getModelInfo(this->model).getSpeed();
-	std::vector<sf::Vector2i> fromTiles = fromStop.getEntityTarget().lock() ? this->getDockTiles(fromStop.getEntityTarget().lock()) : std::vector<sf::Vector2i>({ fromStop.getTileTarget() });
-	std::vector<sf::Vector2i> toTiles = toStop.getEntityTarget().lock() ? this->getDockTiles(toStop.getEntityTarget().lock()) : std::vector<sf::Vector2i>({ toStop.getTileTarget() });
+	std::vector<sf::Vector2i> fromTiles = fromStop.hasEntityTarget() ? this->getDockTiles(fromStop.getEntityTarget().lock()) : std::vector<sf::Vector2i>({ fromStop.getTileTarget() });
+	std::vector<sf::Vector2i> toTiles = toStop.hasEntityTarget() ? this->getDockTiles(toStop.getEntityTarget().lock()) : std::vector<sf::Vector2i>({ toStop.getTileTarget() });
 	// TODO: Add checking if a valid dock even exists for both targets
 	// For now, we just go to the first
 	sf::Vector2i from = fromTiles.front();

@@ -73,7 +73,10 @@ void Game::update(float delta) {
 	// Advance time
 	if (!isPaused) {
 		const gtime_t lastTime = this->time / UNITS_IN_GAME_HOUR;
-		this->time += (gtime_t)(delta * UNITS_IN_REAL_SECOND);
+		const gtime_t toAdd = (gtime_t)(delta * UNITS_IN_REAL_SECOND);
+		if (toAdd < UNITS_IN_REAL_SECOND) {
+			this->time += toAdd;
+		}
 		if (lastTime < this->time / UNITS_IN_GAME_HOUR)
 			this->advanceTime();
 	}

@@ -30,6 +30,8 @@ public:
 		: target(target), waitTime(waitTime), expectedTime(0), distance(0) {}
 	VehicleControllerStop(sf::Vector2i target) : target(target), waitTime(0), expectedTime(0), distance(0) {}
 
+	bool hasEntityTarget();
+	bool hasTileTarget();
 	std::weak_ptr<Entity> getEntityTarget();
 	sf::Vector2i getTileTarget();
 };
@@ -39,6 +41,7 @@ public:
 	VehicleController(gtime_t departTime, VehicleModel model, std::vector<std::weak_ptr<Entity>> cargoCars = {});
 	virtual void update(float delta) override;
 	virtual void onDelete() override;
+	virtual void renderUi() override;
 protected:
 	// Callback every time the vehicle reaches a point
 	virtual void onArriveAtPoint(size_t pointIndex, gtime_t arriveTime);

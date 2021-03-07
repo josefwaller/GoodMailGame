@@ -10,13 +10,21 @@
 #include "Component/Renderer/IsoSpriteRenderer/IsoSpriteRenderer.h"
 #include "VehicleModel/VehicleModel.h"
 #include "Component/Ai/Ai.h"
+#include "Component/MailContainer/MailContainer.h"
 #include <SFML/System/Vector3.hpp>
 #include <queue>
 #include <map>
 #include <memory>
 #include <functional>
 #include <math.h>
+#include <imgui.h>
 
+bool VehicleControllerStop::hasEntityTarget() {
+	return std::holds_alternative<std::weak_ptr<Entity>>(this->target);
+}
+bool VehicleControllerStop::hasTileTarget() {
+	return std::holds_alternative<sf::Vector2i>(this->target);
+}
 std::weak_ptr<Entity> VehicleControllerStop::getEntityTarget() {
 	return std::get<std::weak_ptr<Entity>>(this->target);
 }
@@ -42,14 +50,14 @@ void VehicleController::update(float delta) {
 			RoutePoint point = this->points[this->pointIndex];
 			// Go to the next point
 			this->pointIndex++;
+			// Callback for children classes
+			this->onArriveAtPoint(this->pointIndex - 1, this->points[this->pointIndex - 1].expectedTime);
 			if (this->pointIndex >= this->points.size()) {
 				this->onArriveAtDest(this->points.back().expectedTime);
 				return;
 			}
 			// Add the next tile to traversed points
 			this->traversedPoints.push_back(this->points[this->pointIndex]);
-			// Callback for children classes
-			this->onArriveAtPoint(this->pointIndex - 1, this->points[this->pointIndex - 1].expectedTime);
 		}
 		else {
 			RoutePoint lastPoint = this->points[this->pointIndex - 1];
@@ -81,6 +89,16 @@ void VehicleController::update(float delta) {
 				}
 			}
 		}
+	}
+}
+
+void VehicleController::renderUi() {
+	if (ImGui::Begin(entityTagToString(this->getEntity()->tag).c_str())) {
+		size_t numMail = this->getEntity()->mailContainer->getNumLetters();
+		char buf[200];
+		sprintf_s(buf, "%zu letters", numMail);
+		ImGui::Text(buf);
+		ImGui::End();
 	}
 }
 

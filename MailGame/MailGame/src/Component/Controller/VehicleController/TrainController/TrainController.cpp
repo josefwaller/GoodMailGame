@@ -57,6 +57,7 @@ void TrainController::onArriveAtDest(gtime_t arriveTime) {
 			this->getEntity()->ai->onArriveAtDest();
 		}
 		else {
+			this->getEntity()->ai->onArriveAtStop(this->stopIndex - 1);
 			// Now set points to the path between stations
 			from = this->points.back().pos;
 			to = this->getDockPath(this->stops.at(this->stopIndex).getEntityTarget().lock()).front().getPos();
@@ -79,14 +80,16 @@ void TrainController::onArriveAtDest(gtime_t arriveTime) {
 void TrainController::onArriveAtPoint(size_t pointIndex, gtime_t arriveTime) {
 	this->getEntity()->ai->onArriveAtTile(Utils::toVector2i(this->points.at(pointIndex).pos));
 	// Get a lock on the next point
-	sf::Vector2i nextTile = Utils::toVector2i(this->points.at(this->pointIndex).pos);
-	if (this->getEntity()->getGameMap()->canGetTileLock(nextTile.x, nextTile.y, TransitType::Train)) {
-		this->getEntity()->getGameMap()->getTileLock(nextTile.x, nextTile.y, TransitType::Train);
-		this->lockedTiles.push_back(nextTile);
-	}
-	else {
-		if (std::find(this->lockedTiles.begin(), this->lockedTiles.end(), nextTile) == this->lockedTiles.end()) {
-			this->isBlocked = true;
+	if (this->points.size() < this->pointIndex) {
+		sf::Vector2i nextTile = Utils::toVector2i(this->points.at(this->pointIndex).pos);
+		if (this->getEntity()->getGameMap()->canGetTileLock(nextTile.x, nextTile.y, TransitType::Train)) {
+			this->getEntity()->getGameMap()->getTileLock(nextTile.x, nextTile.y, TransitType::Train);
+			this->lockedTiles.push_back(nextTile);
+		}
+		else {
+			if (std::find(this->lockedTiles.begin(), this->lockedTiles.end(), nextTile) == this->lockedTiles.end()) {
+				this->isBlocked = true;
+			}
 		}
 	}
 	// Remove any tiles that we don't need locks for anymore
