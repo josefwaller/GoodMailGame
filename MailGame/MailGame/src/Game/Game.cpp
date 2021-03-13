@@ -37,11 +37,12 @@ void Game::generateNew() {
 	this->gameMap.generateNew();
 }
 void Game::loadFromSaveData(SaveData data) {
+	using namespace SaveKeys;
 	// Load the tech tree
-	TechTree::fromSaveData(data.getData("TechTree"));
+	TechTree::fromSaveData(data.getData(TECH_TREE));
 	// First, create entities with the id's given but don't load anything else
 	// So that entities referenced by id in the save data will be valid
-	for (SaveData entData : data.getData("Entities").getDatas()) {
+	for (SaveData entData : data.getData(ENTITIES).getDatas()) {
 		// Create the entity
 		auto e = entityTagToEntity(
 			strToEntityTag(entData.getName()),
@@ -55,18 +56,18 @@ void Game::loadFromSaveData(SaveData data) {
 	}
 
 	// The create the game map
-	this->gameMap.loadFromSaveData(data.getData("GameMap"));
+	this->gameMap.loadFromSaveData(data.getData(GAMEMAP));
 
 	// Then load the actual entity data
-	for (SaveData entData : data.getData("Entities").getDatas()) {
-		this->getEntityById(std::stoull(entData.getValue("id"))).lock()->loadComponentsFromSaveData(entData);
+	for (SaveData entData : data.getData(ENTITIES).getDatas()) {
+		this->getEntityById(entData.getSizeT(ID)).lock()->loadComponentsFromSaveData(entData);
 	}
-	this->time = std::stoull(data.getValue("time"));
+	this->time = data.getSizeT(TIME);
 	this->gameView.setCenter(sf::Vector2f(
-		data.getValuef("cameraX"),
-		data.getValuef("cameraY")
+		data.getFloat(CAMERA_X),
+		data.getFloat(CAMERA_Y)
 	));
-	this->isPaused = data.getValue("isPaused") == "1";
+	this->isPaused = data.getBool(IS_PAUSED);
 }
 
 void Game::update(float delta) {
@@ -300,12 +301,13 @@ void Game::togglePause() {
 }
 
 SaveData Game::getSaveData() {
+	using namespace SaveKeys;
 	// Create save data for game
-	SaveData sd("Game");
+	SaveData sd(GAME);
 	// Add the game map's data
 	sd.addData(this->gameMap.getSaveData());
 	// Add all the entities' data
-	SaveData entData("Entities");
+	SaveData entData(ENTITIES);
 	for (auto e : this->entities) {
 		// Don't save train cars
 		// Eventually this will probably be expanded to lother things to not save as well
@@ -313,10 +315,10 @@ SaveData Game::getSaveData() {
 			entData.addData(e->getSaveData());
 	}
 	sd.addData(entData);
-	sd.addValue("time", this->time);
-	sd.addValue("cameraX", this->gameView.getCenter().x);
-	sd.addValue("cameraY", this->gameView.getCenter().y);
-	sd.addValue("isPaused", this->isPaused);
+	sd.addSizeT(TIME, this->time);
+	sd.addFloat(CAMERA_X, this->gameView.getCenter().x);
+	sd.addFloat(CAMERA_Y, this->gameView.getCenter().y);
+	sd.addBool(IS_PAUSED, this->isPaused);
 	// Add technology save data
 	sd.addData(TechTree::getSaveData());
 	return sd;

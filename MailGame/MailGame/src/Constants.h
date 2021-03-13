@@ -35,4 +35,13 @@ namespace SaveKeys {
 	const sdkey_t HAS_WEST = "hasWest";
 	const sdkey_t AIRPLANE_ROAD = "AirplaneRoad";
 	const sdkey_t IS_RUNWAY = "isRunway";
+	const sdkey_t TECH_TREE = "TechTree";
+	const sdkey_t GAME = "Game";
+	const sdkey_t ENTITIES = "Entities";
+	const sdkey_t CAMERA_X = "cameraX";
+	const sdkey_t CAMERA_Y = "cameraY";
+	const sdkey_t ID = "id";
+	const sdkey_t TIME = "time";
+	const sdkey_t MONEY = "money";
+	const sdkey_t IS_PAUSED = "isPaused";
 }
