@@ -4,11 +4,11 @@
 struct AirplaneRoad : public Road {
 	bool isRunway;
 	AirplaneRoad() : Road(), isRunway(false) {};
-	AirplaneRoad(SaveData data) : Road(data), isRunway(data.getValue("isRunway") == "1") {}
+	AirplaneRoad(SaveData data) : Road(data), isRunway(data.getBool(SaveKeys::IS_RUNWAY)) {}
 	SaveData getSaveData() {
-		SaveData d("AirplaneRoad");
-		d.addValuesFrom(Road::getSaveData());
-		d.addValue("isRunway", isRunway);
+		using namespace SaveKeys;
+		SaveData d(AIRPLANE_ROAD, Road::getSaveData());
+		d.addValue(IS_RUNWAY, isRunway);
 		return d;
 	}
 };

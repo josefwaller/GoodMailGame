@@ -17,7 +17,7 @@ public:
 
 	IsoRotation() { rotation = 0; }
 	IsoRotation(unsigned int initRot) { rotation = initRot % 4; }
-	int getRotation() { return rotation; }
+	unsigned int getRotation() { return rotation; }
 	// Rotate 90 degrees clockwise
 	IsoRotation operator+(unsigned int other) {
 		return IsoRotation((rotation + other) % 4);

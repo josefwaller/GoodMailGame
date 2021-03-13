@@ -1,5 +1,6 @@
 #pragma once
 #include "System/SaveData/SaveData.h"
+#include "Constants.h"
 
 // The road on a tile
 struct Road {
@@ -10,18 +11,20 @@ struct Road {
 	bool hasWest;
 	Road() : hasNorth(false), hasEast(false), hasSouth(false), hasWest(false) {}
 	Road(SaveData rd) {
-		hasNorth = (rd.getValue("hasNorth") == "1");
-		hasSouth = (rd.getValue("hasSouth") == "1");
-		hasEast = (rd.getValue("hasEast") == "1");
-		hasWest = (rd.getValue("hasWest") == "1");
+		using namespace SaveKeys;
+		hasNorth = rd.getBool(HAS_NORTH);
+		hasEast = rd.getBool(HAS_EAST);
+		hasSouth = rd.getBool(HAS_SOUTH);
+		hasWest = rd.getBool(HAS_WEST);
 	}
 
 	SaveData getSaveData() {
-		SaveData rd("Road");
-		rd.addValue("hasNorth", std::to_string(hasNorth));
-		rd.addValue("hasEast", std::to_string(hasEast));
-		rd.addValue("hasSouth", std::to_string(hasSouth));
-		rd.addValue("hasWest", std::to_string(hasWest));
+		using namespace SaveKeys;
+		SaveData rd(ROAD);
+		rd.addBool(HAS_NORTH, hasNorth);
+		rd.addBool(HAS_EAST, hasEast);
+		rd.addBool(HAS_SOUTH, hasSouth);
+		rd.addBool(HAS_WEST, hasWest);
 		return rd;
 	}
 };

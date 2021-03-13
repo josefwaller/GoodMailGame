@@ -1,15 +1,16 @@
 #include "SaveData.h"
+#include "System/IsoRotation/IsoRotation.h"
 #include <rapidxml_print.hpp>
 #include <stdexcept>
 #include <sstream>
 
+#define ADD_VALUE(a, b) this->values.insert({ a, std::to_string(b)});
 SaveData::SaveData(std::string name) : name(name) {}
+
+SaveData::SaveData(std::string name, SaveData data) : name(name), values(data.values) {};
 
 void SaveData::addData(SaveData data) {
 	this->datas.push_back(data);
-}
-void SaveData::addValue(std::string name, std::string value) {
-	this->values[name] = value;
 }
 void SaveData::addValue(std::string name, int value) {
 	addValue(name, std::to_string(value));
@@ -46,6 +47,39 @@ void SaveData::addValuesFrom(SaveData other) {
 		this->addValue(key, other.getValue(key));
 	}
 }
+
+void SaveData::addString(sdkey_t key, std::string value) {
+	this->values.insert({ key, value });
+}
+void SaveData::addFloat(sdkey_t key, float value) {
+	ADD_VALUE(key, value);
+}
+void SaveData::addSizeT(sdkey_t key, size_t value) {
+	ADD_VALUE(key, value);
+}
+void SaveData::addBool(sdkey_t key, bool value) {
+	ADD_VALUE(key, value);
+}
+void SaveData::addIsoRotation(sdkey_t key, IsoRotation rot) {
+	ADD_VALUE(key, rot.getRotation());
+}
+
+std::string SaveData::getString(sdkey_t key) {
+	return this->values.at(key);
+}
+float SaveData::getFloat(sdkey_t key) {
+	return std::stof(this->values.at(key));
+}
+size_t SaveData::getSizeT(sdkey_t key) {
+	return (size_t)std::stoull(this->values.at(key));
+}
+bool SaveData::getBool(sdkey_t key) {
+	return this->values.at(key) == "1";
+}
+IsoRotation SaveData::getIsoRotation(sdkey_t key) {
+	return IsoRotation((unsigned int)std::stoul(this->values.at(key)));
+}
+
 std::vector<std::string> SaveData::getValueNames() {
 	std::vector<std::string> toReturn;
 	for (auto it = this->values.begin(); it != this->values.end(); it++) {
@@ -118,3 +152,5 @@ std::string SaveData::getAsString() {
 }
 
 std::string SaveData::getName() { return this->name; }
+
+#undef ADD_VALUE;

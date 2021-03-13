@@ -387,20 +387,21 @@ void GameMap::addRoadInDirection(size_t x, size_t y, IsoRotation rot) {
 	}
 }
 SaveData GameMap::getSaveData() {
-	SaveData sd("GameMap");
+	using namespace SaveKeys;
+	SaveData sd(GAMEMAP);
 	for (size_t x = 0; x < this->tiles.size(); x++) {
 		for (size_t y = 0; y < this->tiles[x].size(); y++) {
 			Tile t = this->tiles[x][y];
-			SaveData td("Tile");
+			SaveData td(TILE);
 			// Add position
-			td.addValue("x", std::to_string(x));
-			td.addValue("y", std::to_string(y));
+			td.addSizeT(X, x);
+			td.addSizeT(Y, y);
 			// Add postal code
-			td.addValue("pc", std::to_string(t.postalCode));
+			td.addSizeT(POSTAL_CODE, t.postalCode);
 			// Add type
-			td.addValue("type", std::to_string((size_t)t.type));
+			td.addSizeT(TYPE, (size_t)t.type);
 			if (t.building.lock()) {
-				td.addValue("building", t.building.lock()->getId());
+				td.addSizeT(BUILDING, t.building.lock()->getId());
 			}
 			// Add data for road
 			if (t.road.has_value()) {
@@ -410,10 +411,10 @@ SaveData GameMap::getSaveData() {
 			// Add data for railway
 			if (t.railway.has_value()) {
 				Railway rw = t.railway.value();
-				SaveData rwd("Railway");
-				rwd.addValue("to", std::to_string(rw.to.getRotation()));
-				rwd.addValue("from", std::to_string(rw.from.getRotation()));
-				rwd.addValue("isStation", std::to_string(rw.isStation));
+				SaveData rwd(RAILWAY);
+				rwd.addIsoRotation(TO, rw.to);
+				rwd.addIsoRotation(FROM, rw.from);
+				rwd.addBool(IS_STATION, rw.isStation);
 				td.addData(rwd);
 			}
 			// Add data for airplane road
@@ -427,16 +428,15 @@ SaveData GameMap::getSaveData() {
 	return sd;
 }
 void GameMap::loadFromSaveData(SaveData data) {
+	using namespace SaveKeys;
 	// Go through every tile data
 	for (SaveData d : data.getDatas()) {
-		size_t x = std::stoull(d.getValue("x"));
-		size_t y = std::stoull(d.getValue("y"));
-		this->tiles[x][y].postalCode = std::stoll(d.getValue("pc"));
-		this->tiles[x][y].type = (TileType)(std::stoull(d.getValue("type")));
-		if (x == 13 && y == 10)
-			auto x = 0;
-		if (d.hasValue("building")) {
-			this->tiles[x][y].building = this->game->getEntityById(std::stoull(d.getValue("building")));
+		size_t x = d.getSizeT(X);
+		size_t y = d.getSizeT(Y);
+		this->tiles[x][y].postalCode = d.getSizeT(POSTAL_CODE);
+		this->tiles[x][y].type = (TileType)(d.getSizeT(TYPE));
+		if (d.hasValue(BUILDING)) {
+			this->tiles[x][y].building = this->game->getEntityById(d.getSizeT("building"));
 		}
 		// Go through the save datas in the tile
 		// Will be for a road/railway
@@ -444,10 +444,10 @@ void GameMap::loadFromSaveData(SaveData data) {
 			if (rd.getName() == "Road") {
 				this->tiles[x][y].road = Road(rd);
 			}
-			else if (rd.getName() == "Railway") {
-				IsoRotation from = IsoRotation(std::stoi(rd.getValue("from")));
-				IsoRotation to = IsoRotation(std::stoi(rd.getValue("to")));
-				bool isStation = rd.getValue("isStation") == "1";
+			else if (rd.getName() == RAILWAY) {
+				IsoRotation from = rd.getIsoRotation(FROM);
+				IsoRotation to = rd.getIsoRotation(TO);
+				bool isStation = rd.getBool(IS_STATION);
 				if (isStation) {
 					this->addRailwayStation(x, y, to);
 				}
