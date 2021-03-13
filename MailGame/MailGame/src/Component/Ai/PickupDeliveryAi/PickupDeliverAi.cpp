@@ -180,7 +180,7 @@ void PickupDeliveryAi::pickupMailFromOffice() {
 }
 
 std::optional<SaveData> PickupDeliveryAi::getSaveData() {
-	SaveData sd(componentTypeToStr(ComponentType::Controller));
+	SaveData sd(componentTypeToStr(ComponentType::Ai));
 	if (this->office.lock()) {
 		sd.addSizeT(SaveKeys::OFFICE_ID, this->office.lock()->getId());
 	}

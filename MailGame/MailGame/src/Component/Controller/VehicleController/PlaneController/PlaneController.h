@@ -15,6 +15,9 @@ public:
 protected:
 	virtual void update(float delta) override;
 	virtual void onArriveAtDest(gtime_t arriveTime) override;
+
+	virtual std::optional<SaveData> getSaveData() override;
+	virtual void fromSaveData(SaveData data) override;
 private:
 	// Utility struct
 	struct Runway {

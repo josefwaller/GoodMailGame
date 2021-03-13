@@ -13,7 +13,8 @@ F(Controller) \
 F(ClickBox) \
 F(MailContainer) \
 F(Pathfinder) \
-F(TransitStop)
+F(TransitStop) \
+F(Ai)
 
 #define F(x) x,
 

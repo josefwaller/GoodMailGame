@@ -28,7 +28,8 @@ public:
 	gtime_t waitTime;
 	VehicleControllerStop(std::weak_ptr<Entity> target, gtime_t waitTime = 0)
 		: target(target), waitTime(waitTime), expectedTime(0), distance(0) {}
-	VehicleControllerStop(sf::Vector2i target) : target(target), waitTime(0), expectedTime(0), distance(0) {}
+	VehicleControllerStop(sf::Vector2i target, gtime_t waitTime = 0) : target(target), waitTime(waitTime), expectedTime(0), distance(0) {}
+	VehicleControllerStop() {}
 
 	bool hasEntityTarget();
 	bool hasTileTarget();

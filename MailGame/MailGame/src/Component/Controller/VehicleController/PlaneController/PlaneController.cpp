@@ -5,6 +5,7 @@
 #include "Component/Ai/Ai.h"
 #include "Game/Game.h"
 #include "Component/Transform/Transform.h"
+#include "Component/ComponentType/ComponentType.h"
 #include <queue>
 
 // This will eventually be gone
@@ -345,4 +346,33 @@ std::vector<SpeedPoint> PlaneController::getRunwayDepartPoints(Runway r) {
 	auto s = getRunwayArrivePoints(r);
 	std::reverse(s.begin(), s.end());
 	return s;
+}
+
+std::optional<SaveData> PlaneController::getSaveData() {
+	using namespace SaveKeys;
+	SaveData data(componentTypeToStr(ComponentType::Controller));
+	data.addVehicleControllerStopVector(STOPS, this->stops);
+	data.addSizeT(STOP_INDEX, this->stopIndex);
+	data.addSizeT(STATE, (size_t)this->state);
+	data.addVector2iVector(LOCKED_TILES, this->lockedTiles);
+	SaveData runwayData(RUNWAY);
+	runwayData.addVector2i(START, this->runway.start);
+	runwayData.addVector2i(END, this->runway.end);
+	data.addData(runwayData);
+	data.addData(VehicleController::getSaveData().value());
+	return data;
+}
+
+void PlaneController::fromSaveData(SaveData data) {
+	using namespace SaveKeys;
+	VehicleController::fromSaveData(data.getData(VEHICLE_CONTROLLER));
+	this->stops = data.getVehicleControllerStopVector(STOPS, this->getEntity()->getGame());
+	this->stopIndex = data.getSizeT(STOP_INDEX);
+	this->state = (State)data.getSizeT(STATE);
+	this->lockedTiles = data.getVector2iVector(LOCKED_TILES);
+	SaveData runwayData = data.getData(RUNWAY);
+	this->runway = {
+		runwayData.getVector2i(START),
+		runwayData.getVector2i(END)
+	};
 }

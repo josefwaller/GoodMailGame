@@ -1,5 +1,9 @@
 #include "SaveData.h"
 #include "System/IsoRotation/IsoRotation.h"
+#include "Routes/RoutePoint.h"
+#include "Entity/Entity.h"
+#include "Component/Controller/VehicleController/VehicleController.h"
+#include "Game/Game.h"
 #include <rapidxml_print.hpp>
 #include <stdexcept>
 #include <sstream>
@@ -94,6 +98,77 @@ void SaveData::addVector3f(sdkey_t key, sf::Vector3f value) {
 	data.addFloat(Z, value.z);
 	this->addData(data);
 }
+void SaveData::addRoutePointVector(sdkey_t key, std::vector<RoutePoint> points) {
+	SaveData data(key);
+	data.addSizeT(SaveKeys::SIZE, points.size());
+	for (size_t i = 0; i < points.size(); i++) {
+		SaveData rD = routePointToSaveData(points.at(i));
+		rD.addSizeT(SaveKeys::INDEX, i);
+		data.addData(rD);
+	}
+	this->addData(data);
+}
+void SaveData::addVector2iVector(sdkey_t key, std::vector<sf::Vector2i> value) {
+	using namespace SaveKeys;
+	SaveData data(key);
+	data.addSizeT(SaveKeys::SIZE, value.size());
+	for (size_t i = 0; i < value.size(); i++) {
+		SaveData d(VECTOR_2I);;
+		d.addSizeT(INDEX, i);
+		d.addInt(X, value[i].x);
+		d.addInt(Y, value[i].y);
+		data.addData(d);
+	}
+	this->addData(data);
+}
+
+void SaveData::addVehicleControllerStopVector(sdkey_t key, std::vector<VehicleControllerStop> values) {
+	using namespace SaveKeys;
+	SaveData data(key);
+	data.addSizeT(SIZE, values.size());
+	for (size_t i = 0; i < values.size(); i++) {
+		VehicleControllerStop s = values[i];
+		SaveData d(VEHICLE_CONTROLLER_STOP);
+		d.addSizeT(INDEX, i);
+		d.addGTimeT(EXPECTED_TIME, s.expectedTime);
+		d.addFloat(DISTANCE, s.distance);
+		d.addGTimeT(WAIT_TIME, s.waitTime);
+		if (s.hasEntityTarget()) {
+			d.addBool(HAS_ENTITY, true);
+			if (s.getEntityTarget().lock()) {
+				d.addSizeT(ENTITY_ID, s.getEntityTarget().lock()->getId());
+			}
+		}
+		else {
+			d.addBool(HAS_ENTITY, false);
+			d.addVector2i(TILE, s.getTileTarget());
+		}
+		data.addData(d);
+	}
+	this->addData(data);
+}
+
+std::vector<VehicleControllerStop> SaveData::getVehicleControllerStopVector(sdkey_t key, Game* g) {
+	using namespace SaveKeys;
+	SaveData data = this->getData(key);
+	std::vector<VehicleControllerStop> stops;
+	stops.resize(data.getSizeT(SIZE));
+	for (SaveData d : data.getDatas()) {
+		size_t expectedTime = d.getGTimeT(EXPECTED_TIME);
+		float distance = d.getFloat(DISTANCE);
+		VehicleControllerStop s;
+		if (d.getBool(HAS_ENTITY)) {
+			s = VehicleControllerStop(g->getEntityById(d.getSizeT(ENTITY_ID)), d.getGTimeT(WAIT_TIME));
+		}
+		else {
+			s = VehicleControllerStop(d.getVector2i(TILE), d.getGTimeT(WAIT_TIME));
+		}
+		s.expectedTime = expectedTime;
+		s.distance = distance;
+		stops[d.getSizeT(INDEX)] = s;
+	}
+	return stops;
+}
 
 std::string SaveData::getString(sdkey_t key) {
 	return this->values.at(key);
@@ -127,6 +202,26 @@ gtime_t SaveData::getGTimeT(sdkey_t key) {
 }
 hour_t SaveData::getHourT(sdkey_t key) {
 	return (hour_t)getSizeT(key);
+}
+std::vector<RoutePoint> SaveData::getRoutePointVector(sdkey_t key) {
+	SaveData data = this->getData(key);
+	std::vector<RoutePoint> points;
+	points.resize(data.getSizeT(SaveKeys::SIZE));
+	for (SaveData rd : data.getDatas()) {
+		points[rd.getSizeT(SaveKeys::INDEX)] = saveDataToRoutePoint(rd);
+	}
+	return points;
+}
+
+std::vector<sf::Vector2i> SaveData::getVector2iVector(sdkey_t key) {
+	using namespace SaveKeys;
+	SaveData data = this->getData(key);
+	std::vector<sf::Vector2i> values;
+	values.resize(data.getSizeT(SIZE));
+	for (SaveData d : data.getDatas()) {
+		values[d.getSizeT(INDEX)] = sf::Vector2i(d.getInt(X), d.getInt(Y));
+	}
+	return values;
 }
 
 std::vector<std::string> SaveData::getValueNames() {

@@ -2,6 +2,7 @@
 #include "Entity/Entity.h"
 #include "Component/Ai/Ai.h"
 #include "Component/Transform/Transform.h"
+#include "Component/ComponentType/ComponentType.h"
 #include "Game/Game.h"
 #include "System/Utils/Utils.h"
 #include "Component/Pathfinder/Pathfinder.h"
@@ -58,4 +59,20 @@ std::vector<sf::Vector2i> CarController::getDockTiles(std::shared_ptr<Entity> e)
 	case EntityTag::Warehouse: return this->getConnectedDocks(e, EntityTag::CarDock);
 	default: return { Utils::toVector2i(e->transform->getPosition()) };
 	}
+}
+
+std::optional<SaveData> CarController::getSaveData() {
+	using namespace SaveKeys;
+	SaveData data(componentTypeToStr(ComponentType::Controller));
+	data.addVehicleControllerStopVector(STOPS, this->stops);
+	data.addSizeT(STOP_INDEX, this->stopIndex);
+	data.addData(VehicleController::getSaveData().value());
+	return data;
+}
+
+void CarController::fromSaveData(SaveData data) {
+	using namespace SaveKeys;
+	VehicleController::fromSaveData(data.getData(VEHICLE_CONTROLLER));
+	this->stops = data.getVehicleControllerStopVector(STOPS, this->getEntity()->getGame());
+	this->stopIndex = data.getSizeT(STOP_INDEX);
 }

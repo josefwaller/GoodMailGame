@@ -13,6 +13,9 @@ public:
 protected:
 	virtual void onArriveAtPoint(size_t pointIndex, gtime_t arriveTime) override;
 	virtual void onArriveAtDest(gtime_t arriveTime) override;
+
+	virtual std::optional<SaveData> getSaveData() override;
+	virtual void fromSaveData(SaveData data) override;
 private:
 	// The stops the train is going over
 	std::vector<VehicleControllerStop> stops;

@@ -109,7 +109,7 @@ void TransitAi::onArriveAtStop(size_t stopIndex) {
 }
 
 std::optional<SaveData> TransitAi::getSaveData() {
-	SaveData sd(componentTypeToStr(ComponentType::Controller));
+	SaveData sd(componentTypeToStr(ComponentType::Ai));
 	sd.addData(this->route.getSaveData());
 	if (depot.lock())
 		sd.addValue(SaveKeys::DEPOT_ID, depot.lock()->getId());

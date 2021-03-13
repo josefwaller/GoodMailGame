@@ -9,6 +9,9 @@
 #include <SFML/System/Vector3.hpp>
 
 class IsoRotation;
+class RoutePoint;
+class VehicleControllerStop;
+class Game;
 
 class SaveData {
 public:
@@ -53,6 +56,9 @@ public:
 	void addVector3f(sdkey_t key, sf::Vector3f value);
 	void addHourT(sdkey_t key, hour_t value);
 	void addGTimeT(sdkey_t key, gtime_t value);
+	void addRoutePointVector(sdkey_t key, std::vector<RoutePoint> value);
+	void addVehicleControllerStopVector(sdkey_t key, std::vector<VehicleControllerStop> value);
+	void addVector2iVector(sdkey_t key, std::vector<sf::Vector2i> value);
 
 	std::string getString(sdkey_t);
 	size_t getSizeT(sdkey_t);
@@ -64,6 +70,10 @@ public:
 	sf::Vector3f getVector3f(sdkey_t);
 	hour_t getHourT(sdkey_t);
 	gtime_t getGTimeT(sdkey_t);
+	std::vector<RoutePoint> getRoutePointVector(sdkey_t);
+	// This method will eventually be removed
+	std::vector<VehicleControllerStop> getVehicleControllerStopVector(sdkey_t, Game*);
+	std::vector<sf::Vector2i> getVector2iVector(sdkey_t);
 
 	// check if a value exists
 	bool hasValue(sdkey_t name);

@@ -79,6 +79,7 @@ if (this->var) { \
 	ADD_DATA(mailContainer);
 	ADD_DATA(transitStop);
 	ADD_DATA(pathfinder);
+	ADD_DATA(ai);
 
 #undef ADD_DATA
 	data.addSizeT(SaveKeys::ID, this->id);
@@ -100,6 +101,7 @@ void Entity::loadComponentsFromSaveData(SaveData data) {
 				LOAD_COMPONENT(Controller, controller)
 				LOAD_COMPONENT(MailContainer, mailContainer)
 				LOAD_COMPONENT(TransitStop, transitStop)
+				LOAD_COMPONENT(Ai, ai)
 		default: break; // Todo: Do something here
 		}
 	}

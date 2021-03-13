@@ -3,6 +3,7 @@
 #include "Component/Ai/Ai.h"
 #include "Component/Pathfinder/Pathfinder.h"
 #include "Component/Transform/Transform.h"
+#include "Component/ComponentType/ComponentType.h"
 #include "Game/Game.h"
 #include "System/Utils/Utils.h"
 #include "GameMap/GameMap.h"
@@ -137,4 +138,26 @@ std::vector<SpeedPoint> TrainController::getDockPath(std::shared_ptr<Entity> e) 
 		throw std::runtime_error("No path mean crash right now");
 	}
 	return { e->transitStop->getTrainStop().tile };
+}
+
+std::optional<SaveData> TrainController::getSaveData() {
+	using namespace SaveKeys;
+	SaveData data(componentTypeToStr(ComponentType::Controller));
+	data.addVehicleControllerStopVector(STOPS, this->stops);
+	data.addSizeT(STOP_INDEX, this->stopIndex);
+	data.addBool(IS_BLOCKED, this->isBlocked);
+	data.addVector2iVector(LOCKED_TILES, this->lockedTiles);
+	data.addSizeT(STATE, (size_t)this->state);
+	data.addData(VehicleController::getSaveData().value());
+	return data;
+}
+
+void TrainController::fromSaveData(SaveData data) {
+	using namespace SaveKeys;
+	VehicleController::fromSaveData(data.getData(VEHICLE_CONTROLLER));
+	this->stops = data.getVehicleControllerStopVector(STOPS, this->getEntity()->getGame());
+	this->stopIndex = data.getSizeT(STOP_INDEX);
+	this->isBlocked = data.getBool(IS_BLOCKED);
+	this->lockedTiles = data.getVector2iVector(LOCKED_TILES);
+	this->state = (State)data.getSizeT(STATE);
 }

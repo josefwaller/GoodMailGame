@@ -120,34 +120,39 @@ float VehicleController::getSpeed() {
 	return VehicleModelInfo::getModelInfo(this->model).getSpeed();
 }
 void VehicleController::fromSaveData(SaveData data) {
-	this->departTime = std::stoull(data.getValue("departTime"));
+	using namespace SaveKeys;
+	this->departTime = data.getGTimeT(DEPART_TIME);
 	// Update the expected time for every stop up to stopIndex
 	// Since we need that information to move accordingly
-	this->pointIndex = std::stoull(data.getValue("pointIndex"));
+	this->pointIndex = data.getSizeT(POINT_INDEX);
 	// Load cargo cars
-	size_t numCargoCars = std::stoull(data.getValue("numCargoCars"));
+	size_t numCargoCars = data.getSizeT(NUM_CARGO_CARS);
 	this->cargoCars = std::vector<std::weak_ptr<Entity>>(numCargoCars);
 	for (SaveData d : data.getDatas()) {
-		if (d.getName() == "CargoCar") {
-			size_t index = std::stoull(d.getValue("index"));
-			size_t id = std::stoull(d.getValue("id"));
-			this->cargoCars[index] = this->getEntity()->getGame()->getEntityById(id);
+		if (d.getName() == CARGO_CAR) {
+			this->cargoCars[d.getSizeT(INDEX)] = this->getEntity()->getGame()->getEntityById(d.getSizeT(ID));
 		}
 	}
+	this->points = data.getRoutePointVector(POINTS);
+	this->traversedPoints = data.getRoutePointVector(TRAVERSED_POINTS);
 }
 std::optional<SaveData> VehicleController::getSaveData() {
-	SaveData data("VehicleController");
-	data.addValue("pointIndex", pointIndex);
-	data.addValue("departTime", departTime);
-	data.addValue("numCargoCars", this->cargoCars.size());
+	using namespace SaveKeys;
+	SaveData data(VEHICLE_CONTROLLER);
+	data.addSizeT(POINT_INDEX, pointIndex);
+	data.addGTimeT(DEPART_TIME, departTime);
+	data.addSizeT(NUM_CARGO_CARS, this->cargoCars.size());
 	for (auto it = this->cargoCars.begin(); it != this->cargoCars.end(); it++) {
 		if (it->lock()) {
-			SaveData cargoCarData("CargoCar");
-			cargoCarData.addValue("index", it - this->cargoCars.begin());
-			cargoCarData.addValue("id", it->lock()->getId());
+			SaveData cargoCarData(CARGO_CAR);
+			cargoCarData.addSizeT(INDEX, it - this->cargoCars.begin());
+			cargoCarData.addSizeT(ID, it->lock()->getId());
 			data.addData(cargoCarData);
 		}
 	}
+	// Add points
+	data.addRoutePointVector(POINTS, this->points);
+	data.addRoutePointVector(TRAVERSED_POINTS, this->traversedPoints);
 	return { data };
 }
 
@@ -173,7 +178,8 @@ void VehicleController::onDelete() {
 }
 void VehicleController::deleteCars() {
 	for (auto c : this->cargoCars) {
-		this->getEntity()->getGame()->removeEntity(c);
+		if (c.lock())
+			this->getEntity()->getGame()->removeEntity(c);
 	}
 }
 

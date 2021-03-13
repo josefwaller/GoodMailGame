@@ -5,8 +5,8 @@ RoutePoint saveDataToRoutePoint(SaveData d) {
 	using namespace SaveKeys;
 	return RoutePoint(d.getVector3f(POSITION),
 		d.getGTimeT(EXPECTED_TIME),
-		0.0f,
-		0.0f
+		d.getFloat(SPEED),
+		d.getFloat(ACCELERATION)
 	);
 }
 SaveData routePointToSaveData(RoutePoint p) {
@@ -14,5 +14,7 @@ SaveData routePointToSaveData(RoutePoint p) {
 	SaveData d(ROUTE_POINT);
 	d.addVector3f(POSITION, p.pos);
 	d.addGTimeT(EXPECTED_TIME, p.expectedTime);
+	d.addFloat(SPEED, p.speedAtPoint);
+	d.addFloat(ACCELERATION, p.accelerationAtPoint);
 	return d;
 }

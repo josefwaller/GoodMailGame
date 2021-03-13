@@ -77,4 +77,24 @@ namespace SaveKeys {
 	const sdkey_t START = "start";
 	const sdkey_t END = "end";
 	const sdkey_t DEPOT = "depot";
+	const sdkey_t POINT_INDEX = "pointIndex";
+	const sdkey_t CARGO_CAR = "cargoCar";
+	const sdkey_t POINTS = "points";
+	const sdkey_t TRAVERSED_POINTS = "traversedPoints";
+	const sdkey_t STOPS = "stops";
+	const sdkey_t STOP_INDEX = "stopIndex";
+	const sdkey_t STATE = "state";
+	const sdkey_t LOCKED_TILES = "LOCKED_TILES";
+	const sdkey_t RUNWAY = "Runway";
+	const sdkey_t IS_BLOCKED = "isBlocked";
+	const sdkey_t SIZE = "size";
+	const sdkey_t VECTOR_2I = "Vector2i";
+	const sdkey_t VEHICLE_CONTROLLER = "VehicleController";
+	const sdkey_t VEHICLE_CONTROLLER_STOP = "VehicleControllerStop";
+	const sdkey_t DISTANCE = "distance";
+	const sdkey_t WAIT_TIME = "waitTime";
+	const sdkey_t HAS_ENTITY = "hasEntity";
+	const sdkey_t ENTITY_ID = "entityId";
+	const sdkey_t SPEED = "speed";
+	const sdkey_t ACCELERATION = "acceleration";
 }

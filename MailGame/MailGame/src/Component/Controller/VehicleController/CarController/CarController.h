@@ -8,6 +8,8 @@ public:
 protected:
 	virtual void onArriveAtPoint(size_t pointIndex, gtime_t arriveTime) override;
 	virtual void onArriveAtDest(gtime_t arriveTime) override;
+	virtual std::optional<SaveData> getSaveData() override;
+	virtual void fromSaveData(SaveData) override;
 private:
 	std::vector<VehicleControllerStop> stops;
 	size_t stopIndex;

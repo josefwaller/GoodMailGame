@@ -19,6 +19,7 @@ struct RoutePoint {
 	float speedAtPoint;
 	float accelerationAtPoint;
 	RoutePoint(sf::Vector3f pos, gtime_t time, float s, float a, float distance = 0.0f);
+	RoutePoint() {}
 };
 
 SaveData routePointToSaveData(RoutePoint p);
