@@ -10,26 +10,26 @@
 #include <stdio.h>
 #include "System/SaveData/SaveData.h"
 
-App::App() : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Hello World"), lastTime()
+App::App() : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Hello World"), lastTime(), game(this, &this->window), menu(this), inMainMenu(true)
 {
 	// Initialize the window
 }
 
+void App::generateNewGame() {
+	game.generateNew();
+	this->inMainMenu = false;
+}
+
+void App::loadSaveFile(std::string savePath) {
+	// Load test save data
+	std::ifstream fs(savePath);
+	std::string data((std::istreambuf_iterator<char>(fs)), (std::istreambuf_iterator<char>()));
+	SaveData sd = SaveData::fromFileContents(data);
+	game.loadFromSaveData(sd);
+	this->inMainMenu = false;
+}
+
 void App::run() {
-	// Create game
-	Game game(this, &this->window);
-	// Just change this flag to either load the save file or generate a new map
-	const bool GENERATE_NEW_GAME = false;
-	if (GENERATE_NEW_GAME) {
-		game.generateNew();
-	}
-	else {
-		// Load test save data
-		std::ifstream fs("savedata/test.txt");
-		std::string data((std::istreambuf_iterator<char>(fs)), (std::istreambuf_iterator<char>()));
-		SaveData sd = SaveData::fromFileContents(data);
-		game.loadFromSaveData(sd);
-	}
 	sf::Clock deltaClock;
 	ImGui::SFML::Init(window);
 
@@ -43,7 +43,8 @@ void App::run() {
 				break;
 			}
 			else {
-				game.onEvent(e);
+				if (!this->inMainMenu)
+					this->game.onEvent(e);
 			}
 		}
 
@@ -55,11 +56,17 @@ void App::run() {
 		ImGui::SFML::Update(window, nowTime);
 
 		// Update game
-		game.update(delta);
+		if (this->inMainMenu) {
+			this->menu.update();
+		}
+		else {
+			this->game.update(delta);
+		}
 
 		// Display game
 		window.clear();
-		game.render(&window);
+		if (!this->inMainMenu)
+			this->game.render(&window);
 		ImGui::SFML::Render(window);
 		window.display();
 	}

@@ -167,6 +167,7 @@
     <ClCompile Include="src\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Mail\Mail.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\MainMenu\MainMenu.cpp" />
     <ClCompile Include="src\PostalCodeDatabase\PostalCodeDatabase.cpp" />
     <ClCompile Include="src\ResourceLoader\ResourceLoader.cpp" />
     <ClCompile Include="src\Routes\RoutePoint.cpp" />
@@ -232,6 +233,7 @@
     <ClInclude Include="src\GameMap\Tile\Road\Road.h" />
     <ClInclude Include="src\Game\Game.h" />
     <ClInclude Include="src\Mail\Mail.h" />
+    <ClInclude Include="src\MainMenu\MainMenu.h" />
     <ClInclude Include="src\PostalCodeDatabase\PostalCodeDatabase.h" />
     <ClInclude Include="src\ResourceLoader\ResourceLoader.h" />
     <ClInclude Include="src\Routes\Route.h" />

@@ -148,7 +148,7 @@ void UiHandler::update() {
 		SaveData toSave = this->game->getSaveData();
 		std::string toWrite = toSave.getAsString();
 		std::ofstream file;
-		file.open("savedata/test.txt");
+		file.open("savedata/test.xml");
 		file << toWrite;
 		file.close();
 	}
