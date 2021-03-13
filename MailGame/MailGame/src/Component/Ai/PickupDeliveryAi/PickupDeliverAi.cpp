@@ -182,14 +182,14 @@ void PickupDeliveryAi::pickupMailFromOffice() {
 std::optional<SaveData> PickupDeliveryAi::getSaveData() {
 	SaveData sd(componentTypeToStr(ComponentType::Controller));
 	if (this->office.lock()) {
-		sd.addValue("officeId", this->office.lock()->getId());
+		sd.addSizeT(SaveKeys::OFFICE_ID, this->office.lock()->getId());
 	}
 	sd.addData(this->route.getSaveData());
 	return sd;
 }
 void PickupDeliveryAi::fromSaveData(SaveData data) {
-	if (data.hasValue("officeId")) {
-		this->office = this->getEntity()->getGame()->getEntityById(std::stoull(data.getValue("officeId")));
+	if (data.hasValue(SaveKeys::OFFICE_ID)) {
+		this->office = this->getEntity()->getGame()->getEntityById(data.getSizeT(SaveKeys::OFFICE_ID));
 	}
 	this->route = MailTruckRoute(data.getDatas()[0]);
 }

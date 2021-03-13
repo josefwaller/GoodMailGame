@@ -53,7 +53,7 @@ namespace SaveKeys {
 	const sdkey_t MAIL_TRUCK_ROUTE_STOP = "MailTruckRouteStop";
 	const sdkey_t NUM_STOPS = "numStops";
 	const sdkey_t HAS_TARGET = "hasTarget";
-	const sdkey_t TARGET = "target";
+	const sdkey_t TARGET_ID = "targetId";
 	const sdkey_t ROUTE = "route";
 	const sdkey_t VEHICLE_MODEL = "vehicleModel";
 	const sdkey_t CARGO_CAR_MODEL = "cargoCarModeL";
@@ -68,4 +68,13 @@ namespace SaveKeys {
 	const sdkey_t PICK_UP = "pickUp";
 	const sdkey_t DROP_OFF = "dropOff";
 	const sdkey_t IS_UNLOCKED = "isUnlocked";
+	const sdkey_t OFFICE_ID = "officeId";
+	const sdkey_t DEPOT_ID = "depotId";
+	const sdkey_t ROTATION = "rotation";
+	const sdkey_t CAR_STOP = "CarStop";
+	const sdkey_t TRAIN_STOP = "TrainStop";
+	const sdkey_t AIRPLANE_STOP = "AirplaneStop";
+	const sdkey_t START = "start";
+	const sdkey_t END = "end";
+	const sdkey_t DEPOT = "depot";
 }

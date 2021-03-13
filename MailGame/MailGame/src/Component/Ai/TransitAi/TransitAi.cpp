@@ -112,12 +112,12 @@ std::optional<SaveData> TransitAi::getSaveData() {
 	SaveData sd(componentTypeToStr(ComponentType::Controller));
 	sd.addData(this->route.getSaveData());
 	if (depot.lock())
-		sd.addValue("depotId", depot.lock()->getId());
+		sd.addValue(SaveKeys::DEPOT_ID, depot.lock()->getId());
 	return sd;
 }
 void TransitAi::fromSaveData(SaveData data) {
-	this->route = TransitRoute(data.getData("TransitRoute"), this->getEntity()->getGame());
-	if (data.hasValue("depotId")) {
-		this->depot = this->getEntity()->getGame()->getEntityById(std::stoull(data.getValue("depotId")));
+	this->route = TransitRoute(data.getData(SaveKeys::TRANSIT_ROUTE), this->getEntity()->getGame());
+	if (data.hasValue(SaveKeys::DEPOT_ID)) {
+		this->depot = this->getEntity()->getGame()->getEntityById(data.getSizeT(SaveKeys::DEPOT_ID));
 	}
 }

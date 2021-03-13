@@ -32,16 +32,14 @@ void Transform::setRotation(IsoRotation rot) {
 }
 
 std::optional<SaveData> Transform::getSaveData() {
+	using namespace SaveKeys;
 	SaveData d(componentTypeToStr(ComponentType::Transform));
-	d.addValue("x", std::to_string(this->position.x));
-	d.addValue("y", std::to_string(this->position.y));
-	d.addValue("z", std::to_string(this->position.z));
-	d.addValue("rot", std::to_string(this->rotation.getRotation()));
+	d.addVector3f(POSITION, this->position);
+	d.addIsoRotation(ROTATION, this->rotation);
 	return d;
 }
 void Transform::fromSaveData(SaveData data) {
-	this->position.x = std::stof(data.getValue("x"));
-	this->position.y = std::stof(data.getValue("y"));
-	this->position.z = std::stof(data.getValue("z"));
-	this->rotation = IsoRotation(std::stoi(data.getValue("rot")));
+	using namespace SaveKeys;
+	this->position = data.getVector3f(POSITION);
+	this->rotation = data.getIsoRotation(ROTATION);
 }

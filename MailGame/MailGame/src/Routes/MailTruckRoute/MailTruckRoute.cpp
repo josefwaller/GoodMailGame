@@ -29,7 +29,7 @@ SaveData mailTruckRouteStopToSaveData(MailTruckRouteStop stop) {
 	if (stop.target.has_value()) {
 		sf::Vector2i target = stop.target.value();
 		stopData.addBool(HAS_TARGET, true);
-		stopData.addVector2i(TARGET, target);
+		stopData.addVector2i(TARGET_ID, target);
 	}
 	else {
 		stopData.addValue(HAS_TARGET, false);
@@ -40,7 +40,7 @@ MailTruckRouteStop saveDataToMailTruckRouteStop(SaveData data) {
 	using namespace SaveKeys;
 	MailTruckRouteStop stop;
 	if (data.getBool(HAS_TARGET)) {
-		stop.target = data.getVector2i(TARGET);
+		stop.target = data.getVector2i(TARGET_ID);
 	}
 	return stop;
 }

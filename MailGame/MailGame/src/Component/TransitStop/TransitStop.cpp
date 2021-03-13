@@ -97,81 +97,54 @@ std::vector<SpeedPoint> TransitStop::getDepartingTransitPath(std::shared_ptr<Ent
 }
 
 std::optional<SaveData> TransitStop::getSaveData() {
+	using namespace SaveKeys;
 	SaveData data(componentTypeToStr(ComponentType::TransitStop));
 	if (carStop.has_value()) {
-		SaveData carData("CarStop");
-		carData.addValue("posX", carStop.value().tile.x);
-		carData.addValue("posY", carStop.value().tile.y);
-		carData.addValue("posZ", carStop.value().tile.z);
+		SaveData carData(CAR_STOP);
+		carData.addVector3f(POSITION, carStop.value().tile);
 		if (carStop.value().dir.has_value())
-			carData.addValue("dir", carStop.value().dir.value().getRotation());
+			carData.addIsoRotation(ROTATION, carStop.value().dir.value());
 		data.addData(carData);
 	}
 	if (trainStop.has_value()) {
-		SaveData trainData("TrainStop");
-		trainData.addValue("posX", trainStop.value().tile.x);
-		trainData.addValue("posY", trainStop.value().tile.y);
-		trainData.addValue("posZ", trainStop.value().tile.z);
-		trainData.addValue("rot", trainStop.value().rot.getRotation());
+		SaveData trainData(TRAIN_STOP);
+		trainData.addVector3f(POSITION, trainStop.value().tile);
+		trainData.addIsoRotation(ROTATION, trainStop.value().rot);
 		data.addData(trainData);
 	}
 	if (airplaneStop.has_value()) {
-		SaveData airplaneData("AirplaneStop");
-		airplaneData.addValue("startX", airplaneStop.value().begin.x);
-		airplaneData.addValue("startY", airplaneStop.value().begin.y);
-		airplaneData.addValue("startZ", airplaneStop.value().begin.z);
-		airplaneData.addValue("endX", airplaneStop.value().end.x);
-		airplaneData.addValue("endY", airplaneStop.value().end.y);
-		airplaneData.addValue("endZ", airplaneStop.value().end.z);
-		airplaneData.addValue("depotX", airplaneStop.value().depot.x);
-		airplaneData.addValue("depotY", airplaneStop.value().depot.y);
+		SaveData airplaneData(AIRPLANE_STOP);
+		airplaneData.addVector3f(START, airplaneStop.value().begin);
+		airplaneData.addVector3f(END, airplaneStop.value().end);
+		airplaneData.addVector3f(DEPOT, airplaneStop.value().depot);
 		data.addData(airplaneData);
 	}
 	return { data };
 }
 
 void TransitStop::fromSaveData(SaveData data) {
+	using namespace SaveKeys;
 	for (SaveData d : data.getDatas()) {
-		if (d.getName() == "AirplaneStop") {
+		if (d.getName() == AIRPLANE_STOP) {
 			this->airplaneStop = {
-				sf::Vector3f(
-					std::stof(d.getValue("startX")),
-					std::stof(d.getValue("startY")),
-					std::stof(d.getValue("startZ"))
-				),
-				sf::Vector3f(
-					std::stof(d.getValue("endX")),
-					std::stof(d.getValue("endY")),
-					std::stof(d.getValue("endZ"))
-				),
-				sf::Vector3f(
-					std::stof(d.getValue("depotX")),
-					std::stof(d.getValue("depotY")),
-					0.0f
-				)
+				d.getVector3f(START),
+				d.getVector3f(END),
+				d.getVector3f(DEPOT)
 			};
 		}
-		else if (d.getName() == "TrainStop") {
+		else if (d.getName() == TRAIN_STOP) {
 			this->trainStop = {
-				sf::Vector3f(
-					d.getValuef("posX"),
-					d.getValuef("posY"),
-					d.getValuef("posZ")
-				),
-				IsoRotation(d.getValuef("rot"))
+				d.getVector3f(POSITION),
+				d.getIsoRotation(ROTATION)
 			};
 		}
-		else if (d.getName() == "CarStop") {
+		else if (d.getName() == CAR_STOP) {
 			std::optional<IsoRotation> dir;
-			if (d.hasValue("dir")) {
-				dir = { IsoRotation(d.getValuef("dir")) };
+			if (d.hasValue(ROTATION)) {
+				dir = d.getIsoRotation(ROTATION);
 			}
 			this->carStop = {
-				sf::Vector3f(
-					d.getValuef("posX"),
-					d.getValuef("posY"),
-					d.getValuef("posZ")
-				),
+				d.getVector3f(POSITION),
 				dir
 			};
 		}

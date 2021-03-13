@@ -81,12 +81,12 @@ if (this->var) { \
 	ADD_DATA(pathfinder);
 
 #undef ADD_DATA
-	data.addValue("id", std::to_string(this->id));
+	data.addSizeT(SaveKeys::ID, this->id);
 	return data;
 }
 
 void Entity::fromSaveData(SaveData data) {
-	this->id = std::stoull(data.getValue("id"));
+	this->id = data.getSizeT(SaveKeys::ID);
 	Entity::entityId = std::max(Entity::entityId, this->id + 1);
 }
 

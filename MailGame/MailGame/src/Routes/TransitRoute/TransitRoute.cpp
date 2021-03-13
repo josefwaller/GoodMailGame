@@ -35,7 +35,7 @@ SaveData transitRouteStopToSaveData(TransitRouteStop stop) {
 	SaveData sd(TRANSIT_ROUTE_STOP);
 	if (stop.target.lock()) {
 		sd.addBool(HAS_TARGET, true);
-		sd.addSizeT(TARGET, stop.target.lock()->getId());
+		sd.addSizeT(TARGET_ID, stop.target.lock()->getId());
 	}
 	else {
 		sd.addBool(HAS_TARGET, false);
@@ -57,7 +57,7 @@ TransitRouteStop saveDataToTransitRouteStop(Game* g, SaveData data) {
 	using namespace SaveKeys;
 	TransitRouteStop stop;
 	if (data.getBool(HAS_TARGET)) {
-		stop.target = g->getEntityById(data.getSizeT(TARGET));
+		stop.target = g->getEntityById(data.getSizeT(TARGET_ID));
 	}
 	// Set pick up/drop off
 	for (SaveData d : data.getDatas()) {
