@@ -59,23 +59,17 @@ void Mail::onDelivery(unsigned long long time) {
 }
 
 SaveData Mail::getSaveData() {
-	SaveData m("Mail");
-	m.addValue("id", std::to_string(getId()));
-	m.addValue("srcX", std::to_string(getSrc().x));
-	m.addValue("srcY", std::to_string(getSrc().y));
-	m.addValue("destX", std::to_string(getDest().x));
-	m.addValue("destY", std::to_string(getDest().y));
+	using namespace SaveKeys;
+	SaveData m(MAIL);
+	m.addSizeT(ID, getId());
+	m.addVector2i(SOURCE, getSrc());
+	m.addVector2i(DEST, getDest());
 	return m;
 }
 Mail::Mail(SaveData data) {
-	this->id = std::stoull(data.getValue("id"));
+	using namespace SaveKeys;
+	this->id = data.getSizeT(ID);
 	Mail::MAIL_ID = std::max(Mail::MAIL_ID, this->id);
-	this->src = sf::Vector2i(
-		std::stoi(data.getValue("srcX")),
-		std::stoi(data.getValue("srcY"))
-	);
-	this->dest = sf::Vector2i(
-		std::stoi(data.getValue("destX")),
-		std::stoi(data.getValue("destY"))
-	);
+	this->src = data.getVector2i(SOURCE);
+	this->dest = data.getVector2i(DEST);
 }

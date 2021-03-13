@@ -9,60 +9,63 @@ TransitRoute::TransitRoute(hour_t time, VehicleModel m, CargoCarModel s, unsigne
 TransitRoute::TransitRoute(hour_t time, VehicleModel m) : Route(time, m) {}
 
 TransitRoute::TransitRoute(SaveData data, Game* g) : Route(data) {
-	this->stops.resize(std::stoull(data.getValue("numStops")));
+	using namespace SaveKeys;
+	this->stops.resize(data.getSizeT(NUM_STOPS));
 	for (SaveData d : data.getDatas()) {
-		size_t index = std::stoull(d.getValue("index"));
-		this->stops[index] = saveDataToTransitRouteStop(g, d);
+		this->stops[d.getSizeT(INDEX)] = saveDataToTransitRouteStop(g, d);
 	}
 }
 
 SaveData TransitRoute::getSaveData() {
-	SaveData sd("TransitRoute");
+	using namespace SaveKeys;
+	SaveData sd(TRANSIT_ROUTE);
 	sd.addValuesFrom(Route::getSaveData());
-	sd.addValue("numStops", this->stops.size());
+	sd.addSizeT(NUM_STOPS, this->stops.size());
 	for (size_t i = 0; i < this->stops.size(); i++) {
 		TransitRouteStop stop = this->stops[i];
 		SaveData d = transitRouteStopToSaveData(stop);
-		d.addValue("index", i);
+		d.addSizeT(INDEX, i);
 		sd.addData(d);
 	}
 	return sd;
 }
 
 SaveData transitRouteStopToSaveData(TransitRouteStop stop) {
-	SaveData sd("TransitRouteStop");
+	using namespace SaveKeys;
+	SaveData sd(TRANSIT_ROUTE_STOP);
 	if (stop.target.lock()) {
-		sd.addValue("hasTarget", true);
-		sd.addValue("targetId", stop.target.lock()->getId());
+		sd.addBool(HAS_TARGET, true);
+		sd.addSizeT(TARGET, stop.target.lock()->getId());
 	}
 	else {
-		sd.addValue("hasTarget", false);
+		sd.addBool(HAS_TARGET, false);
 	}
 	// Add pick up/drop offs
 	for (long long code : stop.toPickUp) {
-		SaveData p("PickUp");
-		p.addValue("code", code);
+		SaveData p(PICK_UP);
+		p.addSizeT(POSTAL_CODE, code);
 		sd.addData(p);
 	}
 	for (long long code : stop.toDropOff) {
-		SaveData d("DropOff");
-		d.addValue("code", code);
+		SaveData d(DROP_OFF);
+		d.addValue(POSTAL_CODE, code);
 		sd.addData(d);
 	}
 	return sd;
 }
 TransitRouteStop saveDataToTransitRouteStop(Game* g, SaveData data) {
+	using namespace SaveKeys;
 	TransitRouteStop stop;
-	if (data.getValue("hasTarget") == "1") {
-		stop.target = g->getEntityById(std::stoull(data.getValue("targetId")));
+	if (data.getBool(HAS_TARGET)) {
+		stop.target = g->getEntityById(data.getSizeT(TARGET));
 	}
 	// Set pick up/drop off
 	for (SaveData d : data.getDatas()) {
-		if (d.getName() == "PickUp") {
-			stop.toPickUp.push_back(std::stoull(d.getValue("code")));
+		if (d.getName() == PICK_UP) {
+			stop.toPickUp.push_back(d.getSizeT(POSTAL_CODE));
 		}
-		else if (d.getName() == "DropOff") {
-			stop.toDropOff.push_back(std::stoull(d.getValue("code")));
+		else if (d.getName() == DROP_OFF) {
+			stop.toDropOff.push_back(d.getSizeT(POSTAL_CODE));
 		}
 	}
 	return stop;

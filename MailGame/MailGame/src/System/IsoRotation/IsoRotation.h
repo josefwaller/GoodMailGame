@@ -5,7 +5,7 @@
 
 // Simple struct which just loops a number over 4 values
 // Used to represent the rotation of buildings/camera, etc
-struct IsoRotation {
+class IsoRotation {
 private:
 	unsigned int rotation;
 public:

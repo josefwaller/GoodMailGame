@@ -35,11 +35,12 @@ void TechTree::update() {
 }
 
 SaveData TechTree::getSaveData() {
-	SaveData sd("TechTree");
+	using namespace SaveKeys;
+	SaveData sd(TECH_TREE);
 	for (auto kv : TechTree::nodes) {
 		if (kv.second.getIsUnlocked()) {
 			SaveData tsd(technologyToString(kv.first));
-			tsd.addValue("isUnlocked", true);
+			tsd.addValue(IS_UNLOCKED, true);
 			sd.addData(tsd);
 		}
 	}

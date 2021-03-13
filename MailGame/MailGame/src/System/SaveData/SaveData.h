@@ -5,6 +5,8 @@
 #include "rapidxml.hpp"
 #include "Constants.h"
 #include <type_traits>
+#include <SFML/System/Vector2.hpp>
+#include <SFML/System/Vector3.hpp>
 
 class IsoRotation;
 
@@ -42,16 +44,26 @@ public:
 	SaveData getData(std::string name);
 	/* these are the new ways to do it */
 	void addString(sdkey_t key, std::string value);
+	void addInt(sdkey_t key, int value);
 	void addSizeT(sdkey_t key, size_t value);
 	void addFloat(sdkey_t key, float value);
 	void addBool(sdkey_t key, bool value);
 	void addIsoRotation(sdkey_t key, IsoRotation value);
+	void addVector2i(sdkey_t key, sf::Vector2i value);
+	void addVector3f(sdkey_t key, sf::Vector3f value);
+	void addHourT(sdkey_t key, hour_t value);
+	void addGTimeT(sdkey_t key, gtime_t value);
 
 	std::string getString(sdkey_t);
 	size_t getSizeT(sdkey_t);
+	int getInt(sdkey_t);
 	float getFloat(sdkey_t);
 	bool getBool(sdkey_t);
-	IsoRotation getIsoRotation(sdkey_t key);
+	IsoRotation getIsoRotation(sdkey_t);
+	sf::Vector2i getVector2i(sdkey_t);
+	sf::Vector3f getVector3f(sdkey_t);
+	hour_t getHourT(sdkey_t);
+	gtime_t getGTimeT(sdkey_t);
 
 	// check if a value exists
 	bool hasValue(sdkey_t name);

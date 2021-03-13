@@ -4,7 +4,15 @@
 #include <stdexcept>
 #include <sstream>
 
+#ifdef _DEBUG
+#define ADD_VALUE(a, b) \
+if (this->values.find(a) != this->values.end()) { \
+	throw std::runtime_error("Keys not unique!"); \
+} \
+this->values.insert({ a, std::to_string(b) });
+#else
 #define ADD_VALUE(a, b) this->values.insert({ a, std::to_string(b)});
+#endif
 SaveData::SaveData(std::string name) : name(name) {}
 
 SaveData::SaveData(std::string name, SaveData data) : name(name), values(data.values) {};
@@ -51,11 +59,20 @@ void SaveData::addValuesFrom(SaveData other) {
 void SaveData::addString(sdkey_t key, std::string value) {
 	this->values.insert({ key, value });
 }
+void SaveData::addInt(sdkey_t key, int value) {
+	ADD_VALUE(key, value);
+}
 void SaveData::addFloat(sdkey_t key, float value) {
 	ADD_VALUE(key, value);
 }
 void SaveData::addSizeT(sdkey_t key, size_t value) {
 	ADD_VALUE(key, value);
+}
+void SaveData::addHourT(sdkey_t key, hour_t hour) {
+	addSizeT(key, hour);
+}
+void SaveData::addGTimeT(sdkey_t key, gtime_t t) {
+	addSizeT(key, t);
 }
 void SaveData::addBool(sdkey_t key, bool value) {
 	ADD_VALUE(key, value);
@@ -63,9 +80,26 @@ void SaveData::addBool(sdkey_t key, bool value) {
 void SaveData::addIsoRotation(sdkey_t key, IsoRotation rot) {
 	ADD_VALUE(key, rot.getRotation());
 }
+void SaveData::addVector2i(sdkey_t key, sf::Vector2i value) {
+	SaveData data(key);
+	data.addInt(SaveKeys::X, value.x);
+	data.addInt(SaveKeys::Y, value.y);
+	this->addData(data);
+}
+void SaveData::addVector3f(sdkey_t key, sf::Vector3f value) {
+	using namespace SaveKeys;
+	SaveData data(key);
+	data.addFloat(X, value.x);
+	data.addFloat(Y, value.y);
+	data.addFloat(Z, value.z);
+	this->addData(data);
+}
 
 std::string SaveData::getString(sdkey_t key) {
 	return this->values.at(key);
+}
+int SaveData::getInt(sdkey_t key) {
+	return std::stoi(this->values.at(key));
 }
 float SaveData::getFloat(sdkey_t key) {
 	return std::stof(this->values.at(key));
@@ -78,6 +112,21 @@ bool SaveData::getBool(sdkey_t key) {
 }
 IsoRotation SaveData::getIsoRotation(sdkey_t key) {
 	return IsoRotation((unsigned int)std::stoul(this->values.at(key)));
+}
+sf::Vector2i SaveData::getVector2i(sdkey_t key) {
+	SaveData d = this->getData(key);
+	return sf::Vector2i(d.getInt(SaveKeys::X), d.getInt(SaveKeys::Y));
+}
+sf::Vector3f SaveData::getVector3f(sdkey_t key) {
+	using namespace SaveKeys;
+	SaveData d = this->getData(key);
+	return sf::Vector3f(d.getFloat(X), d.getFloat(Y), d.getFloat(Z));
+}
+gtime_t SaveData::getGTimeT(sdkey_t key) {
+	return (gtime_t)getSizeT(key);
+}
+hour_t SaveData::getHourT(sdkey_t key) {
+	return (hour_t)getSizeT(key);
 }
 
 std::vector<std::string> SaveData::getValueNames() {
