@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 class App;
 
 class MainMenu {
@@ -7,4 +8,6 @@ public:
 	void update();
 private:
 	App* app;
+	std::string isDeleting;
+	bool isSure;
 };
