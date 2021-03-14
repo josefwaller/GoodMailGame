@@ -42,6 +42,8 @@ public:
 	static IsoRotation chooseDirection(const char* label, IsoRotation default);
 	// Select an hour
 	static hour_t chooseHour(const char* label, hour_t default);
+	// Set the default file name
+	void setSavefileName(const char name[200]);
 private:
 	Game* game;
 	// Current state of the Ui
@@ -58,6 +60,8 @@ private:
 	sf::Clock deltaClock;
 	// The postal code the player is currently setting tiles to
 	long long pCode;
+	// The name of the save file being saved to
+	char savefileName[200];
 	// Get the tile the mouse is currently hovering over
 	sf::Vector2i getHoveredTile();
 	// Return a vertex array that is over the tile given, in screen coords

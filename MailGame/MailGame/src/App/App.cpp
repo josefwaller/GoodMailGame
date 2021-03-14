@@ -22,10 +22,11 @@ void App::generateNewGame() {
 
 void App::loadSaveFile(std::string savePath) {
 	// Load test save data
-	std::ifstream fs(savePath);
+	std::ifstream fs("savedata/" + savePath + ".xml");
 	std::string data((std::istreambuf_iterator<char>(fs)), (std::istreambuf_iterator<char>()));
 	SaveData sd = SaveData::fromFileContents(data);
 	game.loadFromSaveData(sd);
+	game.getUi()->setSavefileName(savePath.c_str());
 	this->inMainMenu = false;
 }
 

@@ -142,13 +142,16 @@ void UiHandler::update() {
 		this->game->togglePause();
 	}
 	ImGui::Text((std::string("Game.time: ") + std::to_string(this->game->getTime())).c_str());
-	if (ImGui::Button("Save Game")) {
+	ImGui::Text("Savefile: ");
+	ImGui::SameLine();
+	ImGui::InputText("", this->savefileName, 200);
+	if (ImGui::Button("Save")) {
 		// Terrible way of temporarily doing this
 		// Just save rn to file
 		SaveData toSave = this->game->getSaveData();
 		std::string toWrite = toSave.getAsString();
 		std::ofstream file;
-		file.open("savedata/test.xml");
+		file.open("savedata/" + std::string(savefileName) + ".xml");
 		file << toWrite;
 		file.close();
 	}
@@ -440,4 +443,8 @@ hour_t UiHandler::chooseHour(const char* label, hour_t hour) {
 
 void UiHandler::addPathToDraw(std::vector<RoutePoint> path) {
 	this->pathsToDraw.push_back(path);
+}
+
+void UiHandler::setSavefileName(const char name[200]) {
+	strncpy_s(this->savefileName, name, 200);
 }
