@@ -141,6 +141,9 @@ void UiHandler::update() {
 	if (ImGui::Button("Toggle Paused")) {
 		this->game->togglePause();
 	}
+	float gameSpeed = this->game->getGameSpeed();
+	ImGui::SliderFloat("Game Speed", &gameSpeed, 0.1f, 5.0f);
+	this->game->setGameSpeed(gameSpeed);
 	ImGui::Text((std::string("Game.time: ") + std::to_string(this->game->getTime())).c_str());
 	ImGui::Text("Savefile: ");
 	ImGui::SameLine();

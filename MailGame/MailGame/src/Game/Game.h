@@ -87,6 +87,9 @@ public:
 	EventManager* getEventManager();
 	// Get the tech tree
 	TechTree* getTechTree();
+	// Set the game speed
+	float getGameSpeed();
+	void setGameSpeed(float multiplier);
 private:
 	// The window for the game
 	sf::RenderWindow* window;
@@ -116,4 +119,6 @@ private:
 	money_t budget;
 	// The amount of money the player spends per month, currently calculated each tick
 	money_t expenses;
+	// The game time multiplier
+	float timeMultiplier;
 };
