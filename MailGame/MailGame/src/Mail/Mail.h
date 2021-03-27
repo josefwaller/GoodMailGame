@@ -4,6 +4,7 @@
 #include <utility>
 #include "Constants.h"
 class SaveData;
+class Game;
 
 // Parent class for any type of mail, i.e. letters and parcels
 class Mail {
@@ -30,7 +31,7 @@ public:
 	// Get ID
 	unsigned long long getId();
 	// Method triggered on delivery
-	void onDelivery(unsigned long long time);
+	void onDelivery(unsigned long long time, Game* g);
 	// Get save data
 	SaveData getSaveData();
 private:

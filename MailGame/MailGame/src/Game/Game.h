@@ -6,6 +6,7 @@
 #include "System/IsoRotation/IsoRotation.h"
 #include "Ui/UiHandler/UiHandler.h"
 #include "Constants.h"
+#include "EventManager/EventManager.h"
 
 class App;
 class Entity;
@@ -81,6 +82,8 @@ public:
 	money_t getExcessMoney();
 	// Get the total monthly budget the player has
 	money_t getMonthlyBudget();
+	// Get the event system
+	EventManager* getEventManager();
 private:
 	// The window for the game
 	sf::RenderWindow* window;
@@ -93,6 +96,8 @@ private:
 	GameMap gameMap;
 	// The Ui Handler
 	UiHandler uiHandler;
+	// The event manager
+	EventManager eventManager;
 	// The view of the game
 	// Includes camera position
 	sf::View gameView;

@@ -29,7 +29,7 @@ const std::vector<EntityTag> Game::WHITELIST_ENTITY_TAG = {
 	EntityTag::AirplaneDock
 };
 // Initialize Game
-Game::Game(App* a, sf::RenderWindow* w) : time(0), gameMap(this), uiHandler(this), window(w), rotation(IsoRotation::NORTH), entities(), budget(400) {
+Game::Game(App* a, sf::RenderWindow* w) : time(0), gameMap(this), uiHandler(this), window(w), rotation(IsoRotation::NORTH), entities(), budget(400), eventManager(this) {
 	this->gameView.setSize(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT));
 }
 void Game::generateNew() {
@@ -334,4 +334,7 @@ money_t Game::getExcessMoney() {
 }
 money_t Game::getMonthlyBudget() {
 	return this->budget;
+}
+EventManager* Game::getEventManager() {
+	return &this->eventManager;
 }

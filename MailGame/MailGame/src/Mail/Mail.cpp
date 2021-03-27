@@ -1,4 +1,6 @@
 #include "Mail/Mail.h"
+#include "EventManager/EventManager.h"
+#include "Game/Game.h"
 #include "System/SaveData/SaveData.h"
 #include "Game/Game.h"
 #include <algorithm>
@@ -52,7 +54,8 @@ sf::Vector2i Mail::getDest() { return this->dest; }
 sf::Vector2i Mail::getSrc() { return this->src; }
 unsigned long long Mail::getId() { return this->id; }
 
-void Mail::onDelivery(unsigned long long time) {
+void Mail::onDelivery(unsigned long long time, Game* game) {
+	game->getEventManager()->onMailDelivered(*this);
 	// Set delivery time
 	Mail::mailRecords[this->id].second = time;
 	updatePercent();
