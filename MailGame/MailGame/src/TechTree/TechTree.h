@@ -5,13 +5,14 @@
 
 class TechTree {
 public:
-	static bool getTechUnlocked(Technology tech);
-	static void unlockTech(Technology tech);
+	TechTree();
+	TechTree(SaveData data);
+	bool getTechUnlocked(Technology tech);
+	void unlockTech(Technology tech);
 	// Currently this just draws the UI
-	static void update();
-	static SaveData getSaveData();
-	static void fromSaveData(SaveData data);
+	void update();
+	SaveData getSaveData();
 private:
 	// Map of technologies to relevant tech tree node
-	static std::map<Technology, TechTreeNode> nodes;
+	std::map<Technology, TechTreeNode> nodes;
 };

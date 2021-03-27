@@ -39,7 +39,7 @@ void Game::generateNew() {
 void Game::loadFromSaveData(SaveData data) {
 	using namespace SaveKeys;
 	// Load the tech tree
-	TechTree::fromSaveData(data.getData(TECH_TREE));
+	this->techTree = TechTree(data.getData(TECH_TREE));
 	// First, create entities with the id's given but don't load anything else
 	// So that entities referenced by id in the save data will be valid
 	for (SaveData entData : data.getData(ENTITIES).getDatas()) {
@@ -317,7 +317,7 @@ SaveData Game::getSaveData() {
 	sd.addFloat(CAMERA_Y, this->gameView.getCenter().y);
 	sd.addBool(IS_PAUSED, this->isPaused);
 	// Add technology save data
-	sd.addData(TechTree::getSaveData());
+	sd.addData(this->techTree.getSaveData());
 	return sd;
 }
 
@@ -337,4 +337,7 @@ money_t Game::getMonthlyBudget() {
 }
 EventManager* Game::getEventManager() {
 	return &this->eventManager;
+}
+TechTree* Game::getTechTree() {
+	return &this->techTree;
 }

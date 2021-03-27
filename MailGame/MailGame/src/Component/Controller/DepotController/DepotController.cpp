@@ -45,7 +45,7 @@ void DepotController::renderUi() {
 			if (ImGui::BeginCombo("Vehicle Model", modelInfo.getName().c_str())) {
 				for (auto it = this->availableModels.begin(); it != this->availableModels.end(); it++) {
 					VehicleModelInfo mInfo = VehicleModelInfo::getModelInfo(*it);
-					if (TechTree::getTechUnlocked(mInfo.getRequiredTechnology())) {
+					if (this->getEntity()->getGame()->getTechTree()->getTechUnlocked(mInfo.getRequiredTechnology())) {
 						if (ImGui::Selectable(mInfo.getName().c_str(), *it == route.model)) {
 							this->setRouteModel(route.id, *it);
 						}

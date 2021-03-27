@@ -7,6 +7,7 @@
 #include "Ui/UiHandler/UiHandler.h"
 #include "Constants.h"
 #include "EventManager/EventManager.h"
+#include "TechTree/TechTree.h"
 
 class App;
 class Entity;
@@ -84,6 +85,8 @@ public:
 	money_t getMonthlyBudget();
 	// Get the event system
 	EventManager* getEventManager();
+	// Get the tech tree
+	TechTree* getTechTree();
 private:
 	// The window for the game
 	sf::RenderWindow* window;
@@ -98,6 +101,8 @@ private:
 	UiHandler uiHandler;
 	// The event manager
 	EventManager eventManager;
+	// The tech tree
+	TechTree techTree;
 	// The view of the game
 	// Includes camera position
 	sf::View gameView;

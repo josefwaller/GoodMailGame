@@ -157,7 +157,7 @@ void UiHandler::update() {
 	}
 	if (ImGui::CollapsingHeader("Build")) {
 		for (auto kv : Construction::recipes) {
-			if (TechTree::getTechUnlocked(kv.second.getRequiredTech())) {
+			if (this->game->getTechTree()->getTechUnlocked(kv.second.getRequiredTech())) {
 				if (ImGui::Button(kv.second.getDisplayName().c_str())) {
 					this->recipe = kv.second;
 					this->changeState(UiState::BuildingEntity);
@@ -236,7 +236,7 @@ void UiHandler::update() {
 	}
 	ImGui::End();
 	// Draw the Tech tree window
-	TechTree::update();
+	this->game->getTechTree()->update();
 	// Render option to show/hide UI for entity
 	ImGui::Begin("Open Entity Ui");
 	std::vector<std::shared_ptr<Entity>> entities = this->game->getEntities();

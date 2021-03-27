@@ -7,6 +7,6 @@ EventManager::EventManager(Game* g) : game(g) {}
 void EventManager::onMailDelivered(Mail m) {
 	EventManager::lettersDelivered++;
 	if (EventManager::lettersDelivered == 20) {
-		TechTree::unlockTech(Technology::CargoTrucks);
+		this->game->getTechTree()->unlockTech(Technology::CargoTrucks);
 	}
 }
