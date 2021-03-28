@@ -76,6 +76,13 @@ SaveData Mail::getSaveData() {
 	m.addSizeT(ID, getId());
 	m.addVector2i(SOURCE, getSrc());
 	m.addVector2i(DEST, getDest());
+	m.addSizeT(NUM_EVENTS, this->events.size());
+	for (size_t i = 0; i < this->events.size(); i++) {
+		SaveData data(MAIL_EVENT);
+		data.addSizeT(INDEX, i);
+		data.addSizeT(MAIL_EVENT, (size_t)this->events.at(i));
+		m.addData(data);
+	}
 	return m;
 }
 Mail::Mail(SaveData data) {
@@ -84,4 +91,10 @@ Mail::Mail(SaveData data) {
 	Mail::MAIL_ID = std::max(Mail::MAIL_ID, this->id);
 	this->src = data.getVector2i(SOURCE);
 	this->dest = data.getVector2i(DEST);
+	this->events.resize(data.getSizeT(NUM_EVENTS));
+	for (SaveData d : data.getDatas()) {
+		if (d.getName() == MAIL_EVENT) {
+			this->events.insert(this->events.begin() + d.getSizeT(INDEX), (MailEvent)d.getSizeT(MAIL_EVENT));
+		}
+	}
 }

@@ -97,4 +97,11 @@ namespace SaveKeys {
 	const sdkey_t ENTITY_ID = "entityId";
 	const sdkey_t SPEED = "speed";
 	const sdkey_t ACCELERATION = "acceleration";
+	const sdkey_t LETTERS_DELIVERED = "lettersDelivered";
+	const sdkey_t LETTERS_DELIVERED_BY_CARGO_TRUCK = "lettersByTruck";
+	const sdkey_t LETTERS_DELIVERED_BY_TRAIN = "lettersByTrain";
+	const sdkey_t LETTERS_DELIVERED_BY_AIRPLANE = "lettersByAirplane";
+	const sdkey_t EVENT_MANAGER = "EventManager";
+	const sdkey_t NUM_EVENTS = "numEvents";
+	const sdkey_t MAIL_EVENT = "MailEvent";
 }

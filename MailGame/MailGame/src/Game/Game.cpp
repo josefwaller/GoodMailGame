@@ -38,6 +38,8 @@ void Game::generateNew() {
 }
 void Game::loadFromSaveData(SaveData data) {
 	using namespace SaveKeys;
+	// Load event manager
+	this->eventManager = EventManager(this, data.getData(EVENT_MANAGER));
 	// Load the tech tree
 	this->techTree = TechTree(data.getData(TECH_TREE));
 	// First, create entities with the id's given but don't load anything else
@@ -304,6 +306,8 @@ SaveData Game::getSaveData() {
 	using namespace SaveKeys;
 	// Create save data for game
 	SaveData sd(GAME);
+	// Add event manager save data
+	sd.addData(this->eventManager.getSaveData());
 	// Add the game map's data
 	sd.addData(this->gameMap.getSaveData());
 	// Add all the entities' data

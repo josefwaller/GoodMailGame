@@ -1,5 +1,6 @@
 #pragma once
 #include "Mail/Mail.h"
+#include "System/SaveData/SaveData.h"
 
 class Game;
 
@@ -9,11 +10,13 @@ class Game;
 class EventManager {
 public:
 	EventManager(Game* game);
+	EventManager(Game* g, SaveData data);
 	void onMailDelivered(Mail delivered);
+	SaveData getSaveData();
 private:
 	Game* game;
-	long long lettersDelivered;
-	long long lettersByCargoTruck;
-	long long lettersByTrain;
-	long long lettersByPlane;
+	unsigned long long lettersDelivered;
+	unsigned long long lettersByCargoTruck;
+	unsigned long long lettersByTrain;
+	unsigned long long lettersByPlane;
 };
