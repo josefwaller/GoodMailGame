@@ -13,4 +13,7 @@ public:
 private:
 	Game* game;
 	long long lettersDelivered;
+	long long lettersByCargoTruck;
+	long long lettersByTrain;
+	long long lettersByPlane;
 };

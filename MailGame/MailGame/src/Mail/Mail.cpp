@@ -66,6 +66,10 @@ void Mail::addEvent(MailEvent e) {
 	this->events.push_back(e);
 }
 
+bool Mail::hasEvent(MailEvent e) {
+	return std::find(this->events.begin(), this->events.end(), e) != this->events.end();
+}
+
 SaveData Mail::getSaveData() {
 	using namespace SaveKeys;
 	SaveData m(MAIL);

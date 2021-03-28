@@ -35,6 +35,8 @@ public:
 	Mail(SaveData d);
 	// Add event
 	void addEvent(MailEvent e);
+	// Find if the letter has a certain event
+	bool hasEvent(MailEvent e);
 	// Compare two Mail objects
 	bool operator==(Mail other);
 	// Get destination/source
