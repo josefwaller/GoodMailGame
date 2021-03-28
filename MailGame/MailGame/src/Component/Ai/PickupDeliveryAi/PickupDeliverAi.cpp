@@ -99,7 +99,7 @@ void PickupDeliveryAi::onArriveAtTile(sf::Vector2i point) {
 				// Check if the transit location is the tile it just arrived at
 				if (sf::Vector2f(pos.x, pos.y) == sf::Vector2f(point)) {
 					// Take all the letters
-					(*it)->mailContainer->transferAllMailTo(this->getEntity()->mailContainer);
+					(*it)->mailContainer->transferAllMailTo(this->getEntity()->mailContainer, MailEvent::OnMailTruck);
 				}
 			}
 		}
@@ -176,7 +176,8 @@ void PickupDeliveryAi::pickupMailFromOffice() {
 		}
 	}
 	// Take the mail
-	this->office.lock()->mailContainer->transferSomeMailTo(mailForRoute, this->getEntity()->mailContainer);
+	this->office.lock()->mailContainer->transferSomeMailTo(mailForRoute, this->getEntity()->mailContainer, MailEvent::OnMailTruck);
+	auto x = 0;
 }
 
 std::optional<SaveData> PickupDeliveryAi::getSaveData() {

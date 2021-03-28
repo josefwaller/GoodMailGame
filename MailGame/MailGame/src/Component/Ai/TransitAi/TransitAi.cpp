@@ -104,7 +104,7 @@ void TransitAi::onArriveAtStop(size_t stopIndex) {
 		}
 	}
 	// Transfer letters between
-	mail->transferSomeMailTo(toDropOff, otherMail);
+	mail->transferSomeMailTo(toDropOff, otherMail, getMailEvent());
 	otherMail->transferSomeMailTo(toPickUp, mail);
 }
 
@@ -119,5 +119,13 @@ void TransitAi::fromSaveData(SaveData data) {
 	this->route = TransitRoute(data.getData(SaveKeys::TRANSIT_ROUTE), this->getEntity()->getGame());
 	if (data.hasValue(SaveKeys::DEPOT_ID)) {
 		this->depot = this->getEntity()->getGame()->getEntityById(data.getSizeT(SaveKeys::DEPOT_ID));
+	}
+}
+
+MailEvent TransitAi::getMailEvent() {
+	switch (this->type) {
+	case TransitType::Car: return MailEvent::OnCargoTruck;
+	case TransitType::Train: return MailEvent::OnTrain;
+	case TransitType::Airplane: return MailEvent::OnAirplane;
 	}
 }

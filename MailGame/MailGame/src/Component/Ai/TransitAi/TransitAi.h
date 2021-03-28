@@ -3,6 +3,7 @@
 #include "Component/TransitStop/TransitStop.h"
 #include "Routes/TransitRoute/TransitRoute.h"
 #include "System/TransitType/TransitType.h"
+#include "Mail/Mail.h"
 #include <vector>
 #include <memory>
 
@@ -25,4 +26,6 @@ private:
 	TransitRoute route;
 	// The type of stop this vehicle will access
 	TransitType type;
+	// Get the correct mail event for this vehicle
+	MailEvent getMailEvent();
 };

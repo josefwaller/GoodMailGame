@@ -2,9 +2,19 @@
 #include <SFML/System/Vector2.hpp>
 #include <map>
 #include <utility>
+#include <vector>
 #include "Constants.h"
 class SaveData;
 class Game;
+
+// Different things that can happen to mail
+// Tracked for reasons (i.e. unlocing new technology)
+enum class MailEvent {
+	OnMailTruck,
+	OnCargoTruck,
+	OnTrain,
+	OnAirplane
+};
 
 // Parent class for any type of mail, i.e. letters and parcels
 class Mail {
@@ -23,6 +33,8 @@ public:
 	Mail(sf::Vector2i dest, sf::Vector2i src, unsigned long long time);
 	// Constructor from save data
 	Mail(SaveData d);
+	// Add event
+	void addEvent(MailEvent e);
 	// Compare two Mail objects
 	bool operator==(Mail other);
 	// Get destination/source
@@ -45,4 +57,6 @@ private:
 	// Destination and source
 	sf::Vector2i dest;
 	sf::Vector2i src;
+	// List of events that have happened to this letter
+	std::vector<MailEvent> events;
 };

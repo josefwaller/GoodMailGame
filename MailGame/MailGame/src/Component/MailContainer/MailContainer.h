@@ -12,9 +12,12 @@ public:
 	// Remove some mail
 	void removeMail(std::vector<Mail> mail);
 	// Give all the letters to another container
-	void transferAllMailTo(std::shared_ptr<MailContainer> other);
+	void transferAllMailTo(std::shared_ptr<MailContainer> other, MailEvent e);
+	void transferAllMailTo(std::shared_ptr<MailContainer> other, std::optional<MailEvent> e = {});
 	// Give the letters given to the container given
-	void transferSomeMailTo(std::vector<Mail> toGive, std::shared_ptr<MailContainer> other);
+	// Dumb interface to allow for an optional event to be passed down
+	void transferSomeMailTo(std::vector<Mail> toGive, std::shared_ptr<MailContainer> other, MailEvent e);
+	void transferSomeMailTo(std::vector<Mail> toGive, std::shared_ptr<MailContainer> other, std::optional<MailEvent> e = {});
 	// Get number of letters
 	size_t getNumLetters();
 	// Get the mail

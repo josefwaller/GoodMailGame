@@ -10,6 +10,12 @@ float Mail::percent = 0.0f;
 std::map<id_t, std::pair<gtime_t, gtime_t>> Mail::mailRecords = {};
 bool Mail::percentOutdated = false;
 
+Mail::Mail(sf::Vector2i d, sf::Vector2i s, unsigned long long time) : dest(d), src(s), id(MAIL_ID++), events() {
+	// Create new record entry
+	Mail::mailRecords[this->id] = { time, 0 };
+	percentOutdated = true;
+}
+
 float Mail::getPercentDelivered() {
 	if (percentOutdated) {
 		updatePercent();
@@ -42,11 +48,6 @@ void Mail::onTimeChanged(time_t time) {
 	percentOutdated = true;
 }
 
-Mail::Mail(sf::Vector2i d, sf::Vector2i s, unsigned long long time) : dest(d), src(s), id(MAIL_ID++) {
-	// Create new record entry
-	Mail::mailRecords[this->id] = { time, 0 };
-	percentOutdated = true;
-}
 bool Mail::operator==(Mail other) {
 	return this->id == other.id;
 }
@@ -59,6 +60,10 @@ void Mail::onDelivery(unsigned long long time, Game* game) {
 	// Set delivery time
 	Mail::mailRecords[this->id].second = time;
 	updatePercent();
+}
+
+void Mail::addEvent(MailEvent e) {
+	this->events.push_back(e);
 }
 
 SaveData Mail::getSaveData() {

@@ -7,11 +7,22 @@
 void MailContainer::addMail(std::vector<Mail> toAdd) {
 	this->mail.insert(this->mail.end(), toAdd.begin(), toAdd.end());
 }
-void MailContainer::transferAllMailTo(std::shared_ptr<MailContainer> other) {
+void MailContainer::transferAllMailTo(std::shared_ptr<MailContainer> o, MailEvent e) {
+	transferAllMailTo(o, std::optional<MailEvent>(e));
+}
+void MailContainer::transferAllMailTo(std::shared_ptr<MailContainer> other, std::optional<MailEvent> e) {
+	if (e.has_value()) {
+		for (auto it = this->mail.begin(); it != this->mail.end(); it++) {
+			it->addEvent(e.value());
+		}
+	}
 	other->addMail(this->mail);
 	this->mail = {};
 }
-void MailContainer::transferSomeMailTo(std::vector<Mail> toGive, std::shared_ptr<MailContainer> other) {
+void MailContainer::transferSomeMailTo(std::vector<Mail> t, std::shared_ptr<MailContainer> o, MailEvent e) {
+	transferSomeMailTo(t, o, std::optional<MailEvent>(e));
+}
+void MailContainer::transferSomeMailTo(std::vector<Mail> toGive, std::shared_ptr<MailContainer> other, std::optional<MailEvent> e) {
 #ifdef _DEBUG
 	// Assert that we are not giving away mail we don't have
 	for (Mail m : toGive) {
@@ -22,6 +33,11 @@ void MailContainer::transferSomeMailTo(std::vector<Mail> toGive, std::shared_ptr
 #endif
 	// Remove the mail
 	this->removeMail(toGive);
+	if (e.has_value()) {
+		for (auto it = toGive.begin(); it != toGive.end(); it++) {
+			it->addEvent(e.value());
+		}
+	}
 	// Add the mail to the other
 	other->addMail(toGive);
 }
