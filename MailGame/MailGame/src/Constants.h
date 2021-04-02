@@ -106,4 +106,6 @@ namespace SaveKeys {
 	const sdkey_t MAIL_EVENT = "MailEvent";
 	const sdkey_t ALL_MAIL = "AllMail";
 	const sdkey_t MAIL_RECORD = "MailRecord";
+	const sdkey_t IS_DELIVERED = "isDelivered";
+	const sdkey_t DELIVERY_TIME = "deliveryTime";
 }

@@ -6,16 +6,15 @@
 #include <algorithm>
 
 unsigned long long Mail::MAIL_ID = 0;
-float Mail::percent = 0.0f;
-std::map<id_t, std::pair<gtime_t, gtime_t>> Mail::mailRecords = {};
 std::map<id_t, MailRecord> Mail::allMail = {};
-bool Mail::percentOutdated = false;
+
+std::map<id_t, MailRecord> Mail::getAllMail() {
+	return Mail::allMail;
+}
 
 Mail::Mail(sf::Vector2i d, sf::Vector2i s, gtime_t time) : id(Mail::MAIL_ID++) {
 	// Create new record entry
-	Mail::mailRecords[this->id] = { time, 0 };
 	Mail::allMail.insert({ this->id, MailRecord(d, s, time) });
-	percentOutdated = true;
 }
 
 Mail::Mail(SaveData data) {
@@ -23,36 +22,17 @@ Mail::Mail(SaveData data) {
 	this->id = data.getSizeT(ID);
 }
 
-float Mail::getPercentDelivered() {
-	if (percentOutdated) {
-		updatePercent();
-		percentOutdated = false;
-	}
-	return percent;
-}
-void Mail::updatePercent() {
-	unsigned long long delivered = 0, total = 0;
-	for (auto kv : mailRecords) {
-		if (kv.second.second != 0 && kv.second.second - kv.second.first <= 24) {
-			delivered++;
-		}
-		total++;
-	}
-	percent = (float)delivered / (float)total;
-}
-
 void Mail::onTimeChanged(time_t time) {
 	// Remove mail
 	std::vector<id_t> toRemove;
-	for (auto kv : mailRecords) {
-		if (time - kv.second.first >= 24 * Game::UNITS_IN_GAME_HOUR) {
+	for (auto kv : allMail) {
+		if (time - kv.second.time >= 48 * Game::UNITS_IN_GAME_HOUR && kv.second.hasBeenDelivered) {
 			toRemove.push_back(kv.first);
 		}
 	}
 	for (auto id : toRemove) {
-		mailRecords.erase(id);
+		allMail.erase(id);
 	}
-	percentOutdated = true;
 }
 
 bool Mail::operator==(Mail other) {
@@ -65,8 +45,8 @@ unsigned long long Mail::getId() { return this->id; }
 void Mail::onDelivery(unsigned long long time, Game* game) {
 	game->getEventManager()->onMailDelivered(*this);
 	// Set delivery time
-	Mail::mailRecords[this->id].second = time;
-	updatePercent();
+	this->getMailRecord()->hasBeenDelivered = true;
+	this->getMailRecord()->deliveryTime = time;
 }
 
 void Mail::addEvent(MailEvent e) {
@@ -96,7 +76,9 @@ void Mail::loadMailRecordData(SaveData mailData) {
 				record.mailEvents.insert(record.mailEvents.begin() + d.getSizeT(INDEX), (MailEvent)d.getSizeT(MAIL_EVENT));
 			}
 		}
-		this->allMail.insert({ id, record });
+		record.hasBeenDelivered = data.getBool(IS_DELIVERED);
+		record.deliveryTime = data.getGTimeT(DELIVERY_TIME);
+		Mail::allMail.insert({ id, record });
 	}
 }
 
@@ -109,6 +91,9 @@ SaveData Mail::getMailRecordData() {
 		d.addVector2i(SOURCE, it->second.src);
 		d.addVector2i(DEST, it->second.dest);
 		d.addGTimeT(TIME, it->second.time);
+		d.addSizeT(NUM_EVENTS, it->second.mailEvents.size());
+		d.addBool(IS_DELIVERED, it->second.hasBeenDelivered);
+		d.addGTimeT(DELIVERY_TIME, it->second.deliveryTime);
 		for (size_t i = 0; i < it->second.mailEvents.size(); i++) {
 			SaveData eventData(MAIL_EVENT);
 			eventData.addSizeT(INDEX, i);

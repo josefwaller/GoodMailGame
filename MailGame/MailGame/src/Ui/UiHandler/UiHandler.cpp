@@ -131,7 +131,15 @@ void UiHandler::update() {
 	sprintf_s(buf, "%d / %d CAD available", game->getExcessMoney(), game->getMonthlyBudget());
 	ImGui::Text(buf);
 	// Print percent of letters that have been delivered
-	sprintf_s(buf, "%f of letters delivered", Mail::getPercentDelivered() * 100.0f);
+	std::map<id_t, MailRecord> allMail = Mail::getAllMail();
+	unsigned long long numDelivered = 0;
+	for (auto it = allMail.begin(); it != allMail.end(); it++) {
+		if (it->second.hasBeenDelivered) {
+			numDelivered++;
+		}
+	}
+	float percentDelivered = (float)numDelivered / (float)allMail.size();
+	sprintf_s(buf, "%f of letters delivered", percentDelivered * 100.0f);
 	ImGui::Text(buf);
 
 	if (ImGui::Button("Rotate Camera")) {

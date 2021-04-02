@@ -42,6 +42,8 @@ void Game::loadFromSaveData(SaveData data) {
 	this->eventManager = EventManager(this, data.getData(EVENT_MANAGER));
 	// Load the tech tree
 	this->techTree = TechTree(data.getData(TECH_TREE));
+	// Load the mail
+	Mail::loadMailRecordData(data.getData(ALL_MAIL));
 	// First, create entities with the id's given but don't load anything else
 	// So that entities referenced by id in the save data will be valid
 	for (SaveData entData : data.getData(ENTITIES).getDatas()) {
@@ -310,6 +312,8 @@ SaveData Game::getSaveData() {
 	sd.addData(this->eventManager.getSaveData());
 	// Add the game map's data
 	sd.addData(this->gameMap.getSaveData());
+	// Save mail
+	sd.addData(Mail::getMailRecordData());
 	// Add all the entities' data
 	SaveData entData(ENTITIES);
 	for (auto e : this->entities) {

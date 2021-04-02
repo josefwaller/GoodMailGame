@@ -21,7 +21,9 @@ struct MailRecord {
 	sf::Vector2i src;
 	std::vector<MailEvent> mailEvents;
 	gtime_t time;
-	MailRecord(sf::Vector2i d, sf::Vector2i s, gtime_t t) : dest(d), src(s), mailEvents({}), time(t) {}
+	bool hasBeenDelivered;
+	gtime_t deliveryTime;
+	MailRecord(sf::Vector2i d, sf::Vector2i s, gtime_t t) : dest(d), src(s), mailEvents({}), time(t), hasBeenDelivered(false), deliveryTime(0) {}
 };
 
 // Parent class for any type of mail, i.e. letters and parcels
@@ -29,16 +31,14 @@ class Mail {
 public:
 	// Current mail id
 	static unsigned long long MAIL_ID;
-	// Map of mail ids -> pair<creation time, delivery time>
-	// If delivery time is 0, it means it has not been delivered
-	static std::map<id_t, std::pair<gtime_t, gtime_t>> mailRecords;
-	// Get percentage of letters in the last 24 hrs delivered
-	static float getPercentDelivered();
 	// Should be called on hour changed to remove records of letters we don't care about
 	static void onTimeChanged(time_t time);
 	// Save/Load the mail records
-	SaveData getMailRecordData();
-	void loadMailRecordData(SaveData d);
+	static SaveData getMailRecordData();
+	static void loadMailRecordData(SaveData d);
+
+	// Get all the mail records
+	static std::map<id_t, MailRecord> getAllMail();
 
 	// Constructor
 	// Really just creates a fancy pointer by id to the MailRecord
@@ -63,11 +63,6 @@ public:
 private:
 	// All the mail records that exist
 	static std::map<id_t, MailRecord> allMail;
-	// Update the percentage of mail delivered
-	static void updatePercent();
-	static float percent;
-	// Whether percent needs to be updated
-	static bool percentOutdated;
 	// The id of the mail
 	// Used to find the MailRecord in the table
 	id_t id;
