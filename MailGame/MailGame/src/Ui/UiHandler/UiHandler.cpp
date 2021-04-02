@@ -133,13 +133,20 @@ void UiHandler::update() {
 	// Print percent of letters that have been delivered
 	std::map<id_t, MailRecord> allMail = Mail::getAllMail();
 	unsigned long long numDelivered = 0;
+	unsigned long long numUnderDay = 0;
 	for (auto it = allMail.begin(); it != allMail.end(); it++) {
 		if (it->second.hasBeenDelivered) {
 			numDelivered++;
 		}
+		if (this->game->getTime() - it->second.time <= 24 * Game::UNITS_IN_GAME_HOUR) {
+			numUnderDay++;
+		}
 	}
-	float percentDelivered = (float)numDelivered / (float)allMail.size();
-	sprintf_s(buf, "%f of letters delivered", percentDelivered * 100.0f);
+	float percent = (float)numDelivered / (float)allMail.size();
+	sprintf_s(buf, "%f of letters delivered", percent * 100.0f);
+	ImGui::Text(buf);
+	percent = (float)(numUnderDay) / (float)allMail.size();
+	sprintf_s(buf, "%f of letters are less than a day old", percent * 100.0f);
 	ImGui::Text(buf);
 
 	if (ImGui::Button("Rotate Camera")) {
