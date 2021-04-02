@@ -163,7 +163,7 @@ void UiHandler::update() {
 	ImGui::Text("Savefile: ");
 	ImGui::SameLine();
 	ImGui::InputText("", this->savefileName, 200);
-	if (ImGui::Button("Save")) {
+	if (ImGui::Button("Save") && !std::string(this->savefileName).empty()) {
 		// Terrible way of temporarily doing this
 		// Just save rn to file
 		SaveData toSave = this->game->getSaveData();
