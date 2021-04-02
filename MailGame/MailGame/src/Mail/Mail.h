@@ -16,6 +16,14 @@ enum class MailEvent {
 	OnAirplane
 };
 
+struct MailRecord {
+	sf::Vector2i dest;
+	sf::Vector2i src;
+	std::vector<MailEvent> mailEvents;
+	gtime_t time;
+	MailRecord(sf::Vector2i d, sf::Vector2i s, gtime_t t) : dest(d), src(s), mailEvents({}), time(t) {}
+};
+
 // Parent class for any type of mail, i.e. letters and parcels
 class Mail {
 public:
@@ -28,9 +36,13 @@ public:
 	static float getPercentDelivered();
 	// Should be called on hour changed to remove records of letters we don't care about
 	static void onTimeChanged(time_t time);
+	// Save/Load the mail records
+	SaveData getMailRecordData();
+	void loadMailRecordData(SaveData d);
 
 	// Constructor
-	Mail(sf::Vector2i dest, sf::Vector2i src, unsigned long long time);
+	// Really just creates a fancy pointer by id to the MailRecord
+	Mail(sf::Vector2i dest, sf::Vector2i src, gtime_t);
 	// Constructor from save data
 	Mail(SaveData d);
 	// Add event
@@ -49,16 +61,16 @@ public:
 	// Get save data
 	SaveData getSaveData();
 private:
+	// All the mail records that exist
+	static std::map<id_t, MailRecord> allMail;
 	// Update the percentage of mail delivered
 	static void updatePercent();
 	static float percent;
 	// Whether percent needs to be updated
 	static bool percentOutdated;
 	// The id of the mail
-	unsigned long long id;
-	// Destination and source
-	sf::Vector2i dest;
-	sf::Vector2i src;
-	// List of events that have happened to this letter
-	std::vector<MailEvent> events;
+	// Used to find the MailRecord in the table
+	id_t id;
+	// Get the mail record
+	MailRecord* getMailRecord();
 };

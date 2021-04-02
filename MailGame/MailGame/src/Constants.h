@@ -104,4 +104,6 @@ namespace SaveKeys {
 	const sdkey_t EVENT_MANAGER = "EventManager";
 	const sdkey_t NUM_EVENTS = "numEvents";
 	const sdkey_t MAIL_EVENT = "MailEvent";
+	const sdkey_t ALL_MAIL = "AllMail";
+	const sdkey_t MAIL_RECORD = "MailRecord";
 }
