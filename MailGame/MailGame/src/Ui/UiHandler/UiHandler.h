@@ -20,7 +20,8 @@ public:
 		SelectingEntity,
 		SelectingTile,
 		EditingPostalCodes,
-		BuildingAirplaneRoad
+		BuildingAirplaneRoad,
+		Deleting
 	};
 
 	UiHandler(Game* g);
@@ -62,6 +63,13 @@ private:
 	long long pCode;
 	// The name of the save file being saved to
 	char savefileName[200];
+	// The railway currently being built
+	Railway toBuild;
+	AirplaneRoad airplaneRoadToBuild;
+	// The paths to draw
+	std::vector<std::vector<RoutePoint>> pathsToDraw;
+	// The entities to render UI for
+	std::vector<std::weak_ptr<Entity>> toRenderUi;
 	// Get the tile the mouse is currently hovering over
 	sf::Vector2i getHoveredTile();
 	// Return a vertex array that is over the tile given, in screen coords
@@ -71,11 +79,4 @@ private:
 		sf::PrimitiveType t = sf::PrimitiveType::Quads,
 		sf::Color c = sf::Color::White
 	);
-	// The railway currently being built
-	Railway toBuild;
-	AirplaneRoad airplaneRoadToBuild;
-	// The paths to draw
-	std::vector<std::vector<RoutePoint>> pathsToDraw;
-	// The entities to render UI for
-	std::vector<std::weak_ptr<Entity>> toRenderUi;
 };

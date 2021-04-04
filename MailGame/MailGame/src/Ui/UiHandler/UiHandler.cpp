@@ -78,6 +78,27 @@ bool UiHandler::handleEvent(sf::Event e) {
 			this->selectTileCallback(this->getHoveredTile());
 			this->changeState(UiState::Default);
 			break;
+		case UiState::Deleting: {
+			sf::Vector2i tile = this->getHoveredTile();
+			// Remove entity, railway, and airplane road
+			const std::vector<EntityTag> DELETABLE_ENTITIES = {
+				EntityTag::PostOffice,
+				EntityTag::CargoTruckDepot,
+				EntityTag::TrainStation,
+				EntityTag::Airport,
+				EntityTag::CarDock,
+				EntityTag::TrainDock,
+				EntityTag::AirplaneDock,
+				EntityTag::Warehouse
+			};
+			std::weak_ptr<Entity> e = this->game->getGameMap()->getTileAt(tile.x, tile.y).building;
+			if (e.lock() && std::find(DELETABLE_ENTITIES.begin(), DELETABLE_ENTITIES.end(), e.lock()->tag) != DELETABLE_ENTITIES.end()) {
+				this->game->removeEntity(e);
+			}
+			// Remove railway
+			this->game->getGameMap()->removeRailTrack(tile.x, tile.y);
+			this->game->getGameMap()->removeAirplaneRoad(tile.x, tile.y);
+		}
 		}
 	case sf::Event::KeyPressed:
 		if (ImGui::GetIO().WantCaptureKeyboard) {
@@ -214,6 +235,17 @@ void UiHandler::update() {
 			if (ImGui::Button("Cancel")) {
 				this->changeState(UiState::Default);
 			}
+		}
+	}
+	// Delete/Stop deleting buttons
+	if (this->currentState == UiState::Deleting) {
+		if (ImGui::Button("Stop Deleting")) {
+			this->currentState = UiState::Default;
+		}
+	}
+	else {
+		if (ImGui::Button("Delete")) {
+			this->currentState = UiState::Deleting;
 		}
 	}
 	// Print mouse position
