@@ -101,8 +101,11 @@ bool UiHandler::handleEvent(sf::Event e) {
 			if (e.lock() && std::find(DELETABLE_ENTITIES.begin(), DELETABLE_ENTITIES.end(), e.lock()->tag) != DELETABLE_ENTITIES.end()) {
 				this->game->removeEntity(e);
 			}
+			// Remove road
+			this->game->getGameMap()->removeRoad(tile.x, tile.y);
 			// Remove railway
 			this->game->getGameMap()->removeRailTrack(tile.x, tile.y);
+			// Remove airplane road
 			this->game->getGameMap()->removeAirplaneRoad(tile.x, tile.y);
 		}
 		}
