@@ -20,6 +20,7 @@ public:
 		SelectingEntity,
 		SelectingTile,
 		EditingPostalCodes,
+		BuildingRoad,
 		BuildingAirplaneRoad,
 		Deleting
 	};

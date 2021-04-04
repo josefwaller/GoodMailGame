@@ -57,6 +57,12 @@ bool UiHandler::handleEvent(sf::Event e) {
 				);
 			}
 			break;
+		case UiState::BuildingRoad: {
+			// Pretty messy, but just temporary so should be fine
+			sf::Vector2i tile = this->getHoveredTile();
+			this->game->getGameMap()->addRoad(tile.x, tile.y, (Road)this->airplaneRoadToBuild);
+			break;
+		}
 		case UiState::BuildingAirplaneRoad: {
 			sf::Vector2i tile = this->getHoveredTile();
 			this->game->getGameMap()->addAirplaneRoad(tile.x, tile.y, this->airplaneRoadToBuild);
@@ -203,6 +209,9 @@ void UiHandler::update() {
 				}
 			}
 		}
+		if (ImGui::Button("Road")) {
+			this->changeState(UiState::BuildingRoad);
+		}
 		if (ImGui::Button("RailWay")) {
 			this->changeState(UiState::BuildingRailTracks);
 		}
@@ -220,12 +229,13 @@ void UiHandler::update() {
 				this->changeState(UiState::Default);
 			}
 		}
-		else if (this->currentState == UiState::BuildingAirplaneRoad) {
+		else if (this->currentState == UiState::BuildingAirplaneRoad || this->currentState == UiState::BuildingRoad) {
 			ImGui::Checkbox("North", &this->airplaneRoadToBuild.hasNorth);
 			ImGui::Checkbox("East", &this->airplaneRoadToBuild.hasEast);
 			ImGui::Checkbox("South", &this->airplaneRoadToBuild.hasSouth);
 			ImGui::Checkbox("West", &this->airplaneRoadToBuild.hasWest);
-			ImGui::Checkbox("Is Runway", &this->airplaneRoadToBuild.isRunway);
+			if (this->currentState == UiState::BuildingAirplaneRoad)
+				ImGui::Checkbox("Is Runway", &this->airplaneRoadToBuild.isRunway);
 		}
 
 		if (this->currentState == UiState::BuildingEntity) {
@@ -346,6 +356,7 @@ void UiHandler::render(sf::RenderWindow* w) {
 		this->drawArrow(w, this->getHoveredTile(), this->toBuild.to, true);
 		break;
 	}
+	case UiState::BuildingRoad:
 	case UiState::BuildingAirplaneRoad: {
 		sf::Sprite toRender = GameMap::getRoadSprite(this->airplaneRoadToBuild, this->game->getRotation());
 		toRender.setColor(sf::Color(255, 130, 25));

@@ -310,6 +310,16 @@ void GameMap::setCodeForTile(size_t x, size_t y, long long id) {
 		this->tiles[x][y].postalCode = id;
 	}
 }
+void GameMap::addRoad(size_t x, size_t y, Road r) {
+	if (this->getTileAt(x, y).type != TileType::OffMap) {
+		this->tiles.at(x).at(y).road = r;
+	}
+}
+void GameMap::removeRoad(size_t x, size_t y) {
+	if (this->getTileAt(x, y).type != TileType::OffMap) {
+		this->tiles.at(x).at(y).road.reset();
+	}
+}
 void GameMap::addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to) {
 	if (this->getTileAt(x, y).type != TileType::OffMap) {
 		this->tiles[x][y].railway = Railway(from, to);

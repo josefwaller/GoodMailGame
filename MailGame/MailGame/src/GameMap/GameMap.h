@@ -35,6 +35,9 @@ public:
 	void setBuildingForTile(size_t x, size_t y, std::weak_ptr<Entity> building);
 	// Set the postal code for a specific tile
 	void setCodeForTile(size_t x, size_t y, long long code);
+	// Add/remove road
+	void addRoad(size_t x, size_t y, Road r);
+	void removeRoad(size_t x, size_t y);
 	// Add rail track at the tile given
 	void addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to);
 	// Add a railway station at the position given in the direction given, currently stations must be straight
