@@ -12,6 +12,7 @@
 #include "System/Utils/Utils.h"
 #include "System/SaveData/SaveData.h"
 #include "VehicleModel/VehicleModel.h"
+#include "PostalCodeDatabase/PostalCodeDatabase.h"
 #include <string>
 #include <imgui.h>
 
@@ -94,14 +95,17 @@ void PostOfficeController::renderUi() {
 
 void PostOfficeController::update(float) {
 	// Delete any routes that are flagged for deletion
-	for (int i = (int)(routes.size() - 1); i >= 0; i--) {
-		// Check if the route should be deleted
-		if (std::find(this->routesToDelete.begin(), this->routesToDelete.end(), i) != this->routesToDelete.end()) {
-			// Delete it
-			this->routes.erase(this->routes.begin() + i);
+	if (!this->routesToDelete.empty()) {
+		for (int i = (int)(routes.size() - 1); i >= 0; i--) {
+			// Check if the route should be deleted
+			if (std::find(this->routesToDelete.begin(), this->routesToDelete.end(), i) != this->routesToDelete.end()) {
+				// Delete it
+				this->routes.erase(this->routes.begin() + i);
+			}
 		}
+		this->routesToDelete.clear();
+		this->resetPostalCode();
 	}
-	this->routesToDelete.clear();
 }
 void PostOfficeController::onHourChange(hour_t newHour) {
 	// Check if any of the routes depart
@@ -138,24 +142,36 @@ MailTruckRoute PostOfficeController::prepareRouteForTruck(MailTruckRoute route) 
 
 void PostOfficeController::setStopTile(size_t routeIndex, size_t stopIndex, sf::Vector2i pos) {
 	// Make sure the tile is a road
-	if (this->getEntity()->getGame()->getGameMap()->hasRoadAt(pos.x, pos.y))
+	if (this->getEntity()->getGame()->getGameMap()->hasRoadAt(pos.x, pos.y)) {
 		this->routes[routeIndex].stops[stopIndex].target = pos;
+		if (this->routes.at(routeIndex).isDelivering) {
+			this->resetPostalCode();
+		}
+	}
 }
 void PostOfficeController::addStop(size_t routeIndex, MailTruckRouteStop stop) {
 	this->routes[routeIndex].stops.push_back(stop);
+	if (this->routes.at(routeIndex).isDelivering) {
+		this->resetPostalCode();
+	}
 }
 void PostOfficeController::deleteStop(size_t routeIndex, size_t stopIndex) {
 	std::vector<MailTruckRouteStop>* stops = &this->routes[routeIndex].stops;
 	stops->erase(stops->begin() + stopIndex);
+	if (this->routes.at(routeIndex).isDelivering) {
+		this->resetPostalCode();
+	}
 }
 void PostOfficeController::setRouteTime(size_t routeIndex, int time) {
 	this->routes[routeIndex].departTime = time;
 }
 void PostOfficeController::setRouteType(size_t routeIndex, bool isDelivering) {
 	this->routes[routeIndex].isDelivering = isDelivering;
+	this->resetPostalCode();
 }
 void PostOfficeController::addRoute(MailTruckRoute route) {
 	this->routes.push_back(route);
+	// Maybe will need to reset postal codes here, but for now the route is always empty
 }
 void PostOfficeController::deleteRoute(size_t routeIndex) {
 	routesToDelete.push_back(routeIndex);
@@ -171,5 +187,16 @@ std::optional<SaveData> PostOfficeController::getSaveData() {
 void PostOfficeController::fromSaveData(SaveData data) {
 	for (SaveData d : data.getDatas()) {
 		this->routes.push_back(MailTruckRoute(d));
+	}
+}
+
+void PostOfficeController::resetPostalCode() {
+	// Create postal code if it does not exist
+	if (!this->postalCodeId.has_value()) {
+		this->postalCodeId = PostalCodeDatabase::get()->createPostalCode(
+			{
+			sf::Color(rand() % 256, rand() % 256, rand() % 256),
+			}
+		);
 	}
 }

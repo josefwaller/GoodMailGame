@@ -24,7 +24,7 @@ struct Tile {
 	// The building on the tile
 	std::weak_ptr<Entity> building;
 	// The postal code assigned to the tile
-	long long postalCode;
+	id_t postalCode;
 	// The railway, if it has one
 	// The railway
 	std::optional<Railway> railway;

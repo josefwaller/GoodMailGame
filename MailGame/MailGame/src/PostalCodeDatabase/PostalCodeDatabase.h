@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics/Color.hpp>
+#include "Constants.h"
 #include <map>
 #include <vector>
 
@@ -16,18 +17,21 @@ public:
 	static PostalCodeDatabase* get();
 
 	// Create a new postal code
-	long long createPostalCode(CodeInfo = {});
+	id_t createPostalCode(CodeInfo = {});
 	// Delete a postal code
-	void deletePostalCode(long long id);
+	void deletePostalCode(id_t id);
 	// Get/Set a postal code
-	CodeInfo getPostalCode(long long id);
-	void setPostalCode(long long id, CodeInfo data);
+	CodeInfo getPostalCode(id_t id);
+	void setPostalCode(id_t id, CodeInfo data);
+	// Get the "default" postal code
+	// When a tile is no longer in a post office's delivery range, it is set to this postal code
+	id_t getDefaultPostalCode();
 	// Get the ids of all the postal codes
-	std::vector<long long> getAllIds();
+	std::vector<id_t> getAllIds();
 private:
 	static PostalCodeDatabase inst;
 	// The map of ids->code infos
-	std::map<long long, CodeInfo> postalCodes;
+	std::map<id_t, CodeInfo> postalCodes;
 	// The current id
-	static long long CURRENT_ID;
+	static id_t CURRENT_ID;
 };
