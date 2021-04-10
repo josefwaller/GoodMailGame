@@ -89,6 +89,15 @@ void PostOfficeController::renderUi() {
 	if (ImGui::Button("Create Route")) {
 		this->addRoute(MailTruckRoute(true, 0));
 	}
+
+	// Choose color of postal code
+	if (this->postalCodeId.has_value()) {
+		sf::Color pColor = PostalCodeDatabase::get()->getPostalCode(this->postalCodeId.value()).color;
+		float color[3] = { pColor.r / 255.0f, pColor.g / 255.0f, pColor.b / 255.0f };
+		ImGui::ColorEdit3("Postal code color", color);
+		pColor = sf::Color(color[0] * 255.0f, color[1] * 255.0f, color[2] * 255.0f, 100);
+		PostalCodeDatabase::get()->setPostalCode(this->postalCodeId.value(), { pColor });
+	}
 	ImGui::End();
 	ImGui::PopID();
 }
