@@ -2,6 +2,7 @@
 #include "System/SaveData/SaveData.h"
 #include <stdexcept>
 
+void Component::init() {}
 void Component::onDelete() {
 }
 
