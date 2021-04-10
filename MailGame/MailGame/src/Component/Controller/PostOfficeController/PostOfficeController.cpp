@@ -151,9 +151,7 @@ void PostOfficeController::setStopTile(size_t routeIndex, size_t stopIndex, sf::
 }
 void PostOfficeController::addStop(size_t routeIndex, MailTruckRouteStop stop) {
 	this->routes[routeIndex].stops.push_back(stop);
-	if (this->routes.at(routeIndex).isDelivering) {
-		this->resetPostalCode();
-	}
+	// Maybe will need to reset postal codes here but for now stop is always empty
 }
 void PostOfficeController::deleteStop(size_t routeIndex, size_t stopIndex) {
 	std::vector<MailTruckRouteStop>* stops = &this->routes[routeIndex].stops;
@@ -188,6 +186,7 @@ void PostOfficeController::fromSaveData(SaveData data) {
 	for (SaveData d : data.getDatas()) {
 		this->routes.push_back(MailTruckRoute(d));
 	}
+	this->resetPostalCode();
 }
 
 void PostOfficeController::resetPostalCode() {
@@ -195,8 +194,50 @@ void PostOfficeController::resetPostalCode() {
 	if (!this->postalCodeId.has_value()) {
 		this->postalCodeId = PostalCodeDatabase::get()->createPostalCode(
 			{
-			sf::Color(rand() % 256, rand() % 256, rand() % 256),
+			sf::Color(rand() % 256, rand() % 256, rand() % 256, 100),
 			}
 		);
+	}
+	// Gather all the routes that are delivering
+	std::vector<MailTruckRoute> delivering;
+	for (auto it = this->routes.begin(); it != this->routes.end(); it++) {
+		if (it->isDelivering) {
+			delivering.push_back(*it);
+		}
+	}
+	// Get all the paths the routes take
+	std::vector<std::vector<SpeedPoint>> paths;
+	for (MailTruckRoute r : delivering) {
+		std::vector<SpeedPoint> path = { SpeedPoint(this->getEntity()->transform->getPosition()) };
+		sf::Vector3f dockPoint = path.back().getPos();
+		for (MailTruckRouteStop target : r.stops) {
+			if (target.target.has_value()) {
+				// Time and speed shouldn't matter here
+				std::vector<SpeedPoint> p = this->getEntity()->pathfinder->findPathBetweenPoints(path.back().getPos(), Utils::toVector3f(target.target.value()), 0, 1.0f);
+				path.insert(path.end(), p.begin(), p.end());
+			}
+		}
+		// Finally it comes pack to the office
+		std::vector<SpeedPoint> p = this->getEntity()->pathfinder->findPathBetweenPoints(path.back().getPos(), dockPoint, 0, 1.0f);
+		path.insert(path.end(), p.begin(), p.end());
+		paths.push_back(path);
+	}
+	// Now set all those to the post code
+	// first reset all the tiles
+	for (size_t x = 0; x < GameMap::MAP_WIDTH; x++) {
+		for (size_t y = 0; y < GameMap::MAP_HEIGHT; y++) {
+			if (this->getEntity()->getGameMap()->getTileAt(x, y).postalCode == this->postalCodeId.value()) {
+				this->getEntity()->getGameMap()->setCodeForTile(x, y, PostalCodeDatabase::get()->getDefaultPostalCode());
+			}
+		}
+	}
+	// Now set all the tiles to our code
+	for (std::vector<SpeedPoint> path : paths) {
+		for (SpeedPoint point : path) {
+			for (sf::Vector3f offset : {sf::Vector3f(0, 0, 0), sf::Vector3f(1, 0, 0), sf::Vector3f(-1, 0, 0), sf::Vector3f(0, 1, 0), sf::Vector3f(0, -1, 0)}) {
+				sf::Vector3f toSet = point.getPos() + offset;
+				this->getEntity()->getGameMap()->setCodeForTile((size_t)floor(toSet.x), (size_t)floor(toSet.y), this->postalCodeId.value());
+			}
+		}
 	}
 }
