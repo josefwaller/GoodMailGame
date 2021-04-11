@@ -12,16 +12,16 @@ class Entity;
 class VehiclePresets {
 public:
 	entity_ptr mailTruck(
-		Game* g, sf::Vector3f pos, IsoRotation rot, MailTruckRoute route, std::weak_ptr<Entity> office
+		Game* g, sf::Vector3f pos, IsoRotation rot, MailTruckRoute route, std::weak_ptr<Entity> office, gtime_t spawnTime
 	);
 	entity_ptr cargoTruck(
-		Game* g, sf::Vector3f pos, IsoRotation rot, TransitRoute route, std::weak_ptr<Entity> office
+		Game* g, sf::Vector3f pos, IsoRotation rot, TransitRoute route, std::weak_ptr<Entity> office, gtime_t spawnTime
 	);
 	entity_ptr train(
-		Game* g, sf::Vector3f pos, IsoRotation rot, TransitRoute route, std::weak_ptr<Entity> depot
+		Game* g, sf::Vector3f pos, IsoRotation rot, TransitRoute route, std::weak_ptr<Entity> depot, gtime_t spawnTime
 	);
 	entity_ptr plane(
-		Game* g, sf::Vector3f pos, IsoRotation rot, TransitRoute route, std::weak_ptr<Entity> depot
+		Game* g, sf::Vector3f pos, IsoRotation rot, TransitRoute route, std::weak_ptr<Entity> depot, gtime_t spawnTime
 	);
 	entity_ptr trainCar(Game* g, sf::Vector3f pos, IsoRotation rot, IsoSprite sprites);
 };

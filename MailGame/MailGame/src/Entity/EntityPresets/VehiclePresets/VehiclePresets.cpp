@@ -26,7 +26,8 @@ std::shared_ptr<Entity> VehiclePresets::mailTruck(
 	sf::Vector3f pos,
 	IsoRotation rot,
 	MailTruckRoute route,
-	std::weak_ptr<Entity> postOffice
+	std::weak_ptr<Entity> postOffice,
+	gtime_t spawnTime
 ) {
 	return Entity::createEntity(
 		g,
@@ -41,7 +42,7 @@ std::shared_ptr<Entity> VehiclePresets::mailTruck(
 			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
-		new CarController(g->getTime(), route.model, {}),
+		new CarController(spawnTime, route.model, {}),
 		nullptr,
 		new MailContainer(),
 		nullptr,
@@ -55,7 +56,9 @@ std::shared_ptr<Entity> VehiclePresets::cargoTruck(
 	sf::Vector3f pos,
 	IsoRotation rot,
 	TransitRoute route,
-	std::weak_ptr<Entity> office) {
+	std::weak_ptr<Entity> office,
+	gtime_t spawnTime
+) {
 	return Entity::createEntity(
 		g,
 		EntityTag::CargoTruck,
@@ -69,7 +72,7 @@ std::shared_ptr<Entity> VehiclePresets::cargoTruck(
 			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
-		new CarController(g->getTime(), route.model),
+		new CarController(spawnTime, route.model),
 		nullptr,
 		new MailContainer(),
 		nullptr,
@@ -83,7 +86,8 @@ std::shared_ptr<Entity> VehiclePresets::train(
 	sf::Vector3f pos,
 	IsoRotation rot,
 	TransitRoute route,
-	std::weak_ptr<Entity> depot
+	std::weak_ptr<Entity> depot,
+	gtime_t spawnTime
 ) {
 	std::vector<std::weak_ptr<Entity>> trainCars;
 	if (route.cargoCarModel.has_value()) {
@@ -107,7 +111,7 @@ std::shared_ptr<Entity> VehiclePresets::train(
 			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
-		new TrainController(g->getTime(), route.model, trainCars),
+		new TrainController(spawnTime, route.model, trainCars),
 		nullptr,
 		new MailContainer(),
 		nullptr,
@@ -120,7 +124,9 @@ std::shared_ptr<Entity> VehiclePresets::plane(
 	sf::Vector3f pos,
 	IsoRotation rot,
 	TransitRoute route,
-	std::weak_ptr<Entity> depot) {
+	std::weak_ptr<Entity> depot,
+	gtime_t spawnTime
+) {
 	return Entity::createEntity(
 		g,
 		EntityTag::Airplane,
@@ -134,7 +140,7 @@ std::shared_ptr<Entity> VehiclePresets::plane(
 			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),
-		new PlaneController(g->getTime(), route.model),
+		new PlaneController(spawnTime, route.model),
 		nullptr,
 		new MailContainer(),
 		nullptr,

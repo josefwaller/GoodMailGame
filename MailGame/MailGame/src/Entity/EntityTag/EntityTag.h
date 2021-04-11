@@ -21,14 +21,14 @@
 	F(Residence, BuildingPresets::residence(g, pos, rot)) \
 	F(PostOffice, BuildingPresets::postOffice(g, pos, rot)) \
 	F(MailBox, BuildingPresets::mailBox(g, pos, rot)) \
-	F(MailTruck, VehiclePresets::mailTruck(g, pos, rot, MailTruckRoute(false, 0), {})) \
+	F(MailTruck, VehiclePresets::mailTruck(g, pos, rot, MailTruckRoute(false, 0), {}, 0)) \
 	F(CargoTruckDepot, BuildingPresets::cargoTruckDepot(g, pos, rot)) \
-	F(CargoTruck, VehiclePresets::cargoTruck(g, pos, rot, TransitRoute(0, VehicleModel::SlowCargoTruck), {})) \
+	F(CargoTruck, VehiclePresets::cargoTruck(g, pos, rot, TransitRoute(0, VehicleModel::SlowCargoTruck), {}, 0)) \
 	F(TrainStation, BuildingPresets::trainStation(g, pos, rot)) \
-	F(Train, VehiclePresets::train(g, pos, rot, TransitRoute(0, VehicleModel::SlowTrain), {})) \
+	F(Train, VehiclePresets::train(g, pos, rot, TransitRoute(0, VehicleModel::SlowTrain), {}, 0)) \
 	F(TrainCar, VehiclePresets::trainCar(g, pos, rot, IsoSprite(sf::Sprite(), sf::Sprite(), sf::Sprite(), sf::Sprite()))) \
 	F(Airport, BuildingPresets::airport(g, pos, rot)) \
-	F(Airplane, VehiclePresets::plane(g, pos, rot, TransitRoute(0, VehicleModel::SlowAirplane), {}))\
+	F(Airplane, VehiclePresets::plane(g, pos, rot, TransitRoute(0, VehicleModel::SlowAirplane), {}, 0))\
 	F(RailwaySwitch, BuildingPresets::railwaySwitch(g, pos, rot))\
 	F(Warehouse, BuildingPresets::warehouse(g, pos, rot))\
 	F(CarDock, BuildingPresets::carDock(g, pos, rot))\

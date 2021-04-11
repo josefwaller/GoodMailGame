@@ -130,7 +130,8 @@ void PostOfficeController::onHourChange(hour_t newHour) {
 				sf::Vector3f(transit->getCarStop().tile),
 				IsoRotation::NORTH,
 				prepareRouteForTruck(*it),
-				this->getEntity()
+				this->getEntity(),
+				it->departTime
 			);
 			game->addEntity(truck);
 		}

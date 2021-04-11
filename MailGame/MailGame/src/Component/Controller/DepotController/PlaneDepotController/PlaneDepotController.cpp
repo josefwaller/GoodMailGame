@@ -14,7 +14,8 @@ void PlaneDepotController::spawnVehicleForRoute(TransitRoute route) {
 			this->getEntity()->transform->getPosition(),
 			this->getEntity()->transform->getRotation(),
 			prepareRouteForVehicle(route),
-			this->getEntity()
+			this->getEntity(),
+			route.departTime
 		)
 	);
 }

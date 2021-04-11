@@ -14,7 +14,8 @@ void TrainDepotController::spawnVehicleForRoute(TransitRoute route) {
 			this->getEntity()->transitStop->getTrainStop().tile,
 			this->getEntity()->transform->getRotation() + 1,
 			prepareRouteForVehicle(route),
-			this->getEntity()
+			this->getEntity(),
+			route.departTime
 		)
 	);
 }

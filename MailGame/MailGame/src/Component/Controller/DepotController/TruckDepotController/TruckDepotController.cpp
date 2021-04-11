@@ -13,7 +13,8 @@ void TruckDepotController::spawnVehicleForRoute(TransitRoute route) {
 			this->getEntity()->transitStop->getCarStop().tile,
 			IsoRotation::NORTH,
 			prepareRouteForVehicle(route),
-			this->getEntity()
+			this->getEntity(),
+			route.departTime
 		)
 	);
 }
