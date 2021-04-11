@@ -13,6 +13,7 @@ public:
 	};
 	PlaneController(gtime_t departTime, VehicleModel model);
 protected:
+	virtual void init() override;
 	virtual void update(float delta) override;
 	virtual void onArriveAtDest(gtime_t arriveTime) override;
 

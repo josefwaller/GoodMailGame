@@ -4,7 +4,8 @@
 class CarController : public VehicleController {
 public:
 	CarController(gtime_t departTime, VehicleModel model, std::vector<std::weak_ptr<Entity>> cargoCars = {});
-	void update(float delta);
+	virtual void init() override;
+	virtual void update(float delta) override;
 protected:
 	virtual void onArriveAtPoint(size_t pointIndex, gtime_t arriveTime) override;
 	virtual void onArriveAtDest(gtime_t arriveTime) override;

@@ -9,16 +9,17 @@
 
 CarController::CarController(gtime_t departTime, VehicleModel model, std::vector<std::weak_ptr<Entity>> cargoCars) : VehicleController(departTime, model, cargoCars), stopIndex(0) {}
 
+void CarController::init() {
+	this->stops = this->getEntity()->ai->getStops();
+	this->stopIndex = 1;
+	this->stops[0].expectedTime = this->departTime;
+	this->setPoints(Utils::speedPointVectorToRoutePointVector(
+		this->getPathBetweenStops(this->stops[0], this->stops[1]),
+		this->departTime,
+		this->model));
+}
+
 void CarController::update(float delta) {
-	if (this->stops.empty()) {
-		this->stops = this->getEntity()->ai->getStops();
-		this->stopIndex = 1;
-		this->stops[0].expectedTime = this->departTime;
-		this->setPoints(Utils::speedPointVectorToRoutePointVector(
-			this->getPathBetweenStops(this->stops[0], this->stops[1]),
-			this->departTime,
-			this->model));
-	}
 	VehicleController::update(delta);
 }
 

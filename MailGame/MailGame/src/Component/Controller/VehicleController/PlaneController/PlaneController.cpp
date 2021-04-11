@@ -13,12 +13,12 @@ const float TAXI_SPEED = 1.0f;
 
 PlaneController::PlaneController(gtime_t departTime, VehicleModel model) : VehicleController(departTime, model), stops({}), stopIndex(0), state(State::InDepot), runway(sf::Vector2i(), sf::Vector2i()) {}
 
+void PlaneController::init() {
+	this->stops = this->getEntity()->ai->getStops();
+}
 void PlaneController::update(float delta) {
 	// This will eventually be changed hopefully, as it's a bit messy atm
 	if (this->state == State::InDepot) {
-		if (this->stopIndex == 0) {
-			this->stops = this->getEntity()->ai->getStops();
-		}
 		if (this->stopIndex == this->stops.size() - 1) {
 			// Done
 			this->getEntity()->getGame()->removeEntity(this->getEntity());

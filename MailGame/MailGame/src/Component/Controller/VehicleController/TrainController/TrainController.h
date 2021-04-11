@@ -8,6 +8,7 @@ public:
 		ArriveAtStation
 	};
 	TrainController(gtime_t departTime, VehicleModel model, std::vector<std::weak_ptr<Entity>> trainCars = {});
+	virtual void init() override;
 	virtual void update(float delta) override;
 	virtual void onDelete() override;
 protected:

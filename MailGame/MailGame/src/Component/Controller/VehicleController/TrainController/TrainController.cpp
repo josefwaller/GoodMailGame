@@ -10,19 +10,20 @@
 
 TrainController::TrainController(gtime_t departTime, VehicleModel model, std::vector<std::weak_ptr<Entity>> trainCars) : VehicleController(departTime, model, trainCars), stopIndex(0), state(State::InTransit), isBlocked(false), lockedTiles({}) {}
 
+void TrainController::init() {
+	// Get the stops
+	this->stops = this->getEntity()->ai->getStops();
+	this->stopIndex = 1;
+	// Depart from the depot
+	std::weak_ptr<Entity> depot = this->stops.front().getEntityTarget();
+	// Get a path from the depot path to the first station
+	// TODO: It should maybe go over all the points returned from getDockPath(depot) first?
+	auto depart = this->getDockPath(depot.lock());
+	auto arrive = this->getDockPath(this->stops.at(this->stopIndex).getEntityTarget().lock());
+	this->setPoints(Utils::speedPointVectorToRoutePointVector(this->getEntity()->pathfinder->findPathBetweenPoints(depart.front().getPos(), arrive.front().getPos(), this->departTime, getSpeed()), this->departTime, this->model));
+}
+
 void TrainController::update(float delta) {
-	if (this->stopIndex == 0) {
-		// Get the stops
-		this->stops = this->getEntity()->ai->getStops();
-		this->stopIndex = 1;
-		// Depart from the depot
-		std::weak_ptr<Entity> depot = this->stops.front().getEntityTarget();
-		// Get a path from the depot path to the first station
-		// TODO: It should maybe go over all the points returned from getDockPath(depot) first?
-		auto depart = this->getDockPath(depot.lock());
-		auto arrive = this->getDockPath(this->stops.at(this->stopIndex).getEntityTarget().lock());
-		this->setPoints(Utils::speedPointVectorToRoutePointVector(this->getEntity()->pathfinder->findPathBetweenPoints(depart.front().getPos(), arrive.front().getPos(), this->departTime, getSpeed()), this->departTime, this->model));
-	}
 	if (this->isBlocked) {
 		std::vector<SpeedPoint> arrivingPath = this->getDockPath(this->stops.at(this->stopIndex).getEntityTarget().lock());
 		std::vector<SpeedPoint> points = this->getEntity()->pathfinder->findPathBetweenPoints(this->getEntity()->transform->getPosition(), arrivingPath.front().getPos(), this->getEntity()->getGame()->getTime(), this->getSpeed());
