@@ -47,7 +47,7 @@ public:
 	GameMap* getGameMap();
 	// Get the UI
 	UiHandler* getUi();
-	// Get mouse position in screen coordinates
+	// Get mouse position in game coordinates
 	sf::Vector2f getMousePosition();
 	// Get the rotation of the camera
 	IsoRotation getRotation();
@@ -55,6 +55,8 @@ public:
 	void rotateCamera();
 	// Transform world coordinates into screen coordinates
 	sf::Vector2f worldToScreenPos(sf::Vector3f pos);
+	// Transform screen coords into the resulting world coords at z = 0
+	sf::Vector2f screenToWorldPos(sf::Vector2f pos);
 	// Add/Remove entities
 	void addEntity(std::shared_ptr<Entity> e);
 	void removeEntity(std::weak_ptr<Entity> e);
