@@ -43,7 +43,7 @@ void GameMap::generateNew() {
 	generateCityAt({ MAP_WIDTH / 2, MAP_HEIGHT / 4 });
 }
 void GameMap::render(sf::RenderWindow* window) {
-	// Render all the tiles
+	// Render all the tiles on screen
 	int rotation = this->game->getRotation().getRotation();
 	switch (rotation) {
 	case IsoRotation::NORTH:
@@ -95,6 +95,11 @@ sf::Sprite GameMap::getRoadSprite(Road road, IsoRotation gameRotation) {
 	return ROAD_SPRITES[index];
 }
 void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
+	sf::Vector2f p = this->game->worldToScreenPos(sf::Vector3f(x, y, 0));
+	sf::FloatRect r = this->game->getViewport();
+	if (!r.contains(p)) {
+		return;
+	}
 	if (auto e = this->tiles[x][y].building.lock()) {
 		// A bit messy, but hopefully this will be removed before the final product
 		// Basically use a whitelist of entity tags which should be drawn instead of tiles
