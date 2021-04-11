@@ -4,6 +4,7 @@
 #include "Component/Component.h"
 #include "System/SpeedPoint/SpeedPoint.h"
 #include "System/Utils/Utils.h"
+#include "GameMap/Tile/Road/Road.h"
 
 /*
  * A component that finds a path between two points

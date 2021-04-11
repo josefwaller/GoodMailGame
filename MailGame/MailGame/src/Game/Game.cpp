@@ -127,6 +127,14 @@ void Game::update(float delta) {
 		);
 	}
 	this->toRemove.clear();
+
+	// Add entities
+	this->entities.insert(this->entities.end(), this->toAdd.begin(), this->toAdd.end());
+	for (std::shared_ptr<Entity> e : this->toAdd) {
+		if (e->controller)
+			e->controller->init();
+	}
+	this->toAdd.clear();
 }
 sf::Vector2f Game::worldToScreenPos(sf::Vector3f pos) {
 	sf::Vector2f pos2D(pos.x, pos.y);
@@ -147,7 +155,7 @@ sf::Vector2f Game::worldToScreenPos(sf::Vector3f pos) {
 }
 
 void Game::addEntity(std::shared_ptr<Entity> e) {
-	this->entities.push_back(e);
+	this->toAdd.push_back(e);
 }
 void Game::removeEntity(std::weak_ptr<Entity> e) {
 	this->toRemove.push_back(e);

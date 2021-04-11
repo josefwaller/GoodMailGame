@@ -29,6 +29,9 @@ public:
 	// Convert vector2f to 2i
 	static sf::Vector2i toVector2i(sf::Vector2f p);
 	static sf::Vector2i toVector2i(sf::Vector3f p);
+	static sf::Vector2i toVector2i(sf::Vector3i p);
 	// Convert to vector 3f
 	static sf::Vector3f toVector3f(sf::Vector2i p);
+	// Convert to vector 3i
+	static sf::Vector3i toVector3i(sf::Vector2i p);
 };

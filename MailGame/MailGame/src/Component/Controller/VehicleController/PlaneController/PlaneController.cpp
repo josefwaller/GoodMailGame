@@ -212,7 +212,7 @@ std::vector<PlaneController::Runway> PlaneController::getAllRunwaysForEntity(std
 	}
 	return toReturn;
 }
-std::vector<sf::Vector3f> PlaneController::getTaxiPath(sf::Vector2i from, sf::Vector2i to) {
+std::vector<sf::Vector3f> PlaneController::getTaxiPath(sf::Vector2i from, std::vector<sf::Vector2i> to) {
 	std::vector<sf::Vector2i> potential = { from };
 	std::vector<sf::Vector2i> visited;
 	auto previous = std::map<sf::Vector2i, sf::Vector2i, std::function<bool(sf::Vector2i one, sf::Vector2i two)>>{
@@ -225,24 +225,26 @@ std::vector<sf::Vector3f> PlaneController::getTaxiPath(sf::Vector2i from, sf::Ve
 		potential.pop_back();
 		if (std::find(visited.begin(), visited.end(), current) == visited.end()) {
 			visited.push_back(current);
-			for (int x = -1; x < 2; x++) {
-				for (int y = -1; y < 2; y++) {
-					if (x == 0 || y == 0) {
-						sf::Vector2i newPos(current.x + x, current.y + y);
-						if (newPos == to) {
-							std::vector<sf::Vector3f> toReturn = { Utils::toVector3f(newPos), Utils::toVector3f(current) };
-							while (current != from) {
-								current = previous.at(current);
-								toReturn.push_back(Utils::toVector3f(current));
-							}
-							std::reverse(toReturn.begin(), toReturn.end());
-							return toReturn;
-						}
-						if (this->getEntity()->getGameMap()->getTileAt(newPos.x, newPos.y).airplaneRoad.has_value()) {
-							potential.push_back(newPos);
-							previous.insert({ newPos, current });
-						}
+			Tile t = this->getEntity()->getGame()->getGameMap()->getTileAt(current);
+			if (!t.airplaneRoad.has_value()) {
+				continue;
+			}
+			std::vector<sf::Vector3i> connected = t.airplaneRoad.value().getConnectedTiles(Utils::toVector3i(current));
+			for (sf::Vector3i c : connected) {
+				sf::Vector2i newPos = Utils::toVector2i(c);
+				if (std::find(to.begin(), to.end(), newPos) != to.end()) {
+					std::vector<sf::Vector3f> toReturn = { Utils::toVector3f(newPos), Utils::toVector3f(current) };
+					while (current != from) {
+						current = previous.at(current);
+						toReturn.push_back(Utils::toVector3f(current));
 					}
+					std::reverse(toReturn.begin(), toReturn.end());
+					return toReturn;
+				}
+				Tile otherTile = this->getEntity()->getGameMap()->getTileAt(newPos);
+				if (otherTile.airplaneRoad.has_value()) {
+					potential.push_back(newPos);
+					previous.insert({ newPos, current });
 				}
 			}
 		}
@@ -250,51 +252,17 @@ std::vector<sf::Vector3f> PlaneController::getTaxiPath(sf::Vector2i from, sf::Ve
 	return {};
 }
 std::vector<sf::Vector3f> PlaneController::getTaxiPathToRunway(sf::Vector2i pos, Runway to) {
-	return getTaxiPath(pos, to.start);
+	return getTaxiPath(pos, { to.start });
 }
 std::vector<sf::Vector3f> PlaneController::getTaxiPathToEntity(sf::Vector2i pos, std::shared_ptr<Entity> e) {
-	std::vector<sf::Vector2i> startingPoints;
+	std::vector<sf::Vector2i> destPoints;
 	if (e->tag == EntityTag::Warehouse) {
-		startingPoints = getConnectedDocks(e, EntityTag::AirplaneDock);
+		destPoints = getConnectedDocks(e, EntityTag::AirplaneDock);
 	}
 	else if (e->tag == EntityTag::Airport) {
-		startingPoints.push_back(Utils::toVector2i(e->transform->getPosition()));
+		destPoints.push_back(Utils::toVector2i(e->transform->getPosition()));
 	}
-	std::vector<sf::Vector2i> potential = startingPoints;
-	std::vector<sf::Vector2i> visited;
-	auto previous = std::map<sf::Vector2i, sf::Vector2i, std::function<bool(sf::Vector2i one, sf::Vector2i two)>>{
-		[](sf::Vector2i one, sf::Vector2i two) {
-			return 1000 * one.x + one.y > 1000 * two.x + two.y;
-		}
-	};
-	while (!potential.empty()) {
-		sf::Vector2i current = potential.back();
-		potential.pop_back();
-		if (std::find(visited.begin(), visited.end(), current) == visited.end()) {
-			visited.push_back(current);
-			for (int x = -1; x < 2; x++) {
-				for (int y = -1; y < 2; y++) {
-					if (x == 0 || y == 0) {
-						sf::Vector2i newPos(current.x + x, current.y + y);
-						if (newPos == pos) {
-							std::vector<sf::Vector3f> toReturn = { Utils::toVector3f(newPos), Utils::toVector3f(current) };
-							while (previous.find(current) != previous.end()) {
-								current = previous.at(current);
-								toReturn.push_back(Utils::toVector3f(current));
-							}
-							return toReturn;
-						}
-						if (this->getEntity()->getGameMap()->getTileAt(newPos.x, newPos.y).airplaneRoad.has_value()) {
-							// Add to potential
-							potential.push_back(newPos);
-							previous.insert({ newPos, current });
-						}
-					}
-				}
-			}
-		}
-	}
-	return {};
+	return getTaxiPath(pos, destPoints);
 }
 std::vector<SpeedPoint> PlaneController::setupTaxiPath(std::vector<sf::Vector3f> path) {
 	std::vector<SpeedPoint> speedPath = { SpeedPoint(path.front(), 0.0f) };

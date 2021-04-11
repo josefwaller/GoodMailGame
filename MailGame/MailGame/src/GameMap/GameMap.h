@@ -28,6 +28,7 @@ public:
 	void loadFromSaveData(SaveData data);
 
 	Tile getTileAt(size_t x, size_t y);
+	Tile getTileAt(sf::Vector2i coords);
 
 	void render(sf::RenderWindow* window);
 

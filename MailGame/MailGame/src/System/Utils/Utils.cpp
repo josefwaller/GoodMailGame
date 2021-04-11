@@ -125,6 +125,12 @@ sf::Vector2i Utils::toVector2i(sf::Vector2f p) {
 sf::Vector2i Utils::toVector2i(sf::Vector3f p) {
 	return sf::Vector2i(floor(p.x), floor(p.y));
 }
+sf::Vector2i Utils::toVector2i(sf::Vector3i p) {
+	return sf::Vector2i(p.x, p.y);
+}
 sf::Vector3f Utils::toVector3f(sf::Vector2i p) {
 	return sf::Vector3f(p.x, p.y, 0.0f);
+}
+sf::Vector3i Utils::toVector3i(sf::Vector2i p) {
+	return sf::Vector3i(p.x, p.y, 0);
 }

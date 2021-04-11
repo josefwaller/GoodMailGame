@@ -3,6 +3,7 @@
 #include "Game/Game.h"
 #include "Component/Transform/Transform.h"
 #include "VehicleModel/VehicleModel.h"
+#include "System/Utils/Utils.h"
 
 PlaneDepotController::PlaneDepotController() : DepotController(TransitType::Airplane, { VehicleModel::SlowAirplane, VehicleModel::FastAirplane }) {}
 

@@ -75,7 +75,11 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 	{ EntityTag::Airport,
 		ConstructionRecipe(
 			"Airport",
-			&BuildingPresets::airport,
+			[&](Game* g, sf::Vector3f pos, IsoRotation rot) {
+				sf::Vector2i p = Utils::toVector2i(pos);
+				g->getGameMap()->addAirplaneRoad(p.x, p.y, AirplaneRoad(rot));
+				return BuildingPresets::airport(g, pos, rot);
+			},
 			IsoSprite(
 				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-N"),
 				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-E"),
@@ -153,7 +157,10 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 	{ EntityTag::AirplaneDock,
 		ConstructionRecipe(
 			"AirplaneDock",
-			&BuildingPresets::airplaneDock,
+			[&](Game* g, sf::Vector3f pos, IsoRotation rot) {
+				g->getGameMap()->addAirplaneRoad((size_t)pos.x, (size_t)pos.y, AirplaneRoad(rot));
+				return BuildingPresets::airplaneDock(g, pos, rot);
+			},
 			IsoSprite(
 				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-N"),
 				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-E"),

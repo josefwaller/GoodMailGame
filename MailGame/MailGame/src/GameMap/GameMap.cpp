@@ -352,6 +352,9 @@ Tile GameMap::getTileAt(size_t x, size_t y) {
 	}
 	return Tile(TileType::OffMap);
 }
+Tile GameMap::getTileAt(sf::Vector2i p) {
+	return getTileAt((size_t)p.x, (size_t)p.y);
+}
 bool GameMap::hasRoadAt(size_t x, size_t y) {
 	return this->getTileAt(x, y).road.has_value();
 }

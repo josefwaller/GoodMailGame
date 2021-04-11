@@ -8,10 +8,6 @@ class SaveData;
 // A component in an entity
 class Component {
 public:
-	// Initialization method
-	// Called when it is safe to initialize, since when loading we need to construct entities without initializing them
-	// Currently not called when loading, usually they are initialized in fromSaveData
-	virtual void init();
 	// Method ran on deletion
 	virtual void onDelete();
 	// Set/Get Entity

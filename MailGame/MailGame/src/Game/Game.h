@@ -98,6 +98,9 @@ private:
 	std::vector<std::shared_ptr<Entity>> entities;
 	// The entities to be removed at the end of the next frame
 	std::vector<std::weak_ptr<Entity>> toRemove;
+	// The entities to be added at the end of the next frame
+	// Added after entities have been removed
+	std::vector<std::shared_ptr<Entity>> toAdd;
 	// The game map
 	GameMap gameMap;
 	// The Ui Handler

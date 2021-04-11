@@ -48,14 +48,7 @@ std::vector<SpeedPoint> RoadPathfinder::findPathBetweenPoints(
 			return toReturn;
 		}
 		// Add the points around it
-		std::vector<sf::Vector3i> toAdd;
-		for (size_t i = 0; i < 4; i++) {
-			IsoRotation rot(i);
-			sf::Vector3i off = point + sf::Vector3i(rot.getUnitVector3D());
-			if (gMap->hasRoadInDirection(point.x, point.y, rot) && gMap->hasRoadInDirection(off.x, off.y, rot + 2)) {
-				toAdd.push_back(off);
-			}
-		}
+		std::vector<sf::Vector3i> toAdd = fromTile.road.value().getConnectedTiles(point);
 		// Add any points to potential points we've not visited
 		for (auto it = toAdd.begin(); it != toAdd.end(); it++) {
 			if (std::find(visitedPoints.begin(), visitedPoints.end(), *it) == visitedPoints.end()) {

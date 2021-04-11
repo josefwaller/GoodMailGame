@@ -42,8 +42,9 @@ private:
 	std::vector<sf::Vector3f> getTaxiPathToRunway(sf::Vector2i from, Runway to);
 	// Get the taxiing path to an entity
 	std::vector<sf::Vector3f> getTaxiPathToEntity(sf::Vector2i from, std::shared_ptr<Entity> to);
-	// Get the taxiing path for the plane to take between two points
-	std::vector<sf::Vector3f> getTaxiPath(sf::Vector2i from, sf::Vector2i to);
+	// Get the taxiing path from a starting point to any one of the end points
+	// Will choose whichever one is closest
+	std::vector<sf::Vector3f> getTaxiPath(sf::Vector2i from, std::vector<sf::Vector2i> to);
 	// Get the points to arrive at a runway
 	std::vector<SpeedPoint> getRunwayArrivePoints(Runway r);
 	// Get a lock on the runway if possible
