@@ -48,7 +48,7 @@ SaveData transitRouteStopToSaveData(TransitRouteStop stop) {
 	}
 	for (long long code : stop.toDropOff) {
 		SaveData d(DROP_OFF);
-		d.addValue(POSTAL_CODE, code);
+		d.addSizeT(POSTAL_CODE, code);
 		sd.addData(d);
 	}
 	return sd;

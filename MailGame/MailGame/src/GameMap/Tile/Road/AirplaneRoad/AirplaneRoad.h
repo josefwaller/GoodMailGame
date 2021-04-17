@@ -9,7 +9,7 @@ struct AirplaneRoad : public Road {
 	SaveData getSaveData() {
 		using namespace SaveKeys;
 		SaveData d(AIRPLANE_ROAD, Road::getSaveData());
-		d.addValue(IS_RUNWAY, isRunway);
+		d.addBool(IS_RUNWAY, isRunway);
 		return d;
 	}
 };

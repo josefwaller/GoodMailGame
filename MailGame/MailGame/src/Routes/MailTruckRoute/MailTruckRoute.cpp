@@ -10,7 +10,7 @@ SaveData MailTruckRoute::getSaveData() {
 	// Add the stops
 	for (auto it = this->stops.begin(); it != this->stops.end(); it++) {
 		SaveData d = mailTruckRouteStopToSaveData(*it);
-		d.addValue(INDEX, (it - this->stops.begin()));
+		d.addSizeT(INDEX, (it - this->stops.begin()));
 		sd.addData(d);
 	}
 	return sd;
@@ -32,7 +32,7 @@ SaveData mailTruckRouteStopToSaveData(MailTruckRouteStop stop) {
 		stopData.addVector2i(TARGET_ID, target);
 	}
 	else {
-		stopData.addValue(HAS_TARGET, false);
+		stopData.addBool(HAS_TARGET, false);
 	}
 	return stopData;
 }

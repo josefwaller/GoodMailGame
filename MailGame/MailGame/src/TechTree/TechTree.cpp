@@ -48,7 +48,7 @@ SaveData TechTree::getSaveData() {
 	for (auto kv : this->nodes) {
 		if (kv.second.getIsUnlocked()) {
 			SaveData tsd(technologyToString(kv.first));
-			tsd.addValue(IS_UNLOCKED, true);
+			tsd.addBool(IS_UNLOCKED, true);
 			sd.addData(tsd);
 		}
 	}

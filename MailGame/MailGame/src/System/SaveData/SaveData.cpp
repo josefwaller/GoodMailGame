@@ -24,39 +24,15 @@ SaveData::SaveData(std::string name, SaveData data) : name(name), values(data.va
 void SaveData::addData(SaveData data) {
 	this->datas.push_back(data);
 }
-void SaveData::addValue(std::string name, int value) {
-	addValue(name, std::to_string(value));
-}
-void SaveData::addValue(std::string name, size_t value) {
-	addValue(name, std::to_string(value));
-}
-void SaveData::addValue(std::string name, bool val) {
-	addValue(name, std::to_string(val));
-}
-void SaveData::addValue(std::string name, long long val) {
-	addValue(name, std::to_string(val));
-}
-void SaveData::addValue(std::string name, hour_t val) {
-	addValue(name, std::to_string(val));
-}
-void SaveData::addValue(std::string name, float val) {
-	addValue(name, std::to_string(val));
-}
-std::string SaveData::getValue(std::string name) {
-	return this->values[name];
-}
-float SaveData::getValuef(std::string name) {
-	return std::stof(getValue(name));
-}
 std::vector<SaveData> SaveData::getDatas() {
 	return this->datas;
 }
-bool SaveData::hasValue(std::string name) {
+bool SaveData::hasValue(sdkey_t name) {
 	return (this->values.find(name) != this->values.end());
 }
 void SaveData::addValuesFrom(SaveData other) {
-	for (std::string key : other.getValueNames()) {
-		this->addValue(key, other.getValue(key));
+	for (sdkey_t key : other.getKeys()) {
+		this->addString(key, other.getString(key));
 	}
 }
 
@@ -224,8 +200,8 @@ std::vector<sf::Vector2i> SaveData::getVector2iVector(sdkey_t key) {
 	return values;
 }
 
-std::vector<std::string> SaveData::getValueNames() {
-	std::vector<std::string> toReturn;
+std::vector<std::string> SaveData::getKeys() {
+	std::vector<sdkey_t> toReturn;
 	for (auto it = this->values.begin(); it != this->values.end(); it++) {
 		toReturn.push_back(it->first);
 	}
@@ -278,7 +254,7 @@ SaveData SaveData::fromXmlNode(rapidxml::xml_node<>* node) {
 	SaveData toReturn(std::string(node->name()));
 	// Add values
 	for (rapidxml::xml_attribute<>* attr = node->first_attribute(); attr != NULL; attr = attr->next_attribute()) {
-		toReturn.addValue(std::string(attr->name()), std::string(attr->value()));
+		toReturn.addString(std::string(attr->name()), std::string(attr->value()));
 	}
 	// Add nexted datas
 	for (rapidxml::xml_node<>* n = node->first_node(); n != NULL; n = n->next_sibling()) {

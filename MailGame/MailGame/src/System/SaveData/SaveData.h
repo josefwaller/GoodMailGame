@@ -24,27 +24,13 @@ public:
 	static SaveData fromFileContents(std::string fileContents);
 	// Get the save data represented by the xml node
 	static SaveData fromXmlNode(rapidxml::xml_node<>* node);
-	/* these are all being removed */
-	void addValue(sdkey_t k, std::string v) {
-		this->values.insert({ k, v });
-	}
-	// Add an int, long, etc
-	void addValue(std::string name, int val);
-	void addValue(std::string name, size_t val);
-	void addValue(std::string name, bool val);
-	void addValue(std::string name, long long val);
-	void addValue(std::string name, hour_t val);
-	void addValue(std::string name, float val);
 	// Add a nested SaveData
 	void addData(SaveData data);
 	// Copy all the values of the SaveData
 	void addValuesFrom(SaveData data);
-	// Get a value/dta
-	std::string getValue(std::string name);
-	float getValuef(std::string name);
 	std::vector<SaveData> getDatas();
 	// Get the first data with the name given
-	SaveData getData(std::string name);
+	SaveData getData(sdkey_t name);
 	/* these are the new ways to do it */
 	void addString(sdkey_t key, std::string value);
 	void addInt(sdkey_t key, int value);
@@ -74,15 +60,14 @@ public:
 	// This method will eventually be removed
 	std::vector<VehicleControllerStop> getVehicleControllerStopVector(sdkey_t, Game*);
 	std::vector<sf::Vector2i> getVector2iVector(sdkey_t);
-
-	// check if a value exists
-	bool hasValue(sdkey_t name);
+	// Check if a value exists
+	bool hasValue(sdkey_t);
 	// Get the string to save to file
 	std::string getAsString();
 	// Get the name
 	std::string getName();
 	// Get the names of the values
-	std::vector<std::string> getValueNames();
+	std::vector<sdkey_t> getKeys();
 private:
 	// The name of this data
 	std::string name;

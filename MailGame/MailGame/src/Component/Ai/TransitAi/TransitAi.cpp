@@ -112,7 +112,7 @@ std::optional<SaveData> TransitAi::getSaveData() {
 	SaveData sd(componentTypeToStr(ComponentType::Ai));
 	sd.addData(this->route.getSaveData());
 	if (depot.lock())
-		sd.addValue(SaveKeys::DEPOT_ID, depot.lock()->getId());
+		sd.addSizeT(SaveKeys::DEPOT_ID, depot.lock()->getId());
 	return sd;
 }
 void TransitAi::fromSaveData(SaveData data) {

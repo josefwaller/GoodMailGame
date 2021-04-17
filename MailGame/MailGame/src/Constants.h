@@ -108,4 +108,5 @@ namespace SaveKeys {
 	const sdkey_t MAIL_RECORD = "MailRecord";
 	const sdkey_t IS_DELIVERED = "isDelivered";
 	const sdkey_t DELIVERY_TIME = "deliveryTime";
+	const sdkey_t HAS_BUILDING = "hasBuilding";
 }
