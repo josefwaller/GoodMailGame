@@ -271,9 +271,21 @@ void UiHandler::update() {
 	if (this->currentState == UiState::EditingPostalCodes) {
 		if (ImGui::CollapsingHeader("Postal Codes")) {
 			for (long long id : PostalCodeDatabase::get()->getAllIds()) {
-				sprintf_s(buf, "%lu", id);
-				if (ImGui::Button(buf)) {
-					this->pCode = id;
+				PostalCode code = PostalCodeDatabase::get()->getPostalCode(id);
+				ImGui::Text(code.getName().c_str());
+				ImGui::SameLine();
+				if (this->pCode == id) {
+					sf::Color color = code.getColor();
+					float c[3] = { color.r / 255.0f, color.g / 255.0f, color.b / 255.0f };
+					ImGui::ColorEdit3("", c);
+					color = sf::Color(c[0] * 255.0f, c[1] * 255.0f, c[2] * 255.0f, 100.0f);
+					code.setColor(color);
+					PostalCodeDatabase::get()->setPostalCode(id, code);
+				}
+				else {
+					if (ImGui::Button("Edit")) {
+						this->pCode = id;
+					}
 				}
 			}
 		}
