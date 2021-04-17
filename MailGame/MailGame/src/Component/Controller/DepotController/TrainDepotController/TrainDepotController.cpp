@@ -8,6 +8,7 @@
 TrainDepotController::TrainDepotController() : DepotController(TransitType::Train, { VehicleModel::SlowTrain, VehicleModel::FastTrain }) {}
 
 void TrainDepotController::spawnVehicleForRoute(TransitRoute route) {
+	gtime_t spawnTime = this->getEntity()->getGame()->getMidnightTime() + Game::UNITS_IN_GAME_HOUR * route.departTime;
 	this->getEntity()->getGame()->addEntity(
 		VehiclePresets::train(
 			this->getEntity()->getGame(),
@@ -15,7 +16,7 @@ void TrainDepotController::spawnVehicleForRoute(TransitRoute route) {
 			this->getEntity()->transform->getRotation() + 1,
 			prepareRouteForVehicle(route),
 			this->getEntity(),
-			route.departTime
+			spawnTime
 		)
 	);
 }

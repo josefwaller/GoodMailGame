@@ -7,6 +7,7 @@
 
 TruckDepotController::TruckDepotController() : DepotController(TransitType::Car, { VehicleModel::SlowCargoTruck, VehicleModel::FastCargoTruck }) {}
 void TruckDepotController::spawnVehicleForRoute(TransitRoute route) {
+	gtime_t spawnTime = this->getEntity()->getGame()->getMidnightTime() + Game::UNITS_IN_GAME_HOUR * route.departTime;
 	this->getEntity()->getGame()->addEntity(
 		VehiclePresets::cargoTruck(
 			this->getEntity()->getGame(),
@@ -14,7 +15,7 @@ void TruckDepotController::spawnVehicleForRoute(TransitRoute route) {
 			IsoRotation::NORTH,
 			prepareRouteForVehicle(route),
 			this->getEntity(),
-			route.departTime
+			spawnTime
 		)
 	);
 }

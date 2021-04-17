@@ -122,6 +122,7 @@ void PostOfficeController::onHourChange(hour_t newHour) {
 	// Check if any of the routes depart
 	for (auto it = this->routes.begin(); it != this->routes.end(); it++) {
 		if (it->departTime == newHour && it->stops.size() >= 1) {
+			gtime_t spawnTime = this->getEntity()->getGame()->getMidnightTime() + Game::UNITS_IN_GAME_HOUR * it->departTime;
 			// Spawn a new truck for that route
 			Game* game = this->getEntity()->getGame();
 			auto trans = this->getEntity()->transform;
@@ -133,7 +134,7 @@ void PostOfficeController::onHourChange(hour_t newHour) {
 				IsoRotation::NORTH,
 				prepareRouteForTruck(*it),
 				this->getEntity(),
-				it->departTime
+				spawnTime
 			);
 			game->addEntity(truck);
 		}

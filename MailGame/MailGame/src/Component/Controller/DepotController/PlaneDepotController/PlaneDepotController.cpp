@@ -8,6 +8,7 @@
 PlaneDepotController::PlaneDepotController() : DepotController(TransitType::Airplane, { VehicleModel::SlowAirplane, VehicleModel::FastAirplane }) {}
 
 void PlaneDepotController::spawnVehicleForRoute(TransitRoute route) {
+	gtime_t spawnTime = this->getEntity()->getGame()->getMidnightTime() + Game::UNITS_IN_GAME_HOUR * route.departTime;
 	this->getEntity()->getGame()->addEntity(
 		VehiclePresets::plane(
 			this->getEntity()->getGame(),
@@ -15,7 +16,7 @@ void PlaneDepotController::spawnVehicleForRoute(TransitRoute route) {
 			this->getEntity()->transform->getRotation(),
 			prepareRouteForVehicle(route),
 			this->getEntity(),
-			route.departTime
+			spawnTime
 		)
 	);
 }
