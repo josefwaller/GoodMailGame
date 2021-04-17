@@ -105,6 +105,10 @@ void TransitAi::onArriveAtStop(size_t stopIndex) {
 	}
 	// Transfer letters between
 	mail->transferSomeMailTo(toDropOff, otherMail, getMailEvent());
+	unsigned int numMail = mail->getNumLetters();
+	// Keep below capacity
+	// The default constructor here should never be called, since min(size, ...) can't be greater than size
+	toPickUp.resize(std::min(toPickUp.size(), this->getCapacity(this->route) - numMail), Mail(sf::Vector2i(), sf::Vector2i(), 0));
 	otherMail->transferSomeMailTo(toPickUp, mail);
 }
 

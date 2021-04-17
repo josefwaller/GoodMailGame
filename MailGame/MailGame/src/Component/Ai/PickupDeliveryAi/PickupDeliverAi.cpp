@@ -98,8 +98,11 @@ void PickupDeliveryAi::onArriveAtTile(sf::Vector2i point) {
 				sf::Vector3f pos = (*it)->transitStop->getCarStop().tile;
 				// Check if the transit location is the tile it just arrived at
 				if (sf::Vector2f(pos.x, pos.y) == sf::Vector2f(point)) {
-					// Take all the letters
-					(*it)->mailContainer->transferAllMailTo(this->getEntity()->mailContainer, MailEvent::OnMailTruck);
+					// Take all the letters we can carry
+					std::vector<Mail> mail = (*it)->mailContainer->getMail();
+					unsigned int numMail = this->getEntity()->mailContainer->getNumLetters();
+					mail.resize(std::min(mail.size(), this->getCapacity(this->route) - numMail), Mail(sf::Vector2i(), sf::Vector2i(), 0));
+					(*it)->mailContainer->transferSomeMailTo(mail, this->getEntity()->mailContainer, MailEvent::OnMailTruck);
 				}
 			}
 		}
@@ -175,9 +178,10 @@ void PickupDeliveryAi::pickupMailFromOffice() {
 			mailForRoute.push_back(m);
 		}
 	}
+	// Don't pick up more mail than you can carry
+	mailForRoute.resize(std::min(mailForRoute.size(), this->getCapacity(this->route)), Mail(sf::Vector2i(), sf::Vector2i(), 0));
 	// Take the mail
 	this->office.lock()->mailContainer->transferSomeMailTo(mailForRoute, this->getEntity()->mailContainer, MailEvent::OnMailTruck);
-	auto x = 0;
 }
 
 std::optional<SaveData> PickupDeliveryAi::getSaveData() {
