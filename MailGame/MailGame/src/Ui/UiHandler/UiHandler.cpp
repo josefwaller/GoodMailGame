@@ -278,9 +278,9 @@ void UiHandler::update() {
 			}
 		}
 		if (ImGui::Button("New code")) {
-			PostalCodeDatabase::get()->createPostalCode({
-				sf::Color(rand() % 256, rand() % 256, rand() % 256, 100)
-				});
+			PostalCodeDatabase::get()->createPostalCode(
+				"Postal Code " + std::to_string(PostalCodeDatabase::get()->getAllIds().size())
+			);
 		}
 
 		if (ImGui::Button("Done")) {
@@ -375,12 +375,12 @@ void UiHandler::render(sf::RenderWindow* w) {
 		for (size_t x = 0; x < gMap->MAP_WIDTH; x++) {
 			for (size_t y = 0; y < gMap->MAP_HEIGHT; y++) {
 				Tile t = gMap->getTileAt(x, y);
-				PostalCodeDatabase::CodeInfo code = PostalCodeDatabase::get()->getPostalCode(t.postalCode);
+				PostalCode code = PostalCodeDatabase::get()->getPostalCode(t.postalCode);
 				// Get the tile outline
 				sf::VertexArray toRender = this->getDrawableTile(
 					sf::Vector2i((int)x, (int)y),
 					sf::PrimitiveType::Quads,
-					code.color);
+					code.getColor());
 				// Draw the tile
 				w->draw(toRender);
 			}

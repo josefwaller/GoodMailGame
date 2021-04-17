@@ -170,6 +170,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MainMenu\MainMenu.cpp" />
     <ClCompile Include="src\PostalCodeDatabase\PostalCodeDatabase.cpp" />
+    <ClCompile Include="src\PostalCodeDatabase\PostalCode\PostalCode.cpp" />
     <ClCompile Include="src\ResourceLoader\ResourceLoader.cpp" />
     <ClCompile Include="src\Routes\RoutePoint.cpp" />
     <ClCompile Include="src\Routes\Route.cpp" />
@@ -237,6 +238,7 @@
     <ClInclude Include="src\Mail\Mail.h" />
     <ClInclude Include="src\MainMenu\MainMenu.h" />
     <ClInclude Include="src\PostalCodeDatabase\PostalCodeDatabase.h" />
+    <ClInclude Include="src\PostalCodeDatabase\PostalCode\PostalCode.h" />
     <ClInclude Include="src\ResourceLoader\ResourceLoader.h" />
     <ClInclude Include="src\Routes\Route.h" />
     <ClInclude Include="src\Routes\RoutePoint.h" />

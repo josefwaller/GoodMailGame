@@ -210,6 +210,9 @@
     <ClCompile Include="src\EventManager\EventManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\PostalCodeDatabase\PostalCode\PostalCode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h">
@@ -405,6 +408,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\EventManager\EventManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PostalCodeDatabase\PostalCode\PostalCode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

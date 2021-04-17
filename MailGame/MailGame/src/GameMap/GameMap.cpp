@@ -29,7 +29,7 @@ GameMap::GameMap(Game* g) : game(g) {
 		GameMap::RAIL_TRACK_SPRITES.push_back(ResourceLoader::get()->getSprite("tiles/tiles", "railway-" + std::bitset<4>(i).to_string()));
 	}
 	// Add the first postal code
-	long long pCode = PostalCodeDatabase::get()->createPostalCode({ sf::Color(255, 0, 0, 100) });
+	long long pCode = PostalCodeDatabase::get()->createPostalCode("Postal Code 0", sf::Color(255, 0, 0, 100));
 	// Initialize a grid of nothing
 	for (size_t i = 0; i < MAP_WIDTH; i++) {
 		tiles.push_back(std::vector<Tile>());
