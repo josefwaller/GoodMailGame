@@ -41,6 +41,7 @@ public:
 		gtime_t loadTime,
 		gtime_t unloadTime,
 		std::string name,
+		unsigned int capacity,
 		Technology requiredTech = Technology::Default,
 		money_t money = 100,
 		std::vector<CargoCarModel> allowedCargoCars = {},
@@ -54,6 +55,7 @@ public:
 	money_t getCostPerRoute();
 	std::vector<CargoCarModel> getAllowedCargoCars();
 	unsigned int getMaxNumCargoCars();
+	unsigned int getCapacity();
 private:
 	const static std::map<VehicleModel, VehicleModelInfo> modelInfos;
 	// The speed the vehicle moves at
@@ -66,6 +68,7 @@ private:
 	money_t cost;
 	std::vector<CargoCarModel> allowedCargoCars;
 	unsigned int maxNumCargoCars;
+	unsigned int capacity;
 };
 
 // Used for saving/loading

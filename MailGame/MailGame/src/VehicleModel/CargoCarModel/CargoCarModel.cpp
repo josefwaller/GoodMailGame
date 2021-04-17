@@ -36,6 +36,9 @@ std::string CargoCarInfo::getName() {
 IsoSprite CargoCarInfo::getSprites() {
 	return this->sprites;
 }
+unsigned int CargoCarInfo::getCapacity() {
+	return this->capacity;
+}
 
 CargoCarModel stringToCargoCarModel(std::string s) {
 	for (auto it = CARGO_CAR_STRINGS.begin(); it != CARGO_CAR_STRINGS.end(); it++) {

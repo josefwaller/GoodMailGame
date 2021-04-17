@@ -35,6 +35,7 @@ public:
 
 	std::string getName();
 	IsoSprite getSprites();
+	unsigned int getCapacity();
 private:
 	static const std::map<CargoCarModel, CargoCarInfo> INFOS;
 
