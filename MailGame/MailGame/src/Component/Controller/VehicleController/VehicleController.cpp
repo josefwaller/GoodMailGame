@@ -93,7 +93,7 @@ void VehicleController::update(float delta) {
 }
 
 void VehicleController::renderUi() {
-	if (ImGui::Begin(entityTagToString(this->getEntity()->tag).c_str())) {
+	if (ImGui::Begin(this->getEntity()->getName().c_str())) {
 		size_t numMail = this->getEntity()->mailContainer->getNumLetters();
 		char buf[200];
 		sprintf_s(buf, "%zu letters", numMail);
