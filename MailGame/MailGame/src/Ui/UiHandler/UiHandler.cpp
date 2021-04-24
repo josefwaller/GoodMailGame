@@ -14,6 +14,7 @@
 #include "System/Utils/Utils.h"
 #include "TechTree/TechTree.h"
 #include "Component/Controller/Controller.h"
+#include "Component/Controller/ResidenceController/ResidenceController.h"
 
 UiHandler::UiHandler(Game* g) : game(g), currentState(UiState::Default), recipe(),
 toBuild(IsoRotation::NORTH, IsoRotation::SOUTH) {
@@ -221,6 +222,9 @@ void UiHandler::update() {
 		if (ImGui::Button("Show City Limits")) {
 			this->changeState(UiState::ShowingCityLimits);
 		}
+	}
+	if (ImGui::Button(this->currentState == UiState::ShowingResidencePaths ? "Hide Residence Paths" : "Show Residence Paths")) {
+		this->changeState(this->currentState == UiState::ShowingResidencePaths ? UiState::Default : UiState::ShowingResidencePaths);
 	}
 	if (ImGui::CollapsingHeader("Build")) {
 		for (auto kv : Construction::recipes) {
@@ -440,7 +444,24 @@ void UiHandler::render(sf::RenderWindow* w) {
 				w->draw(toRender);
 			}
 		}
+		break;
 	}
+	case UiState::ShowingResidencePaths:
+		GameMap* gMap = this->game->getGameMap();
+		sf::Vector2i t = this->getHoveredTile();
+		Tile tile = gMap->getTileAt(t);
+		if (tile.building.lock() && tile.building.lock()->tag == EntityTag::Residence) {
+			std::vector<sf::Vector2i> dests = std::dynamic_pointer_cast<ResidenceController>(tile.building.lock()->controller)->getDestinations();
+			for (sf::Vector2i d : dests) {
+				sf::VertexArray toRender(sf::PrimitiveType::LinesStrip, 2);
+				toRender[0].position = this->game->worldToScreenPos(Utils::toVector3f(t));
+				toRender[0].color = sf::Color::Red;
+				toRender[1].position = this->game->worldToScreenPos(Utils::toVector3f(d));
+				toRender[1].color = sf::Color::Green;
+				w->draw(toRender);
+			}
+		}
+		break;
 	}
 	// Outline the sprite currently being hovered
 	sf::VertexArray vArr = getDrawableTile(this->getHoveredTile(), sf::PrimitiveType::LinesStrip, sf::Color::White);

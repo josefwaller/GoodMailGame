@@ -72,3 +72,7 @@ std::optional<SaveData> ResidenceController::getSaveData() {
 	SaveData sd(componentTypeToStr(ComponentType::Controller));
 	return sd;
 }
+
+std::vector<sf::Vector2i> ResidenceController::getDestinations() {
+	return this->destinations;
+}

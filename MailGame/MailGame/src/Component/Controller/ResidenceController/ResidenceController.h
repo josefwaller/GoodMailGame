@@ -15,6 +15,9 @@ public:
 	virtual void update(float delta) override;
 	static const gtime_t GENERATE_INTERVAL;
 	virtual std::optional<SaveData> getSaveData() override;
+	// Get the desintations
+	// Currently used by UiHandler, probably won't make it into final product
+	std::vector<sf::Vector2i> getDestinations();
 private:
 	std::vector<sf::Vector2i> destinations;
 	gtime_t lastGenTime;

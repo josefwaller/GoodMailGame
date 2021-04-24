@@ -23,7 +23,8 @@ public:
 		BuildingRoad,
 		BuildingAirplaneRoad,
 		Deleting,
-		ShowingCityLimits
+		ShowingCityLimits,
+		ShowingResidencePaths
 	};
 
 	UiHandler(Game* g);
