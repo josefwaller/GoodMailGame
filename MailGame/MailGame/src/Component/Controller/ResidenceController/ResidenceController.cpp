@@ -5,6 +5,7 @@
 #include "Component/Transform/Transform.h"
 #include "Mail/Mail.h"
 #include "Game/Game.h"
+#include "System/Utils/Utils.h"
 #include <imgui.h>
 #include "System/SaveData/SaveData.h"
 
@@ -12,6 +13,27 @@
 
 const gtime_t ResidenceController::GENERATE_INTERVAL = 5 * Game::UNITS_IN_GAME_HOUR;
 ResidenceController::ResidenceController(gtime_t time) : lastGenTime(time) {}
+
+void ResidenceController::init() {
+	std::vector<sf::Vector2i> residenceLocations = this->getEntity()->getGameMap()->getResidences();
+	id_t cityId = this->getEntity()->getGameMap()->getTileAt(Utils::toVector2i(this->getEntity()->transform->getPosition())).cityId;
+	for (size_t i = 0; i < 3; i++) {
+		sf::Vector2i res;
+		while (true) {
+			size_t pos = rand() % residenceLocations.size();
+			res = residenceLocations.at(pos);
+			Tile tile = this->getEntity()->getGameMap()->getTileAt(res);
+			// Don't add yourself as a destination
+			if (tile.building.lock() != this->getEntity()) {
+				// Add one from the same city and two from different cities
+				if ((i == 0 && tile.cityId == cityId) || (i != 0 && tile.cityId != cityId)) {
+					break;
+				}
+			}
+		}
+		this->destinations.push_back(res);
+	}
+}
 
 void ResidenceController::update(float time) {
 	gtime_t gTime = this->getEntity()->getGame()->getTime();

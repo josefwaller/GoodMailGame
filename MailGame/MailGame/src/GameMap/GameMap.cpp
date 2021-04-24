@@ -421,6 +421,18 @@ void GameMap::addRoadInDirection(size_t x, size_t y, IsoRotation rot) {
 		this->tiles[x][y].road = r;
 	}
 }
+std::vector<sf::Vector2i> GameMap::getResidences() {
+	std::vector<sf::Vector2i> toReturn;
+	for (size_t x = 0; x < MAP_WIDTH; x++) {
+		for (size_t y = 0; y < MAP_HEIGHT; y++) {
+			Tile t = this->getTileAt(x, y);
+			if (t.building.lock() && t.building.lock()->tag == EntityTag::Residence) {
+				toReturn.push_back(sf::Vector2i(x, y));
+			}
+		}
+	}
+	return toReturn;
+}
 SaveData GameMap::getSaveData() {
 	using namespace SaveKeys;
 	SaveData sd(GAMEMAP);

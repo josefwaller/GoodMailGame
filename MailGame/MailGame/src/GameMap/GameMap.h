@@ -61,6 +61,8 @@ public:
 	bool hasRoadInDirection(size_t x, size_t y, IsoRotation rot);
 	// Add a road in a given direction
 	void addRoadInDirection(size_t x, size_t y, IsoRotation rot);
+	// Get a list of all the residences on the map
+	std::vector<sf::Vector2i> getResidences();
 	// Get the save data for the map
 	SaveData getSaveData();
 private:
