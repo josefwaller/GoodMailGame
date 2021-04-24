@@ -40,7 +40,9 @@ GameMap::GameMap(Game* g) : game(g) {
 }
 void GameMap::generateNew() {
 	// Generate city
-	generateCityAt({ MAP_WIDTH / 2, MAP_HEIGHT / 4 }, 1);
+	generateCityAt({ MAP_WIDTH / 4, MAP_HEIGHT / 4 }, 1);
+	generateCityAt({ MAP_WIDTH * 3 / 4, MAP_HEIGHT * 3 / 4 }, 2);
+	generateCityAt({ MAP_WIDTH * 3 / 4, MAP_HEIGHT / 4 }, 3);
 }
 void GameMap::render(sf::RenderWindow* window) {
 	// Render all the tiles on screen
@@ -189,8 +191,15 @@ void GameMap::generateCityAt(sf::Vector2i pos, id_t cityId) {
 	unsigned initLen = rand() % (MAX_ROAD_LEN - MIN_ROAD_LEN) + MIN_ROAD_LEN;
 	potentialLines.push(Line(sf::Vector2i(pos.x - initLen / 2, pos.y), initLen, false));
 
+	// List of all the tiles a road has been added to
+	std::vector<sf::Vector2i> addedRoads;
+
 	for (int i = 0; i < NUM_ROADS; i++) {
 	BEGIN_LOOP:
+		// For right now, if we don't have any lines, just finish generating the city
+		if (potentialLines.empty()) {
+			break;
+		}
 		// Get the top line
 		Line topLine = potentialLines.front();
 		potentialLines.pop();
@@ -237,6 +246,7 @@ void GameMap::generateCityAt(sf::Vector2i pos, id_t cityId) {
 					if (i != 0)
 						r.hasNorth = true;
 					t->road = r;
+					addedRoads.push_back({ (int)it->getStart().x, (int)(it->getStart().y + i) });
 				}
 			}
 			else {
@@ -252,38 +262,42 @@ void GameMap::generateCityAt(sf::Vector2i pos, id_t cityId) {
 					if (i != 0)
 						r.hasWest = true;
 					t->road = r;
+					addedRoads.push_back({ (int)(it->getStart().x + i), (int)(it->getStart().y) });
 				}
 			}
 		}
 	}
 	// Have a 90% change that there is a building on each tile adjacent to a road
-	for (size_t x = 0; x < MAP_WIDTH; x++) {
-		for (size_t y = 0; y < MAP_HEIGHT; y++) {
-			if (this->hasRoadAt(x, y)) {
-				for (int xOff = -1; xOff < 2; xOff++) {
-					for (int yOff = -1; yOff < 2; yOff++) {
-						if (xOff == 0 || yOff == 0) {
-							if (!this->hasRoadAt(x + xOff, y + yOff)) {
-								if (rand() % 10 == 9)
-									continue;
-								IsoRotation rot;
-								switch (xOff) {
-								case -1:
-									rot = IsoRotation::EAST;
-									break;
-								case 1:
-									rot = IsoRotation::WEST;
-									break;
-								case 0:
-									rot = yOff == 1 ? IsoRotation::NORTH : IsoRotation::SOUTH;
-								}
-								std::shared_ptr<Entity> e = BuildingPresets::residence(this->game, sf::Vector3f((float)(x + xOff), (float)(y + yOff), 0), rot);
-								this->game->addEntity(
-									e
-								);
-								this->tiles[x + xOff][y + yOff].building = e;
-								this->tiles[x + xOff][y + yOff].cityId = cityId;
+	for (size_t i = 0; i < addedRoads.size(); i++) {
+		size_t x = addedRoads.at(i).x;
+		size_t y = addedRoads.at(i).y;
+		if (this->hasRoadAt(x, y)) {
+			for (int xOff = -1; xOff < 2; xOff++) {
+				for (int yOff = -1; yOff < 2; yOff++) {
+					if (xOff == 0 || yOff == 0) {
+						if (!this->hasRoadAt(x + xOff, y + yOff)) {
+							if (this->getTileAt(x + xOff, y + yOff).type == TileType::OffMap) {
+								continue;
 							}
+							if (rand() % 10 == 9)
+								continue;
+							IsoRotation rot;
+							switch (xOff) {
+							case -1:
+								rot = IsoRotation::EAST;
+								break;
+							case 1:
+								rot = IsoRotation::WEST;
+								break;
+							case 0:
+								rot = yOff == 1 ? IsoRotation::NORTH : IsoRotation::SOUTH;
+							}
+							std::shared_ptr<Entity> e = BuildingPresets::residence(this->game, sf::Vector3f((float)(x + xOff), (float)(y + yOff), 0), rot);
+							this->game->addEntity(
+								e
+							);
+							this->tiles[x + xOff][y + yOff].building = e;
+							this->tiles[x + xOff][y + yOff].cityId = cityId;
 						}
 					}
 				}
@@ -355,7 +369,7 @@ void GameMap::removeAirplaneRoad(size_t x, size_t y) {
 }
 
 Tile GameMap::getTileAt(size_t x, size_t y) {
-	if (x <= tiles.size() && y <= tiles[0].size()) {
+	if (x < tiles.size() && y < tiles[0].size()) {
 		return tiles[x][y];
 	}
 	return Tile(TileType::OffMap);
