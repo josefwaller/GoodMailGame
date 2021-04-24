@@ -447,6 +447,8 @@ SaveData GameMap::getSaveData() {
 			td.addSizeT(POSTAL_CODE, t.postalCode);
 			// Add type
 			td.addSizeT(TYPE, (size_t)t.type);
+			// Add city
+			td.addSizeT(CITY, t.cityId);
 			if (t.building.lock()) {
 				td.addSizeT(BUILDING, t.building.lock()->getId());
 			}
@@ -482,6 +484,7 @@ void GameMap::loadFromSaveData(SaveData data) {
 		size_t y = d.getSizeT(Y);
 		this->tiles[x][y].postalCode = d.getSizeT(POSTAL_CODE);
 		this->tiles[x][y].type = (TileType)(d.getSizeT(TYPE));
+		this->tiles[x][y].cityId = d.getSizeT(CITY);
 		if (d.hasValue(BUILDING)) {
 			this->tiles[x][y].building = this->game->getEntityById(d.getSizeT("building"));
 		}

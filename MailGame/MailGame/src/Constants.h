@@ -110,4 +110,5 @@ namespace SaveKeys {
 	const sdkey_t DELIVERY_TIME = "deliveryTime";
 	const sdkey_t HAS_BUILDING = "hasBuilding";
 	const sdkey_t HOUR = "hour";
+	const sdkey_t CITY = "city";
 }
