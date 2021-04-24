@@ -34,8 +34,10 @@ struct Tile {
 	std::optional<AirplaneRoad> airplaneRoad;
 	// The tile lock, currently just one for all transit types
 	bool isLocked;
+	// The id of the city the tile belongs to (0 is no city)
+	id_t cityId;
 
-	Tile(TileType t = TileType::Land) : postalCode(0), isLocked(false) {
+	Tile(TileType t = TileType::Land, id_t cityId = 0) : postalCode(0), isLocked(false), cityId(cityId) {
 		type = t;
 	}
 };

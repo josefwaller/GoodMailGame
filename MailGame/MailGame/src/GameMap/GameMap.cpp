@@ -40,7 +40,7 @@ GameMap::GameMap(Game* g) : game(g) {
 }
 void GameMap::generateNew() {
 	// Generate city
-	generateCityAt({ MAP_WIDTH / 2, MAP_HEIGHT / 4 });
+	generateCityAt({ MAP_WIDTH / 2, MAP_HEIGHT / 4 }, 1);
 }
 void GameMap::render(sf::RenderWindow* window) {
 	// Render all the tiles on screen
@@ -173,7 +173,7 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
  * A very simple algorithm which just generates n roads criss-crossing
  * around a position given
  */
-void GameMap::generateCityAt(sf::Vector2i pos) {
+void GameMap::generateCityAt(sf::Vector2i pos, id_t cityId) {
 	const size_t MIN_ROAD_LEN = 4;
 	const size_t MAX_ROAD_LEN = 12;
 	const size_t NUM_ROADS = 20;
@@ -227,6 +227,7 @@ void GameMap::generateCityAt(sf::Vector2i pos) {
 			if (it->getIsVertical()) {
 				if (it->getStart().y + i < MAP_HEIGHT) {
 					Tile* t = &this->tiles[it->getStart().x][it->getStart().y + i];
+					t->cityId = cityId;
 					Road r;
 					if (t->road.has_value()) {
 						r = t->road.value();
@@ -241,6 +242,7 @@ void GameMap::generateCityAt(sf::Vector2i pos) {
 			else {
 				if (it->getStart().x + i < MAP_WIDTH) {
 					Tile* t = &this->tiles[it->getStart().x + i][it->getStart().y];
+					t->cityId = cityId;
 					Road r;
 					if (t->road.has_value()) {
 						r = t->road.value();
@@ -280,6 +282,7 @@ void GameMap::generateCityAt(sf::Vector2i pos) {
 									e
 								);
 								this->tiles[x + xOff][y + yOff].building = e;
+								this->tiles[x + xOff][y + yOff].cityId = cityId;
 							}
 						}
 					}

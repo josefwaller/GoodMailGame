@@ -68,5 +68,5 @@ private:
 	std::vector<std::vector<Tile>> tiles;
 	// Render a single tile
 	void renderTile(sf::RenderWindow* window, size_t x, size_t y);
-	void generateCityAt(sf::Vector2i pos);
+	void generateCityAt(sf::Vector2i pos, id_t cityId);
 };

@@ -22,7 +22,8 @@ public:
 		EditingPostalCodes,
 		BuildingRoad,
 		BuildingAirplaneRoad,
-		Deleting
+		Deleting,
+		ShowingCityLimits
 	};
 
 	UiHandler(Game* g);
@@ -71,6 +72,8 @@ private:
 	std::vector<std::vector<RoutePoint>> pathsToDraw;
 	// The entities to render UI for
 	std::vector<std::weak_ptr<Entity>> toRenderUi;
+	// The colors to draw the different city limits
+	std::map<id_t, sf::Color> cityLimitColors;
 	// Get the tile the mouse is currently hovering over
 	sf::Vector2i getHoveredTile();
 	// Return a vertex array that is over the tile given, in screen coords

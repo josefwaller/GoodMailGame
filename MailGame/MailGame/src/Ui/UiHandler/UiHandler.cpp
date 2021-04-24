@@ -16,7 +16,9 @@
 #include "Component/Controller/Controller.h"
 
 UiHandler::UiHandler(Game* g) : game(g), currentState(UiState::Default), recipe(),
-toBuild(IsoRotation::NORTH, IsoRotation::SOUTH) {}
+toBuild(IsoRotation::NORTH, IsoRotation::SOUTH) {
+	cityLimitColors.insert({ 0, sf::Color::Blue });
+}
 
 bool UiHandler::handleEvent(sf::Event e) {
 	sf::Vector2i tilePos;
@@ -202,6 +204,23 @@ void UiHandler::update() {
 		file.open("savedata/" + std::string(savefileName) + ".xml");
 		file << toWrite;
 		file.close();
+	}
+	if (this->currentState == UiState::ShowingCityLimits) {
+		if (ImGui::Button("Hide City Limits")) {
+			this->changeState(UiState::Default);
+		}
+		for (auto it = this->cityLimitColors.begin(); it != this->cityLimitColors.end(); it++) {
+			sprintf_s(buf, "%llu", it->first);
+			sf::Color color = it->second;
+			float c[3] = { color.r / 256.0f, color.g / 256.0f, color.b / 256.0f };
+			ImGui::ColorEdit3(buf, c);
+			it->second = sf::Color(256.0f * c[0], 256.0f * c[1], 256.0f * c[2]);
+		}
+	}
+	else {
+		if (ImGui::Button("Show City Limits")) {
+			this->changeState(UiState::ShowingCityLimits);
+		}
 	}
 	if (ImGui::CollapsingHeader("Build")) {
 		for (auto kv : Construction::recipes) {
@@ -401,6 +420,26 @@ void UiHandler::render(sf::RenderWindow* w) {
 			}
 		}
 		break;
+	}
+	case UiState::ShowingCityLimits: {
+		GameMap* gMap = this->game->getGameMap();
+		for (size_t x = 0; x < gMap->MAP_WIDTH; x++) {
+			for (size_t y = 0; y < gMap->MAP_HEIGHT; y++) {
+				Tile t = gMap->getTileAt(x, y);
+				// Insert color if does not exist
+				if (this->cityLimitColors.count(t.cityId) == 0) {
+					this->cityLimitColors.insert({ t.cityId, sf::Color(rand() % 256, rand() % 256, rand() % 256) });
+				}
+				sf::Color color = this->cityLimitColors.find(t.cityId)->second;
+				color.a = 100.0f;
+				sf::VertexArray toRender = this->getDrawableTile(
+					sf::Vector2i(x, y),
+					sf::PrimitiveType::Quads,
+					color
+				);
+				w->draw(toRender);
+			}
+		}
 	}
 	}
 	// Outline the sprite currently being hovered
