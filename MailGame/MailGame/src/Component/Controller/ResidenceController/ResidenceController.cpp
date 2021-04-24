@@ -68,8 +68,26 @@ void ResidenceController::generateLetter(sf::Vector2i dest, gtime_t departTime) 
 }
 
 std::optional<SaveData> ResidenceController::getSaveData() {
+	using namespace SaveKeys;
 	SaveData sd(componentTypeToStr(ComponentType::Controller));
+	for (auto p : this->destinations) {
+		SaveData d(DEST);
+		d.addVector2i(DEST, p.second);
+		d.addSizeT(HOUR, p.first);
+		sd.addData(d);
+	}
 	return sd;
+}
+void ResidenceController::fromSaveData(SaveData data) {
+	using namespace SaveKeys;
+	for (SaveData d : data.getDatas()) {
+		this->destinations.push_back(
+			{
+			d.getSizeT(HOUR),
+			d.getVector2i(DEST)
+			}
+		);
+	}
 }
 
 std::vector<sf::Vector2i> ResidenceController::getDestinations() {
