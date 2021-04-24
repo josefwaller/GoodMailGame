@@ -12,14 +12,12 @@ class ResidenceController : public Controller {
 public:
 	ResidenceController(gtime_t currentTime);
 	virtual void init() override;
-	virtual void update(float delta) override;
-	static const gtime_t GENERATE_INTERVAL;
+	virtual void onHourChange(hour_t) override;
 	virtual std::optional<SaveData> getSaveData() override;
 	// Get the desintations
 	// Currently used by UiHandler, probably won't make it into final product
 	std::vector<sf::Vector2i> getDestinations();
 private:
-	std::vector<sf::Vector2i> destinations;
-	gtime_t lastGenTime;
-	void generateLetter();
+	std::vector<std::pair<hour_t, sf::Vector2i>> destinations;
+	void generateLetter(sf::Vector2i dest, gtime_t time);
 };

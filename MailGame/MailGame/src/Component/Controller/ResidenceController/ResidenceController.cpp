@@ -11,8 +11,7 @@
 
 #include <stdexcept>
 
-const gtime_t ResidenceController::GENERATE_INTERVAL = 5 * Game::UNITS_IN_GAME_HOUR;
-ResidenceController::ResidenceController(gtime_t time) : lastGenTime(time) {}
+ResidenceController::ResidenceController(gtime_t time) {}
 
 void ResidenceController::init() {
 	std::vector<sf::Vector2i> residenceLocations = this->getEntity()->getGameMap()->getResidences();
@@ -31,23 +30,23 @@ void ResidenceController::init() {
 				}
 			}
 		}
-		this->destinations.push_back(res);
+		this->destinations.push_back({ rand() % 24, res });
 	}
 }
 
-void ResidenceController::update(float time) {
-	gtime_t gTime = this->getEntity()->getGame()->getTime();
-	if (gTime - this->lastGenTime >= GENERATE_INTERVAL) {
-		this->generateLetter();
-		this->lastGenTime = gTime;
+void ResidenceController::onHourChange(hour_t hour) {
+	for (auto p : this->destinations) {
+		if (p.first == hour) {
+			this->generateLetter(p.second, this->getEntity()->getGame()->getMidnightTime() + Game::UNITS_IN_GAME_HOUR * hour);
+		}
 	}
 }
 
-void ResidenceController::generateLetter() {
+void ResidenceController::generateLetter(sf::Vector2i dest, gtime_t departTime) {
 	// Create a new letter addressed to self (tba)
-	sf::Vector3i pos(this->getEntity()->transform->getPosition());
-	sf::Vector2i p(pos.x, pos.y);
-	Mail letter(p, p, this->getEntity()->getGame()->getTime());
+	sf::Vector3f pos = this->getEntity()->transform->getPosition();
+	sf::Vector2i src(Utils::toVector2i(pos));
+	Mail letter(src, dest, this->getEntity()->getGame()->getTime());
 	// Check if there is a mailbox close enough to get it
 	auto entities = this->getEntity()->getGame()->getEntities();
 	for (auto it = entities.begin(); it != entities.end(); it++) {
@@ -74,5 +73,9 @@ std::optional<SaveData> ResidenceController::getSaveData() {
 }
 
 std::vector<sf::Vector2i> ResidenceController::getDestinations() {
-	return this->destinations;
+	std::vector<sf::Vector2i> toReturn;
+	for (auto kv : this->destinations) {
+		toReturn.push_back(kv.second);
+	}
+	return toReturn;
 }
