@@ -23,6 +23,8 @@ SaveData EventManager::getSaveData() {
 
 void EventManager::onMailDelivered(Mail m) {
 	this->lettersDelivered++;
+	GameMap* gMap = this->game->getGameMap();
+	bool deliveredToDifferentCity = gMap->getTileAt(m.getSrc()).cityId != gMap->getTileAt(m.getDest()).cityId;
 	if (EventManager::lettersDelivered == 20) {
 		this->game->getTechTree()->unlockTech(Technology::CargoTrucks);
 	}
@@ -49,5 +51,8 @@ void EventManager::onMailDelivered(Mail m) {
 		if (this->lettersByPlane == 100) {
 			this->game->getTechTree()->unlockTech(Technology::FastAirplanes);
 		}
+	}
+	if (deliveredToDifferentCity) {
+		this->game->getTechTree()->unlockTech(Technology::FastCargoTrucks);
 	}
 }
