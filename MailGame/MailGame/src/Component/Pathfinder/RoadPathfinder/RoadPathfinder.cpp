@@ -30,7 +30,7 @@ std::vector<SpeedPoint> RoadPathfinder::findPathBetweenPoints(
 		// Ensure it has a road
 		Tile fromTile = gMap->getTileAt(point.x, point.y);
 		if (!fromTile.road.has_value()) {
-			throw std::runtime_error("Pathinging to/from point that does not has a road");
+			continue;
 		}
 		// Check if it is the correct one
 		if (point == sf::Vector3i(to)) {
