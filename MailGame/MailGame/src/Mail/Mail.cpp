@@ -12,9 +12,9 @@ std::map<id_t, MailRecord> Mail::getAllMail() {
 	return Mail::allMail;
 }
 
-Mail::Mail(sf::Vector2i d, sf::Vector2i s, gtime_t time) : id(Mail::MAIL_ID++) {
+Mail::Mail(sf::Vector2i s, sf::Vector2i d, gtime_t time) : id(Mail::MAIL_ID++) {
 	// Create new record entry
-	Mail::allMail.insert({ this->id, MailRecord(d, s, time) });
+	Mail::allMail.insert({ this->id, MailRecord(s, d, time) });
 }
 
 Mail::Mail(SaveData data) {

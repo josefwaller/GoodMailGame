@@ -23,7 +23,7 @@ struct MailRecord {
 	gtime_t time;
 	bool hasBeenDelivered;
 	gtime_t deliveryTime;
-	MailRecord(sf::Vector2i d, sf::Vector2i s, gtime_t t) : dest(d), src(s), mailEvents({}), time(t), hasBeenDelivered(false), deliveryTime(0) {}
+	MailRecord(sf::Vector2i src, sf::Vector2i dest, gtime_t t) : dest(dest), src(src), mailEvents({}), time(t), hasBeenDelivered(false), deliveryTime(0) {}
 };
 
 // Parent class for any type of mail, i.e. letters and parcels
@@ -42,7 +42,7 @@ public:
 
 	// Constructor
 	// Really just creates a fancy pointer by id to the MailRecord
-	Mail(sf::Vector2i dest, sf::Vector2i src, gtime_t);
+	Mail(sf::Vector2i src, sf::Vector2i dest, gtime_t);
 	// Constructor from save data
 	Mail(SaveData d);
 	// Add event
