@@ -67,7 +67,10 @@ private:
 	// The name of the save file being saved to
 	char savefileName[200];
 	// The railway currently being built
-	Railway toBuild;
+	IsoRotation from;
+	IsoRotation to;
+	bool isStation;
+	// The airplaneroad being built
 	AirplaneRoad airplaneRoadToBuild;
 	// The paths to draw
 	std::vector<std::vector<RoutePoint>> pathsToDraw;

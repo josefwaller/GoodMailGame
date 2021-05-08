@@ -17,7 +17,7 @@
 #include "Component/Controller/ResidenceController/ResidenceController.h"
 
 UiHandler::UiHandler(Game* g) : game(g), currentState(UiState::Default), recipe(),
-toBuild(IsoRotation::NORTH, IsoRotation::SOUTH) {
+from(IsoRotation::NORTH), to(IsoRotation::SOUTH), isStation(false) {
 	cityLimitColors.insert({ 0, sf::Color::Blue });
 }
 
@@ -44,19 +44,19 @@ bool UiHandler::handleEvent(sf::Event e) {
 			return true;
 		case UiState::BuildingRailTracks:
 			tilePos = sf::Vector2i(this->game->getMousePosition());
-			if (this->toBuild.isStation) {
+			if (this->isStation) {
 				this->game->getGameMap()->addRailwayStation(
 					(size_t)tilePos.x,
 					(size_t)tilePos.y,
-					this->toBuild.to
+					to
 				);
 			}
 			else {
 				this->game->getGameMap()->addRailTrack(
 					(size_t)tilePos.x,
 					(size_t)tilePos.y,
-					this->toBuild.from,
-					this->toBuild.to
+					from,
+					to
 				);
 			}
 			break;
@@ -120,8 +120,8 @@ bool UiHandler::handleEvent(sf::Event e) {
 			// Rotate the building/track if R is pressed
 		case sf::Keyboard::R:
 			if (this->currentState == UiState::BuildingRailTracks) {
-				this->toBuild.from++;
-				this->toBuild.to++;
+				this->from++;
+				this->to++;
 			}
 			else if (this->currentState == UiState::BuildingEntity) {
 				this->currentRotation++;
@@ -130,9 +130,9 @@ bool UiHandler::handleEvent(sf::Event e) {
 		case sf::Keyboard::T:
 			if (this->currentState == UiState::BuildingRailTracks) {
 				// Toggle between straight and curved track
-				this->toBuild.to++;
-				if (this->toBuild.from == this->toBuild.to) {
-					this->toBuild.to++;
+				this->to++;
+				if (this->from == this->to) {
+					this->to++;
 				}
 			}
 		}
@@ -246,10 +246,10 @@ void UiHandler::update() {
 			this->airplaneRoadToBuild = AirplaneRoad();
 		}
 		if (this->currentState == UiState::BuildingRailTracks) {
-			this->toBuild.from = this->chooseDirection("From:", this->toBuild.from);
-			this->toBuild.to = this->chooseDirection("To:", this->toBuild.to);
-			if (ImGui::Button(this->toBuild.isStation ? "Station" : "Rail")) {
-				this->toBuild.isStation = !this->toBuild.isStation;
+			this->from = this->chooseDirection("From:", this->from);
+			this->to = this->chooseDirection("To:", this->to);
+			if (ImGui::Button(this->isStation ? "Station" : "Rail")) {
+				this->isStation = !this->isStation;
 			}
 			if (ImGui::Button("Cancel")) {
 				this->changeState(UiState::Default);
@@ -393,8 +393,8 @@ void UiHandler::render(sf::RenderWindow* w) {
 	}
 	case UiState::BuildingRailTracks: {
 		// Draw 2 lines that correspond with the direction
-		this->drawArrow(w, this->getHoveredTile(), this->toBuild.from + 2, false);
-		this->drawArrow(w, this->getHoveredTile(), this->toBuild.to, true);
+		this->drawArrow(w, this->getHoveredTile(), this->from + 2, false);
+		this->drawArrow(w, this->getHoveredTile(), this->to, true);
 		break;
 	}
 	case UiState::BuildingRoad:

@@ -123,10 +123,20 @@ std::vector<SpeedPoint> TrainController::getDockPath(std::shared_ptr<Entity> e) 
 					if (r.has_value() && r.value().isStation) {
 						// Find how far back the train station goes
 						pos = sf::Vector2i(pos.x + x, pos.y + y);
+						IsoRotation currentRot;
+						for (size_t i = 0; i < 4; i++) {
+							if (!r.value().getOutgoingDirections(IsoRotation(i)).empty()) {
+								currentRot = IsoRotation(i);
+							}
+						}
 						std::vector<SpeedPoint> points;// = { SpeedPoint(sf::Vector3f(pos.x + x, pos.y + y, 0.0f), 0.5f) };
 						while (r.has_value() && r.value().isStation) {
 							points.push_back(SpeedPoint(sf::Vector3f(pos.x, pos.y, 0), 0.5f));
-							pos = pos + Utils::toVector2i(r.value().from.getUnitVector());
+							std::vector<IsoRotation> potential = r.value().getOutgoingDirections(currentRot);
+							if (potential.empty()) {
+								throw std::runtime_error("Not valid station, so crash right now");
+							}
+							pos = pos + Utils::toVector2i(potential.front().getUnitVector());
 							r = e->getGameMap()->getTileAt(pos.x, pos.y).railway;
 						}
 						points[0] = SpeedPoint(points.at(0).getPos(), 0.0f);

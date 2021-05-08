@@ -116,45 +116,15 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 	Tile tile = tiles[x][y];
 	switch (tile.type) {
 	case TileType::Land:
-		// Draw the railway if it has one
-		if (tile.railway.has_value()) {
-			Railway r = tile.railway.value();
-			// Get the binary number representing the intersection at the til
-			int index = 0;
-			for (IsoRotation rot : { r.from, r.to}) {
-				switch (rot.getRotation()) {
-				case IsoRotation::NORTH:
-					index |= 0b1000;
-					break;
-				case IsoRotation::EAST:
-					index |= 0b0100;
-					break;
-				case IsoRotation::SOUTH:
-					index |= 0b0010;
-					break;
-				case IsoRotation::WEST:
-					index |= 0b0001;
-					break;
-				}
-			}
-			// Get the sprite index
-			unsigned int rotation = game->getRotation().getRotation();
-			index = 0b1111 & ((index >> rotation) | (index << (4 - rotation)));
-			// Get the sprite
-			s = RAIL_TRACK_SPRITES[index];
-			if (r.isStation) {
-				s.setColor(sf::Color::Yellow);
-			}
-		}
-		else {
-			s = EMPTY_SPRITE;
-		}
 		if (tile.road.has_value()) {
 			s = getRoadSprite(tile.road.value(), this->game->getRotation());
 		}
 		else if (tile.airplaneRoad.has_value()) {
 			s = getRoadSprite(tile.airplaneRoad.value(), this->game->getRotation());
 			s.setColor(tile.airplaneRoad.value().isRunway ? sf::Color::Blue : sf::Color::Red);
+		}
+		else {
+			s = EMPTY_SPRITE;
 		}
 	}
 	sf::Vector3f pos((float)x + 0.5f, (float)y + 0.5f, 0);
@@ -164,11 +134,20 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 		s.setColor(sf::Color(0, 255, 51));
 	}
 	window->draw(s);
-	// If there's a railway, also draw that
+	// Draw the railway if it has one
 	if (tile.railway.has_value()) {
 		Railway r = tile.railway.value();
-		game->getUi()->drawArrow(window, sf::Vector2i(x, y), r.from + 2, false);
-		game->getUi()->drawArrow(window, sf::Vector2i(x, y), r.to, true);
+		for (auto kv : r.getDirections()) {
+			// Point is center of tile + the direction
+			sf::Vector2f center = sf::Vector2f(x, y) + sf::Vector2f(0.5, 0.5);
+			sf::Vector2f fromPoint = center + 0.5f * kv.first.getUnitVector();
+			sf::Vector2f toPoint = center + 0.5f * kv.second.getUnitVector();
+			// Render line
+			sf::VertexArray arr(sf::PrimitiveType::Lines, 2);
+			arr[0] = sf::Vertex(this->game->worldToScreenPos(Utils::toVector3f(fromPoint)), sf::Color::Black);
+			arr[1] = sf::Vertex(this->game->worldToScreenPos(Utils::toVector3f(toPoint)), sf::Color::Red);
+			window->draw(arr);
+		}
 	}
 }
 /*
@@ -344,7 +323,12 @@ void GameMap::removeRoad(size_t x, size_t y) {
 }
 void GameMap::addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to) {
 	if (this->getTileAt(x, y).type != TileType::OffMap) {
-		this->tiles[x][y].railway = Railway(from, to);
+		if (this->tiles[x][y].railway.has_value()) {
+			this->tiles[x][y].railway.value().addDirection(from, to);
+		}
+		else {
+			this->tiles[x][y].railway = Railway(from, to);
+		}
 	}
 }
 void GameMap::removeRailTrack(size_t x, size_t y) {
@@ -353,7 +337,12 @@ void GameMap::removeRailTrack(size_t x, size_t y) {
 
 void GameMap::addRailwayStation(size_t x, size_t y, IsoRotation direction) {
 	if (this->getTileAt(x, y).type != TileType::OffMap) {
-		this->tiles[x][y].railway = Railway(direction + 2, direction, true);
+		if (this->tiles[x][y].railway.has_value()) {
+			this->tiles[x][y].railway.value().addDirection(direction + 2, direction);
+		}
+		else {
+			this->tiles[x][y].railway = Railway(direction + 2, direction, true);
+		}
 	}
 }
 
@@ -461,8 +450,12 @@ SaveData GameMap::getSaveData() {
 			if (t.railway.has_value()) {
 				Railway rw = t.railway.value();
 				SaveData rwd(RAILWAY);
-				rwd.addIsoRotation(TO, rw.to);
-				rwd.addIsoRotation(FROM, rw.from);
+				for (auto kv : rw.getDirections()) {
+					SaveData d(SaveKeys::DIRECTION);
+					d.addIsoRotation(FROM, kv.first);
+					d.addIsoRotation(TO, kv.second);
+					rwd.addData(d);
+				}
 				rwd.addBool(IS_STATION, rw.isStation);
 				td.addData(rwd);
 			}
@@ -495,15 +488,7 @@ void GameMap::loadFromSaveData(SaveData data) {
 				this->tiles[x][y].road = Road(rd);
 			}
 			else if (rd.getName() == RAILWAY) {
-				IsoRotation from = rd.getIsoRotation(FROM);
-				IsoRotation to = rd.getIsoRotation(TO);
-				bool isStation = rd.getBool(IS_STATION);
-				if (isStation) {
-					this->addRailwayStation(x, y, to);
-				}
-				else {
-					this->addRailTrack(x, y, from, to);
-				}
+				this->tiles[x][y].railway = Railway(rd);
 			}
 			else if (rd.getName() == "AirplaneRoad") {
 				this->tiles[x][y].airplaneRoad = AirplaneRoad(rd);
