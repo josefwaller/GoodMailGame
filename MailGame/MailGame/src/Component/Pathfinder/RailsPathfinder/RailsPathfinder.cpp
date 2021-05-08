@@ -6,6 +6,9 @@
 #include <algorithm>
 #include "GameMap/GameMap.h"
 
+/*
+ * This file should be rewritten, probably with the other pathfinders
+ */
 std::vector<SpeedPoint> RailsPathfinder::findPathBetweenPoints(
 	sf::Vector3f from,
 	sf::Vector3f to,
@@ -17,6 +20,18 @@ std::vector<SpeedPoint> RailsPathfinder::findPathBetweenPoints(
 	// Go through the rail system
 	sf::Vector3i currentPos(from);
 	IsoRotation currentRot;
+	Tile tile = this->getEntity()->getGameMap()->getTileAt(Utils::toVector2i(currentPos));
+	// For the first step, we can go to any of the four connected tiles
+	for (size_t i = 0; i < 4; i++) {
+		IsoRotation rot(i);
+		if (tile.railway.has_value()) {
+			if (!tile.railway.value().getOutgoingDirections(rot).empty()) {
+				// Start from here
+				currentRot = rot;
+				break;
+			}
+		}
+	}
 	while (currentPos != sf::Vector3i(to)) {
 		// Move through the track
 		Tile t = this->getEntity()->getGame()->getGameMap()->getTileAt((size_t)currentPos.x, (size_t)currentPos.y);
@@ -25,7 +40,12 @@ std::vector<SpeedPoint> RailsPathfinder::findPathBetweenPoints(
 			return {};
 		}
 		// Go to the next railway
-		currentPos += sf::Vector3i(t.railway.value().to.getUnitVector3D());
+		std::vector<IsoRotation> possibleRoutes = t.railway.value().getOutgoingDirections(currentRot);
+		if (possibleRoutes.empty()) {
+			return {};
+		}
+		currentPos += sf::Vector3i(possibleRoutes.front().getUnitVector3D());
+		currentRot = possibleRoutes.front();
 		// TODO: Check the railway we are going to has to pointing to the railway we came from
 		// Check we haven't been in this tile before
 		for (SpeedPoint p : visited) {
