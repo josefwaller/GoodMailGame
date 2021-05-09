@@ -82,7 +82,7 @@ void TrainController::onArriveAtDest(gtime_t arriveTime) {
 void TrainController::onArriveAtPoint(size_t pointIndex, gtime_t arriveTime) {
 	this->getEntity()->ai->onArriveAtTile(Utils::toVector2i(this->points.at(pointIndex).pos));
 	// Get a lock on the next point
-	if (this->points.size() < this->pointIndex) {
+	if (this->points.size() > this->pointIndex) {
 		sf::Vector2i nextTile = Utils::toVector2i(this->points.at(this->pointIndex).pos);
 		if (this->getEntity()->getGameMap()->canGetTileLock(nextTile.x, nextTile.y, TransitType::Train)) {
 			this->getEntity()->getGameMap()->getTileLock(nextTile.x, nextTile.y, TransitType::Train);
