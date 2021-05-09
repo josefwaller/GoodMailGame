@@ -145,7 +145,7 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 			// Render line
 			sf::VertexArray arr(sf::PrimitiveType::Lines, 2);
 			arr[0] = sf::Vertex(this->game->worldToScreenPos(Utils::toVector3f(fromPoint)), sf::Color::Black);
-			arr[1] = sf::Vertex(this->game->worldToScreenPos(Utils::toVector3f(toPoint)), sf::Color::Red);
+			arr[1] = sf::Vertex(this->game->worldToScreenPos(Utils::toVector3f(toPoint)), r.isStation ? sf::Color::Blue : sf::Color::Red);
 			window->draw(arr);
 		}
 	}
