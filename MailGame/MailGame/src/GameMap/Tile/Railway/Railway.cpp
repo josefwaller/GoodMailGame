@@ -13,7 +13,7 @@ Railway::Railway(SaveData data) {
 std::vector<IsoRotation> Railway::getOutgoingDirections(IsoRotation ingoingDirection) {
 	// If the ingoingDirection is north, it is coming from below the tile, so hte direction we need to look for is south
 	// Same for all other directions
-	IsoRotation from = ingoingDirection + IsoRotation::SOUTH;
+	IsoRotation from = ingoingDirection;
 	std::vector<IsoRotation> toReturn;
 	for (auto kv : this->directions) {
 		if (kv.first == from) {
