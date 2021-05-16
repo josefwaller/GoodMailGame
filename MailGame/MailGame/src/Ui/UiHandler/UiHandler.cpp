@@ -393,7 +393,7 @@ void UiHandler::render(sf::RenderWindow* w) {
 	}
 	case UiState::BuildingRailTracks: {
 		// Draw 2 lines that correspond with the direction
-		this->drawArrow(w, this->getHoveredTile(), this->from + 2, false);
+		this->drawArrow(w, this->getHoveredTile(), this->from.getReverse(), false);
 		this->drawArrow(w, this->getHoveredTile(), this->to, true);
 		break;
 	}
@@ -516,7 +516,7 @@ void UiHandler::drawArrow(sf::RenderWindow* window, sf::Vector2i tile, IsoRotati
 	);
 	// If not outgoing, position itself to point out of the tile
 	if (!isOutgoing)
-		rot = rot + 2;
+		rot = rot.getReverse();
 	arrow.setPosition(
 		this->game->worldToScreenPos(sf::Vector3f((float)tile.x, (float)tile.y, 0)
 			+ sf::Vector3f(0.5f, 0.5f, 0)
@@ -546,7 +546,21 @@ sf::VertexArray UiHandler::getDrawableTile(sf::Vector2i pos, sf::PrimitiveType t
 
 IsoRotation UiHandler::chooseDirection(const char* label, IsoRotation def) {
 	IsoRotation toReturn = def;
-	char* preview = std::vector<char*>({ "N", "E", "S", "W" })[def.getRotation()];
+	char preview[200];
+	switch (def.getRotation()) {
+	case IsoRotation::NORTH:
+		strncpy_s(preview, "N", 2);
+		break;
+	case IsoRotation::EAST:
+		strncpy_s(preview, "E", 2);
+		break;
+	case IsoRotation::SOUTH:
+		strncpy_s(preview, "S", 2);
+		break;
+	case IsoRotation::WEST:
+		strncpy_s(preview, "W", 2);
+		break;
+	}
 	if (ImGui::BeginCombo(label, preview)) {
 		if (ImGui::Selectable("N")) {
 			toReturn = IsoRotation::NORTH;

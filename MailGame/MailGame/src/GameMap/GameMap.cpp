@@ -338,10 +338,10 @@ void GameMap::removeRailTrack(size_t x, size_t y) {
 void GameMap::addRailwayStation(size_t x, size_t y, IsoRotation direction) {
 	if (this->getTileAt(x, y).type != TileType::OffMap) {
 		if (this->tiles[x][y].railway.has_value()) {
-			this->tiles[x][y].railway.value().addDirection(direction + 2, direction);
+			this->tiles[x][y].railway.value().addDirection(direction.getReverse(), direction);
 		}
 		else {
-			this->tiles[x][y].railway = Railway(direction + 2, direction, true);
+			this->tiles[x][y].railway = Railway(direction.getReverse(), direction, true);
 		}
 	}
 }

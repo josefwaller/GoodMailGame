@@ -32,8 +32,8 @@ std::vector<SpeedPoint> RailsPathfinder::findPathBetweenPoints(
 		std::vector<IsoRotation> outgoing = gMap->getTileAt(Utils::toVector2i(from)).railway.value().getOutgoingDirections(r);
 		for (IsoRotation o : outgoing) {
 			// Add it to potential
-			potential.push_back({ Utils::toVector2i(from + o.getUnitVector3D()), o + 2 });
-			previous.insert({ { Utils::toVector2i(from + o.getUnitVector3D()), o + 2 }, { Utils::toVector2i(from), o } });
+			potential.push_back({ Utils::toVector2i(from + o.getUnitVector3D()), o.getReverse() });
+			previous.insert({ { Utils::toVector2i(from + o.getUnitVector3D()), o.getReverse() }, { Utils::toVector2i(from), o } });
 		}
 		visited.push_back({ Utils::toVector2i(from), r });
 	}
@@ -55,11 +55,12 @@ std::vector<SpeedPoint> RailsPathfinder::findPathBetweenPoints(
 				std::vector<SpeedPoint> path = { SpeedPoint(Utils::toVector3f(current.first)) };
 				while (true) {
 					if (previous.find(current) == previous.end()) {
+						path.push_back(SpeedPoint(Utils::toVector3f(current.first)));
 						std::reverse(path.begin(), path.end());
 						return path;
 					}
+					path.push_back(SpeedPoint(Utils::toVector3f(current.first) + Utils::toVector3f(current.second.getUnitVector() * 0.5f)));
 					current = previous.at(current);
-					path.push_back(SpeedPoint(Utils::toVector3f(current.first)));
 				}
 				return {};
 			}
@@ -70,11 +71,10 @@ std::vector<SpeedPoint> RailsPathfinder::findPathBetweenPoints(
 			// For right now just disregard the current path
 			continue;
 		}
-		for (IsoRotation rot : gMap->getTileAt(pair.first).railway.value().getOutgoingDirections(pair.second)) {
-			// rot + 2 since we want the opposite direction
+		for (IsoRotation rot : r.getOutgoingDirections(pair.second)) {
 			// If it's leaving this tile from the east, it will arrive at the next tile from the west
 			sf::Vector2i next = pair.first + Utils::toVector2i(rot.getUnitVector());
-			railwayPart toAdd = { next, rot + 2 };
+			railwayPart toAdd = { next, rot.getReverse() };
 			potential.push_back(toAdd);
 			previous.insert({ toAdd, pair });
 		}
