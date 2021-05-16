@@ -10,7 +10,11 @@ public:
 	sf::Sprite getSprite(IsoRotation rot);
 private:
 	sf::Sprite north;
+	sf::Sprite northEast;
 	sf::Sprite east;
+	sf::Sprite southEast;
 	sf::Sprite south;
+	sf::Sprite southWest;
 	sf::Sprite west;
+	sf::Sprite northWest;
 };
