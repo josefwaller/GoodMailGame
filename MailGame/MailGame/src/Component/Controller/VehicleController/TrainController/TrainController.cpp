@@ -124,9 +124,9 @@ std::vector<SpeedPoint> TrainController::getDockPath(std::shared_ptr<Entity> e) 
 						// Find how far back the train station goes
 						pos = sf::Vector2i(pos.x + x, pos.y + y);
 						IsoRotation currentRot;
-						for (size_t i = 0; i < 4; i++) {
-							if (!r.value().getOutgoingDirections(IsoRotation(i)).empty()) {
-								currentRot = IsoRotation(i);
+						for (IsoRotation rot : IsoRotation::CARDINAL_DIRECTIONS) {
+							if (!r.value().getOutgoingDirections(rot).empty()) {
+								currentRot = rot;
 							}
 						}
 						// The reverse direction the stations goes in

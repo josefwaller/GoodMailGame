@@ -242,7 +242,7 @@ std::shared_ptr<Entity> BuildingPresets::dock(Game* g, sf::Vector3f pos, IsoRota
 
 void BuildingPresets::addRoadForTransitBuilding(Game* g, sf::Vector3i pos, IsoRotation rot) {
 	sf::Vector3i inFront = pos + sf::Vector3i(rot.getUnitVector3D());
-	g->getGameMap()->addRoadInDirection(inFront.x, inFront.y, rot + 2);
+	g->getGameMap()->addRoadInDirection(inFront.x, inFront.y, rot.getReverse());
 	g->getGameMap()->addRoadInDirection((size_t)pos.x, (size_t)pos.y, rot);
 }
 

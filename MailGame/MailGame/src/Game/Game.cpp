@@ -277,7 +277,7 @@ sf::Vector2f Game::screenToWorldPos(sf::Vector2f pos) {
 	return gameCoords;
 }
 void Game::rotateCamera() {
-	this->rotation++;
+	this->rotation.rotateQuaterClockwise();
 	sf::Vector2f center = this->gameView.getCenter();
 	this->gameView.setCenter(-center.y / TILE_HEIGHT * TILE_WIDTH, center.x / TILE_WIDTH * TILE_HEIGHT);
 }

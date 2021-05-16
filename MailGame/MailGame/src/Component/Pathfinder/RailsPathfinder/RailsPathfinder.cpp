@@ -28,8 +28,7 @@ std::vector<SpeedPoint> RailsPathfinder::findPathBetweenPoints(
 		return {};
 	}
 	// First get all the outgoing tracks from the first tile
-	for (size_t i = 0; i < 4; i++) {
-		IsoRotation r(i);
+	for (IsoRotation r : IsoRotation::CARDINAL_DIRECTIONS) {
 		std::vector<IsoRotation> outgoing = gMap->getTileAt(Utils::toVector2i(from)).railway.value().getOutgoingDirections(r);
 		for (IsoRotation o : outgoing) {
 			// Add it to potential

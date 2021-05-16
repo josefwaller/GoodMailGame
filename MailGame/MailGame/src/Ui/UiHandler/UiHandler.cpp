@@ -120,19 +120,19 @@ bool UiHandler::handleEvent(sf::Event e) {
 			// Rotate the building/track if R is pressed
 		case sf::Keyboard::R:
 			if (this->currentState == UiState::BuildingRailTracks) {
-				this->from++;
-				this->to++;
+				this->from.rotateQuaterClockwise();
+				this->to.rotateQuaterClockwise();
 			}
 			else if (this->currentState == UiState::BuildingEntity) {
-				this->currentRotation++;
+				this->currentRotation.rotateQuaterClockwise();
 			}
 			break;
 		case sf::Keyboard::T:
 			if (this->currentState == UiState::BuildingRailTracks) {
 				// Toggle between straight and curved track
-				this->to++;
+				this->to.rotateQuaterClockwise();
 				if (this->from == this->to) {
-					this->to++;
+					this->to.rotateQuaterClockwise();
 				}
 			}
 		}
@@ -266,7 +266,7 @@ void UiHandler::update() {
 
 		if (this->currentState == UiState::BuildingEntity) {
 			if (ImGui::Button("Rotate")) {
-				this->currentRotation++;
+				this->currentRotation.rotateQuaterClockwise();
 			}
 			if (ImGui::Button("Cancel")) {
 				this->changeState(UiState::Default);

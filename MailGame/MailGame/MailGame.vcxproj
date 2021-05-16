@@ -181,6 +181,7 @@
     <ClCompile Include="src\Routes\Route.cpp" />
     <ClCompile Include="src\Routes\TransitRoute\TransitRoute.cpp" />
     <ClCompile Include="src\Routes\MailTruckRoute\MailTruckRoute.cpp" />
+    <ClCompile Include="src\System\IsoRotation\IsoRotation.cpp" />
     <ClCompile Include="src\System\IsoSprite\IsoSprite.cpp" />
     <ClCompile Include="src\System\SaveData\SaveData.cpp" />
     <ClCompile Include="src\System\SpeedPoint\SpeedPoint.cpp" />
