@@ -13,9 +13,13 @@ const std::map<CargoCarModel, CargoCarInfo> CargoCarInfo::INFOS = {
 	))),
 	PAIR(CargoCarModel::BigTrainCar, CargoCarInfo("Large train car", 400, 10.0f, IsoSprite(
 		ResourceLoader::get()->getSprite("vehicles/vehicles", "trainCar-large-N.png", true),
+		ResourceLoader::get()->getSprite("vehicles/vehicles", "trainCar-large-NE.png", true),
 		ResourceLoader::get()->getSprite("vehicles/vehicles", "trainCar-large-E.png", true),
+		ResourceLoader::get()->getSprite("vehicles/vehicles", "trainCar-large-SE.png", true),
+		ResourceLoader::get()->getSprite("vehicles/vehicles", "trainCar-large-S.png", true),
+		ResourceLoader::get()->getSprite("vehicles/vehicles", "trainCar-large-SW.png", true),
 		ResourceLoader::get()->getSprite("vehicles/vehicles", "trainCar-large-W.png", true),
-		ResourceLoader::get()->getSprite("vehicles/vehicles", "trainCar-large-S.png", true)
+		ResourceLoader::get()->getSprite("vehicles/vehicles", "trainCar-large-NW.png", true)
 	))),
 	PAIR(CargoCarModel::SmallTrainCar, CargoCarInfo("Small Train car", 50, 50.0f, IsoSprite(
 		ResourceLoader::get()->getSprite("vehicles/vehicles", "trainCar-small-N.png", true),

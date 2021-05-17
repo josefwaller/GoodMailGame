@@ -105,9 +105,13 @@ std::shared_ptr<Entity> VehiclePresets::train(
 		new IsoSpriteRenderer(
 			IsoSprite(
 				ResourceLoader::get()->getSprite("vehicles/vehicles", "train-N.png", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "train-NE.png", true),
 				ResourceLoader::get()->getSprite("vehicles/vehicles", "train-E.png", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "train-SE.png", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "train-S.png", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "train-SW.png", true),
 				ResourceLoader::get()->getSprite("vehicles/vehicles", "train-W.png", true),
-				ResourceLoader::get()->getSprite("vehicles/vehicles", "train-S.png", true)
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "train-NW.png", true)
 			),
 			sf::Vector3f(0.5f, 0.5f, 0)
 		),

@@ -1,4 +1,6 @@
 #include "IsoRotation.h"
+#include <math.h>
+#include <cmath>
 
 IsoRotation::IsoRotation() : rotation(NORTH) {}
 IsoRotation::IsoRotation(unsigned int rotation) : rotation(rotation% MAX_ROT) {}
@@ -51,24 +53,24 @@ sf::Vector2f IsoRotation::getUnitVector() {
 }
 // Get an IsoRotation from a unit vector, assuming it's a valid one
 IsoRotation IsoRotation::fromUnitVector(sf::Vector2f u) {
-	if (u.x == 0.0f) {
-		if (u.y == -1.0f) {
-			return IsoRotation::NORTH;
-		}
-		else if (u.y == 1.0f) {
-			return IsoRotation::SOUTH;
-		}
+	// We have to check if x is 0 first since atan is not defined for that
+	if (u.x == 0) {
+		return u.y == 1 ? IsoRotation::SOUTH : IsoRotation::NORTH;
 	}
-	else if (u.y == 0.0f) {
-		if (u.x == 1.0f) {
-			return IsoRotation::EAST;
-		}
-		else if (u.x == -1.0f) {
-			return IsoRotation::WEST;
-		}
+	// Theta should be rounded to the nearest eigth turn
+	const double PI = 3.14159;
+	double theta = atan2(u.y, u.x);
+	if (u.y < 0) {
+		theta += PI;
 	}
-	// ERROR but not crashing as planes will prob get here
-	return IsoRotation::NORTH;
+	if (theta < 0) {
+		theta += 2 * PI;
+	}
+	size_t numEights = (size_t)round(theta / (PI / 4));
+	if (numEights > 7) {
+		throw std::runtime_error("i am bad at math :(");
+	}
+	return IsoRotation::CARDINAL_AND_ORDINAL_DIRECTIONS[(numEights + 2) % IsoRotation::CARDINAL_AND_ORDINAL_DIRECTIONS.size()];
 }
 IsoRotation IsoRotation::fromUnitVector(sf::Vector3f u) {
 	return fromUnitVector(sf::Vector2f(u.x, u.y));
@@ -83,4 +85,14 @@ const std::vector<IsoRotation> IsoRotation::CARDINAL_DIRECTIONS = {
 		IsoRotation(EAST),
 		IsoRotation(SOUTH),
 		IsoRotation(WEST)
+};
+const std::vector<IsoRotation> IsoRotation::CARDINAL_AND_ORDINAL_DIRECTIONS = {
+		IsoRotation(NORTH),
+		IsoRotation(NORTH_EAST),
+		IsoRotation(EAST),
+		IsoRotation(SOUTH_EAST),
+		IsoRotation(SOUTH),
+		IsoRotation(SOUTH_WEST),
+		IsoRotation(WEST),
+		IsoRotation(NORTH_WEST)
 };

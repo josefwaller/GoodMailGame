@@ -22,6 +22,7 @@ public:
 	const static unsigned int MAX_ROT = 8;
 
 	const static std::vector<IsoRotation> CARDINAL_DIRECTIONS;
+	const static std::vector<IsoRotation> CARDINAL_AND_ORDINAL_DIRECTIONS;
 
 	IsoRotation();
 	IsoRotation(unsigned int initRot);
