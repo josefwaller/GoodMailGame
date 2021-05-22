@@ -9,19 +9,17 @@ class Railway {
 public:
 	// Whether the railway is a station or not
 	bool isStation;
-	Railway(IsoRotation from, IsoRotation to, bool isStation = false) : directions({ { from, to } }), isStation(isStation) {}
+	Railway(IsoRotation from, IsoRotation to, bool isStation = false);
 	Railway(SaveData data);
-	/**
-	 *Get the connected tiles from the ingoing direction provided
-	 * ingoingDirection is the direction the train/etc is coming from, relative to the tile
-	 * i.e. if the ingoinDirection is south, the train is coming from the tile below this one
-	 */
-	std::vector<IsoRotation> getOutgoingDirections(IsoRotation ingoingDirection);
-	// Add a direction
-	void addDirection(IsoRotation from, IsoRotation to);
-	// Used for rendering
-	std::vector<std::pair<IsoRotation, IsoRotation>> getDirections();
+	// Get directions
+	IsoRotation getFrom();
+	IsoRotation getTo();
+
+	// Get save data
+	SaveData getSaveData();
 private:
+	IsoRotation from;
+	IsoRotation to;
 	// The directions the Railway goes in
 	// i.e. { North, South } means that the railway goes from the north to the south
 	std::vector<std::pair<IsoRotation, IsoRotation>> directions;

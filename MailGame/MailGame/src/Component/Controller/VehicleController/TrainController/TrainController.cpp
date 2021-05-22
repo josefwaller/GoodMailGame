@@ -119,30 +119,23 @@ std::vector<SpeedPoint> TrainController::getDockPath(std::shared_ptr<Entity> e) 
 		for (int x = -1; x < 2; x++) {
 			for (int y = -1; y < 2; y++) {
 				if (x == 0 || y == 0) {
-					auto r = this->getEntity()->getGameMap()->getTileAt(pos.x + x, pos.y + y).railway;
-					if (r.has_value() && r.value().isStation) {
+					Tile t = this->getEntity()->getGameMap()->getTileAt(pos.x + x, pos.y + y);
+					if (t.getRailways().size() == 1 && t.getRailways().front().isStation) {
 						// Find how far back the train station goes
 						pos = sf::Vector2i(pos.x + x, pos.y + y);
 						IsoRotation currentRot;
 						for (IsoRotation rot : IsoRotation::CARDINAL_DIRECTIONS) {
-							if (!r.value().getOutgoingDirections(rot).empty()) {
+							if (!t.getOutgoingRailDirections(rot).empty()) {
 								currentRot = rot;
+								break;
 							}
 						}
-						// The reverse direction the stations goes in
-						auto directions = r.value().getDirections();
-#ifdef _DEBUG
-						if (directions.size() != 1) {
-							throw std::runtime_error("Railway stations has branching paths (not allowed)!");
-						}
-#endif
-						IsoRotation rot = r.value().getDirections().front().first;
 						std::vector<SpeedPoint> points;
-						while (r.has_value() && r.value().isStation) {
+						while (t.getRailways().size() == 1 && t.getRailways().front().isStation) {
 							points.push_back(SpeedPoint(sf::Vector3f(pos.x, pos.y, 0), 0.5f));
 							// If it is a station, it must be straight
-							pos = pos + Utils::toVector2i(rot.getUnitVector());
-							r = e->getGameMap()->getTileAt(pos.x, pos.y).railway;
+							pos = pos + Utils::toVector2i(currentRot.getUnitVector());
+							t = e->getGameMap()->getTileAt(pos.x, pos.y);
 						}
 						points[0] = SpeedPoint(points.at(0).getPos(), 0.0f);
 						std::reverse(points.begin(), points.end());

@@ -23,13 +23,13 @@ std::vector<SpeedPoint> RailsPathfinder::findPathBetweenPoints(
 #undef f
 		});
 	// Check that there is a track on the from tile
-	if (!gMap->getTileAt(Utils::toVector2i(from)).railway.has_value()) {
+	if (gMap->getTileAt(Utils::toVector2i(from)).getRailways().empty()) {
 		throw std::runtime_error("No path!");
 		return {};
 	}
 	// First get all the outgoing tracks from the first tile
 	for (IsoRotation r : IsoRotation::CARDINAL_DIRECTIONS) {
-		std::vector<IsoRotation> outgoing = gMap->getTileAt(Utils::toVector2i(from)).railway.value().getOutgoingDirections(r);
+		std::vector<IsoRotation> outgoing = gMap->getTileAt(Utils::toVector2i(from)).getOutgoingRailDirections(r);
 		for (IsoRotation o : outgoing) {
 			// Add it to potential
 			potential.push_back({ Utils::toVector2i(from + o.getUnitVector3D()), o.getReverse() });
@@ -41,15 +41,11 @@ std::vector<SpeedPoint> RailsPathfinder::findPathBetweenPoints(
 	while (!potential.empty()) {
 		auto pair = potential.back();
 		potential.pop_back();
-		// Check there's a railway
-		if (!gMap->getTileAt(pair.first).railway.has_value()) {
-			continue;
-		}
-		Railway r = gMap->getTileAt(pair.first).railway.value();
+		Tile t = gMap->getTileAt(pair.first);
 		// Check if we've reached out desination
 		if (pair.first == Utils::toVector2i(to)) {
 			// We need to quickly check that there's a way to enter this tile from our current tile
-			if (gMap->getTileAt(pair.first).railway.has_value() && !gMap->getTileAt(pair.first).railway.value().getOutgoingDirections(pair.second).empty()) {
+			if (!t.getOutgoingRailDirections(pair.second).empty()) {
 				// Success!
 				railwayPart current = pair;
 				std::vector<SpeedPoint> path = { SpeedPoint(Utils::toVector3f(current.first)) };
@@ -71,7 +67,7 @@ std::vector<SpeedPoint> RailsPathfinder::findPathBetweenPoints(
 			// For right now just disregard the current path
 			continue;
 		}
-		for (IsoRotation rot : r.getOutgoingDirections(pair.second)) {
+		for (IsoRotation rot : t.getOutgoingRailDirections(pair.second)) {
 			// If it's leaving this tile from the east, it will arrive at the next tile from the west
 			sf::Vector2i next = pair.first + Utils::toVector2i(rot.getUnitVector());
 			railwayPart toAdd = { next, rot.getReverse() };

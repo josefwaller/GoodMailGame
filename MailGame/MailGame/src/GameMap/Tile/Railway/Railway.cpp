@@ -3,34 +3,22 @@
 #include "System/SaveData/SaveData.h"
 #include <algorithm>
 
+Railway::Railway(IsoRotation f, IsoRotation t, bool station) : from(f), to(t), isStation(station) {}
+
 Railway::Railway(SaveData data) {
 	using namespace SaveKeys;
-	for (SaveData d : data.getDatas()) {
-		this->directions.push_back({ d.getIsoRotation(FROM), d.getIsoRotation(TO) });
-	}
+	this->from = data.getIsoRotation(FROM);
+	this->to = data.getIsoRotation(TO);
 	this->isStation = data.getBool(IS_STATION);
 }
-std::vector<IsoRotation> Railway::getOutgoingDirections(IsoRotation ingoingDirection) {
-	// If the ingoingDirection is north, it is coming from below the tile, so hte direction we need to look for is south
-	// Same for all other directions
-	IsoRotation from = ingoingDirection;
-	std::vector<IsoRotation> toReturn;
-	for (auto kv : this->directions) {
-		if (kv.first == from) {
-			toReturn.push_back(kv.second);
-		}
-	}
-	return toReturn;
+SaveData Railway::getSaveData() {
+	using namespace SaveKeys;
+	SaveData data(RAILWAY);
+	data.addIsoRotation(FROM, this->from);
+	data.addIsoRotation(TO, this->to);
+	data.addBool(IS_STATION, this->isStation);
+	return data;
 }
 
-void Railway::addDirection(IsoRotation from, IsoRotation to) {
-	if (std::find_if(this->directions.begin(), this->directions.end(), [from, to](auto kv) {
-		return kv.first == from && kv.second == to;
-		}) == this->directions.end()) {
-		this->directions.push_back({ from ,to });
-	}
-}
-
-std::vector<std::pair<IsoRotation, IsoRotation>> Railway::getDirections() {
-	return this->directions;
-}
+IsoRotation Railway::getFrom() { return this->from; };
+IsoRotation Railway::getTo() { return this->to; }

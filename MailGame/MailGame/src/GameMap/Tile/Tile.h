@@ -25,9 +25,6 @@ struct Tile {
 	std::weak_ptr<Entity> building;
 	// The postal code assigned to the tile
 	id_t postalCode;
-	// The railway, if it has one
-	// The railway
-	std::optional<Railway> railway;
 	// The road, if it has one
 	std::optional<Road> road;
 	// The road for airplanes, if it has one
@@ -37,7 +34,20 @@ struct Tile {
 	// The id of the city the tile belongs to (0 is no city)
 	id_t cityId;
 
-	Tile(TileType t = TileType::Land, id_t cityId = 0) : postalCode(0), isLocked(false), cityId(cityId) {
-		type = t;
-	}
+	Tile(TileType t = TileType::Land, id_t cityId = 0);
+	/**
+	 *Get the connected tiles from the ingoing direction provided
+	 * ingoingDirection is the direction the train/etc is coming from, relative to the tile
+	 * i.e. if the ingoinDirection is south, the train is coming from the tile below this one
+	 */
+	std::vector<IsoRotation> getOutgoingRailDirections(IsoRotation ingoingDirection);
+	// Get the railways
+	std::vector<Railway> getRailways();
+	// Remove all railways
+	void deleteRailways();
+	// Add a railway to this tile
+	void addRailway(Railway r);
+private:
+	// The railways on this tile
+	std::vector<Railway> railways;
 };

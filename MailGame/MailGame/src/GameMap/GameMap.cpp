@@ -135,13 +135,12 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 	}
 	window->draw(s);
 	// Draw the railway if it has one
-	if (tile.railway.has_value()) {
-		Railway r = tile.railway.value();
-		for (auto kv : r.getDirections()) {
+	if (!tile.getRailways().empty()) {
+		for (Railway r : tile.getRailways()) {
 			// Point is center of tile + the direction
 			sf::Vector2f center = sf::Vector2f(x, y) + sf::Vector2f(0.5, 0.5);
-			sf::Vector2f fromPoint = center + 0.5f * kv.first.getUnitVector();
-			sf::Vector2f toPoint = center + 0.5f * kv.second.getUnitVector();
+			sf::Vector2f fromPoint = center + 0.5f * r.getFrom().getUnitVector();
+			sf::Vector2f toPoint = center + 0.5f * r.getTo().getUnitVector();
 			// Render line
 			sf::VertexArray arr(sf::PrimitiveType::Lines, 2);
 			arr[0] = sf::Vertex(this->game->worldToScreenPos(Utils::toVector3f(fromPoint)), sf::Color::Black);
@@ -323,25 +322,17 @@ void GameMap::removeRoad(size_t x, size_t y) {
 }
 void GameMap::addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to) {
 	if (this->getTileAt(x, y).type != TileType::OffMap) {
-		if (this->tiles[x][y].railway.has_value()) {
-			this->tiles[x][y].railway.value().addDirection(from, to);
-		}
-		else {
-			this->tiles[x][y].railway = Railway(from, to);
-		}
+		this->tiles[x][y].addRailway(Railway(from, to));
 	}
 }
 void GameMap::removeRailTrack(size_t x, size_t y) {
-	this->tiles[x][y].railway.reset();
+	this->tiles[x][y].deleteRailways();
 }
 
 void GameMap::addRailwayStation(size_t x, size_t y, IsoRotation direction) {
 	if (this->getTileAt(x, y).type != TileType::OffMap) {
-		if (this->tiles[x][y].railway.has_value()) {
-			this->tiles[x][y].railway.value().addDirection(direction.getReverse(), direction);
-		}
-		else {
-			this->tiles[x][y].railway = Railway(direction.getReverse(), direction, true);
+		if (this->tiles[x][y].getRailways().empty()) {
+			this->tiles[x][y].addRailway(Railway(direction.getReverse(), direction, true));
 		}
 	}
 }
@@ -447,17 +438,10 @@ SaveData GameMap::getSaveData() {
 				td.addData(r.getSaveData());
 			}
 			// Add data for railway
-			if (t.railway.has_value()) {
-				Railway rw = t.railway.value();
-				SaveData rwd(RAILWAY);
-				for (auto kv : rw.getDirections()) {
-					SaveData d(SaveKeys::DIRECTION);
-					d.addIsoRotation(FROM, kv.first);
-					d.addIsoRotation(TO, kv.second);
-					rwd.addData(d);
+			if (!t.getRailways().empty()) {
+				for (Railway r : t.getRailways()) {
+					td.addData(r.getSaveData());
 				}
-				rwd.addBool(IS_STATION, rw.isStation);
-				td.addData(rwd);
 			}
 			// Add data for airplane road
 			if (t.airplaneRoad.has_value()) {
@@ -488,7 +472,7 @@ void GameMap::loadFromSaveData(SaveData data) {
 				this->tiles[x][y].road = Road(rd);
 			}
 			else if (rd.getName() == RAILWAY) {
-				this->tiles[x][y].railway = Railway(rd);
+				this->tiles[x][y].addRailway(Railway(rd));
 			}
 			else if (rd.getName() == "AirplaneRoad") {
 				this->tiles[x][y].airplaneRoad = AirplaneRoad(rd);
