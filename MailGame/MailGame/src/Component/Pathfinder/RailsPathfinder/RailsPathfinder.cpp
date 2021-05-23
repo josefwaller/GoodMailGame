@@ -18,8 +18,7 @@ std::vector<std::pair<sf::Vector2i, Railway>> RailsPathfinder::findRailwayPath(
 	sf::Vector2i toTile,
 	IsoRotation startingRotation,
 	GameMap* gMap,
-	gtime_t departTime,
-	float speed
+	gtime_t departTime
 ) {
 	// Utility typedef
 	typedef std::pair<sf::Vector2i, IsoRotation> railwayPart;
@@ -81,4 +80,17 @@ std::vector<std::pair<sf::Vector2i, Railway>> RailsPathfinder::findRailwayPath(
 		visited.push_back(pair);
 	}
 	return {};
+}
+
+std::vector<SpeedPoint> RailsPathfinder::railwayPathToSpeedPointPath(std::vector<std::pair<sf::Vector2i, Railway>> path) {
+	// Start at the middle of fromTile
+	std::vector<SpeedPoint> points;
+	// Go to the edge of the first value in path
+	points.push_back(SpeedPoint(Utils::toVector3f(path.front().first) + sf::Vector3f(0.5f, 0.5f, 0) + path.front().second.getFrom().getUnitVector3D() * 0.5f));
+	for (auto kv : path) {
+		// Add a point
+		// Since we want to be at the edge of the tile, we get the center of the tile coords (tile + (0.5, 0.5)) and add halfthe unit vector to that
+		points.push_back(SpeedPoint(Utils::toVector3f(kv.first) + sf::Vector3f(0.5f, 0.5f, 0) + kv.second.getTo().getUnitVector3D() * 0.5f));
+	}
+	return points;
 }

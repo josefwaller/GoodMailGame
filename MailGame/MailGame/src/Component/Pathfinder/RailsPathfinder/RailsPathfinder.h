@@ -25,7 +25,12 @@ public:
 		sf::Vector2i toTile,
 		IsoRotation startingRotation,
 		GameMap* gMap,
-		gtime_t departTime,
-		float speed
+		gtime_t departTime
+	);
+	/**
+	 * Turn a vector of tiles and railways into a vector of 3D points for the vehicle to go over
+	 */
+	static std::vector<SpeedPoint> railwayPathToSpeedPointPath(
+		std::vector<std::pair<sf::Vector2i, Railway>> path
 	);
 };

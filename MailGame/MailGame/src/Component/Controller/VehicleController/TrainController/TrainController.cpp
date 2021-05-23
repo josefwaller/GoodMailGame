@@ -134,16 +134,11 @@ void TrainController::fromSaveData(SaveData data) {
 }
 
 void TrainController::resetPath(sf::Vector2i fromTile, sf::Vector2i toTile, IsoRotation startingRotation, gtime_t time) {
-	this->path = RailsPathfinder::findRailwayPath(fromTile, toTile, startingRotation, this->getEntity()->getGameMap(), time, this->getSpeed());
-	// TODO: Handle path being empty (no path)
-	// Start at the middle of fromTile
+	this->path = RailsPathfinder::findRailwayPath(fromTile, toTile, startingRotation, this->getEntity()->getGameMap(), time);
+	// Start at 0 speed
 	std::vector<SpeedPoint> points = { SpeedPoint(Utils::toVector3f(fromTile) + sf::Vector3f(0.5f, 0.5f, 0), 0.0f) };
-	// Go to the edge of the first value in path
-	points.push_back(SpeedPoint(Utils::toVector3f(path.front().first) + sf::Vector3f(0.5f, 0.5f, 0) + path.front().second.getFrom().getUnitVector3D() * 0.5f));
-	for (auto kv : this->path) {
-		// Add a point
-		// Since we want to be at the edge of the tile, we get the center of the tile coords (tile + (0.5, 0.5)) and add halfthe unit vector to that
-		points.push_back(SpeedPoint(Utils::toVector3f(kv.first) + sf::Vector3f(0.5f, 0.5f, 0) + kv.second.getTo().getUnitVector3D() * 0.5f));
-	}
+	auto pathPoints = RailsPathfinder::railwayPathToSpeedPointPath(this->path);
+	points.insert(points.end(), pathPoints.begin(), pathPoints.end());
+	// TODO: Handle path being empty (no path)
 	this->setPoints(Utils::speedPointVectorToRoutePointVector(points, time, this->model));
 }
