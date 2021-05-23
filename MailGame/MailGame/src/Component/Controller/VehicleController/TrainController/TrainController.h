@@ -29,7 +29,7 @@ private:
 	std::vector<std::pair<sf::Vector2i, Railway>> path;
 	// Get the path to dock at this entity
 	// Will eventually return several paths, and the train must choose which one
-	std::vector<SpeedPoint> getDockPath(std::shared_ptr<Entity> e);
+	std::vector<std::pair<sf::Vector2i, Railway>> getDockPath(std::shared_ptr<Entity> e);
 	// Reset the path the train is taking
 	void resetPath(sf::Vector2i fromTile, sf::Vector2i toTile, IsoRotation startingRotation, gtime_t departTime);
 };

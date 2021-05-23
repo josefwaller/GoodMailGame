@@ -21,7 +21,7 @@ void TrainController::init() {
 	// TODO: It should maybe go over all the points returned from getDockPath(depot) first?
 	auto depart = this->getDockPath(depot.lock());
 	auto arrive = this->getDockPath(this->stops.at(this->stopIndex).getEntityTarget().lock());
-	this->resetPath(Utils::toVector2i(depart.front().getPos()), Utils::toVector2i(arrive.front().getPos()), this->getEntity()->transform->getRotation(), this->departTime);
+	this->resetPath(depart.front().first, arrive.front().first, this->getEntity()->transform->getRotation(), this->departTime);
 }
 
 void TrainController::update(float delta) {
@@ -30,7 +30,7 @@ void TrainController::update(float delta) {
 
 void TrainController::onArriveAtDest(gtime_t arriveTime) {
 	sf::Vector3f from;
-	sf::Vector3f to;
+	sf::Vector2i to;
 	switch (this->state) {
 	case State::ArriveAtStation:
 		this->state = State::InTransit;
@@ -42,10 +42,10 @@ void TrainController::onArriveAtDest(gtime_t arriveTime) {
 			this->getEntity()->ai->onArriveAtStop(this->stopIndex - 1);
 			// Now set points to the path between stations
 			from = this->points.back().pos;
-			to = this->getDockPath(this->stops.at(this->stopIndex).getEntityTarget().lock()).front().getPos();
+			to = this->getDockPath(this->stops.at(this->stopIndex).getEntityTarget().lock()).front().first;
 			this->resetPath(
 				Utils::toVector2i(from),
-				Utils::toVector2i(to),
+				to,
 				this->path.back().second.getTo(),
 				arriveTime);
 		}
@@ -54,7 +54,11 @@ void TrainController::onArriveAtDest(gtime_t arriveTime) {
 		this->state = State::ArriveAtStation;
 		// Arrive at the station
 		// Eventually there will be some cool logic here to determine where at the station to arrive at
-		this->setPoints(Utils::speedPointVectorToRoutePointVector(this->getDockPath(this->stops.at(this->stopIndex).getEntityTarget().lock()), arriveTime, this->model, this->points.back().speedAtPoint));
+		this->path = this->getDockPath(this->stops.at(this->stopIndex).getEntityTarget().lock());
+		// Stop at the train station
+		auto spPath = RailsPathfinder::railwayPathToSpeedPointPath(this->path);
+		spPath.back().setSpeed(0.0f);
+		this->setPoints(Utils::speedPointVectorToRoutePointVector(spPath, arriveTime, this->model, this->points.back().speedAtPoint));
 		break;
 	}
 }
@@ -76,7 +80,7 @@ void TrainController::onDelete() {
 	this->deleteCars();
 }
 
-std::vector<SpeedPoint> TrainController::getDockPath(std::shared_ptr<Entity> e) {
+std::vector<std::pair<sf::Vector2i, Railway>> TrainController::getDockPath(std::shared_ptr<Entity> e) {
 	if (e->tag == EntityTag::Warehouse) {
 		// Find all the docks attached to the warehouse
 		std::vector<sf::Vector2i> availableDocks = getConnectedDocks(e, EntityTag::TrainDock);
@@ -96,23 +100,28 @@ std::vector<SpeedPoint> TrainController::getDockPath(std::shared_ptr<Entity> e) 
 								break;
 							}
 						}
-						std::vector<SpeedPoint> points;
+						std::vector<std::pair<sf::Vector2i, Railway>> path;
 						while (t.getRailways().size() == 1 && t.getRailways().front().isStation) {
-							points.push_back(SpeedPoint(sf::Vector3f(pos.x + 0.5f, pos.y + 0.5f, 0), 0.5f));
+							path.push_back({ pos, t.getRailways().front() });
 							// If it is a station, it must be straight
 							pos = pos + Utils::toVector2i(currentRot.getUnitVector());
 							t = e->getGameMap()->getTileAt(pos.x, pos.y);
 						}
-						points[0] = SpeedPoint(points.at(0).getPos(), 0.0f);
-						std::reverse(points.begin(), points.end());
-						return points;
+						std::reverse(path.begin(), path.end());
+						return path;
 					}
 				}
 			}
 		}
 		throw std::runtime_error("No path mean crash right now");
 	}
-	return { e->transitStop->getTrainStop().tile };
+	else if (e->tag == EntityTag::TrainStation) {
+		sf::Vector2i tile = Utils::toVector2i(e->transitStop->getTrainStop().tile);
+		if (this->getEntity()->getGameMap()->getTileAt(tile).getRailways().empty()) {
+			throw std::runtime_error("TrainStation has no railways!");
+		}
+		return { { tile, this->getEntity()->getGameMap()->getTileAt(tile).getRailways().front() } };
+	}
 }
 
 std::optional<SaveData> TrainController::getSaveData() {
