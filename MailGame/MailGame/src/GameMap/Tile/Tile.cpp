@@ -33,12 +33,22 @@ std::vector<Railway> Tile::getRailways() {
 }
 
 bool Tile::canGetRailwayLock(Railway rail) {
-	auto r = std::find_if(this->railways.begin(), this->railways.end(), [&rail](Railway r) { return r.getFrom() == rail.getFrom() && r.getTo() == rail.getTo(); });
-	if (r == this->railways.end()) {
-		throw std::runtime_error("Cannot release lock on railway that does not exist");
+	for (Railway r : this->railways) {
+		if (!r.getIsLocked()) {
+			continue;
+		}
+		// If the railway is not straight
+		if (rail.getFrom().getReverse() != rail.getTo()) {
+			// If the two railwasy do not overlap
+			IsoRotation one = rail.getFrom().getReverse();
+			IsoRotation two = rail.getTo().getReverse();
+			if ((one == r.getFrom() && two == r.getTo()) || (one == r.getTo() && two == r.getFrom())) {
+				continue;
+			}
+		}
+		return false;
 	}
-	// TBA
-	return !r->getIsLocked();
+	return true;
 }
 
 void Tile::getRailwayLock(Railway rail) {
