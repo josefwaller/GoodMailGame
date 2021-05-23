@@ -65,19 +65,30 @@ void TrainController::onArriveAtDest(gtime_t arriveTime) {
 
 void TrainController::onArriveAtPoint(size_t pointIndex, gtime_t arriveTime) {
 	this->getEntity()->ai->onArriveAtTile(Utils::toVector2i(this->points.at(pointIndex).pos));
+	GameMap* gMap = this->getEntity()->getGameMap();
 	// Get a lock on the next point
 	if (this->pointIndex < this->points.size() - 1) {
-		GameMap* gMap = this->getEntity()->getGameMap();
 		auto p = this->path[pointIndex];
 		if (gMap->canGetRailwayLock(p.first, p.second)) {
 			gMap->getRailwayLock(p.first, p.second);
+			this->lockedRailways.push(p);
 		}
+	}
+	while (this->lockedRailways.size() > ceil(this->getTrainLength())) {
+		auto p = this->lockedRailways.front();
+		this->lockedRailways.pop();
+		gMap->releaseRailwayLock(p.first, p.second);
 	}
 }
 
 void TrainController::onDelete() {
 	// From VehicleController
 	this->deleteCars();
+	while (!this->lockedRailways.empty()) {
+		auto p = this->lockedRailways.front();
+		this->lockedRailways.pop();
+		this->getEntity()->getGameMap()->releaseRailwayLock(p.first, p.second);
+	}
 }
 
 std::vector<std::pair<sf::Vector2i, Railway>> TrainController::getDockPath(std::shared_ptr<Entity> e) {
@@ -122,6 +133,10 @@ std::vector<std::pair<sf::Vector2i, Railway>> TrainController::getDockPath(std::
 		}
 		return { { tile, this->getEntity()->getGameMap()->getTileAt(tile).getRailways().front() } };
 	}
+}
+
+float TrainController::getTrainLength() {
+	return 2.0f + 0.3f * this->cargoCars.size();
 }
 
 std::optional<SaveData> TrainController::getSaveData() {

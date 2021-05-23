@@ -1,6 +1,7 @@
 #pragma once
 #include "Component/Controller/VehicleController/VehicleController.h"
 #include "GameMap/Tile/Railway/Railway.h"
+#include <queue>
 
 class TrainController : public VehicleController {
 public:
@@ -27,6 +28,10 @@ private:
 	State state;
 	// The path of railways the train is taking
 	std::vector<std::pair<sf::Vector2i, Railway>> path;
+	// The tiles the train has a lock on
+	std::queue<std::pair<sf::Vector2i, Railway>> lockedRailways;
+	// Get the length of the train
+	float getTrainLength();
 	// Get the path to dock at this entity
 	// Will eventually return several paths, and the train must choose which one
 	std::vector<std::pair<sf::Vector2i, Railway>> getDockPath(std::shared_ptr<Entity> e);
