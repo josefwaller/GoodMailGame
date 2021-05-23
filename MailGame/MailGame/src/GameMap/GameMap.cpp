@@ -143,7 +143,7 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 			sf::Vector2f toPoint = center + 0.5f * r.getTo().getUnitVector();
 			// Render line
 			sf::VertexArray arr(sf::PrimitiveType::Lines, 2);
-			arr[0] = sf::Vertex(this->game->worldToScreenPos(Utils::toVector3f(fromPoint)), sf::Color::Black);
+			arr[0] = sf::Vertex(this->game->worldToScreenPos(Utils::toVector3f(fromPoint)), r.getIsLocked() ? sf::Color::White : sf::Color::Black);
 			arr[1] = sf::Vertex(this->game->worldToScreenPos(Utils::toVector3f(toPoint)), r.isStation ? sf::Color::Blue : sf::Color::Red);
 			window->draw(arr);
 		}
@@ -298,6 +298,18 @@ void GameMap::releaseTileLock(size_t x, size_t y, TransitType type) {
 	if (this->getTileAt(x, y).isLocked) {
 		this->tiles[x][y].isLocked = false;
 	}
+}
+bool GameMap::canGetRailwayLock(sf::Vector2i tile, Railway r) {
+	if (this->getTileAt(tile).type == TileType::OffMap) {
+		return false;
+	}
+	return this->tiles[tile.x][tile.y].canGetRailwayLock(r);
+}
+void GameMap::getRailwayLock(sf::Vector2i tile, Railway r) {
+	this->tiles[tile.x][tile.y].getRailwayLock(r);
+}
+void GameMap::releaseRailwayLock(sf::Vector2i tile, Railway r) {
+	this->tiles[tile.x][tile.y].releaseRailwayLock(r);
 }
 
 void GameMap::setBuildingForTile(size_t x, size_t y, std::weak_ptr<Entity> building) {

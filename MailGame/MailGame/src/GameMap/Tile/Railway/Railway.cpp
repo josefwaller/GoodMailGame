@@ -3,13 +3,14 @@
 #include "System/SaveData/SaveData.h"
 #include <algorithm>
 
-Railway::Railway(IsoRotation f, IsoRotation t, bool station) : from(f), to(t), isStation(station) {}
+Railway::Railway(IsoRotation f, IsoRotation t, bool station) : from(f), to(t), isStation(station), isLocked(false) {}
 
 Railway::Railway(SaveData data) {
 	using namespace SaveKeys;
 	this->from = data.getIsoRotation(FROM);
 	this->to = data.getIsoRotation(TO);
 	this->isStation = data.getBool(IS_STATION);
+	this->isLocked = false;
 }
 SaveData Railway::getSaveData() {
 	using namespace SaveKeys;
@@ -22,3 +23,21 @@ SaveData Railway::getSaveData() {
 
 IsoRotation Railway::getFrom() { return this->from; };
 IsoRotation Railway::getTo() { return this->to; }
+
+bool Railway::getIsLocked() { return this->isLocked; };
+void Railway::getLock() {
+#ifdef _DEBUG
+	if (this->isLocked) {
+		throw std::runtime_error("Cannot get lock on railway that already has lock");
+	}
+#endif
+	this->isLocked = true;
+}
+void Railway::releaseLock() {
+#ifdef _DEBUG
+	if (!this->isLocked) {
+		throw std::runtime_error("Cannot release non-existant lock!");
+	}
+#endif
+	this->isLocked = false;
+}

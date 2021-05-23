@@ -31,3 +31,27 @@ void Tile::deleteRailways() {
 std::vector<Railway> Tile::getRailways() {
 	return this->railways;
 }
+
+bool Tile::canGetRailwayLock(Railway rail) {
+	auto r = std::find_if(this->railways.begin(), this->railways.end(), [&rail](Railway r) { return r.getFrom() == rail.getFrom() && r.getTo() == rail.getTo(); });
+	if (r == this->railways.end()) {
+		throw std::runtime_error("Cannot release lock on railway that does not exist");
+	}
+	// TBA
+	return !r->getIsLocked();
+}
+
+void Tile::getRailwayLock(Railway rail) {
+	auto r = std::find_if(this->railways.begin(), this->railways.end(), [&rail](Railway r) { return r.getFrom() == rail.getFrom() && r.getTo() == rail.getTo(); });
+	if (r == this->railways.end()) {
+		throw std::runtime_error("Cannot release lock on railway that does not exist");
+	}
+	return r->getLock();
+}
+void Tile::releaseRailwayLock(Railway rail) {
+	auto r = std::find_if(this->railways.begin(), this->railways.end(), [&rail](Railway r) { return r.getFrom() == rail.getFrom() && r.getTo() == rail.getTo(); });
+	if (r == this->railways.end()) {
+		throw std::runtime_error("Cannot get lock on railway that does not exist");
+	}
+	return r->releaseLock();
+}

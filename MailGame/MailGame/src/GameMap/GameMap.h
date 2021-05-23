@@ -55,6 +55,11 @@ public:
 	void getTileLock(size_t x, size_t y, TransitType type);
 	// Release a tile lock, throws if there is no lock on the tile
 	void releaseTileLock(size_t x, size_t y, TransitType type);
+	// Check if we can get a railway lock
+	bool canGetRailwayLock(sf::Vector2i tile, Railway railway);
+	// Get/release railway lock
+	void getRailwayLock(sf::Vector2i tile, Railway railway);
+	void releaseRailwayLock(sf::Vector2i tile, Railway railway);
 	// Check if there is a road on the given tile
 	bool hasRoadAt(size_t x, size_t y);
 	// check if there is a road leading in the given direction on a tile

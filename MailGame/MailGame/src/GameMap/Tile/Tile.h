@@ -47,6 +47,13 @@ struct Tile {
 	void deleteRailways();
 	// Add a railway to this tile
 	void addRailway(Railway r);
+
+	/*** These methods ignore everything from the railway object except from and to directions ***/
+	// Check if we can get a railway lock on this tile
+	bool canGetRailwayLock(Railway r);
+	// Get/release a railway lock
+	void getRailwayLock(Railway r);
+	void releaseRailwayLock(Railway r);
 private:
 	// The railways on this tile
 	std::vector<Railway> railways;

@@ -15,6 +15,12 @@ public:
 	IsoRotation getFrom();
 	IsoRotation getTo();
 
+	// Get whether the railway is locked
+	bool getIsLocked();
+	// Get/release lock
+	void getLock();
+	void releaseLock();
+
 	// Get save data
 	SaveData getSaveData();
 private:
@@ -23,4 +29,6 @@ private:
 	// The directions the Railway goes in
 	// i.e. { North, South } means that the railway goes from the north to the south
 	std::vector<std::pair<IsoRotation, IsoRotation>> directions;
+	// Whether the railway is locked or not
+	bool isLocked;
 };
