@@ -111,6 +111,12 @@ bool UiHandler::handleEvent(sf::Event e) {
 			// Remove airplane road
 			this->game->getGameMap()->removeAirplaneRoad(tile.x, tile.y);
 		}
+		case UiState::DeletingRailwaysAndRoads: {
+			sf::Vector2i tile = this->getHoveredTile();
+			this->game->getGameMap()->removeAirplaneRoad(tile.x, tile.y);
+			this->game->getGameMap()->removeRoad(tile.x, tile.y);
+			this->game->getGameMap()->removeRailTrack(tile.x, tile.y);
+		}
 		}
 	case sf::Event::KeyPressed:
 		if (ImGui::GetIO().WantCaptureKeyboard) {
@@ -274,7 +280,7 @@ void UiHandler::update() {
 		}
 	}
 	// Delete/Stop deleting buttons
-	if (this->currentState == UiState::Deleting) {
+	if (this->currentState == UiState::Deleting || this->currentState == UiState::DeletingRailwaysAndRoads) {
 		if (ImGui::Button("Stop Deleting")) {
 			this->currentState = UiState::Default;
 		}
@@ -282,6 +288,9 @@ void UiHandler::update() {
 	else {
 		if (ImGui::Button("Delete")) {
 			this->currentState = UiState::Deleting;
+		}
+		if (ImGui::Button("Delete Roads/Railways")) {
+			this->currentState = UiState::DeletingRailwaysAndRoads;
 		}
 	}
 	// Print mouse position

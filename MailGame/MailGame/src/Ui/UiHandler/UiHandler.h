@@ -23,6 +23,7 @@ public:
 		BuildingRoad,
 		BuildingAirplaneRoad,
 		Deleting,
+		DeletingRailwaysAndRoads,
 		ShowingCityLimits,
 		ShowingResidencePaths
 	};
