@@ -11,7 +11,16 @@ std::vector<SpeedPoint> RailsPathfinder::findPathBetweenPoints(
 	sf::Vector3f to,
 	gtime_t departTime,
 	float speed) {
-	GameMap* gMap = this->getEntity()->getGameMap();
+	return {};
+}
+std::vector<std::pair<sf::Vector2i, Railway>> RailsPathfinder::findRailwayPath(
+	sf::Vector2i fromTile,
+	sf::Vector2i toTile,
+	IsoRotation startingRotation,
+	GameMap* gMap,
+	gtime_t departTime,
+	float speed
+) {
 	// Utility typedef
 	typedef std::pair<sf::Vector2i, IsoRotation> railwayPart;
 	// The tiles it has already been to
@@ -23,39 +32,34 @@ std::vector<SpeedPoint> RailsPathfinder::findPathBetweenPoints(
 #undef f
 		});
 	// Check that there is a track on the from tile
-	if (gMap->getTileAt(Utils::toVector2i(from)).getRailways().empty()) {
+	if (gMap->getTileAt(fromTile).getRailways().empty()) {
 		throw std::runtime_error("No path!");
 		return {};
 	}
 	// First get all the outgoing tracks from the first tile
-	for (IsoRotation r : IsoRotation::CARDINAL_DIRECTIONS) {
-		std::vector<IsoRotation> outgoing = gMap->getTileAt(Utils::toVector2i(from)).getOutgoingRailDirections(r);
-		for (IsoRotation o : outgoing) {
-			// Add it to potential
-			potential.push_back({ Utils::toVector2i(from + o.getUnitVector3D()), o.getReverse() });
-			previous.insert({ { Utils::toVector2i(from + o.getUnitVector3D()), o.getReverse() }, { Utils::toVector2i(from), o } });
-		}
-		visited.push_back({ Utils::toVector2i(from), r });
-	}
+	sf::Vector2i startingTile = fromTile + Utils::toVector2i(startingRotation.getUnitVector());
+	potential.push_back({ startingTile, startingRotation.getReverse() });
 	// Now go through all the tracks
 	while (!potential.empty()) {
 		auto pair = potential.back();
 		potential.pop_back();
 		Tile t = gMap->getTileAt(pair.first);
 		// Check if we've reached out desination
-		if (pair.first == Utils::toVector2i(to)) {
+		if (pair.first == toTile) {
 			// We need to quickly check that there's a way to enter this tile from our current tile
 			if (!t.getOutgoingRailDirections(pair.second).empty()) {
 				// Success!
-				railwayPart current = pair;
-				std::vector<SpeedPoint> path = { SpeedPoint(Utils::toVector3f(current.first)) };
+				IsoRotation outgoingRot = pair.second.getReverse();
+				railwayPart current = previous.at(pair);
+				std::vector<std::pair<sf::Vector2i, Railway>> path;
 				while (true) {
-					if (previous.find(current) == previous.end()) {
-						path.push_back(SpeedPoint(Utils::toVector3f(current.first)));
+					// Add the railway on current
+					path.push_back({ current.first, Railway(current.second, outgoingRot) });
+					if (current.first == startingTile && current.second == startingRotation.getReverse()) {
 						std::reverse(path.begin(), path.end());
 						return path;
 					}
-					path.push_back(SpeedPoint(Utils::toVector3f(current.first) + Utils::toVector3f(current.second.getUnitVector() * 0.5f)));
+					outgoingRot = current.second.getReverse();
 					current = previous.at(current);
 				}
 				return {};
@@ -74,6 +78,7 @@ std::vector<SpeedPoint> RailsPathfinder::findPathBetweenPoints(
 			potential.push_back(toAdd);
 			previous.insert({ toAdd, pair });
 		}
+		visited.push_back(pair);
 	}
 	return {};
 }

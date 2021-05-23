@@ -35,7 +35,7 @@ const std::map<VehicleModel, VehicleModelInfo> VehicleModelInfo::modelInfos = {
 	{ VehicleModel::MailTruck, VehicleModelInfo(1.0f, Game::UNITS_IN_GAME_HOUR * 0.2, Game::UNITS_IN_GAME_HOUR * 0.2, "Mail Truck", 200, Technology::Default, 20) },
 	{ VehicleModel::SlowCargoTruck, VehicleModelInfo(1.0f, Game::UNITS_IN_GAME_HOUR * 0.2, Game::UNITS_IN_GAME_HOUR * 0.2, "Cargo Truck", 600, Technology::CargoTrucks) },
 	{ VehicleModel::FastCargoTruck, VehicleModelInfo(1.5f, Game::UNITS_IN_GAME_HOUR * 1.2, Game::UNITS_IN_GAME_HOUR * 2, "Fast Truck", 600, Technology::FastCargoTrucks) },
-	{ VehicleModel::SlowTrain, VehicleModelInfo(1.0f, Game::UNITS_IN_GAME_HOUR * 0.2, Game::UNITS_IN_GAME_HOUR * 0.2, "Slow Train", 400, Technology::Trains, 200, TRAIN_CARS, 8) },
+	{ VehicleModel::SlowTrain, VehicleModelInfo(2.5f, Game::UNITS_IN_GAME_HOUR * 0.2, Game::UNITS_IN_GAME_HOUR * 0.2, "Slow Train", 400, Technology::Trains, 200, TRAIN_CARS, 8) },
 	{ VehicleModel::FastTrain, VehicleModelInfo(3.5f, Game::UNITS_IN_GAME_HOUR * 0.2, Game::UNITS_IN_GAME_HOUR * 0.2, "Fast Train", 400, Technology::FastTrains, 400, TRAIN_CARS, 4) },
 	{ VehicleModel::SlowAirplane, VehicleModelInfo(5.0f, Game::UNITS_IN_GAME_HOUR * 0.2, Game::UNITS_IN_GAME_HOUR * 0.2, "Slow Plane", 800, Technology::Airplanes) },
 	{ VehicleModel::FastAirplane, VehicleModelInfo(10.0f, Game::UNITS_IN_GAME_HOUR * 0.2, Game::UNITS_IN_GAME_HOUR * 0.2, "Fast Plane", 800, Technology::FastAirplanes) }

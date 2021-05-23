@@ -112,8 +112,7 @@ std::shared_ptr<Entity> VehiclePresets::train(
 				ResourceLoader::get()->getSprite("vehicles/vehicles", "train-SW.png", true),
 				ResourceLoader::get()->getSprite("vehicles/vehicles", "train-W.png", true),
 				ResourceLoader::get()->getSprite("vehicles/vehicles", "train-NW.png", true)
-			),
-			sf::Vector3f(0.5f, 0.5f, 0)
+			)
 		),
 		new TrainController(spawnTime, route.model, trainCars),
 		nullptr,
@@ -158,8 +157,7 @@ std::shared_ptr<Entity> VehiclePresets::trainCar(Game* g, sf::Vector3f pos, IsoR
 		EntityTag::TrainCar,
 		new Transform(pos, rot),
 		new IsoSpriteRenderer(
-			sprites,
-			sf::Vector3f(0.5f, 0.5f, 0)
+			sprites
 		)
 	);
 }

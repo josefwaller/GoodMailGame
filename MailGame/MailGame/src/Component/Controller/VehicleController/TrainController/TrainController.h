@@ -1,5 +1,6 @@
 #pragma once
 #include "Component/Controller/VehicleController/VehicleController.h"
+#include "GameMap/Tile/Railway/Railway.h"
 
 class TrainController : public VehicleController {
 public:
@@ -24,12 +25,11 @@ private:
 	size_t stopIndex;
 	// The current state of the train
 	State state;
-	// Whether the train is blocked or not
-	bool isBlocked;
-	// The current tiles that the train has a lock on
-	// Stored to remove the possibility of an orphan locked tile
-	std::vector<sf::Vector2i> lockedTiles;
+	// The path of railways the train is taking
+	std::vector<std::pair<sf::Vector2i, Railway>> path;
 	// Get the path to dock at this entity
 	// Will eventually return several paths, and the train must choose which one
 	std::vector<SpeedPoint> getDockPath(std::shared_ptr<Entity> e);
+	// Reset the path the train is taking
+	void resetPath(sf::Vector2i fromTile, sf::Vector2i toTile, IsoRotation startingRotation, gtime_t departTime);
 };

@@ -4,11 +4,12 @@
 #include "Component/Pathfinder/Pathfinder.h"
 #include "Component/Transform/Transform.h"
 #include "Component/ComponentType/ComponentType.h"
+#include "Component/Pathfinder/RailsPathfinder/RailsPathfinder.h"
 #include "Game/Game.h"
 #include "System/Utils/Utils.h"
 #include "GameMap/GameMap.h"
 
-TrainController::TrainController(gtime_t departTime, VehicleModel model, std::vector<std::weak_ptr<Entity>> trainCars) : VehicleController(departTime, model, trainCars), stopIndex(0), state(State::InTransit), isBlocked(false), lockedTiles({}) {}
+TrainController::TrainController(gtime_t departTime, VehicleModel model, std::vector<std::weak_ptr<Entity>> trainCars) : VehicleController(departTime, model, trainCars), stopIndex(0), state(State::InTransit) {}
 
 void TrainController::init() {
 	// Get the stops
@@ -20,32 +21,11 @@ void TrainController::init() {
 	// TODO: It should maybe go over all the points returned from getDockPath(depot) first?
 	auto depart = this->getDockPath(depot.lock());
 	auto arrive = this->getDockPath(this->stops.at(this->stopIndex).getEntityTarget().lock());
-	this->setPoints(Utils::speedPointVectorToRoutePointVector(this->getEntity()->pathfinder->findPathBetweenPoints(depart.front().getPos(), arrive.front().getPos(), this->departTime, getSpeed()), this->departTime, this->model));
+	this->resetPath(Utils::toVector2i(depart.front().getPos()), Utils::toVector2i(arrive.front().getPos()), this->getEntity()->transform->getRotation(), this->departTime);
 }
 
 void TrainController::update(float delta) {
-	if (this->isBlocked) {
-		std::vector<SpeedPoint> arrivingPath = this->getDockPath(this->stops.at(this->stopIndex).getEntityTarget().lock());
-		std::vector<SpeedPoint> points = this->getEntity()->pathfinder->findPathBetweenPoints(this->getEntity()->transform->getPosition(), arrivingPath.front().getPos(), this->getEntity()->getGame()->getTime(), this->getSpeed());
-		sf::Vector2i nextTile = Utils::toVector2i(points.at(1).getPos());
-		// Check if we already have a lock on the tile we need to go to
-		// (Can sometimes happen when leaving a station)
-		if (std::find(this->lockedTiles.begin(), this->lockedTiles.end(), nextTile) != this->lockedTiles.end()) {
-			this->isBlocked = false;
-			this->setPoints(Utils::speedPointVectorToRoutePointVector(points, this->getEntity()->getGame()->getTime(), this->model, 0.0f));
-		}
-		else
-			// Try to get a lock on the tile
-			if (this->getEntity()->getGameMap()->canGetTileLock(nextTile.x, nextTile.y, TransitType::Train)) {
-				this->getEntity()->getGameMap()->getTileLock(nextTile.x, nextTile.y, TransitType::Train);
-				this->lockedTiles.push_back(nextTile);
-				this->isBlocked = false;
-				this->setPoints(Utils::speedPointVectorToRoutePointVector(points, this->getEntity()->getGame()->getTime(), this->model, 0.0f));
-			}
-	}
-	else {
-		VehicleController::update(delta);
-	}
+	VehicleController::update(delta);
 }
 
 void TrainController::onArriveAtDest(gtime_t arriveTime) {
@@ -63,11 +43,11 @@ void TrainController::onArriveAtDest(gtime_t arriveTime) {
 			// Now set points to the path between stations
 			from = this->points.back().pos;
 			to = this->getDockPath(this->stops.at(this->stopIndex).getEntityTarget().lock()).front().getPos();
-			this->setPoints(Utils::speedPointVectorToRoutePointVector(
-				this->getEntity()->pathfinder->findPathBetweenPoints(from, to, arriveTime, this->getSpeed()),
-				this->points.back().expectedTime,
-				this->model,
-				this->points.back().speedAtPoint));
+			this->resetPath(
+				Utils::toVector2i(from),
+				Utils::toVector2i(to),
+				this->path.back().second.getTo(),
+				arriveTime);
 		}
 		break;
 	case State::InTransit:
@@ -84,28 +64,10 @@ void TrainController::onArriveAtPoint(size_t pointIndex, gtime_t arriveTime) {
 	// Get a lock on the next point
 	if (this->points.size() > this->pointIndex) {
 		sf::Vector2i nextTile = Utils::toVector2i(this->points.at(this->pointIndex).pos);
-		if (this->getEntity()->getGameMap()->canGetTileLock(nextTile.x, nextTile.y, TransitType::Train)) {
-			this->getEntity()->getGameMap()->getTileLock(nextTile.x, nextTile.y, TransitType::Train);
-			this->lockedTiles.push_back(nextTile);
-		}
-		else {
-			if (std::find(this->lockedTiles.begin(), this->lockedTiles.end(), nextTile) == this->lockedTiles.end()) {
-				this->isBlocked = true;
-			}
-		}
-	}
-	// Remove any tiles that we don't need locks for anymore
-	int numTiles = (int)ceil(1 + this->cargoCars.size() * 0.3f);
-	for (int i = this->lockedTiles.size() - 1 - numTiles; i >= 0; i--) {
-		this->getEntity()->getGameMap()->releaseTileLock(this->lockedTiles.at(i).x, this->lockedTiles.at(i).y, TransitType::Train);
-		this->lockedTiles.erase(this->lockedTiles.begin() + i);
 	}
 }
 
 void TrainController::onDelete() {
-	for (sf::Vector2i tile : this->lockedTiles) {
-		this->getEntity()->getGameMap()->releaseTileLock(tile.x, tile.y, TransitType::Train);
-	}
 	// From VehicleController
 	this->deleteCars();
 }
@@ -132,7 +94,7 @@ std::vector<SpeedPoint> TrainController::getDockPath(std::shared_ptr<Entity> e) 
 						}
 						std::vector<SpeedPoint> points;
 						while (t.getRailways().size() == 1 && t.getRailways().front().isStation) {
-							points.push_back(SpeedPoint(sf::Vector3f(pos.x, pos.y, 0), 0.5f));
+							points.push_back(SpeedPoint(sf::Vector3f(pos.x + 0.5f, pos.y + 0.5f, 0), 0.5f));
 							// If it is a station, it must be straight
 							pos = pos + Utils::toVector2i(currentRot.getUnitVector());
 							t = e->getGameMap()->getTileAt(pos.x, pos.y);
@@ -154,8 +116,6 @@ std::optional<SaveData> TrainController::getSaveData() {
 	SaveData data(componentTypeToStr(ComponentType::Controller));
 	data.addVehicleControllerStopVector(STOPS, this->stops);
 	data.addSizeT(STOP_INDEX, this->stopIndex);
-	data.addBool(IS_BLOCKED, this->isBlocked);
-	data.addVector2iVector(LOCKED_TILES, this->lockedTiles);
 	data.addSizeT(STATE, (size_t)this->state);
 	data.addData(VehicleController::getSaveData().value());
 	return data;
@@ -166,7 +126,20 @@ void TrainController::fromSaveData(SaveData data) {
 	VehicleController::fromSaveData(data.getData(VEHICLE_CONTROLLER));
 	this->stops = data.getVehicleControllerStopVector(STOPS, this->getEntity()->getGame());
 	this->stopIndex = data.getSizeT(STOP_INDEX);
-	this->isBlocked = data.getBool(IS_BLOCKED);
-	this->lockedTiles = data.getVector2iVector(LOCKED_TILES);
 	this->state = (State)data.getSizeT(STATE);
+}
+
+void TrainController::resetPath(sf::Vector2i fromTile, sf::Vector2i toTile, IsoRotation startingRotation, gtime_t time) {
+	this->path = RailsPathfinder::findRailwayPath(fromTile, toTile, startingRotation, this->getEntity()->getGameMap(), time, this->getSpeed());
+	// TODO: Handle path being empty (no path)
+	// Start at the middle of fromTile
+	std::vector<SpeedPoint> points = { SpeedPoint(Utils::toVector3f(fromTile) + sf::Vector3f(0.5f, 0.5f, 0), 0.0f) };
+	// Go to the edge of the first value in path
+	points.push_back(SpeedPoint(Utils::toVector3f(path.front().first) + sf::Vector3f(0.5f, 0.5f, 0) + path.front().second.getFrom().getUnitVector3D() * 0.5f));
+	for (auto kv : this->path) {
+		// Add a point
+		// Since we want to be at the edge of the tile, we get the center of the tile coords (tile + (0.5, 0.5)) and add halfthe unit vector to that
+		points.push_back(SpeedPoint(Utils::toVector3f(kv.first) + sf::Vector3f(0.5f, 0.5f, 0) + kv.second.getTo().getUnitVector3D() * 0.5f));
+	}
+	this->setPoints(Utils::speedPointVectorToRoutePointVector(points, time, this->model));
 }

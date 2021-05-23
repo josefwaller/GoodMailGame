@@ -88,6 +88,9 @@ std::vector<RoutePoint> Utils::speedPointVectorToRoutePointVector(std::vector<Sp
 			// The last point, we don't need acceleration, which simplifies our equations significantly
 			toReturn.push_back(RoutePoint(it->getPos(), expectedTime, speedAtPoint, 0.0f));
 		}
+		else if (it->getPos() == (it + 1)->getPos()) {
+			continue;
+		}
 		else {
 			// Get the next point
 			SpeedPoint nextPoint = *(it + 1);

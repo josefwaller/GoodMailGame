@@ -13,7 +13,7 @@ void TrainDepotController::spawnVehicleForRoute(TransitRoute route) {
 		VehiclePresets::train(
 			this->getEntity()->getGame(),
 			this->getEntity()->transitStop->getTrainStop().tile,
-			this->getEntity()->transform->getRotation() + 1,
+			this->getEntity()->transform->getRotation().getReverse(),
 			prepareRouteForVehicle(route),
 			this->getEntity(),
 			spawnTime
