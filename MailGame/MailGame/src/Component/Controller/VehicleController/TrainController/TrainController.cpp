@@ -25,7 +25,22 @@ void TrainController::init() {
 }
 
 void TrainController::update(float delta) {
-	VehicleController::update(delta);
+	if (this->blockIndex.has_value()) {
+		// Get the direction we were heading before this tile
+		auto src = this->path.at(this->blockIndex.value() - 1);
+		auto dest = this->path.back();
+		auto newPath = RailsPathfinder::findRailwayPath(src.first, dest.first, src.second.getTo(), this->getEntity()->getGameMap());
+		auto p = newPath.front();
+		if (this->getEntity()->getGameMap()->canGetRailwayLock(p.first, p.second)) {
+			this->getEntity()->getGameMap()->getRailwayLock(p.first, p.second);
+			this->lockedRailways.push(p);
+			this->resetPath(src.first, dest.first, src.second.getTo(), this->getEntity()->getGame()->getTime());
+			this->blockIndex.reset();
+		}
+	}
+	else {
+		VehicleController::update(delta);
+	}
 }
 
 void TrainController::onArriveAtDest(gtime_t arriveTime) {
@@ -72,6 +87,9 @@ void TrainController::onArriveAtPoint(size_t pointIndex, gtime_t arriveTime) {
 		if (gMap->canGetRailwayLock(p.first, p.second)) {
 			gMap->getRailwayLock(p.first, p.second);
 			this->lockedRailways.push(p);
+		}
+		else {
+			this->blockIndex = pointIndex;
 		}
 	}
 	while (this->lockedRailways.size() > ceil(this->getTrainLength())) {
@@ -158,7 +176,7 @@ void TrainController::fromSaveData(SaveData data) {
 }
 
 void TrainController::resetPath(sf::Vector2i fromTile, sf::Vector2i toTile, IsoRotation startingRotation, gtime_t time) {
-	this->path = RailsPathfinder::findRailwayPath(fromTile, toTile, startingRotation, this->getEntity()->getGameMap(), time);
+	this->path = RailsPathfinder::findRailwayPath(fromTile, toTile, startingRotation, this->getEntity()->getGameMap());
 	// Start at 0 speed
 	std::vector<SpeedPoint> points = { SpeedPoint(Utils::toVector3f(fromTile) + sf::Vector3f(0.5f, 0.5f, 0), 0.0f) };
 	auto pathPoints = RailsPathfinder::railwayPathToSpeedPointPath(this->path);

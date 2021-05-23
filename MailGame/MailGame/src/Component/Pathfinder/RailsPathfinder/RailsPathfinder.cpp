@@ -17,8 +17,7 @@ std::vector<std::pair<sf::Vector2i, Railway>> RailsPathfinder::findRailwayPath(
 	sf::Vector2i fromTile,
 	sf::Vector2i toTile,
 	IsoRotation startingRotation,
-	GameMap* gMap,
-	gtime_t departTime
+	GameMap* gMap
 ) {
 	// Utility typedef
 	typedef std::pair<sf::Vector2i, IsoRotation> railwayPart;
@@ -37,6 +36,14 @@ std::vector<std::pair<sf::Vector2i, Railway>> RailsPathfinder::findRailwayPath(
 	}
 	// First get all the outgoing tracks from the first tile
 	sf::Vector2i startingTile = fromTile + Utils::toVector2i(startingRotation.getUnitVector());
+	// There may only be one tile in the way
+	if (startingTile == toTile) {
+		auto rots = gMap->getTileAt(toTile).getOutgoingRailDirections(startingRotation.getReverse());
+		if (!rots.empty()) {
+			// Easy
+			return { { toTile, Railway(startingRotation.getReverse(), rots.front())} };
+		}
+	}
 	potential.push_back({ startingTile, startingRotation.getReverse() });
 	// Now go through all the tracks
 	while (!potential.empty()) {

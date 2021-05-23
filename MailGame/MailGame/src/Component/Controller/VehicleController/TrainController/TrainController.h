@@ -28,6 +28,8 @@ private:
 	State state;
 	// The path of railways the train is taking
 	std::vector<std::pair<sf::Vector2i, Railway>> path;
+	// The index that the train is blocked at, on the path
+	std::optional<size_t> blockIndex;
 	// The tiles the train has a lock on
 	std::queue<std::pair<sf::Vector2i, Railway>> lockedRailways;
 	// Get the length of the train

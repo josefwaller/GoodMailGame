@@ -24,8 +24,7 @@ public:
 		sf::Vector2i fromTile,
 		sf::Vector2i toTile,
 		IsoRotation startingRotation,
-		GameMap* gMap,
-		gtime_t departTime
+		GameMap* gMap
 	);
 	/**
 	 * Turn a vector of tiles and railways into a vector of 3D points for the vehicle to go over
