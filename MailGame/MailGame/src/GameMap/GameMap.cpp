@@ -130,7 +130,7 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 	sf::Vector3f pos((float)x + 0.5f, (float)y + 0.5f, 0);
 	s.setPosition(this->game->worldToScreenPos(pos));
 	s = Utils::setupBuildingSprite(s, false);
-	if (tile.isLocked) {
+	if (!tile.canGetLock()) {
 		s.setColor(sf::Color(0, 255, 51));
 	}
 	window->draw(s);

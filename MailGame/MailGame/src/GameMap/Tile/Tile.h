@@ -48,6 +48,9 @@ struct Tile {
 	// Add a railway to this tile
 	void addRailway(Railway r);
 
+	// Check whether it can get a tile lock
+	bool canGetLock();
+
 	/*** These methods ignore everything from the railway object except from and to directions ***/
 	// Check if we can get a railway lock on this tile
 	bool canGetRailwayLock(Railway r);

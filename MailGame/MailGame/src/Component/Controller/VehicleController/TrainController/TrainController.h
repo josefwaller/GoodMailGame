@@ -28,8 +28,13 @@ private:
 	State state;
 	// The path of railways the train is taking
 	std::vector<std::pair<sf::Vector2i, Railway>> path;
-	// The index that the train is blocked at, on the path
-	std::optional<size_t> blockIndex;
+	// Whether the train is blocked
+	bool isBlocked;
+	// Where the train is blocked, the tile and direction is is leaving the tile at
+	sf::Vector2i blockedTile;
+	IsoRotation blockedDirection;
+	// The destination, or tile the train is currently heading to
+	sf::Vector2i dest;
 	// The tiles the train has a lock on
 	std::queue<std::pair<sf::Vector2i, Railway>> lockedRailways;
 	// Get the length of the train
@@ -39,4 +44,6 @@ private:
 	std::vector<std::pair<sf::Vector2i, Railway>> getDockPath(std::shared_ptr<Entity> e);
 	// Reset the path the train is taking
 	void resetPath(sf::Vector2i fromTile, sf::Vector2i toTile, IsoRotation startingRotation, gtime_t departTime);
+	// Get the tile the train can go to, used for running pathfinding again when the train is blocked
+	sf::Vector2i getDest();
 };

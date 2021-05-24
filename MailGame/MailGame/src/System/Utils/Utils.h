@@ -30,6 +30,8 @@ public:
 	static sf::Vector2i toVector2i(sf::Vector2f p);
 	static sf::Vector2i toVector2i(sf::Vector3f p);
 	static sf::Vector2i toVector2i(sf::Vector3i p);
+	// Convert to vector2f
+	static sf::Vector2f toVector2f(sf::Vector3f p);
 	// Convert to vector 3f
 	static sf::Vector3f toVector3f(sf::Vector2i p);
 	static sf::Vector3f toVector3f(sf::Vector2f p);

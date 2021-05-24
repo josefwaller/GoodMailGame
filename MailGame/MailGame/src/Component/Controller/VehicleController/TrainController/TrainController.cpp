@@ -25,17 +25,17 @@ void TrainController::init() {
 }
 
 void TrainController::update(float delta) {
-	if (this->blockIndex.has_value()) {
+	if (isBlocked) {
 		// Get the direction we were heading before this tile
-		auto src = this->path.at(this->blockIndex.value() - 1);
-		auto dest = this->path.back();
-		auto newPath = RailsPathfinder::findRailwayPath(src.first, dest.first, src.second.getTo(), this->getEntity()->getGameMap());
+		auto newPath = RailsPathfinder::findRailwayPath(this->blockedTile, this->getDest(), this->blockedDirection, this->getEntity()->getGameMap()).value();
 		auto p = newPath.front();
 		if (this->getEntity()->getGameMap()->canGetRailwayLock(p.first, p.second)) {
 			this->getEntity()->getGameMap()->getRailwayLock(p.first, p.second);
 			this->lockedRailways.push(p);
-			this->resetPath(src.first, dest.first, src.second.getTo(), this->getEntity()->getGame()->getTime());
-			this->blockIndex.reset();
+			this->path = newPath;
+			auto points = RailsPathfinder::railwayPathToSpeedPointPath(this->path);
+			this->setPoints(Utils::speedPointVectorToRoutePointVector(points, this->getEntity()->getGame()->getTime(), this->model));
+			this->isBlocked = false;
 		}
 	}
 	else {
@@ -68,28 +68,33 @@ void TrainController::onArriveAtDest(gtime_t arriveTime) {
 	case State::InTransit:
 		this->state = State::ArriveAtStation;
 		// Arrive at the station
+		auto from = this->path.back();
 		// Eventually there will be some cool logic here to determine where at the station to arrive at
-		this->path = this->getDockPath(this->stops.at(this->stopIndex).getEntityTarget().lock());
-		// Stop at the train station
-		auto spPath = RailsPathfinder::railwayPathToSpeedPointPath(this->path);
-		spPath.back().setSpeed(0.0f);
-		this->setPoints(Utils::speedPointVectorToRoutePointVector(spPath, arriveTime, this->model, this->points.back().speedAtPoint));
+		auto newPath = this->getDockPath(this->stops.at(this->stopIndex).getEntityTarget().lock());
+		this->resetPath(from.first, newPath.back().first, from.second.getTo(), this->getEntity()->getGame()->getTime());
 		break;
 	}
 }
 
 void TrainController::onArriveAtPoint(size_t pointIndex, gtime_t arriveTime) {
-	this->getEntity()->ai->onArriveAtTile(Utils::toVector2i(this->points.at(pointIndex).pos));
+	sf::Vector2i tile = this->path.at(pointIndex - 1).first;
+	this->getEntity()->ai->onArriveAtTile(tile);
 	GameMap* gMap = this->getEntity()->getGameMap();
 	// Get a lock on the next point
-	if (this->pointIndex < this->points.size() - 1) {
+	if (pointIndex < this->path.size()) {
 		auto p = this->path[pointIndex];
 		if (gMap->canGetRailwayLock(p.first, p.second)) {
 			gMap->getRailwayLock(p.first, p.second);
 			this->lockedRailways.push(p);
 		}
 		else {
-			this->blockIndex = pointIndex;
+			this->isBlocked = true;
+			this->blockedTile = tile;
+			// Figure out the direction the train is going
+			sf::Vector2f centerOfTile = sf::Vector2f(tile) + sf::Vector2f(0.5f, 0.5f);
+			sf::Vector2f edgeOfTile = Utils::toVector2f(this->points.at(pointIndex).pos);
+			this->blockedDirection = IsoRotation::fromUnitVector(edgeOfTile - centerOfTile);
+			auto x = 0;
 		}
 	}
 	while (this->lockedRailways.size() > ceil(this->getTrainLength())) {
@@ -176,11 +181,29 @@ void TrainController::fromSaveData(SaveData data) {
 }
 
 void TrainController::resetPath(sf::Vector2i fromTile, sf::Vector2i toTile, IsoRotation startingRotation, gtime_t time) {
-	this->path = RailsPathfinder::findRailwayPath(fromTile, toTile, startingRotation, this->getEntity()->getGameMap());
+	this->path = RailsPathfinder::findRailwayPath(fromTile, toTile, startingRotation, this->getEntity()->getGameMap()).value();
 	// Start at 0 speed
-	std::vector<SpeedPoint> points = { SpeedPoint(Utils::toVector3f(fromTile) + sf::Vector3f(0.5f, 0.5f, 0), 0.0f) };
+	std::vector<SpeedPoint> points;
 	auto pathPoints = RailsPathfinder::railwayPathToSpeedPointPath(this->path);
 	points.insert(points.end(), pathPoints.begin(), pathPoints.end());
 	// TODO: Handle path being empty (no path)
 	this->setPoints(Utils::speedPointVectorToRoutePointVector(points, time, this->model));
+	this->dest = toTile;
+	// If the path is empty, we don't need to get a lock on the first tile
+	if (!this->path.empty()) {
+		auto kv = this->path.front();
+		if (this->getEntity()->getGameMap()->canGetRailwayLock(kv.first, kv.second)) {
+			this->getEntity()->getGameMap()->getRailwayLock(kv.first, kv.second);
+			this->lockedRailways.push({ kv.first, kv.second });
+		}
+		else {
+			this->isBlocked = true;
+			this->blockedDirection = startingRotation;
+			this->blockedTile = toTile;
+		}
+	}
+}
+
+sf::Vector2i TrainController::getDest() {
+	return this->dest;
 }

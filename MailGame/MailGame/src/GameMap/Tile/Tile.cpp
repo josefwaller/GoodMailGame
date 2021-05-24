@@ -32,6 +32,19 @@ std::vector<Railway> Tile::getRailways() {
 	return this->railways;
 }
 
+bool Tile::canGetLock() {
+	if (this->isLocked) {
+		return false;
+	}
+
+	for (Railway r : this->railways) {
+		if (r.getIsLocked()) {
+			return false;
+		}
+	}
+
+	return true;
+}
 bool Tile::canGetRailwayLock(Railway rail) {
 	for (Railway r : this->railways) {
 		if (!r.getIsLocked()) {

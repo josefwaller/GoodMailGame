@@ -13,7 +13,7 @@ std::vector<SpeedPoint> RailsPathfinder::findPathBetweenPoints(
 	float speed) {
 	return {};
 }
-std::vector<std::pair<sf::Vector2i, Railway>> RailsPathfinder::findRailwayPath(
+std::optional<std::vector<std::pair<sf::Vector2i, Railway>>> RailsPathfinder::findRailwayPath(
 	sf::Vector2i fromTile,
 	sf::Vector2i toTile,
 	IsoRotation startingRotation,
@@ -40,8 +40,8 @@ std::vector<std::pair<sf::Vector2i, Railway>> RailsPathfinder::findRailwayPath(
 	if (startingTile == toTile) {
 		auto rots = gMap->getTileAt(toTile).getOutgoingRailDirections(startingRotation.getReverse());
 		if (!rots.empty()) {
-			// Easy
-			return { { toTile, Railway(startingRotation.getReverse(), rots.front())} };
+			// They can go directly to the tile
+			return std::vector<std::pair<sf::Vector2i, Railway>>();
 		}
 	}
 	potential.push_back({ startingTile, startingRotation.getReverse() });
@@ -68,7 +68,6 @@ std::vector<std::pair<sf::Vector2i, Railway>> RailsPathfinder::findRailwayPath(
 					outgoingRot = current.second.getReverse();
 					current = previous.at(current);
 				}
-				return {};
 			}
 		}
 		// Make sure we've never been here before
@@ -90,6 +89,9 @@ std::vector<std::pair<sf::Vector2i, Railway>> RailsPathfinder::findRailwayPath(
 }
 
 std::vector<SpeedPoint> RailsPathfinder::railwayPathToSpeedPointPath(std::vector<std::pair<sf::Vector2i, Railway>> path) {
+	if (path.empty()) {
+		return {};
+	}
 	// Start at the middle of fromTile
 	std::vector<SpeedPoint> points;
 	// Go to the edge of the first value in path
