@@ -48,6 +48,8 @@ void VehicleController::update(float delta) {
 		// Also called if the truck has no points, i.e. no path exists
 		if (travelTime >= this->points[this->pointIndex].expectedTime) {
 			RoutePoint point = this->points[this->pointIndex];
+			// Add to traversed points
+			this->traversedPoints.push_back(point);
 			// Go to the next point
 			this->pointIndex++;
 			// Callback for children classes
@@ -56,8 +58,6 @@ void VehicleController::update(float delta) {
 				this->onArriveAtDest(this->points.back().expectedTime);
 				return;
 			}
-			// Add the next tile to traversed points
-			this->traversedPoints.push_back(this->points[this->pointIndex]);
 		}
 		else {
 			RoutePoint lastPoint = this->points[this->pointIndex - 1];
@@ -157,21 +157,36 @@ std::optional<SaveData> VehicleController::getSaveData() {
 }
 
 std::pair<sf::Vector3f, IsoRotation> VehicleController::getPosAndRotAtDistance(float distance) {
-	// First, find the first stop it would have passed
-	float initialDistance = 0.0f;
-	for (auto it = this->traversedPoints.begin() + 1; it != this->traversedPoints.end(); it++) {
-		if (it->distance > distance) {
-			auto prev = it - 1;
-			sf::Vector3f diff = it->pos - prev->pos;
-			// Turn it into a unit vector
-			sf::Vector3f unit = diff / (float)(sqrt(pow(diff.x, 2) + pow(diff.y, 2) + pow(diff.z, 2)));
-			// Get the rotation
-			IsoRotation rot = IsoRotation::fromUnitVector(unit);
-			// Calculate how far it would get
-			sf::Vector3f pos = prev->pos + unit * (distance - prev->distance);
-			return { pos, rot };
+	RoutePoint next;
+	RoutePoint prev;
+	bool top = false;
+	size_t i;
+	// We may have passed the last traversed point
+	// If so we need to compare to the next point we are going to
+	if (distance > this->traversedPoints.back().distance) {
+		next = this->points.at(this->pointIndex);
+		prev = this->traversedPoints.back();
+		top = true;
+	}
+	else {
+		// First, find the first stop it would have passed
+		for (auto it = this->traversedPoints.begin() + 1; it != this->traversedPoints.end(); it++) {
+			if (it->distance >= distance) {
+				i = it - this->traversedPoints.begin();
+				next = *it;
+				prev = *(it - 1);
+				break;
+			}
 		}
 	}
+	sf::Vector3f diff = next.pos - prev.pos;
+	// Turn it into a unit vector
+	sf::Vector3f unit = diff / (float)(sqrt(pow(diff.x, 2) + pow(diff.y, 2) + pow(diff.z, 2)));
+	// Get the rotation
+	IsoRotation rot = IsoRotation::fromUnitVector(unit);
+	// Calculate how far it would get
+	sf::Vector3f pos = prev.pos + unit * (distance - prev.distance);
+	return { pos, rot };
 }
 void VehicleController::onDelete() {
 	this->deleteCars();
@@ -202,9 +217,6 @@ void VehicleController::setPoints(std::vector<RoutePoint> points) {
 	// This will crash if points isn't at least 2 long
 	if (!this->points.empty()) {
 		this->traversedPoints.push_back(this->points.front());
-		if (this->points.size() > 1) {
-			this->traversedPoints.push_back(this->points.at(1));
-		}
 	}
 }
 
