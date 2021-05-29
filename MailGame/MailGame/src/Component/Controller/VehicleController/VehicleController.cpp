@@ -188,6 +188,13 @@ std::pair<sf::Vector3f, IsoRotation> VehicleController::getPosAndRotAtDistance(f
 	sf::Vector3f pos = prev.pos + unit * (distance - prev.distance);
 	return { pos, rot };
 }
+void VehicleController::onHourChange(hour_t hour) {
+	if (this->getEntity()->getGame()->getTime() - this->departTime >= 24 * Game::UNITS_IN_GAME_HOUR) {
+		// Delete self
+		this->getEntity()->getGame()->removeEntity(this->getEntity());
+		this->onDelete();
+	}
+}
 void VehicleController::onDelete() {
 	this->deleteCars();
 }

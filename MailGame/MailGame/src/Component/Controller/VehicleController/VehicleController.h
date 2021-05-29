@@ -41,6 +41,7 @@ class VehicleController : public Controller {
 public:
 	VehicleController(gtime_t departTime, VehicleModel model, std::vector<std::weak_ptr<Entity>> cargoCars = {});
 	virtual void update(float delta) override;
+	virtual void onHourChange(hour_t hour) override;
 	virtual void onDelete() override;
 	virtual void renderUi() override;
 protected:
