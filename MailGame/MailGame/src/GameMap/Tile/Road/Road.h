@@ -34,19 +34,19 @@ struct Road {
 		rd.addBool(HAS_WEST, hasWest);
 		return rd;
 	}
-	std::vector<sf::Vector3i> getConnectedTiles(sf::Vector3i tile) {
-		std::vector<sf::Vector3i> toReturn;
+	std::vector<sf::Vector2i> getConnectedTiles(sf::Vector2i tile) {
+		std::vector<sf::Vector2i> toReturn;
 		if (this->hasNorth) {
-			toReturn.push_back(tile + sf::Vector3i(0, -1, 0));
+			toReturn.push_back(tile + sf::Vector2i(0, -1));
 		}
 		if (this->hasSouth) {
-			toReturn.push_back(tile + sf::Vector3i(0, 1, 0));
+			toReturn.push_back(tile + sf::Vector2i(0, 1));
 		}
 		if (this->hasEast) {
-			toReturn.push_back(tile + sf::Vector3i(1, 0, 0));
+			toReturn.push_back(tile + sf::Vector2i(1, 0));
 		}
 		if (this->hasWest) {
-			toReturn.push_back(tile + sf::Vector3i(-1, 0, 0));
+			toReturn.push_back(tile + sf::Vector2i(-1, 0));
 		}
 		return toReturn;
 	}

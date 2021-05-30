@@ -39,8 +39,7 @@ std::shared_ptr<Entity> VehiclePresets::mailTruck(
 				ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-E", true),
 				ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-S", true),
 				ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-W", true)
-			),
-			sf::Vector3f(0.5f, 0.5f, 0)
+			)
 		),
 		new CarController(spawnTime, route.model, {}),
 		nullptr,
@@ -69,8 +68,7 @@ std::shared_ptr<Entity> VehiclePresets::cargoTruck(
 				ResourceLoader::get()->getSprite("vehicles/vehicles", "cargoTruck_SE.png", true),
 				ResourceLoader::get()->getSprite("vehicles/vehicles", "cargoTruck_SW.png", true),
 				ResourceLoader::get()->getSprite("vehicles/vehicles", "cargoTruck_NW.png", true)
-			),
-			sf::Vector3f(0.5f, 0.5f, 0)
+			)
 		),
 		new CarController(spawnTime, route.model),
 		nullptr,

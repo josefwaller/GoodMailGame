@@ -18,4 +18,8 @@ private:
 	std::vector<SpeedPoint> getPathBetweenStops(VehicleControllerStop from, VehicleControllerStop to);
 	// Get the dock coordinates for a given entity
 	std::vector<sf::Vector2i> getDockTiles(std::shared_ptr<Entity> e);
+	// The path the car is taking
+	std::vector<sf::Vector2i> path;
+	// Set the points for VehicleController to use
+	void resetPath();
 };

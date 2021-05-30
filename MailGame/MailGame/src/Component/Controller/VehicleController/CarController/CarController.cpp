@@ -14,9 +14,10 @@ void CarController::init() {
 	this->stopIndex = 1;
 	this->stops[0].expectedTime = this->departTime;
 	this->setPoints(Utils::speedPointVectorToRoutePointVector(
-		this->getPathBetweenStops(this->stops[0], this->stops[1]),
+		this->getPathBetweenStops(this->stops[this->stopIndex - 1], this->stops[this->stopIndex]),
 		this->departTime,
-		this->model));
+		this->model,
+		0.0f));
 }
 
 void CarController::update(float delta) {
@@ -24,8 +25,8 @@ void CarController::update(float delta) {
 }
 
 void CarController::onArriveAtPoint(size_t pointIndex, gtime_t arriveTime) {
-	sf::Vector3f pos = this->points[pointIndex].pos;
-	this->getEntity()->ai->onArriveAtTile(sf::Vector2i(floor(pos.x), floor(pos.y)));
+	sf::Vector2i tile = this->path.at(pointIndex);
+	this->getEntity()->ai->onArriveAtTile(tile);
 }
 void CarController::onArriveAtDest(gtime_t arriveTime) {
 	this->stopIndex++;
@@ -50,8 +51,16 @@ std::vector<SpeedPoint> CarController::getPathBetweenStops(VehicleControllerStop
 	// For now, we just go to the first
 	sf::Vector2i from = fromTiles.front();
 	sf::Vector2i to = toTiles.front();
-	// Add the path between
-	return this->getEntity()->pathfinder->findPathBetweenPoints(Utils::toVector3f(from), Utils::toVector3f(to), this->departTime, speed);
+	// Get the path between
+	this->path = Pathfinder::findCarPath(this->getEntity()->getGameMap(), from, to);
+	std::vector<SpeedPoint> points;
+	for (sf::Vector2i p : this->path) {
+		points.push_back(Utils::toVector3f(p) + sf::Vector3f(0.5f, 0.5f, 0.0f));
+	}
+	// Start and end at rest
+	points.at(0).setSpeed(0.0f);
+	points.at(points.size() - 1).setSpeed(0.0f);
+	return points;
 }
 
 std::vector<sf::Vector2i> CarController::getDockTiles(std::shared_ptr<Entity> e) {
