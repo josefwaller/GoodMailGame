@@ -138,8 +138,7 @@ std::shared_ptr<Entity> VehiclePresets::plane(
 				ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-E", true),
 				ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-W", true),
 				ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-S", true)
-			),
-			sf::Vector3f(0.5f, 0.5f, 0)
+			)
 		),
 		new PlaneController(spawnTime, route.model),
 		nullptr,

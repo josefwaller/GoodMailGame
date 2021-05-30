@@ -9,7 +9,7 @@
 #include <queue>
 
 // This will eventually be gone
-const float TAXI_SPEED = 1.0f;
+const float TAXI_SPEED = 20.0f;
 
 PlaneController::PlaneController(gtime_t departTime, VehicleModel model) : VehicleController(departTime, model), stops({}), stopIndex(0), state(State::InDepot), runway(sf::Vector2i(), sf::Vector2i()) {}
 
@@ -229,14 +229,14 @@ std::vector<sf::Vector3f> PlaneController::getTaxiPath(sf::Vector2i from, std::v
 			if (!t.airplaneRoad.has_value()) {
 				continue;
 			}
-			std::vector<sf::Vector3i> connected = t.airplaneRoad.value().getConnectedTiles(Utils::toVector3i(current));
-			for (sf::Vector3i c : connected) {
-				sf::Vector2i newPos = Utils::toVector2i(c);
+			std::vector<sf::Vector2i> connected = t.airplaneRoad.value().getConnectedTiles(current);
+			for (sf::Vector2i c : connected) {
+				sf::Vector2i newPos = c;
 				if (std::find(to.begin(), to.end(), newPos) != to.end()) {
-					std::vector<sf::Vector3f> toReturn = { Utils::toVector3f(newPos), Utils::toVector3f(current) };
+					std::vector<sf::Vector3f> toReturn = { Utils::toVector3f(newPos) + sf::Vector3f(0.5f, 0.5f, 0), Utils::toVector3f(current) + sf::Vector3f(0.5f, 0.5f, 0) };
 					while (current != from) {
 						current = previous.at(current);
-						toReturn.push_back(Utils::toVector3f(current));
+						toReturn.push_back(Utils::toVector3f(current) + sf::Vector3f(0.5f, 0.5f, 0));
 					}
 					std::reverse(toReturn.begin(), toReturn.end());
 					return toReturn;
@@ -274,8 +274,8 @@ std::vector<SpeedPoint> PlaneController::setupTaxiPath(std::vector<sf::Vector3f>
 }
 
 std::vector<SpeedPoint> PlaneController::getRunwayArrivePoints(Runway r) {
-	sf::Vector3f from = Utils::toVector3f(r.end);
-	sf::Vector3f to = Utils::toVector3f(r.start);
+	sf::Vector3f from = Utils::toVector3f(r.end) + sf::Vector3f(0.5f, 0.5f, 0);
+	sf::Vector3f to = Utils::toVector3f(r.start) + sf::Vector3f(0.5f, 0.5f, 0);
 	return {
 		SpeedPoint(from + Utils::getUnitVector(from - to) * 3.0f + sf::Vector3f(0, 0, 3.0f)),
 		SpeedPoint(from),
