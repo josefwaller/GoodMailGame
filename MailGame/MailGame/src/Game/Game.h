@@ -81,6 +81,8 @@ public:
 	SaveData getSaveData();
 	// Toggle whether the game is paused or not
 	void togglePause();
+	// Get whether the game is paused
+	bool getIsPaused();
 	// Get the excess money the player can spend
 	money_t getExcessMoney();
 	// Get the total monthly budget the player has

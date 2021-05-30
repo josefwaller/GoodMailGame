@@ -371,3 +371,4 @@ float Game::getGameSpeed() {
 void Game::setGameSpeed(float multiplier) {
 	this->timeMultiplier = multiplier;
 }
+bool Game::getIsPaused() { return this->isPaused; }

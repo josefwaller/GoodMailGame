@@ -16,7 +16,8 @@
 #include "Component/Controller/Controller.h"
 #include "Component/Controller/ResidenceController/ResidenceController.h"
 
-UiHandler::UiHandler(Game* g) : game(g), currentState(UiState::Default), recipe(),
+const std::vector<float> UiHandler::GAME_SPEEDS = { 0.1f, 0.25f, 0.5f, 1.0f, 2.0f, 5.0f, 10.0f, 25.0f, 50.0f };
+UiHandler::UiHandler(Game* g) : game(g), currentState(UiState::Default), recipe(), currentGameSpeed(3),
 from(IsoRotation::NORTH), to(IsoRotation::SOUTH), isStation(false) {
 	cityLimitColors.insert({ 0, sf::Color::Blue });
 }
@@ -192,12 +193,22 @@ void UiHandler::update() {
 		this->game->rotateCamera();
 	}
 	ImGui::Text((std::to_string(this->game->getHour()) + ":00").c_str());
-	if (ImGui::Button("Toggle Paused")) {
+	ImGui::Text("Game Speed ");
+	ImGui::SameLine();
+	ImGui::Text(std::to_string(GAME_SPEEDS[this->currentGameSpeed]).c_str());
+	if (ImGui::Button("<<") && this->currentGameSpeed > 0) {
+		this->currentGameSpeed--;
+		this->game->setGameSpeed(GAME_SPEEDS[this->currentGameSpeed]);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button(this->game->getIsPaused() ? ">" : "||")) {
 		this->game->togglePause();
 	}
-	float gameSpeed = this->game->getGameSpeed();
-	ImGui::SliderFloat("Game Speed", &gameSpeed, 0.1f, 5.0f);
-	this->game->setGameSpeed(gameSpeed);
+	ImGui::SameLine();
+	if (ImGui::Button(">>") && this->currentGameSpeed < GAME_SPEEDS.size() - 1) {
+		this->currentGameSpeed++;
+		this->game->setGameSpeed(GAME_SPEEDS[this->currentGameSpeed]);
+	}
 	ImGui::Text((std::string("Game.time: ") + std::to_string(this->game->getTime())).c_str());
 	ImGui::Text("Savefile: ");
 	ImGui::SameLine();

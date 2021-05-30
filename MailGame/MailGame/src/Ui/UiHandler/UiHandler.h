@@ -67,6 +67,9 @@ private:
 	long long pCode;
 	// The name of the save file being saved to
 	char savefileName[200];
+	// The game speeds, and the index of the current game speed
+	static const std::vector<float> GAME_SPEEDS;
+	size_t currentGameSpeed;
 	// The railway currently being built
 	IsoRotation from;
 	IsoRotation to;
