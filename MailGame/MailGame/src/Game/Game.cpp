@@ -18,7 +18,7 @@ const float Game::CAMERA_SPEED = 600.0f;
 const float Game::TILE_WIDTH = 64.0f;
 const float Game::TILE_HEIGHT = 32.0f;
 const gtime_t Game::UNITS_IN_GAME_HOUR = 1 * 1000;
-const gtime_t Game::UNITS_IN_REAL_SECOND = 1000;
+const gtime_t Game::UNITS_IN_REAL_SECOND = 100;
 const std::vector<EntityTag> Game::WHITELIST_ENTITY_TAG = {
 	EntityTag::Residence,
 	EntityTag::PostOffice,
