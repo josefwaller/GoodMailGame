@@ -41,6 +41,16 @@ void MailContainer::transferSomeMailTo(std::vector<Mail> toGive, std::shared_ptr
 	// Add the mail to the other
 	other->addMail(toGive);
 }
+void MailContainer::updateMail() {
+	auto allMail = Mail::getAllMail();
+	std::vector<Mail> toRemove;
+	for (Mail m : this->mail) {
+		if (m.hasExpired()) {
+			toRemove.push_back(m);
+		}
+	}
+	this->removeMail(toRemove);
+}
 size_t MailContainer::getNumLetters() {
 	return this->mail.size();
 }

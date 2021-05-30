@@ -26,9 +26,14 @@ void Mail::onTimeChanged(time_t time) {
 	// Remove mail
 	std::vector<id_t> toRemove;
 	for (auto kv : allMail) {
-		if (time - kv.second.time >= 48 * Game::UNITS_IN_GAME_HOUR && kv.second.hasBeenDelivered) {
+		// If the letter was delivered at least 24 hours ago
+		if (kv.second.hasBeenDelivered && time - kv.second.deliveryTime >= 24 * Game::UNITS_IN_GAME_HOUR) {
 			toRemove.push_back(kv.first);
 		}
+		else
+			if (time - kv.second.time >= 48 * Game::UNITS_IN_GAME_HOUR) {
+				toRemove.push_back(kv.first);
+			}
 	}
 	for (auto id : toRemove) {
 		allMail.erase(id);
@@ -49,6 +54,9 @@ void Mail::onDelivery(unsigned long long time, Game* game) {
 	this->getMailRecord()->deliveryTime = time;
 }
 
+bool Mail::hasExpired() {
+	return allMail.find(this->id) == allMail.end();
+}
 void Mail::addEvent(MailEvent e) {
 	this->getMailRecord()->mailEvents.push_back(e);
 }

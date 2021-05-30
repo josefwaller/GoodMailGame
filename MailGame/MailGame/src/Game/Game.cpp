@@ -4,6 +4,7 @@
 #include "Entity/EntityTag/EntityTag.h"
 #include "Component/Transform/Transform.h"
 #include "Component/Renderer/Renderer.h"
+#include "Component/MailContainer/MailContainer.h"
 #include "Component/Controller/Controller.h"
 #include "Component/Controller/PostOfficeController/PostOfficeController.h"
 #include "Component/ClickBox/ClickBox.h"
@@ -306,6 +307,9 @@ void Game::advanceTime() {
 	for (auto it = this->entities.begin(); it != this->entities.end(); it++) {
 		if ((*it)->controller) {
 			(*it)->controller->onHourChange(this->getHour());
+		}
+		if ((*it)->mailContainer) {
+			(*it)->mailContainer->updateMail();
 		}
 	}
 }

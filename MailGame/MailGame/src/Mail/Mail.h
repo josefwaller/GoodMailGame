@@ -45,6 +45,8 @@ public:
 	Mail(sf::Vector2i src, sf::Vector2i dest, gtime_t);
 	// Constructor from save data
 	Mail(SaveData d);
+	// Check if mail has expired
+	bool hasExpired();
 	// Add event
 	void addEvent(MailEvent e);
 	// Find if the letter has a certain event

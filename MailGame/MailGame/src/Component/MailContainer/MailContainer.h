@@ -18,6 +18,8 @@ public:
 	// Dumb interface to allow for an optional event to be passed down
 	void transferSomeMailTo(std::vector<Mail> toGive, std::shared_ptr<MailContainer> other, MailEvent e);
 	void transferSomeMailTo(std::vector<Mail> toGive, std::shared_ptr<MailContainer> other, std::optional<MailEvent> e = {});
+	// Remove mail that has been deleted/expired
+	void updateMail();
 	// Get number of letters
 	size_t getNumLetters();
 	// Get the mail
