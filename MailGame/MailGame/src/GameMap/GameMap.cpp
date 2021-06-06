@@ -7,6 +7,7 @@
 #include "Line/Line.h"
 #include "Entity/EntityPresets/BuildingPresets/BuildingPresets.h"
 #include "PostalCodeDatabase/PostalCodeDatabase.h"
+#include <FastNoiseLite.h>
 #include <SFML/Graphics.hpp>
 #include "System/SaveData/SaveData.h"
 #include <queue>
@@ -14,8 +15,8 @@
 #include <bitset>
 #include <algorithm>
 
-const size_t GameMap::MAP_HEIGHT = 50;
-const size_t GameMap::MAP_WIDTH = 50;
+const size_t GameMap::MAP_HEIGHT = 100;
+const size_t GameMap::MAP_WIDTH = 100;
 
 // Load the sprites
 const sf::Sprite GameMap::EMPTY_SPRITE = ResourceLoader::get()->getSprite("tiles/tiles", "empty");
@@ -39,10 +40,27 @@ GameMap::GameMap(Game* g) : game(g) {
 	}
 }
 void GameMap::generateNew() {
+	FastNoiseLite noise(18);
+	noise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_Perlin);
+	noise.SetFrequency(0.01f);
+	noise.SetFractalType(FastNoiseLite::FractalType::FractalType_FBm);
+	noise.SetFractalOctaves(5);
+	noise.SetFractalLacunarity(2.0f);
+	noise.SetFractalGain(0.5f);
+
+	// Set up point heights
+	this->pointHeights = std::vector<std::vector<unsigned int>>(MAP_WIDTH + 1, std::vector<unsigned int>(MAP_HEIGHT + 1, 0.0f));
+	for (size_t i = 0; i < MAP_WIDTH + 1; i++) {
+		for (size_t j = 0; j < MAP_HEIGHT + 1; j++) {
+			float n = noise.GetNoise((float)i, (float)j);
+			unsigned int val = (unsigned int)abs(round(10.0f * n));
+			pointHeights.at(i).at(j) = val;
+		}
+	}
 	// Generate city
-	generateCityAt({ MAP_WIDTH / 4, MAP_HEIGHT / 4 }, 1);
+	/*generateCityAt({ MAP_WIDTH / 4, MAP_HEIGHT / 4 }, 1);
 	generateCityAt({ MAP_WIDTH * 3 / 4, MAP_HEIGHT * 3 / 4 }, 2);
-	generateCityAt({ MAP_WIDTH * 3 / 4, MAP_HEIGHT / 4 }, 3);
+	generateCityAt({ MAP_WIDTH * 3 / 4, MAP_HEIGHT / 4 }, 3);*/
 }
 void GameMap::render(sf::RenderWindow* window) {
 	// Render all the tiles on screen
@@ -123,8 +141,18 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 			s = getRoadSprite(tile.airplaneRoad.value(), this->game->getRotation());
 			s.setColor(tile.airplaneRoad.value().isRunway ? sf::Color::Blue : sf::Color::Red);
 		}
-		else {
+		else if (!tile.getRailways().empty()) {
 			s = EMPTY_SPRITE;
+		}
+		else {
+			sf::Color tileColor = (x + y) % 2 == 0 ? sf::Color(0, 150, 0) : sf::Color(0, 175, 0);
+			sf::VertexArray arr(sf::PrimitiveType::Quads, 4);
+			arr[0] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(x, y, this->pointHeights.at(x).at(y))), tileColor);
+			arr[1] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(x + 1, y, this->pointHeights.at(x + 1).at(y))), tileColor);
+			arr[2] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(x + 1, y + 1, this->pointHeights.at(x + 1).at(y + 1))), tileColor);
+			arr[3] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(x, y + 1, this->pointHeights.at(x).at(y + 1))), tileColor);
+			window->draw(arr);
+			return;
 		}
 	}
 	sf::Vector3f pos((float)x + 0.5f, (float)y + 0.5f, 0);

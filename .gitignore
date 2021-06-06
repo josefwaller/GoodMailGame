@@ -360,6 +360,7 @@ MailGame/imgui
 MailGame/MailGame/src/imgui
 MailGame/imgui-sfml
 MailGame/MailGame/imgui.ini
+MailGame/FastNoiseLite
 # Opengl lib
 MailGame/opengl
 # Unify Line endings file
