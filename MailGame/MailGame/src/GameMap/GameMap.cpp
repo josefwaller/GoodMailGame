@@ -137,8 +137,8 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 		// as opposed to over them
 		const std::vector<EntityTag> v = Game::WHITELIST_ENTITY_TAG;
 		if (std::find(v.begin(), v.end(), e->tag) != v.end()) {
-			/*	e->renderer->render(window);
-				return;*/
+			e->renderer->render(window);
+			return;
 		}
 	}
 	sf::Sprite s;
@@ -334,17 +334,34 @@ void GameMap::generateCityAt(sf::Vector2i pos, id_t cityId) {
 							if (rand() % 10 == 9)
 								continue;
 							IsoRotation rot;
+							unsigned int height;
 							switch (xOff) {
 							case -1:
 								rot = IsoRotation::EAST;
+								height = this->pointHeights.at(x + 1).at(y);
 								break;
 							case 1:
 								rot = IsoRotation::WEST;
+								height = this->pointHeights.at(x).at(y);
 								break;
-							case 0:
-								rot = yOff == 1 ? IsoRotation::NORTH : IsoRotation::SOUTH;
+							case 0: {
+								if (yOff == 1) {
+									rot = IsoRotation::NORTH;
+									height = this->pointHeights.at(x).at(y);
+								}
+								else {
+									rot = IsoRotation::SOUTH;
+									height = this->pointHeights.at(x).at(y + 1);
+								}
 							}
-							std::shared_ptr<Entity> e = BuildingPresets::residence(this->game, sf::Vector3f((float)(x + xOff), (float)(y + yOff), 0), rot);
+							}
+							// Set the height of the tile
+							for (size_t i = 0; i < 2; i++) {
+								for (size_t j = 0; j < 2; j++) {
+									this->pointHeights.at(x + xOff + i).at(y + yOff + j) = height;
+								}
+							}
+							std::shared_ptr<Entity> e = BuildingPresets::residence(this->game, sf::Vector3f((float)(x + xOff), (float)(y + yOff), (float)height), rot);
 							this->game->addEntity(
 								e
 							);
