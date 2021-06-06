@@ -73,6 +73,9 @@ private:
 	Game* game;
 	std::vector<std::vector<Tile>> tiles;
 	std::vector<std::vector<unsigned int>> pointHeights;
+	// Prepare a tile to have a road on it
+	// Mostly make sure it isn't slanted weird
+	void prepareTileForRoad(size_t x, size_t y, Road r);
 	// Render a single tile
 	void renderTile(sf::RenderWindow* window, size_t x, size_t y);
 	void generateCityAt(sf::Vector2i pos, id_t cityId);

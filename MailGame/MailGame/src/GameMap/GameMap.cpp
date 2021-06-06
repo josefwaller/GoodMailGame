@@ -107,8 +107,21 @@ sf::Sprite GameMap::getRoadSprite(Road road, IsoRotation gameRotation, std::vect
 	}
 	if (heights[0][0] != heights[0][1] || heights[0][0] != heights[1][0]) {
 		// Must be a ramp
-	//	if (heights[0][0] > heights[0][1]) {
-	//	}
+		if (heights[0][0] > heights[0][1]) {
+			spriteString += "-ramp-N";
+		}
+		else if (heights[0][0] < heights[0][1]) {
+			spriteString += "-ramp-S";
+		}
+		else if (heights[0][0] > heights[1][0]) {
+			spriteString += "-ramp-W";
+		}
+		else if (heights[0][0] < heights[1][0]) {
+			spriteString += "-ramp-E";
+		}
+		else {
+			throw std::runtime_error("Tiles not set up properly for roads");
+		}
 	}
 	return ResourceLoader::get()->getSprite("tiles/tiles", spriteString);
 }
@@ -133,7 +146,13 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 	switch (tile.type) {
 	case TileType::Land:
 		if (tile.road.has_value()) {
-			s = getRoadSprite(tile.road.value(), this->game->getRotation());
+			std::vector<std::vector<unsigned int>> heights(2, std::vector<unsigned int>(2));
+			for (size_t i = 0; i < 2; i++) {
+				for (size_t j = 0; j < 2; j++) {
+					heights[i][j] = this->pointHeights.at(x + i).at(y + j);
+				}
+			}
+			s = getRoadSprite(tile.road.value(), this->game->getRotation(), heights);
 		}
 		else if (tile.airplaneRoad.has_value()) {
 			s = getRoadSprite(tile.airplaneRoad.value(), this->game->getRotation());
@@ -180,6 +199,22 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 			arr[0] = sf::Vertex(this->game->worldToScreenPos(Utils::toVector3f(fromPoint)), r.getIsLocked() ? sf::Color::White : sf::Color::Black);
 			arr[1] = sf::Vertex(this->game->worldToScreenPos(Utils::toVector3f(toPoint)), r.isStation ? sf::Color::Blue : sf::Color::Red);
 			window->draw(arr);
+		}
+	}
+}
+void GameMap::prepareTileForRoad(size_t x, size_t y, Road r) {
+	if (r.hasNorth || r.hasSouth) {
+		for (size_t yOff = 0; yOff < 2; yOff++) {
+			unsigned int height = std::min(this->pointHeights.at(x).at(y + yOff), this->pointHeights.at(x + 1).at(y + yOff));
+			this->pointHeights.at(x).at(y + yOff) = height;
+			this->pointHeights.at(x + 1).at(y + yOff) = height;
+		}
+	}
+	if (r.hasEast || r.hasWest) {
+		for (size_t xOff = 0; xOff < 2; xOff++) {
+			unsigned int height = std::min(this->pointHeights.at(x + xOff).at(y), this->pointHeights.at(x + xOff).at(y + 1));
+			this->pointHeights.at(x + xOff).at(y) = height;
+			this->pointHeights.at(x + xOff).at(y + 1) = height;
 		}
 	}
 }
@@ -260,12 +295,7 @@ void GameMap::generateCityAt(sf::Vector2i pos, id_t cityId) {
 						r.hasNorth = true;
 					t->road = r;
 					addedRoads.push_back({ (int)it->getStart().x, (int)(it->getStart().y + i) });
-					// Make sure tile is valid for road
-					for (size_t y = 0; y < 2; y++) {
-						unsigned int height = std::min(this->pointHeights.at(pos.x).at(pos.y + y), this->pointHeights.at(pos.x + 1).at(pos.y + y));
-						this->pointHeights.at(pos.x).at(pos.y + y) = height;
-						this->pointHeights.at(pos.x + 1).at(pos.y + y) = height;
-					}
+					this->prepareTileForRoad(pos.x, pos.y, r);
 				}
 			}
 			else {
@@ -284,11 +314,7 @@ void GameMap::generateCityAt(sf::Vector2i pos, id_t cityId) {
 					t->road = r;
 					addedRoads.push_back({ (int)(it->getStart().x + i), (int)(it->getStart().y) });
 					// Make sure tile is valid for road
-					for (size_t x = 0; x < 2; x++) {
-						unsigned int height = std::min(this->pointHeights.at(pos.x + x).at(pos.y), this->pointHeights.at(pos.x + x).at(pos.y + 1));
-						this->pointHeights.at(pos.x + x).at(pos.y) = height;
-						this->pointHeights.at(pos.x + x).at(pos.y + 1) = height;
-					}
+					this->prepareTileForRoad(pos.x, pos.y, r);
 				}
 			}
 		}
@@ -373,6 +399,7 @@ void GameMap::setCodeForTile(size_t x, size_t y, id_t id) {
 void GameMap::addRoad(size_t x, size_t y, Road r) {
 	if (this->getTileAt(x, y).type != TileType::OffMap) {
 		this->tiles.at(x).at(y).road = r;
+		this->prepareTileForRoad(x, y, r);
 	}
 }
 void GameMap::removeRoad(size_t x, size_t y) {
@@ -400,6 +427,7 @@ void GameMap::addRailwayStation(size_t x, size_t y, IsoRotation direction) {
 void GameMap::addAirplaneRoad(size_t x, size_t y, AirplaneRoad road) {
 	if (this->getTileAt(x, y).type != TileType::OffMap) {
 		this->tiles[x][y].airplaneRoad = road;
+		this->prepareTileForRoad(x, y, road);
 	}
 }
 void GameMap::removeAirplaneRoad(size_t x, size_t y) {
