@@ -20,13 +20,11 @@ const size_t GameMap::MAP_WIDTH = 100;
 
 // Load the sprites
 const sf::Sprite GameMap::EMPTY_SPRITE = ResourceLoader::get()->getSprite("tiles/tiles", "empty");
-std::vector<sf::Sprite> GameMap::ROAD_SPRITES;
 std::vector<sf::Sprite> GameMap::RAIL_TRACK_SPRITES;
 
 GameMap::GameMap(Game* g) : game(g) {
 	// Load the tile sprites
 	for (int i = 0; i < 16; i++) {
-		GameMap::ROAD_SPRITES.push_back(ResourceLoader::get()->getSprite("tiles/tiles", "road-" + std::bitset<4>(i).to_string()));
 		GameMap::RAIL_TRACK_SPRITES.push_back(ResourceLoader::get()->getSprite("tiles/tiles", "railway-" + std::bitset<4>(i).to_string()));
 	}
 	// Add the first postal code
@@ -58,9 +56,9 @@ void GameMap::generateNew() {
 		}
 	}
 	// Generate city
-	/*generateCityAt({ MAP_WIDTH / 4, MAP_HEIGHT / 4 }, 1);
+	generateCityAt({ MAP_WIDTH / 4, MAP_HEIGHT / 4 }, 1);
 	generateCityAt({ MAP_WIDTH * 3 / 4, MAP_HEIGHT * 3 / 4 }, 2);
-	generateCityAt({ MAP_WIDTH * 3 / 4, MAP_HEIGHT / 4 }, 3);*/
+	generateCityAt({ MAP_WIDTH * 3 / 4, MAP_HEIGHT / 4 }, 3);
 }
 void GameMap::render(sf::RenderWindow* window) {
 	// Render all the tiles on screen
@@ -96,23 +94,23 @@ void GameMap::render(sf::RenderWindow* window) {
 	}
 }
 
-sf::Sprite GameMap::getRoadSprite(Road road, IsoRotation gameRotation) {
-	int index = 0;
-	if (road.hasNorth) {
-		index |= 0b1000;
+sf::Sprite GameMap::getRoadSprite(Road road, IsoRotation gameRotation, std::vector<std::vector<unsigned int>> heights) {
+	std::string spriteString = "road-";
+	if (IsoRotation(IsoRotation::NORTH) < gameRotation) {
 	}
-	if (road.hasEast) {
-		index |= 0b0100;
+	std::map<IsoRotation, bool> hasDirection;
+	for (IsoRotation r : road.getDirections()) {
+		hasDirection[r + gameRotation] = true;
 	}
-	if (road.hasSouth) {
-		index |= 0b0010;
+	for (IsoRotation r : IsoRotation::CARDINAL_DIRECTIONS) {
+		spriteString += hasDirection[r] ? "1" : "0";
 	}
-	if (road.hasWest) {
-		index |= 0b0001;
+	if (heights[0][0] != heights[0][1] || heights[0][0] != heights[1][0]) {
+		// Must be a ramp
+	//	if (heights[0][0] > heights[0][1]) {
+	//	}
 	}
-	unsigned int rotation = gameRotation.getRotation();
-	index = 0b1111 & ((index >> rotation) | (index << (4 - rotation)));
-	return ROAD_SPRITES[index];
+	return ResourceLoader::get()->getSprite("tiles/tiles", spriteString);
 }
 void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 	sf::Vector2f p = this->game->worldToScreenPos(sf::Vector3f(x, y, 0));
@@ -126,8 +124,8 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 		// as opposed to over them
 		const std::vector<EntityTag> v = Game::WHITELIST_ENTITY_TAG;
 		if (std::find(v.begin(), v.end(), e->tag) != v.end()) {
-			e->renderer->render(window);
-			return;
+			/*	e->renderer->render(window);
+				return;*/
 		}
 	}
 	sf::Sprite s;
@@ -155,7 +153,15 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 			return;
 		}
 	}
-	sf::Vector3f pos((float)x + 0.5f, (float)y + 0.5f, 0);
+	unsigned int height = 100000;
+	for (size_t xOff = 0; xOff < 2; xOff++) {
+		for (size_t yOff = 0; yOff < 2; yOff++) {
+			if (height > this->pointHeights.at(x + xOff).at(y + yOff)) {
+				height = this->pointHeights.at(x + xOff).at(y + yOff);
+			}
+		}
+	}
+	sf::Vector3f pos((float)x + 0.5f, (float)y + 0.5f, (float)height);
 	s.setPosition(this->game->worldToScreenPos(pos));
 	s = Utils::setupBuildingSprite(s, false);
 	if (!tile.canGetLock()) {
@@ -241,6 +247,7 @@ void GameMap::generateCityAt(sf::Vector2i pos, id_t cityId) {
 		for (size_t i = 0; i < it->getLength(); i++) {
 			if (it->getIsVertical()) {
 				if (it->getStart().y + i < MAP_HEIGHT) {
+					sf::Vector2i pos(it->getStart().x, it->getStart().y + i);
 					Tile* t = &this->tiles[it->getStart().x][it->getStart().y + i];
 					t->cityId = cityId;
 					Road r;
@@ -253,10 +260,17 @@ void GameMap::generateCityAt(sf::Vector2i pos, id_t cityId) {
 						r.hasNorth = true;
 					t->road = r;
 					addedRoads.push_back({ (int)it->getStart().x, (int)(it->getStart().y + i) });
+					// Make sure tile is valid for road
+					for (size_t y = 0; y < 2; y++) {
+						unsigned int height = std::min(this->pointHeights.at(pos.x).at(pos.y + y), this->pointHeights.at(pos.x + 1).at(pos.y + y));
+						this->pointHeights.at(pos.x).at(pos.y + y) = height;
+						this->pointHeights.at(pos.x + 1).at(pos.y + y) = height;
+					}
 				}
 			}
 			else {
 				if (it->getStart().x + i < MAP_WIDTH) {
+					sf::Vector2i pos(it->getStart().x + 1, it->getStart().y);
 					Tile* t = &this->tiles[it->getStart().x + i][it->getStart().y];
 					t->cityId = cityId;
 					Road r;
@@ -269,6 +283,12 @@ void GameMap::generateCityAt(sf::Vector2i pos, id_t cityId) {
 						r.hasWest = true;
 					t->road = r;
 					addedRoads.push_back({ (int)(it->getStart().x + i), (int)(it->getStart().y) });
+					// Make sure tile is valid for road
+					for (size_t x = 0; x < 2; x++) {
+						unsigned int height = std::min(this->pointHeights.at(pos.x + x).at(pos.y), this->pointHeights.at(pos.x + x).at(pos.y + 1));
+						this->pointHeights.at(pos.x + x).at(pos.y) = height;
+						this->pointHeights.at(pos.x + x).at(pos.y + 1) = height;
+					}
 				}
 			}
 		}

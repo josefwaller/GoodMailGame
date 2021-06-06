@@ -26,7 +26,7 @@ public:
 
 	IsoRotation();
 	IsoRotation(unsigned int initRot);
-	unsigned int getRotation();
+	unsigned int getRotation() const;
 	// Rotate 90 degrees clockwise
 	IsoRotation operator+(unsigned int other);
 	// Rotate 90 degrees clockwise
@@ -38,15 +38,16 @@ public:
 	// Rotate 90 degrees counter clockwise
 	void rotateQuaterCounterClockwise();
 	// Check equality
-	bool operator==(IsoRotation other);
-
-	bool operator!=(IsoRotation other);
-	IsoRotation getReverse();
+	bool operator==(const IsoRotation& other);
+	bool operator!=(const IsoRotation& other);
+	bool operator>(const IsoRotation& other) const;
+	bool operator<(const IsoRotation& other) const;
+	IsoRotation getReverse() const;
 	// Get unit vector
-	sf::Vector2f getUnitVector();
+	sf::Vector2f getUnitVector() const;
+	// Get unit vector in 3D space (with Z = 0)
+	sf::Vector3f getUnitVector3D() const;
 	// Get an IsoRotation from a unit vector, assuming it's a valid one
 	static IsoRotation fromUnitVector(sf::Vector2f u);
 	static IsoRotation fromUnitVector(sf::Vector3f u);
-	// Get unit vector in 3D space (with Z = 0)
-	sf::Vector3f getUnitVector3D();
 };

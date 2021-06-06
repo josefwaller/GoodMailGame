@@ -15,11 +15,10 @@ public:
 	static const size_t MAP_HEIGHT;
 
 	// The tiles used to render the map
-	static std::vector<sf::Sprite> ROAD_SPRITES;
 	static std::vector<sf::Sprite> RAIL_TRACK_SPRITES;
 	static const sf::Sprite EMPTY_SPRITE;
 	// Get the corresponding ROAD_SPRITE for the road given
-	static sf::Sprite getRoadSprite(Road road, IsoRotation gameRotation);
+	static sf::Sprite getRoadSprite(Road road, IsoRotation gameRotation, std::vector<std::vector<unsigned int>> pointHeights = { {0, 0},{0,0} });
 	// Create an empty game map, i.e. all tiles are empty
 	GameMap(Game* g);
 	// Generate a new map

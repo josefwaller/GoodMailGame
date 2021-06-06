@@ -1,4 +1,8 @@
 <TextureAtlas imagePath="sheet.png">
+	<SubTexture name="road-1010-ramp-N" x="133" y="1058" width="131" height="130" />
+	<SubTexture name="road-1010-ramp-S" x="133" y="1188" width="131" height="98" />
+	<SubTexture name="road-0101-ramp-E" x="266" y="822" width="132" height="99" />
+	<SubTexture name="road-0101-ramp-W" x="133" y="1714" width="131" height="129" />
 	<SubTexture name="landscapeTiles_000.png" x="265" y="1057" width="132" height="83"/>
 	<SubTexture name="landscapeTiles_001.png" x="265" y="1452" width="132" height="99"/>
 	<SubTexture name="landscapeTiles_002.png" x="265" y="1369" width="132" height="83"/>

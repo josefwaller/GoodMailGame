@@ -4,7 +4,7 @@
 
 IsoRotation::IsoRotation() : rotation(NORTH) {}
 IsoRotation::IsoRotation(unsigned int rotation) : rotation(rotation% MAX_ROT) {}
-unsigned int IsoRotation::getRotation() { return this->rotation; }
+unsigned int IsoRotation::getRotation() const { return this->rotation; }
 // Rotate 90 degrees clockwise
 IsoRotation IsoRotation::operator+(unsigned int other) {
 	return IsoRotation(rotation + other);
@@ -26,18 +26,24 @@ void IsoRotation::rotateQuaterCounterClockwise() {
 	rotation = (rotation - 2) % 8;
 }
 // Check equality
-bool IsoRotation::operator==(IsoRotation other) {
+bool IsoRotation::operator==(const IsoRotation& other) {
 	return this->getRotation() == other.getRotation();
 }
 
-bool IsoRotation::operator!=(IsoRotation other) {
+bool IsoRotation::operator!=(const IsoRotation& other) {
 	return !(*this == other);
 }
-IsoRotation IsoRotation::getReverse() {
+bool IsoRotation::operator<(const IsoRotation& other) const {
+	return getRotation() < other.getRotation();
+}
+bool IsoRotation::operator>(const IsoRotation& other) const {
+	return getRotation() > other.getRotation();
+}
+IsoRotation IsoRotation::getReverse() const {
 	return IsoRotation(this->rotation + 4);
 }
 // Get unit vector
-sf::Vector2f IsoRotation::getUnitVector() {
+sf::Vector2f IsoRotation::getUnitVector() const {
 	switch (this->getRotation()) {
 	case IsoRotation::NORTH:
 		return { 0, -1.0f };
@@ -76,7 +82,7 @@ IsoRotation IsoRotation::fromUnitVector(sf::Vector3f u) {
 	return fromUnitVector(sf::Vector2f(u.x, u.y));
 }
 // Get unit vector in 3D space (with Z = 0)
-sf::Vector3f IsoRotation::getUnitVector3D() {
+sf::Vector3f IsoRotation::getUnitVector3D() const {
 	return sf::Vector3f(getUnitVector().x, getUnitVector().y, 0);
 }
 

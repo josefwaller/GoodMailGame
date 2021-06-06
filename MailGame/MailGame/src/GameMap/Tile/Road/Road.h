@@ -34,6 +34,18 @@ struct Road {
 		rd.addBool(HAS_WEST, hasWest);
 		return rd;
 	}
+	std::vector<IsoRotation> getDirections() {
+		std::vector<IsoRotation> toReturn;
+		if (this->hasNorth)
+			toReturn.push_back(IsoRotation::NORTH);
+		if (this->hasEast)
+			toReturn.push_back(IsoRotation::EAST);
+		if (this->hasSouth)
+			toReturn.push_back(IsoRotation::SOUTH);
+		if (this->hasWest)
+			toReturn.push_back(IsoRotation::WEST);
+		return toReturn;
+	}
 	std::vector<sf::Vector2i> getConnectedTiles(sf::Vector2i tile) {
 		std::vector<sf::Vector2i> toReturn;
 		if (this->hasNorth) {
