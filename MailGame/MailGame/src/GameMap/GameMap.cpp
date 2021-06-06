@@ -375,6 +375,13 @@ void GameMap::generateCityAt(sf::Vector2i pos, id_t cityId) {
 	}
 }
 
+unsigned int GameMap::getPointHeight(size_t x, size_t y) {
+	if (x < this->pointHeights.size() && y < this->pointHeights.at(x).size()) {
+		return this->pointHeights.at(x).at(y);
+	}
+	return 0;
+}
+
 bool GameMap::canGetTileLock(size_t x, size_t y, TransitType type) {
 	return !this->getTileAt(x, y).isLocked;
 }

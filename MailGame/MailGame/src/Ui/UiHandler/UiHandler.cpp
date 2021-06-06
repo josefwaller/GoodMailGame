@@ -25,6 +25,7 @@ from(IsoRotation::NORTH), to(IsoRotation::SOUTH), isStation(false) {
 bool UiHandler::handleEvent(sf::Event e) {
 	sf::Vector2i tilePos;
 	sf::Vector2f mousePos;
+	tilePos = sf::Vector2i(this->game->getMousePosition());
 	switch (e.type) {
 	case sf::Event::MouseButtonPressed:
 		if (ImGui::GetIO().WantCaptureMouse) {
@@ -38,13 +39,12 @@ bool UiHandler::handleEvent(sf::Event e) {
 			mousePos = this->game->getMousePosition();
 			if (this->recipe.value().isValid(this->game, sf::Vector3f(mousePos.x, mousePos.y, 0), this->currentRotation)) {
 				this->game->addEntity(
-					this->recipe.value().buildRecipe(this->game, sf::Vector3f(mousePos.x, mousePos.y, 0), this->currentRotation)
+					this->recipe.value().buildRecipe(this->game, sf::Vector3f(mousePos.x, mousePos.y, this->game->getGameMap()->getPointHeight(tilePos.x, tilePos.y)), this->currentRotation)
 				);
 			}
 			this->changeState(UiState::Default);
 			return true;
 		case UiState::BuildingRailTracks:
-			tilePos = sf::Vector2i(this->game->getMousePosition());
 			if (this->isStation) {
 				this->game->getGameMap()->addRailwayStation(
 					(size_t)tilePos.x,
@@ -556,10 +556,11 @@ sf::VertexArray UiHandler::getDrawableTile(sf::Vector2i pos, sf::PrimitiveType t
 	sf::VertexArray vArr(t, 5);
 	sf::Vector3f fPos((float)pos.x, (float)pos.y, 0);
 	Game* g = this->game;
-	vArr[0] = sf::Vertex(g->worldToScreenPos(fPos), c);
-	vArr[1] = sf::Vertex(g->worldToScreenPos(fPos + sf::Vector3f(1.0f, 0, 0)), c);
-	vArr[2] = sf::Vertex(g->worldToScreenPos(fPos + sf::Vector3f(1.0f, 1.0f, 0)), c);
-	vArr[3] = sf::Vertex(g->worldToScreenPos(fPos + sf::Vector3f(0, 1.0f, 0)), c);
+	for (size_t x = 0; x < 2; x++) {
+		for (size_t y = 0; y < 2; y++) {
+			vArr[2 * x + y] = sf::Vertex(g->worldToScreenPos(sf::Vector3f(pos.x + x, pos.y + y, this->game->getGameMap()->getPointHeight(pos.x + x, pos.y + y))), c);
+		}
+	}
 	vArr[4] = vArr[0];
 	return vArr;
 }
