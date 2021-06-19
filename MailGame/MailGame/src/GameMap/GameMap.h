@@ -32,6 +32,7 @@ public:
 	void setPointHeight(size_t x, size_t y, unsigned int height);
 	// Get the average of the point point's height around htis tile
 	float getTileHeight(size_t x, size_t y);
+	float getHeightAt(float x, float y);
 
 	void render(sf::RenderWindow* window);
 

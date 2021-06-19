@@ -405,6 +405,13 @@ float GameMap::getTileHeight(size_t x, size_t y) {
 	return (float)total / 4.0f;
 }
 
+float GameMap::getHeightAt(float x, float y) {
+	unsigned int prevHeight = this->getPointHeight(floor(x), floor(y));
+	float xHeight = prevHeight + (x - floor(x)) * (this->getPointHeight(ceil(x), floor(y)) - prevHeight);
+	float yHeight = prevHeight + (y - floor(y)) * (this->getPointHeight(floor(x), ceil(y)) - prevHeight);
+	return (xHeight + yHeight) / 2.0f;
+}
+
 bool GameMap::canGetTileLock(size_t x, size_t y, TransitType type) {
 	return !this->getTileAt(x, y).isLocked;
 }
