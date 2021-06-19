@@ -7,6 +7,7 @@
 #include <fstream>
 #include <imgui-SFML.h>
 #include <SFML/Graphics/VertexArray.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
 #include "Game/Game.h"
 #include "PostalCodeDatabase/PostalCodeDatabase.h"
 #include "ResourceLoader/ResourceLoader.h"
@@ -111,12 +112,21 @@ bool UiHandler::handleEvent(sf::Event e) {
 			this->game->getGameMap()->removeRailTrack(tile.x, tile.y);
 			// Remove airplane road
 			this->game->getGameMap()->removeAirplaneRoad(tile.x, tile.y);
+			break;
 		}
 		case UiState::DeletingRailwaysAndRoads: {
 			sf::Vector2i tile = this->getHoveredTile();
 			this->game->getGameMap()->removeAirplaneRoad(tile.x, tile.y);
 			this->game->getGameMap()->removeRoad(tile.x, tile.y);
 			this->game->getGameMap()->removeRailTrack(tile.x, tile.y);
+			break;
+		}
+		case UiState::Terraforming: {
+			sf::Vector2i point = this->getHoveredPoint();
+			int modifier = this->isLowering ? -1 : 1;
+			int height = (int)this->game->getGameMap()->getPointHeight(point.x, point.y) + modifier;
+			this->game->getGameMap()->setPointHeight(point.x, point.y, std::min(std::max(height, 0), 10));
+			break;
 		}
 		}
 	case sf::Event::KeyPressed:
@@ -143,6 +153,7 @@ bool UiHandler::handleEvent(sf::Event e) {
 				}
 			}
 		}
+		break;
 	}
 	return false;
 }
@@ -150,6 +161,10 @@ bool UiHandler::handleEvent(sf::Event e) {
 sf::Vector2i UiHandler::getHoveredTile() {
 	sf::Vector2f mousePos = this->game->getMousePosition();
 	return sf::Vector2i((int)floor(mousePos.x), (int)floor(mousePos.y));
+}
+sf::Vector2i UiHandler::getHoveredPoint() {
+	sf::Vector2f mousePoint = this->game->getMousePosition();
+	return sf::Vector2i((int)round(mousePoint.x), (int)round(mousePoint.y));
 }
 
 void UiHandler::selectTile(std::function<void(sf::Vector2i pos)> callback) {
@@ -243,6 +258,21 @@ void UiHandler::update() {
 	if (ImGui::Button(this->currentState == UiState::ShowingResidencePaths ? "Hide Residence Paths" : "Show Residence Paths")) {
 		this->changeState(this->currentState == UiState::ShowingResidencePaths ? UiState::Default : UiState::ShowingResidencePaths);
 	}
+	if (this->currentState != UiState::Terraforming) {
+		if (ImGui::Button("Change point heights")) {
+			this->changeState(UiState::Terraforming);
+		}
+	}
+	else
+	{
+		if (ImGui::Button("Stop changing point heights")) {
+			this->changeState(UiState::Default);
+		}
+		if (ImGui::Button(this->isLowering ? "Lowering point" : "Raising point")) {
+			this->isLowering = !this->isLowering;
+		}
+	}
+
 	if (ImGui::CollapsingHeader("Build")) {
 		for (auto kv : Construction::recipes) {
 			if (this->game->getTechTree()->getTechUnlocked(kv.second.getRequiredTech())) {
@@ -466,7 +496,7 @@ void UiHandler::render(sf::RenderWindow* w) {
 		}
 		break;
 	}
-	case UiState::ShowingResidencePaths:
+	case UiState::ShowingResidencePaths: {
 		GameMap* gMap = this->game->getGameMap();
 		sf::Vector2i t = this->getHoveredTile();
 		Tile tile = gMap->getTileAt(t);
@@ -482,6 +512,17 @@ void UiHandler::render(sf::RenderWindow* w) {
 			}
 		}
 		break;
+	}
+	case UiState::Terraforming: {
+		sf::Vector2i point = this->getHoveredPoint();
+		unsigned int height = this->game->getGameMap()->getPointHeight(point.x, point.y);
+		sf::Vector3f p(point.x, point.y, height);
+		sf::CircleShape circle;
+		circle.setPosition(this->game->worldToScreenPos(p));
+		circle.setFillColor(sf::Color::Red);
+		circle.setRadius(2.0f);
+		w->draw(circle);
+	}
 	}
 	// Outline the sprite currently being hovered
 	sf::VertexArray vArr = getDrawableTile(this->getHoveredTile(), sf::PrimitiveType::LinesStrip, sf::Color::White);

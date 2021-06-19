@@ -382,6 +382,12 @@ unsigned int GameMap::getPointHeight(size_t x, size_t y) {
 	return 0;
 }
 
+void GameMap::setPointHeight(size_t x, size_t y, unsigned int height) {
+	if (x < this->pointHeights.size() && y < this->pointHeights.at(x).size()) {
+		this->pointHeights.at(x).at(y) = height;
+	}
+}
+
 bool GameMap::canGetTileLock(size_t x, size_t y, TransitType type) {
 	return !this->getTileAt(x, y).isLocked;
 }

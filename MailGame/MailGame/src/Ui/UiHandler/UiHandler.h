@@ -25,7 +25,8 @@ public:
 		Deleting,
 		DeletingRailwaysAndRoads,
 		ShowingCityLimits,
-		ShowingResidencePaths
+		ShowingResidencePaths,
+		Terraforming
 	};
 
 	UiHandler(Game* g);
@@ -76,6 +77,8 @@ private:
 	bool isStation;
 	// The airplaneroad being built
 	AirplaneRoad airplaneRoadToBuild;
+	// If tarraforming, whether the player is raising or lowering a point
+	bool isLowering;
 	// The paths to draw
 	std::vector<std::vector<RoutePoint>> pathsToDraw;
 	// The entities to render UI for
@@ -84,6 +87,8 @@ private:
 	std::map<id_t, sf::Color> cityLimitColors;
 	// Get the tile the mouse is currently hovering over
 	sf::Vector2i getHoveredTile();
+	// Get the point that the mouse is currently closest to
+	sf::Vector2i getHoveredPoint();
 	// Return a vertex array that is over the tile given, in screen coords
 	// Used to drawing specific tiles
 	sf::VertexArray getDrawableTile(

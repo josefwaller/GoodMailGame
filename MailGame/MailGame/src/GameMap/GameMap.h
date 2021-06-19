@@ -29,6 +29,7 @@ public:
 	Tile getTileAt(size_t x, size_t y);
 	Tile getTileAt(sf::Vector2i coords);
 	unsigned int getPointHeight(size_t x, size_t y);
+	void setPointHeight(size_t x, size_t y, unsigned int height);
 
 	void render(sf::RenderWindow* window);
 
