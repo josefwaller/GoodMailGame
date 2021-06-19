@@ -429,7 +429,6 @@ void GameMap::setCodeForTile(size_t x, size_t y, id_t id) {
 void GameMap::addRoad(size_t x, size_t y, Road r) {
 	if (this->getTileAt(x, y).type != TileType::OffMap) {
 		this->tiles.at(x).at(y).road = r;
-		this->prepareTileForRoad(x, y, r);
 	}
 }
 void GameMap::removeRoad(size_t x, size_t y) {
@@ -457,7 +456,6 @@ void GameMap::addRailwayStation(size_t x, size_t y, IsoRotation direction) {
 void GameMap::addAirplaneRoad(size_t x, size_t y, AirplaneRoad road) {
 	if (this->getTileAt(x, y).type != TileType::OffMap) {
 		this->tiles[x][y].airplaneRoad = road;
-		this->prepareTileForRoad(x, y, road);
 	}
 }
 void GameMap::removeAirplaneRoad(size_t x, size_t y) {
