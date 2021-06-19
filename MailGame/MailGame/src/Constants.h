@@ -112,4 +112,6 @@ namespace SaveKeys {
 	const sdkey_t HOUR = "hour";
 	const sdkey_t CITY = "city";
 	const sdkey_t DIRECTION = "direction";
+	const sdkey_t POINT = "point";
+	const sdkey_t HEIGHT = "height";
 }

@@ -36,6 +36,12 @@ GameMap::GameMap(Game* g) : game(g) {
 			tiles[i].push_back(Tile());
 		}
 	}
+	for (size_t i = 0; i < MAP_WIDTH + 1; i++) {
+		this->pointHeights.push_back({});
+		for (size_t j = 0; j < MAP_HEIGHT + 1; j++) {
+			this->pointHeights[i].push_back(0);
+		}
+	}
 }
 void GameMap::generateNew() {
 	FastNoiseLite noise(18);
@@ -569,32 +575,47 @@ SaveData GameMap::getSaveData() {
 			sd.addData(td);
 		}
 	}
+	// Save heights
+	for (size_t x = 0; x < this->pointHeights.size(); x++) {
+		for (size_t y = 0; y < this->pointHeights.at(x).size(); y++) {
+			SaveData s(POINT);
+			s.addSizeT(X, x);
+			s.addSizeT(Y, y);
+			s.addSizeT(HEIGHT, this->pointHeights.at(x).at(y));
+			sd.addData(s);
+		}
+	}
 	return sd;
 }
 void GameMap::loadFromSaveData(SaveData data) {
 	using namespace SaveKeys;
 	// Go through every tile data
 	for (SaveData d : data.getDatas()) {
-		size_t x = d.getSizeT(X);
-		size_t y = d.getSizeT(Y);
-		this->tiles[x][y].postalCode = d.getSizeT(POSTAL_CODE);
-		this->tiles[x][y].type = (TileType)(d.getSizeT(TYPE));
-		this->tiles[x][y].cityId = d.getSizeT(CITY);
-		if (d.hasValue(BUILDING)) {
-			this->tiles[x][y].building = this->game->getEntityById(d.getSizeT("building"));
+		if (d.getName() == TILE) {
+			size_t x = d.getSizeT(X);
+			size_t y = d.getSizeT(Y);
+			this->tiles[x][y].postalCode = d.getSizeT(POSTAL_CODE);
+			this->tiles[x][y].type = (TileType)(d.getSizeT(TYPE));
+			this->tiles[x][y].cityId = d.getSizeT(CITY);
+			if (d.hasValue(BUILDING)) {
+				this->tiles[x][y].building = this->game->getEntityById(d.getSizeT("building"));
+			}
+			// Go through the save datas in the tile
+			// Will be for a road/railway
+			for (SaveData rd : d.getDatas()) {
+				if (rd.getName() == "Road") {
+					this->tiles[x][y].road = Road(rd);
+				}
+				else if (rd.getName() == RAILWAY) {
+					this->tiles[x][y].addRailway(Railway(rd));
+				}
+				else if (rd.getName() == "AirplaneRoad") {
+					this->tiles[x][y].airplaneRoad = AirplaneRoad(rd);
+				}
+			}
 		}
-		// Go through the save datas in the tile
-		// Will be for a road/railway
-		for (SaveData rd : d.getDatas()) {
-			if (rd.getName() == "Road") {
-				this->tiles[x][y].road = Road(rd);
-			}
-			else if (rd.getName() == RAILWAY) {
-				this->tiles[x][y].addRailway(Railway(rd));
-			}
-			else if (rd.getName() == "AirplaneRoad") {
-				this->tiles[x][y].airplaneRoad = AirplaneRoad(rd);
-			}
+		else if (d.getName() == POINT) {
+			this->pointHeights[d.getSizeT(X)][d.getSizeT(Y)] = d.getSizeT(HEIGHT);
 		}
 	}
 }
