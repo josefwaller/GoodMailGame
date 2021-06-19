@@ -367,6 +367,7 @@ void GameMap::generateCityAt(sf::Vector2i pos, id_t cityId) {
 							);
 							this->tiles[x + xOff][y + yOff].building = e;
 							this->tiles[x + xOff][y + yOff].cityId = cityId;
+							this->residenceLocations.push_back(sf::Vector2i(x + xOff, y + yOff));
 						}
 					}
 				}
@@ -528,16 +529,7 @@ void GameMap::addRoadInDirection(size_t x, size_t y, IsoRotation rot) {
 	}
 }
 std::vector<sf::Vector2i> GameMap::getResidences() {
-	std::vector<sf::Vector2i> toReturn;
-	for (size_t x = 0; x < MAP_WIDTH; x++) {
-		for (size_t y = 0; y < MAP_HEIGHT; y++) {
-			Tile t = this->getTileAt(x, y);
-			if (t.building.lock() && t.building.lock()->tag == EntityTag::Residence) {
-				toReturn.push_back(sf::Vector2i(x, y));
-			}
-		}
-	}
-	return toReturn;
+	return this->residenceLocations;
 }
 SaveData GameMap::getSaveData() {
 	using namespace SaveKeys;
