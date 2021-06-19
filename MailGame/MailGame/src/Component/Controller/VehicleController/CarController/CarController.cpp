@@ -55,7 +55,7 @@ std::vector<SpeedPoint> CarController::getPathBetweenStops(VehicleControllerStop
 	this->path = Pathfinder::findCarPath(this->getEntity()->getGameMap(), from, to);
 	std::vector<SpeedPoint> points;
 	for (sf::Vector2i p : this->path) {
-		points.push_back(Utils::toVector3f(p) + sf::Vector3f(0.5f, 0.5f, 0.0f));
+		points.push_back(Utils::toVector3f(p) + sf::Vector3f(0.5f, 0.5f, this->getEntity()->getGameMap()->getTileHeight(p.x, p.y)));
 	}
 	// Start and end at rest
 	points.at(0).setSpeed(0.0f);

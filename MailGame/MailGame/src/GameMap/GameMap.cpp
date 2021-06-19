@@ -388,6 +388,16 @@ void GameMap::setPointHeight(size_t x, size_t y, unsigned int height) {
 	}
 }
 
+float GameMap::getTileHeight(size_t x, size_t y) {
+	unsigned int total = 0;
+	for (size_t i = 0; i < 2; i++) {
+		for (size_t j = 0; j < 2; j++) {
+			total += this->getPointHeight(x + i, y + j);
+		}
+	}
+	return (float)total / 4.0f;
+}
+
 bool GameMap::canGetTileLock(size_t x, size_t y, TransitType type) {
 	return !this->getTileAt(x, y).isLocked;
 }
