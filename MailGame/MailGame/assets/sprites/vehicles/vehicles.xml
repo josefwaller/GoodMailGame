@@ -1,4 +1,8 @@
 <TextureAtlas imagePath="sheet.png">
+<SubTexture name="mailTruck-NE" x="139" y="94" width="33" height="28" />
+<SubTexture name="mailTruck-SE" x="813" y="0" width="20" height="34" />
+<SubTexture name="mailTruck-NW" x="812" y="481" width="19" height="27" />
+<SubTexture name="mailTruck-SW" x="104" y="431" width="33" height="28" />
 <SubTexture name="train-NE.png" x="782" y="92" width="32" height="24" />
 <SubTexture name="train-SE.png" x="877" y="139" width="18" height="24" />
 <SubTexture name="train-SW.png" x="812" y="236" width="31" height="24" />

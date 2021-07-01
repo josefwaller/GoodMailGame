@@ -36,9 +36,13 @@ std::shared_ptr<Entity> VehiclePresets::mailTruck(
 		new IsoSpriteRenderer(
 			IsoSprite(
 				ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-N", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-NE", true),
 				ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-E", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-SE", true),
 				ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-S", true),
-				ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-W", true)
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-SW", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-W", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "mailTruck-NW", true)
 			)
 		),
 		new CarController(spawnTime, route.model, {}),

@@ -6,6 +6,7 @@
 #include "System/Utils/Utils.h"
 
 IsoSpriteRenderer::IsoSpriteRenderer(IsoSprite sprs, sf::Vector3f off) : sprites(sprs), offset(off) {
+	auto x = 0;
 }
 
 void IsoSpriteRenderer::render(sf::RenderWindow* window) {
