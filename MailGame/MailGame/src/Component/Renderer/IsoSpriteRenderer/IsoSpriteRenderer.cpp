@@ -16,8 +16,9 @@ void IsoSpriteRenderer::render(sf::RenderWindow* window) {
 	// Set to black and render as a shadow on the ground
 	shadowSpr.setColor(sf::Color(0, 0, 0, 100));
 	sf::Vector3f pos = this->getEntity()->transform->getPosition();
+	float x = this->getEntity()->getGameMap()->getHeightAt(pos.x, pos.y);
 	shadowSpr.setPosition(
-		this->getEntity()->getGame()->worldToScreenPos(sf::Vector3f(pos.x, pos.y, this->getEntity()->getGameMap()->getHeightAt(pos.x, pos.y)) + offset)
+		this->getEntity()->getGame()->worldToScreenPos(sf::Vector3f(pos.x, pos.y, x) + offset)
 	);
 	window->draw(shadowSpr);
 	// Render original sprite

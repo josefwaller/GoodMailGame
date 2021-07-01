@@ -406,10 +406,32 @@ float GameMap::getTileHeight(size_t x, size_t y) {
 }
 
 float GameMap::getHeightAt(float x, float y) {
-	unsigned int prevHeight = this->getPointHeight(floor(x), floor(y));
-	float xHeight = prevHeight + (x - floor(x)) * (this->getPointHeight(ceil(x), floor(y)) - prevHeight);
-	float yHeight = prevHeight + (y - floor(y)) * (this->getPointHeight(floor(x), ceil(y)) - prevHeight);
-	return (xHeight + yHeight) / 2.0f;
+	// Get the points around the position to get the height
+	size_t minX = floor(x);
+	size_t maxX = minX + 1;
+	size_t minY = floor(y);
+	size_t maxY = minY + 1;
+
+	unsigned int topLeft = this->getPointHeight(minX, minY);
+	unsigned int botLeft = this->getPointHeight(minX, maxY);
+	unsigned int topRight = this->getPointHeight(maxX, minY);
+	unsigned int botRight = this->getPointHeight(maxX, maxY);
+
+	// All points are equal, so just return height
+	if (topLeft == botLeft && botLeft == topRight && topRight == botRight) {
+		return (float)topLeft;
+	}
+	// Check for ramp
+	// Top to bottom
+	if (topLeft == botLeft && topRight == botRight) {
+		return (float)botLeft + (x - (float)minX) * (float)(botRight - botLeft);
+	}
+	// Left to right
+	else if (topLeft == topRight && botLeft == botRight) {
+		return (float)topLeft + (y - (float)minY) * (float)(botLeft - topLeft);
+	}
+	// TBA
+	return 0.0f;
 }
 
 bool GameMap::canGetTileLock(size_t x, size_t y, TransitType type) {
