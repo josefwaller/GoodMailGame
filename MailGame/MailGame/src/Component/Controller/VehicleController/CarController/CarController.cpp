@@ -25,7 +25,7 @@ void CarController::update(float delta) {
 }
 
 void CarController::onArriveAtPoint(size_t pointIndex, gtime_t arriveTime) {
-	sf::Vector2i tile = this->path.at(pointIndex);
+	sf::Vector2i tile = this->path.at(pointIndex - 1);
 	this->getEntity()->ai->onArriveAtTile(tile);
 }
 void CarController::onArriveAtDest(gtime_t arriveTime) {
@@ -53,10 +53,17 @@ std::vector<SpeedPoint> CarController::getPathBetweenStops(VehicleControllerStop
 	sf::Vector2i to = toTiles.front();
 	// Get the path between
 	this->path = Pathfinder::findCarPath(this->getEntity()->getGameMap(), from, to);
-	std::vector<SpeedPoint> points;
-	for (sf::Vector2i p : this->path) {
-		points.push_back(Utils::toVector3f(p) + sf::Vector3f(0.5f, 0.5f, this->getEntity()->getGameMap()->getTileHeight(p.x, p.y)));
+	std::vector<SpeedPoint> points = { sf::Vector3f(path.front().x + 0.5f, path.front().y + 0.5f, this->getEntity()->getGameMap()->getHeightAt(path.front().x + 0.5f, path.front().y + 0.5f)) };
+	sf::Vector2i prevPoint = this->path.front();
+	for (auto it = this->path.begin() + 1; it != this->path.end(); it++) {
+		sf::Vector3f nextPoint((prevPoint.x + it->x) / 2.0f + 0.5f, (prevPoint.y + it->y) / 2.0f + 0.5f, 0.0f);
+		// Set the height
+		nextPoint.z = this->getEntity()->getGameMap()->getHeightAt(nextPoint.x, nextPoint.y);
+		points.push_back(nextPoint);
+		prevPoint = *it;
 	}
+	// Add the last point
+	points.push_back(sf::Vector3f(path.back().x + 0.5f, path.back().y + 0.5f, this->getEntity()->getGameMap()->getHeightAt(path.back().x + 0.5f, path.back().y + 0.5f)));
 	// Start and end at rest
 	points.at(0).setSpeed(0.0f);
 	points.at(points.size() - 1).setSpeed(0.0f);
