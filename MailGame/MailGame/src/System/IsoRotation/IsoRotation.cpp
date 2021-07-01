@@ -61,22 +61,28 @@ sf::Vector2f IsoRotation::getUnitVector() const {
 IsoRotation IsoRotation::fromUnitVector(sf::Vector2f u) {
 	// We have to check if x is 0 first since atan is not defined for that
 	if (u.x == 0) {
-		return u.y == 1 ? IsoRotation::SOUTH : IsoRotation::NORTH;
+		return u.y > 0 ? IsoRotation::SOUTH : IsoRotation::NORTH;
 	}
+	// In regular math, +y is the up direction
+	// But it is down for us, so inverse the Y direction
+	u.y = -u.y;
 	// Theta should be rounded to the nearest eigth turn
 	const double PI = 3.14159;
 	double theta = atan2(u.y, u.x);
-	if (u.y < 0) {
-		theta += PI;
-	}
-	if (theta < 0) {
-		theta += 2 * PI;
-	}
+	/*	if (u.y < 0) {
+			theta += PI;
+		}
+		if (theta < 0) {
+			theta += 2 * PI;
+		}*/
+		// Get the angle relative to the positive Y axis
+	theta = PI / 2 - theta;
+	while (theta < 0) { theta += 2 * PI; }
 	size_t numEights = (size_t)round(theta / (PI / 4));
 	if (numEights > 7) {
 		throw std::runtime_error("i am bad at math :(");
 	}
-	return IsoRotation::CARDINAL_AND_ORDINAL_DIRECTIONS[(numEights + 2) % IsoRotation::CARDINAL_AND_ORDINAL_DIRECTIONS.size()];
+	return IsoRotation::CARDINAL_AND_ORDINAL_DIRECTIONS[numEights % IsoRotation::CARDINAL_AND_ORDINAL_DIRECTIONS.size()];
 }
 IsoRotation IsoRotation::fromUnitVector(sf::Vector3f u) {
 	return fromUnitVector(sf::Vector2f(u.x, u.y));
@@ -84,6 +90,20 @@ IsoRotation IsoRotation::fromUnitVector(sf::Vector3f u) {
 // Get unit vector in 3D space (with Z = 0)
 sf::Vector3f IsoRotation::getUnitVector3D() const {
 	return sf::Vector3f(getUnitVector().x, getUnitVector().y, 0);
+}
+std::string IsoRotation::toString() {
+#define x(r) case IsoRotation::r: return #r;
+	switch (this->rotation) {
+		x(NORTH)
+			x(NORTH_EAST)
+			x(EAST)
+			x(SOUTH_EAST)
+			x(SOUTH)
+			x(SOUTH_WEST)
+			x(WEST)
+			x(NORTH_WEST)
+	default: return "Invalid Rotation";
+	}
 }
 
 const std::vector<IsoRotation> IsoRotation::CARDINAL_DIRECTIONS = {
