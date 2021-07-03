@@ -18,6 +18,10 @@ public:
 	static const unsigned int MIN_HEIGHT;
 	static const unsigned int MAX_HEIGHT;
 
+	// The sea level
+	// Any tiles below this are underwater
+	static const unsigned int SEA_LEVEL;
+
 	// The tiles used to render the map
 	static std::vector<sf::Sprite> RAIL_TRACK_SPRITES;
 	static const sf::Sprite EMPTY_SPRITE;

@@ -21,6 +21,8 @@ const size_t GameMap::MAP_WIDTH = 100;
 const unsigned int GameMap::MIN_HEIGHT = 0;
 const unsigned int GameMap::MAX_HEIGHT = 10;
 
+const unsigned int GameMap::SEA_LEVEL = 4;
+
 // Load the sprites
 const sf::Sprite GameMap::EMPTY_SPRITE = ResourceLoader::get()->getSprite("tiles/tiles", "empty");
 std::vector<sf::Sprite> GameMap::RAIL_TRACK_SPRITES;
@@ -52,7 +54,7 @@ void GameMap::generateNew() {
 	noise.SetFrequency(0.07f);
 	noise.SetFractalType(FastNoiseLite::FractalType::FractalType_FBm);
 	noise.SetFractalOctaves(1);
-	noise.SetFractalLacunarity(2.0f);
+	noise.SetFractalLacunarity(0.1f);
 	noise.SetFractalGain(0.5f);
 
 	// Set up point heights
@@ -153,6 +155,7 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 	}
 	sf::Sprite s;
 	Tile tile = tiles[x][y];
+	bool drawSprite = true;
 	switch (tile.type) {
 	case TileType::Land:
 		if (tile.road.has_value()) {
@@ -179,24 +182,26 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 			arr[2] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(x + 1, y + 1, this->pointHeights.at(x + 1).at(y + 1))), tileColor);
 			arr[3] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(x, y + 1, this->pointHeights.at(x).at(y + 1))), tileColor);
 			window->draw(arr);
-			return;
+			drawSprite = false;
 		}
 	}
-	unsigned int height = 100000;
-	for (size_t xOff = 0; xOff < 2; xOff++) {
-		for (size_t yOff = 0; yOff < 2; yOff++) {
-			if (height > this->pointHeights.at(x + xOff).at(y + yOff)) {
-				height = this->pointHeights.at(x + xOff).at(y + yOff);
+	if (drawSprite) {
+		unsigned int height = 100000;
+		for (size_t xOff = 0; xOff < 2; xOff++) {
+			for (size_t yOff = 0; yOff < 2; yOff++) {
+				if (height > this->pointHeights.at(x + xOff).at(y + yOff)) {
+					height = this->pointHeights.at(x + xOff).at(y + yOff);
+				}
 			}
 		}
+		sf::Vector3f pos((float)x + 0.5f, (float)y + 0.5f, (float)height);
+		s.setPosition(this->game->worldToScreenPos(pos));
+		s = Utils::setupBuildingSprite(s, false);
+		if (!tile.canGetLock()) {
+			s.setColor(sf::Color(0, 255, 51));
+		}
+		window->draw(s);
 	}
-	sf::Vector3f pos((float)x + 0.5f, (float)y + 0.5f, (float)height);
-	s.setPosition(this->game->worldToScreenPos(pos));
-	s = Utils::setupBuildingSprite(s, false);
-	if (!tile.canGetLock()) {
-		s.setColor(sf::Color(0, 255, 51));
-	}
-	window->draw(s);
 	// Draw the railway if it has one
 	if (!tile.getRailways().empty()) {
 		for (Railway r : tile.getRailways()) {
@@ -210,6 +215,29 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 			arr[1] = sf::Vertex(this->game->worldToScreenPos(Utils::toVector3f(toPoint)), r.isStation ? sf::Color::Blue : sf::Color::Red);
 			window->draw(arr);
 		}
+	}
+	// Draw water on top of tile if it is underwater
+	std::vector<sf::Vector3f> points;
+	for (size_t i = 0; i < 2; i++) {
+		for (size_t j = 0; j < 2; j++) {
+			sf::Vector2i p(x + i, y + j);
+			if (this->getPointHeight(p) <= SEA_LEVEL) {
+				points.push_back(sf::Vector3f(p.x, p.y, SEA_LEVEL));
+			}
+		}
+	}
+	if (points.size() > 2) {
+		sf::VertexArray arr(points.size() == 3 ? sf::PrimitiveType::Triangles : sf::PrimitiveType::Quads, points.size());
+		// Have to fix the order if the entire tile is underwater
+		if (points.size() > 3) {
+			sf::Vector3f temp = points.at(3);
+			points.at(3) = points.at(2);
+			points.at(2) = temp;
+		}
+		for (size_t i = 0; i < points.size(); i++) {
+			arr[i] = sf::Vertex(this->game->worldToScreenPos(points[i]), sf::Color(0, 0, 255, 150));
+		}
+		window->draw(arr);
 	}
 }
 void GameMap::prepareTileForRoad(size_t x, size_t y, Road r) {
