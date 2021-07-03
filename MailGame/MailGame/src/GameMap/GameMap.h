@@ -29,6 +29,7 @@ public:
 	Tile getTileAt(size_t x, size_t y);
 	Tile getTileAt(sf::Vector2i coords);
 	unsigned int getPointHeight(size_t x, size_t y);
+	unsigned int getPointHeight(sf::Vector2i point);
 	void setPointHeight(size_t x, size_t y, unsigned int height);
 	// Get the average of the point point's height around htis tile
 	float getTileHeight(size_t x, size_t y);
@@ -78,6 +79,9 @@ private:
 	Game* game;
 	std::vector<std::vector<Tile>> tiles;
 	std::vector<std::vector<unsigned int>> pointHeights;
+	// Whether a point height is locked, i.e. cannot be changed
+	// Usually when a road or building is on it
+	std::vector<std::vector<bool>> pointHeightLocked;
 	// Prepare a tile to have a road on it
 	// Mostly make sure it isn't slanted weird
 	void prepareTileForRoad(size_t x, size_t y, Road r);

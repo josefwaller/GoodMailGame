@@ -54,6 +54,7 @@ void GameMap::generateNew() {
 
 	// Set up point heights
 	this->pointHeights = std::vector<std::vector<unsigned int>>(MAP_WIDTH + 1, std::vector<unsigned int>(MAP_HEIGHT + 1, 0.0f));
+	this->pointHeightLocked = std::vector<std::vector<bool>>(MAP_WIDTH + 1, std::vector<bool>(MAP_HEIGHT + 1, false));
 	for (size_t i = 0; i < MAP_WIDTH + 1; i++) {
 		for (size_t j = 0; j < MAP_HEIGHT + 1; j++) {
 			float n = noise.GetNoise((float)i, (float)j);
@@ -267,6 +268,46 @@ void GameMap::generateCityAt(sf::Vector2i pos, id_t cityId) {
 
 		// Add the line
 		addedLines.push_back(topLine);
+		// Make the line valid for a road
+		for (size_t i = 0; i < topLine.getLength(); i++) {
+			if (i == 0 || i == topLine.getLength() - 1) {
+				// Tile must be completely flat
+				sf::Vector2i unit = topLine.getIsVertical() ? sf::Vector2i(0, 1) : sf::Vector2i(1, 0);
+				sf::Vector2i tile = topLine.getStart() + unit * (int)i;
+				unsigned int height = this->getPointHeight(tile);
+				for (size_t i = 0; i < 2; i++) {
+					for (size_t j = 0; j < 2; j++) {
+						this->setPointHeight(tile.x + i, tile.y + j, height);
+					}
+				}
+			}
+			else {
+				std::pair<sf::Vector2i, sf::Vector2i> pairOne;
+				std::pair<sf::Vector2i, sf::Vector2i> pairTwo;
+				if (topLine.getIsVertical()) {
+					sf::Vector2i point = topLine.getStart() + (int)i * sf::Vector2i(0, 1);
+					pairOne = { point, point + sf::Vector2i(1, 0) };
+					pairTwo = { point + sf::Vector2i(0, 1), point + sf::Vector2i(1, 1) };
+				}
+				else {
+					sf::Vector2i point = topLine.getStart() + (int)i * sf::Vector2i(1, 0);
+					pairOne = { point, point + sf::Vector2i(0, 1) };
+					pairTwo = { point + sf::Vector2i(1, 0), point + sf::Vector2i(1, 1) };
+				}
+				// Make sure pair one and pair two are the same heights
+				for (auto pair : { pairOne, pairTwo }) {
+					if (pair.first == sf::Vector2i(31, 27) || pair.second == sf::Vector2i(31, 27)) {
+						auto x = 0;
+					}
+					if (this->getPointHeight(pair.first) != this->getPointHeight(pair.second)) {
+						// Set them to the same height
+						this->setPointHeight(pair.second.x, pair.second.y, this->getPointHeight(pair.first));
+					}
+					this->pointHeightLocked.at(pair.first.x).at(pair.first.y) = true;
+					this->pointHeightLocked.at(pair.second.x).at(pair.second.y) = true;
+				}
+			}
+		}
 		// Add some potential lines
 		for (int j = 0; j < NUM_ROADS_PROPOSED; j++) {
 			unsigned newLineLen = rand() % (MAX_ROAD_LEN - MIN_ROAD_LEN) + MIN_ROAD_LEN;
@@ -301,7 +342,6 @@ void GameMap::generateCityAt(sf::Vector2i pos, id_t cityId) {
 						r.hasNorth = true;
 					t->road = r;
 					addedRoads.push_back({ (int)it->getStart().x, (int)(it->getStart().y + i) });
-					this->prepareTileForRoad(pos.x, pos.y, r);
 				}
 			}
 			else {
@@ -319,8 +359,6 @@ void GameMap::generateCityAt(sf::Vector2i pos, id_t cityId) {
 						r.hasWest = true;
 					t->road = r;
 					addedRoads.push_back({ (int)(it->getStart().x + i), (int)(it->getStart().y) });
-					// Make sure tile is valid for road
-					this->prepareTileForRoad(pos.x, pos.y, r);
 				}
 			}
 		}
@@ -361,6 +399,18 @@ void GameMap::generateCityAt(sf::Vector2i pos, id_t cityId) {
 								}
 							}
 							}
+							// check that we aren't messing up hte heights
+							bool shouldSkip = false;
+							for (size_t i = 0; i < 2; i++) {
+								for (size_t j = 0; j < 2; j++) {
+									if (this->pointHeights.at(x + xOff + i).at(y + yOff + j) != height && this->pointHeightLocked.at(x + xOff + i).at(y + yOff + j)) {
+										shouldSkip = true;
+									}
+								}
+							}
+							if (shouldSkip) {
+								continue;
+							}
 							// Set the height of the tile
 							for (size_t i = 0; i < 2; i++) {
 								for (size_t j = 0; j < 2; j++) {
@@ -387,6 +437,9 @@ unsigned int GameMap::getPointHeight(size_t x, size_t y) {
 		return this->pointHeights.at(x).at(y);
 	}
 	return 0;
+}
+unsigned int GameMap::getPointHeight(sf::Vector2i point) {
+	return getPointHeight(point.x, point.y);
 }
 
 void GameMap::setPointHeight(size_t x, size_t y, unsigned int height) {
