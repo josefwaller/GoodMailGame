@@ -39,6 +39,6 @@ void RectClickBox::renderClickBox(sf::RenderWindow* window) {
 	for (size_t i = 0; i < 5; i++) {
 		v[i].color = sf::Color::Red;
 	}
-	window->draw(v);
+	//	window->draw(v);
 }
 #endif
