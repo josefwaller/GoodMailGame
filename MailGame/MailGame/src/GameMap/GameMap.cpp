@@ -18,6 +18,9 @@
 const size_t GameMap::MAP_HEIGHT = 100;
 const size_t GameMap::MAP_WIDTH = 100;
 
+const unsigned int GameMap::MIN_HEIGHT = 0;
+const unsigned int GameMap::MAX_HEIGHT = 10;
+
 // Load the sprites
 const sf::Sprite GameMap::EMPTY_SPRITE = ResourceLoader::get()->getSprite("tiles/tiles", "empty");
 std::vector<sf::Sprite> GameMap::RAIL_TRACK_SPRITES;
@@ -46,9 +49,9 @@ GameMap::GameMap(Game* g) : game(g) {
 void GameMap::generateNew() {
 	FastNoiseLite noise(18);
 	noise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_Perlin);
-	noise.SetFrequency(0.01f);
+	noise.SetFrequency(0.07f);
 	noise.SetFractalType(FastNoiseLite::FractalType::FractalType_FBm);
-	noise.SetFractalOctaves(5);
+	noise.SetFractalOctaves(1);
 	noise.SetFractalLacunarity(2.0f);
 	noise.SetFractalGain(0.5f);
 
@@ -58,7 +61,7 @@ void GameMap::generateNew() {
 	for (size_t i = 0; i < MAP_WIDTH + 1; i++) {
 		for (size_t j = 0; j < MAP_HEIGHT + 1; j++) {
 			float n = noise.GetNoise((float)i, (float)j);
-			unsigned int val = (unsigned int)abs(round(10.0f * n));
+			unsigned int val = (unsigned int)abs(round((float)(MAX_HEIGHT - MIN_HEIGHT) * (n + 1.0f) / 2) + MIN_HEIGHT);
 			pointHeights.at(i).at(j) = val;
 		}
 	}
@@ -456,6 +459,10 @@ float GameMap::getTileHeight(size_t x, size_t y) {
 		}
 	}
 	return (float)total / 4.0f;
+}
+
+float GameMap::getHeightAt(sf::Vector2f p) {
+	return getHeightAt(p.x, p.y);
 }
 
 float GameMap::getHeightAt(float x, float y) {

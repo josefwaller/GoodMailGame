@@ -14,6 +14,10 @@ public:
 	static const size_t MAP_WIDTH;
 	static const size_t MAP_HEIGHT;
 
+	// Min and max point height
+	static const unsigned int MIN_HEIGHT;
+	static const unsigned int MAX_HEIGHT;
+
 	// The tiles used to render the map
 	static std::vector<sf::Sprite> RAIL_TRACK_SPRITES;
 	static const sf::Sprite EMPTY_SPRITE;
@@ -34,6 +38,7 @@ public:
 	// Get the average of the point point's height around htis tile
 	float getTileHeight(size_t x, size_t y);
 	float getHeightAt(float x, float y);
+	float getHeightAt(sf::Vector2f);
 
 	void render(sf::RenderWindow* window);
 

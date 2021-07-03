@@ -337,7 +337,7 @@ void UiHandler::update() {
 	// Print mouse position
 	sf::Vector2f mousePos = this->game->getMousePosition();
 	sf::Vector2i tile = this->getHoveredTile();
-	sprintf_s(buf, "Mouse position is (%.2f,%.2f), tile is (%d, %d)", mousePos.x, mousePos.y, tile.x, tile.y);
+	sprintf_s(buf, "Mouse position is (%.2f,%.2f), tile is (%d, %d), height at mouse is %f", mousePos.x, mousePos.y, tile.x, tile.y, this->game->getGameMap()->getHeightAt(mousePos));
 	ImGui::Text(buf);
 
 	// Postal codes ui
