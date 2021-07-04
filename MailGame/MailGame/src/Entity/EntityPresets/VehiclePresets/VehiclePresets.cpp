@@ -10,6 +10,7 @@
 #include "Component/Controller/VehicleController/CarController/CarController.h"
 #include "Component/Controller/VehicleController/TrainController/TrainController.h"
 #include "Component/Controller/VehicleController/PlaneController/PlaneController.h"
+#include "Component/Controller/VehicleController/BoatController/BoatController.h"
 // Mail Container
 #include "Component/MailContainer/MailContainer.h"
 // Pathfinders
@@ -150,6 +151,27 @@ std::shared_ptr<Entity> VehiclePresets::plane(
 		nullptr,
 		new AirPathfinder(),
 		new TransitAi(route, depot, TransitType::Airplane)
+	);
+}
+std::shared_ptr<Entity> VehiclePresets::boat(Game* g, sf::Vector3f pos, IsoRotation rot, TransitRoute route, std::weak_ptr<Entity> depot, gtime_t departTime) {
+	return Entity::createEntity(
+		g,
+		EntityTag::Boat,
+		new Transform(pos, rot),
+		new IsoSpriteRenderer(
+			IsoSprite(
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-N", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-E", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-W", true),
+				ResourceLoader::get()->getSprite("vehicles/vehicles", "plane-S", true)
+			)
+		),
+		new BoatController(departTime, route.model, {}),
+		nullptr,
+		new MailContainer(),
+		nullptr,
+		nullptr,
+		new TransitAi(route, depot, TransitType::Boat)
 	);
 }
 std::shared_ptr<Entity> VehiclePresets::trainCar(Game* g, sf::Vector3f pos, IsoRotation rot, IsoSprite sprites) {

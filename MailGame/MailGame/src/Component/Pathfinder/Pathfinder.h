@@ -21,6 +21,10 @@ public:
 		gtime_t departTime,
 		float speed) = 0;
 
+	// Find a path via water
+	// wow real difficult
+	// start must be on water, end may be on land but must only be one tile away from water
+	static std::vector<sf::Vector2i> findBoatPath(GameMap* gMap, sf::Vector2i start, sf::Vector2i end);
 	// Eventually all the pathfinding methods will be static methods here
 	/**
 	 * Find a path between two points along regular roads

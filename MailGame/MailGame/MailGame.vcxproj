@@ -143,6 +143,7 @@
     <ClCompile Include="src\Component\Ai\TransitAi\TransitAi.cpp" />
     <ClCompile Include="src\Component\Ai\PickupDeliveryAi\PickupDeliverAi.cpp" />
     <ClCompile Include="src\Component\Controller\PostOfficeController\PostOfficeController.cpp" />
+    <ClCompile Include="src\Component\Controller\VehicleController\BoatController\BoatController.cpp" />
     <ClCompile Include="src\Component\Controller\VehicleController\PlaneController\PlaneController.cpp" />
     <ClCompile Include="src\Component\Controller\VehicleController\CarController\CarController.cpp" />
     <ClCompile Include="src\Component\Controller\VehicleController\TrainController\TrainController.cpp" />
@@ -216,6 +217,7 @@
     <ClInclude Include="src\Component\Ai\TransitAi\TransitAi.h" />
     <ClInclude Include="src\Component\Ai\PickupDeliveryAi\PickupDeliveryAi.h" />
     <ClInclude Include="src\Component\Controller\PostOfficeController\PostOfficeController.h" />
+    <ClInclude Include="src\Component\Controller\VehicleController\BoatController\BoatController.h" />
     <ClInclude Include="src\Component\Controller\VehicleController\PlaneController\PlaneController.h" />
     <ClInclude Include="src\Component\Controller\VehicleController\CarController\CarController.h" />
     <ClInclude Include="src\Component\Controller\VehicleController\TrainController\TrainController.h" />

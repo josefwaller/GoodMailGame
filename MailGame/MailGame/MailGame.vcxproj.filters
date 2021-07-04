@@ -225,6 +225,9 @@
     <ClCompile Include="src\Component\Controller\DepotController\BoatDepotController\BoatDepotController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Component\Controller\VehicleController\BoatController\BoatController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h">
@@ -426,6 +429,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Component\Controller\DepotController\BoatDepotController\BoatDepotController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\Controller\VehicleController\BoatController\BoatController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

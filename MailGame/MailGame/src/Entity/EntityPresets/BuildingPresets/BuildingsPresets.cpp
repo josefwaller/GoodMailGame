@@ -226,7 +226,9 @@ std::shared_ptr<Entity> BuildingPresets::boatDepot(Game* g, sf::Vector3f pos, Is
 				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-W")
 			)
 		),
-		new BoatDepotController()
+		new BoatDepotController(),
+		nullptr,
+		new MailContainer()
 	);
 }
 

@@ -23,6 +23,9 @@ public:
 	entity_ptr plane(
 		Game* g, sf::Vector3f pos, IsoRotation rot, TransitRoute route, std::weak_ptr<Entity> depot, gtime_t spawnTime
 	);
+	entity_ptr boat(
+		Game* g, sf::Vector3f pos, IsoRotation rot, TransitRoute route, std::weak_ptr<Entity> depot, gtime_t spawnTime
+	);
 	entity_ptr trainCar(Game* g, sf::Vector3f pos, IsoRotation rot, IsoSprite sprites);
 };
 
