@@ -5,6 +5,7 @@
 #include "System/Utils/Utils.h"
 #include "Component/Pathfinder/Pathfinder.h"
 #include "Component/Transform/Transform.h"
+#include "Component/ComponentType/ComponentType.h"
 
 BoatController::BoatController(gtime_t departTime, VehicleModel model, std::vector<std::weak_ptr<Entity>> cargoCars) : VehicleController(departTime, model, cargoCars), stopIndex(0) {}
 void BoatController::init() {
@@ -39,4 +40,19 @@ void BoatController::onArriveAtDest(gtime_t arriveTime) {
 		s.back().setSpeed(0.0f);
 		this->setPoints(Utils::speedPointVectorToRoutePointVector(s, arriveTime, this->model, 0.0f));
 	}
+}
+
+std::optional<SaveData> BoatController::getSaveData() {
+	using namespace SaveKeys;
+	SaveData data(componentTypeToStr(ComponentType::Controller));
+	data.addVehicleControllerStopVector(STOPS, this->stops);
+	data.addSizeT(STOP_INDEX, this->stopIndex);
+	data.addData(VehicleController::getSaveData().value());
+	return data;
+}
+void BoatController::fromSaveData(SaveData data) {
+	using namespace SaveKeys;
+	VehicleController::fromSaveData(data.getData(VEHICLE_CONTROLLER));
+	this->stops = data.getVehicleControllerStopVector(STOPS, this->getEntity()->getGame());
+	this->stopIndex = data.getSizeT(STOP_INDEX);
 }
