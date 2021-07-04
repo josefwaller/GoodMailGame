@@ -25,38 +25,35 @@ std::vector<sf::Vector2i> Pathfinder::findBoatPath(GameMap* gMap, sf::Vector2i s
 			continue;
 		}
 		visitedTiles.push_back(t);
-		// Check if it's end
-		if (t == end) {
-			std::vector<sf::Vector2i> toReturn = { t };
-			while (t != start) {
-				t = previous.at(t);
-				toReturn.push_back(t);
-			}
-			std::reverse(toReturn.begin(), toReturn.end());
-			return toReturn;
-		}
-		// Check it's underwater
-		size_t n = 0;
-		for (size_t i = 0; i < 2; i++) {
-			for (size_t j = 0; j < 2; j++) {
-				if (gMap->getPointHeight(t.x + i, t.y + j) < GameMap::SEA_LEVEL) {
-					n++;
-				}
-			}
-		}
-		if (n < 2) {
-			if (t == sf::Vector2i(9, 3))
-				auto x = 0;
-			continue;
-		}
 		// Add ajacent tiles
 		for (int i = -1; i < 2; i++) {
 			for (int j = -1; j < 2; j++) {
-				if (t == sf::Vector2i(9, 3))
-					auto x = 0;
 				if ((i == 0 || j == 0) && i != j) {
 					sf::Vector2i toAdd = t + sf::Vector2i(i, j);
 					if (gMap->getTileAt(toAdd).type != TileType::OffMap) {
+						// Check if it's end
+						if (t == end) {
+							std::vector<sf::Vector2i> toReturn = { t };
+							while (t != start) {
+								t = previous.at(t);
+								toReturn.push_back(t);
+							}
+							std::reverse(toReturn.begin(), toReturn.end());
+							return toReturn;
+						}
+						// Make sure it's underwater
+						size_t n = 0;
+						for (size_t x = 0; x < 2; x++) {
+							for (size_t y = 0; y < 2; y++) {
+								if (gMap->getPointHeight(toAdd.x + x, toAdd.y + y) <= GameMap::SEA_LEVEL) {
+									n++;
+								}
+							}
+						}
+						if (n < 2) {
+							continue;
+						}
+
 						potentialTiles.push(toAdd);
 						previous.insert({ toAdd, t });
 					}

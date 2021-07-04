@@ -20,7 +20,7 @@ void BoatController::onArriveAtDest(gtime_t arriveTime) {
 	}
 	else {
 		this->getEntity()->ai->onArriveAtStop(this->stopIndex - 1);
-		sf::Vector2i start = Utils::toVector2i(this->getEntity()->transform->getPosition());
+		sf::Vector2i start = Utils::toVector2i(this->points.empty() ? this->getEntity()->transform->getPosition() : this->points.back().pos);
 		sf::Vector2i end;
 		auto e = this->stops.at(this->stopIndex).getEntityTarget().lock();
 		if (e->tag == EntityTag::Warehouse) {
@@ -35,6 +35,8 @@ void BoatController::onArriveAtDest(gtime_t arriveTime) {
 		for (sf::Vector2i p : path) {
 			s.push_back(SpeedPoint(sf::Vector3f(p.x, p.y, GameMap::SEA_LEVEL)));
 		}
-		this->setPoints(Utils::speedPointVectorToRoutePointVector(s, arriveTime, this->model));
+		s.front().setSpeed(0.0f);
+		s.back().setSpeed(0.0f);
+		this->setPoints(Utils::speedPointVectorToRoutePointVector(s, arriveTime, this->model, 0.0f));
 	}
 }

@@ -39,8 +39,8 @@ const std::map<VehicleModel, VehicleModelInfo> VehicleModelInfo::modelInfos = {
 	{ VehicleModel::FastTrain, VehicleModelInfo(150.0f, Game::UNITS_IN_GAME_HOUR * 0.2, Game::UNITS_IN_GAME_HOUR * 0.2, "Fast Train", 400, Technology::FastTrains, 400, TRAIN_CARS, 4) },
 	{ VehicleModel::SlowAirplane, VehicleModelInfo(300.0f, Game::UNITS_IN_GAME_HOUR * 0.2, Game::UNITS_IN_GAME_HOUR * 0.2, "Slow Plane", 800, Technology::Airplanes) },
 	{ VehicleModel::FastAirplane, VehicleModelInfo(400.0f, Game::UNITS_IN_GAME_HOUR * 0.2, Game::UNITS_IN_GAME_HOUR * 0.2, "Fast Plane", 800, Technology::FastAirplanes) },
-	{ VehicleModel::SlowBoat, VehicleModelInfo(100.0f, Game::UNITS_IN_GAME_HOUR * 0.2, Game::UNITS_IN_GAME_HOUR * 0.2, "Slow Boat", 2000, Technology::Default) },
-	{ VehicleModel::FastBoat, VehicleModelInfo(200.0f, Game::UNITS_IN_GAME_HOUR * 0.2, Game::UNITS_IN_GAME_HOUR * 0.2, "Fast Boat", 2000, Technology::Default) }
+	{ VehicleModel::SlowBoat, VehicleModelInfo(10.0f, Game::UNITS_IN_GAME_HOUR * 0.2, Game::UNITS_IN_GAME_HOUR * 0.2, "Slow Boat", 2000, Technology::Default) },
+	{ VehicleModel::FastBoat, VehicleModelInfo(40.0f, Game::UNITS_IN_GAME_HOUR * 0.2, Game::UNITS_IN_GAME_HOUR * 0.2, "Fast Boat", 2000, Technology::Default) }
 };
 
 VehicleModelInfo VehicleModelInfo::getModelInfo(VehicleModel m) {
