@@ -23,6 +23,7 @@ public:
 	static std::shared_ptr<Entity> carDock(Game* g, sf::Vector3f pos, IsoRotation rot);
 	static std::shared_ptr<Entity> airplaneDock(Game* g, sf::Vector3f pos, IsoRotation rot);
 	static std::shared_ptr<Entity> trainDock(Game* g, sf::Vector3f pos, IsoRotation rot);
+	static std::shared_ptr<Entity> boatDock(Game* g, sf::Vector3f pos, IsoRotation rot);
 private:
 	// Get a dock with the entity tag given, since they're all pretty much the same
 	static std::shared_ptr<Entity> dock(Game* g, sf::Vector3f pos, IsoRotation rot, EntityTag tag, sf::Color color);

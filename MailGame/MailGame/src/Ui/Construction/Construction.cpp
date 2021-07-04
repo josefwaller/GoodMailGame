@@ -171,4 +171,19 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 			Technology::Airplanes
 		)
 	},
+	{
+		EntityTag::BoatDock,
+		ConstructionRecipe(
+			"Boat Dock",
+			&BuildingPresets::boatDock,
+			IsoSprite(
+				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-N"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-E"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-S"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-W")
+			),
+			ConstructionLayout({{ TileType::Land}}),
+			Technology::Default
+		)
+	}
 };

@@ -223,6 +223,10 @@ std::shared_ptr<Entity> BuildingPresets::airplaneDock(Game* g, sf::Vector3f pos,
 	g->getGameMap()->addAirplaneRoad(floor(pos.x), floor(pos.y), AirplaneRoad(rot));
 	return dock(g, pos, rot, EntityTag::AirplaneDock, sf::Color(52, 235, 229));
 }
+std::shared_ptr<Entity> BuildingPresets::boatDock(Game* g, sf::Vector3f pos, IsoRotation rot) {
+	return dock(g, pos, rot, EntityTag::BoatDock, sf::Color(252, 248, 3));
+}
+
 std::shared_ptr<Entity> BuildingPresets::dock(Game* g, sf::Vector3f pos, IsoRotation rot, EntityTag tag, sf::Color color) {
 	auto e = Entity::createEntity(
 		g,
