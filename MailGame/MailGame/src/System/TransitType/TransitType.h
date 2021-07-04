@@ -3,5 +3,6 @@
 enum class TransitType {
 	Car,
 	Train,
-	Airplane
+	Airplane,
+	Boat
 };

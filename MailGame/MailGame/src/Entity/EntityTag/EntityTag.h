@@ -34,7 +34,8 @@
 	F(CarDock, BuildingPresets::carDock(g, pos, rot))\
 	F(TrainDock, BuildingPresets::trainDock(g, pos, rot))\
 	F(AirplaneDock, BuildingPresets::airplaneDock(g, pos, rot)) \
-	F(BoatDock, BuildingPresets::boatDock(g, pos, rot))
+	F(BoatDock, BuildingPresets::boatDock(g, pos, rot)) \
+	F(BoatDepot, BuildingPresets::boatDepot(g, pos, rot))
 
 #define F(x, y) x,
 enum class EntityTag {

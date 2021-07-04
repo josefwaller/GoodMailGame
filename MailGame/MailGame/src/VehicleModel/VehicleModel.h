@@ -15,7 +15,9 @@
 	f(SlowTrain) \
 	f(FastTrain) \
 	f(SlowAirplane) \
-	f(FastAirplane)
+	f(FastAirplane) \
+	f(SlowBoat) \
+	f(FastBoat)
 
 #define f(x) x,
 

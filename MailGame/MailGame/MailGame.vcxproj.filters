@@ -222,6 +222,9 @@
     <ClCompile Include="src\GameMap\Tile\Tile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Component\Controller\DepotController\BoatDepotController\BoatDepotController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h">
@@ -420,6 +423,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\PostalCodeDatabase\PostalCode\PostalCode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\Controller\DepotController\BoatDepotController\BoatDepotController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

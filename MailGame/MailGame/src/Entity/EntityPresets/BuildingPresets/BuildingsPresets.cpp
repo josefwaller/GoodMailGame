@@ -15,6 +15,7 @@
 #include "Component/Controller/DepotController/TruckDepotController/TruckDepotController.h"
 #include "Component/Controller/DepotController/TrainDepotController/TrainDepotController.h"
 #include "Component/Controller/DepotController/PlaneDepotController/PlaneDepotController.h"
+#include "Component/Controller/DepotController/BoatDepotController/BoatDepotController.h"
 #include "Component/Controller/RailwaySwitchController/RailwaySwitchController.h"
 // Pathfinders
 #include "Component/Pathfinder/RoadPathfinder/RoadPathfinder.h"
@@ -210,6 +211,23 @@ std::shared_ptr<Entity> BuildingPresets::warehouse(Game* g, sf::Vector3f pos, Is
 	);
 	setTilesToBuilding(g, e, sf::IntRect(floor(pos.x), floor(pos.y), 2, 2));
 	return e;
+}
+
+std::shared_ptr<Entity> BuildingPresets::boatDepot(Game* g, sf::Vector3f pos, IsoRotation rot) {
+	return Entity::createEntity(
+		g,
+		EntityTag::BoatDepot,
+		new Transform(pos, rot),
+		new IsoBuildingRenderer(
+			IsoSprite(
+				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-N"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-E"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-S"),
+				ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-W")
+			)
+		),
+		new BoatDepotController()
+	);
 }
 
 std::shared_ptr<Entity> BuildingPresets::carDock(Game* g, sf::Vector3f pos, IsoRotation rot) {

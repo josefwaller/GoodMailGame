@@ -6,8 +6,23 @@ ConstructionLayout::ConstructionLayout(std::vector<std::vector<TileType>> l) : l
 bool ConstructionLayout::fits(GameMap* gMap, sf::Vector2i pos) {
 	for (size_t x = 0; x < this->layout.size(); x++) {
 		for (size_t y = 0; y < this->layout[x].size(); y++) {
-			if (gMap->getTileAt(pos.x + x, pos.y + y).type != this->layout[x][y]) {
-				return false;
+			if (this->layout[x][y] == TileType::Water) {
+				size_t pointsUnderwater = 0;
+				for (size_t i = 0; i < 2; i++) {
+					for (size_t j = 0; j < 2; j++) {
+						if (gMap->getPointHeight(pos.x + x + i, pos.y + y + j) < GameMap::SEA_LEVEL) {
+							pointsUnderwater++;
+						}
+					}
+				}
+				if (pointsUnderwater < 2) {
+					return false;
+				}
+			}
+			else {
+				if (gMap->getTileAt(pos.x + x, pos.y + y).type != this->layout[x][y]) {
+					return false;
+				}
 			}
 		}
 	}

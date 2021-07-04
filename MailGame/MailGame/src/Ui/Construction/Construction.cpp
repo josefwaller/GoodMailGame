@@ -185,5 +185,23 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 			ConstructionLayout({{ TileType::Land}}),
 			Technology::Default
 		)
-	}
+	},
+		{
+			EntityTag::BoatDepot,
+			ConstructionRecipe(
+				"Boat Depot",
+				[&](Game* g, sf::Vector3f pos, IsoRotation rot) {
+					pos.z = GameMap::SEA_LEVEL;
+					return BuildingPresets::boatDepot(g, pos, rot);
+				},
+				IsoSprite(
+					ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-N"),
+					ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-E"),
+					ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-S"),
+					ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-W")
+				),
+				ConstructionLayout({{ TileType::Water }}),
+				Technology::Default
+			)
+		}
 };
