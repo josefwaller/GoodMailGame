@@ -104,6 +104,10 @@ void GameMap::render(sf::RenderWindow* window) {
 			}
 		}
 	}
+	// Render tunnels
+	for (auto it = this->tunnels.begin(); it != this->tunnels.end(); it++) {
+		it->render(window);
+	}
 }
 
 sf::Sprite GameMap::getRoadSprite(Road road, IsoRotation gameRotation, std::vector<std::vector<unsigned int>> heights) {
@@ -489,6 +493,18 @@ float GameMap::getTileHeight(size_t x, size_t y) {
 	return (float)total / 4.0f;
 }
 
+float GameMap::getLowestTileHeight(size_t x, size_t y) {
+	float min = 100.0f;
+	for (size_t i = 0; i < 2; i++) {
+		for (size_t j = 0; j < 2; j++) {
+			if (min > this->getPointHeight(x + i, y + j)) {
+				min = this->getPointHeight(x + i, y + j);
+			}
+		}
+	}
+	return min;
+}
+
 float GameMap::getHeightAt(sf::Vector2f p) {
 	return getHeightAt(p.x, p.y);
 }
@@ -653,6 +669,14 @@ void GameMap::addRoadInDirection(size_t x, size_t y, IsoRotation rot) {
 }
 std::vector<sf::Vector2i> GameMap::getResidences() {
 	return this->residenceLocations;
+}
+void GameMap::addTunnel(sf::Vector2i tileOne, sf::Vector2i tileTwo) {
+	// TODO: add a bunch of checking here
+	this->tunnels.push_back(Tunnel(
+		sf::Vector3i(tileOne.x, tileOne.y, this->getLowestTileHeight(tileOne.x, tileOne.y)),
+		sf::Vector3i(tileTwo.x, tileTwo.y, this->getLowestTileHeight(tileTwo.x, tileTwo.y)),
+		this->game
+	));
 }
 SaveData GameMap::getSaveData() {
 	using namespace SaveKeys;

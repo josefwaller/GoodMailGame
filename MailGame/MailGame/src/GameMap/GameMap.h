@@ -1,5 +1,6 @@
 #pragma once
 #include "GameMap/Tile/Tile.h"
+#include "./Tunnel/Tunnel.h"
 #include "System/TransitType/TransitType.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -41,6 +42,8 @@ public:
 	void setPointHeight(size_t x, size_t y, unsigned int height);
 	// Get the average of the point point's height around htis tile
 	float getTileHeight(size_t x, size_t y);
+	// Get the height of the lowest point on this tile
+	float getLowestTileHeight(size_t x, size_t y);
 	float getHeightAt(float x, float y);
 	float getHeightAt(sf::Vector2f);
 
@@ -80,6 +83,8 @@ public:
 	bool hasRoadInDirection(size_t x, size_t y, IsoRotation rot);
 	// Add a road in a given direction
 	void addRoadInDirection(size_t x, size_t y, IsoRotation rot);
+	// Add a tunnel
+	void addTunnel(sf::Vector2i start, sf::Vector2i end);
 	// Get a list of all the residences on the map
 	std::vector<sf::Vector2i> getResidences();
 	// Get the save data for the map
@@ -98,4 +103,5 @@ private:
 	void renderTile(sf::RenderWindow* window, size_t x, size_t y);
 	void generateCityAt(sf::Vector2i pos, id_t cityId);
 	std::vector<sf::Vector2i> residenceLocations;
+	std::vector<Tunnel> tunnels;
 };

@@ -26,7 +26,8 @@ public:
 		DeletingRailwaysAndRoads,
 		ShowingCityLimits,
 		ShowingResidencePaths,
-		Terraforming
+		Terraforming,
+		BuildingTunnel
 	};
 
 	UiHandler(Game* g);
@@ -85,6 +86,8 @@ private:
 	std::vector<std::weak_ptr<Entity>> toRenderUi;
 	// The colors to draw the different city limits
 	std::map<id_t, sf::Color> cityLimitColors;
+	// The first tile the tunnel should start from, when building
+	std::optional<sf::Vector2i> tunnelStart;
 	// Get the tile the mouse is currently hovering over
 	sf::Vector2i getHoveredTile();
 	// Get the point that the mouse is currently closest to

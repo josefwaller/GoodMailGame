@@ -128,6 +128,16 @@ bool UiHandler::handleEvent(sf::Event e) {
 			this->game->getGameMap()->setPointHeight(point.x, point.y, std::min(std::max(height, 0), 10));
 			break;
 		}
+		case UiState::BuildingTunnel: {
+			if (this->tunnelStart.has_value()) {
+				this->game->getGameMap()->addTunnel(this->tunnelStart.value(), this->getHoveredTile());
+				this->tunnelStart.reset();
+				this->changeState(UiState::Default);
+			}
+			else {
+				this->tunnelStart = this->getHoveredTile();
+			}
+		}
 		}
 	case sf::Event::KeyPressed:
 		if (ImGui::GetIO().WantCaptureKeyboard) {
@@ -291,6 +301,21 @@ void UiHandler::update() {
 		if (ImGui::Button("Airplane roads")) {
 			this->changeState(UiState::BuildingAirplaneRoad);
 			this->airplaneRoadToBuild = AirplaneRoad();
+		}
+		if (ImGui::Button("Tunnel")) {
+			this->changeState(UiState::BuildingTunnel);
+		}
+		if (this->currentState == UiState::BuildingTunnel) {
+			if (this->tunnelStart.has_value()) {
+				ImGui::Text("Choose tunnel end");
+			}
+			else {
+				ImGui::Text("Choose tunnel start");
+			}
+			if (ImGui::Button("Cancel")) {
+				this->changeState(UiState::Default);
+				this->tunnelStart.reset();
+			}
 		}
 		if (this->currentState == UiState::BuildingRailTracks) {
 			this->from = this->chooseDirection("From:", this->from);
