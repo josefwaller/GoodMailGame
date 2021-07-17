@@ -670,11 +670,12 @@ void GameMap::addRoadInDirection(size_t x, size_t y, IsoRotation rot) {
 std::vector<sf::Vector2i> GameMap::getResidences() {
 	return this->residenceLocations;
 }
-void GameMap::addTunnel(sf::Vector2i tileOne, sf::Vector2i tileTwo) {
+void GameMap::addTunnel(sf::Vector2i tileOne, sf::Vector2i tileTwo, TransitType type) {
 	// TODO: add a bunch of checking here
 	this->tunnels.push_back(Tunnel(
 		sf::Vector3i(tileOne.x, tileOne.y, this->getLowestTileHeight(tileOne.x, tileOne.y)),
 		sf::Vector3i(tileTwo.x, tileTwo.y, this->getLowestTileHeight(tileTwo.x, tileTwo.y)),
+		type,
 		this->game
 	));
 }

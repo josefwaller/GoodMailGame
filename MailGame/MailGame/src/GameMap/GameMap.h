@@ -84,7 +84,7 @@ public:
 	// Add a road in a given direction
 	void addRoadInDirection(size_t x, size_t y, IsoRotation rot);
 	// Add a tunnel
-	void addTunnel(sf::Vector2i start, sf::Vector2i end);
+	void addTunnel(sf::Vector2i start, sf::Vector2i end, TransitType type);
 	// Get a list of all the residences on the map
 	std::vector<sf::Vector2i> getResidences();
 	// Get the save data for the map

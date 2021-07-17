@@ -130,7 +130,7 @@ bool UiHandler::handleEvent(sf::Event e) {
 		}
 		case UiState::BuildingTunnel: {
 			if (this->tunnelStart.has_value()) {
-				this->game->getGameMap()->addTunnel(this->tunnelStart.value(), this->getHoveredTile());
+				this->game->getGameMap()->addTunnel(this->tunnelStart.value(), this->getHoveredTile(), this->tunnelType);
 				this->tunnelStart.reset();
 				this->changeState(UiState::Default);
 			}
@@ -282,6 +282,27 @@ void UiHandler::update() {
 			this->isLowering = !this->isLowering;
 		}
 	}
+	if (this->currentState == UiState::BuildingTunnel) {
+		if (this->tunnelStart.has_value()) {
+			ImGui::Text("Choose tunnel end");
+		}
+		else {
+			ImGui::Text("Choose tunnel start");
+		}
+		if (ImGui::BeginCombo("Tunnel Type:", this->tunnelType == TransitType::Car ? "Road" : "Railway")) {
+			if (ImGui::Selectable("Road")) {
+				this->tunnelType = TransitType::Car;
+			}
+			if (ImGui::Selectable("Railway")) {
+				this->tunnelType = TransitType::Train;
+			}
+			ImGui::EndCombo();
+		}
+		if (ImGui::Button("Cancel")) {
+			this->changeState(UiState::Default);
+			this->tunnelStart.reset();
+		}
+	}
 
 	if (ImGui::CollapsingHeader("Build")) {
 		for (auto kv : Construction::recipes) {
@@ -304,18 +325,6 @@ void UiHandler::update() {
 		}
 		if (ImGui::Button("Tunnel")) {
 			this->changeState(UiState::BuildingTunnel);
-		}
-		if (this->currentState == UiState::BuildingTunnel) {
-			if (this->tunnelStart.has_value()) {
-				ImGui::Text("Choose tunnel end");
-			}
-			else {
-				ImGui::Text("Choose tunnel start");
-			}
-			if (ImGui::Button("Cancel")) {
-				this->changeState(UiState::Default);
-				this->tunnelStart.reset();
-			}
 		}
 		if (this->currentState == UiState::BuildingRailTracks) {
 			this->from = this->chooseDirection("From:", this->from);

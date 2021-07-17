@@ -88,6 +88,7 @@ private:
 	std::map<id_t, sf::Color> cityLimitColors;
 	// The first tile the tunnel should start from, when building
 	std::optional<sf::Vector2i> tunnelStart;
+	TransitType tunnelType;
 	// Get the tile the mouse is currently hovering over
 	sf::Vector2i getHoveredTile();
 	// Get the point that the mouse is currently closest to
