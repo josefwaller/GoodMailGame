@@ -528,11 +528,11 @@ float GameMap::getHeightAt(float x, float y) {
 	// Check for ramp
 	// Top to bottom
 	if (topLeft == botLeft && topRight == botRight) {
-		return (float)botLeft + (x - (float)minX) * (float)(botRight - botLeft);
+		return (float)(botLeft)+(x - (float)minX) * ((float)botRight - (float)botLeft);
 	}
 	// Left to right
 	else if (topLeft == topRight && botLeft == botRight) {
-		return (float)topLeft + (y - (float)minY) * (float)(botLeft - topLeft);
+		return (float)(topLeft)+(y - (float)minY) * ((float)botLeft - (float)topLeft);
 	}
 	// TBA
 	return 0.0f;
