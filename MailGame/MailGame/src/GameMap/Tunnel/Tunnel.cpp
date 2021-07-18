@@ -6,11 +6,8 @@
 
 Tunnel::Tunnel(sf::Vector3i pointOne, sf::Vector3i pointTwo, TransitType t, Game* game) : points(std::make_tuple(pointOne, pointTwo)), type(t), game(game) {}
 
-std::tuple<sf::Vector2i, sf::Vector2i> Tunnel::getEnds() {
-	return std::make_tuple(
-		Utils::toVector2i(std::get<0>(this->points)),
-		Utils::toVector2i(std::get<1>(this->points))
-	);
+std::tuple<sf::Vector3i, sf::Vector3i> Tunnel::getEnds() {
+	return this->points;
 }
 
 TransitType Tunnel::getType() {
@@ -36,4 +33,8 @@ void Tunnel::render(sf::RenderWindow* window) {
 		sf::Vertex(this->game->worldToScreenPos(pTwo), color)
 	};
 	window->draw(arr, 2, sf::PrimitiveType::Lines);
+}
+
+bool Tunnel::operator==(Tunnel other) {
+	return std::get<0>(this->points) == std::get<0>(other.points) && std::get<1>(this->points) == std::get<1>(other.points);
 }

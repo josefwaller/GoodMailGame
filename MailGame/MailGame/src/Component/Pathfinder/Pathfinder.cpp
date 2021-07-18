@@ -64,49 +64,105 @@ std::vector<sf::Vector2i> Pathfinder::findBoatPath(GameMap* gMap, sf::Vector2i s
 	return {};
 }
 
-std::vector<sf::Vector2i> Pathfinder::findCarPath(GameMap* gMap, sf::Vector2i start, sf::Vector2i end) {
+std::vector<std::variant<sf::Vector2i, Tunnel>> Pathfinder::findCarPath(GameMap* gMap, sf::Vector2i start, sf::Vector2i end) {
+	using Point = std::variant<sf::Vector2i, Tunnel>;
+	auto tunnelFind = [](Point p, Tunnel t) {
+		return std::holds_alternative<Tunnel>(p) && std::get<Tunnel>(p) == t;
+	};
+	auto tileFind = [](Point p, sf::Vector2i t) {
+		return std::holds_alternative<sf::Vector2i>(p) && std::get<sf::Vector2i>(p) == t;
+	};
 	// Need to pathfind from current position to the destination
 	// Find a path along only road from pos to stop
-	std::queue<sf::Vector2i> potentialPoints;
-	std::vector<sf::Vector2i> visitedPoints;
-	//
-	auto previous = std::map<sf::Vector2i, sf::Vector2i, std::function<bool(sf::Vector2i one, sf::Vector2i two)>>{
-		[](sf::Vector2i one, sf::Vector2i two) {
-			return 1000 * one.x + one.y > 1000 * two.x + two.y;
+	std::queue<Point> potentialPoints;
+	std::vector<Point> visitedPoints;
+	//	Basic sorting - Tunnels are always greater
+	/*auto previous = std::map<Point, Point, std::function<bool(Point one, Point two)>>{
+		[](Point one, Point two) {
+			if (std::holds_alternative<sf::Vector2i>(one)) {
+				sf::Vector2i o = std::get<sf::Vector2i>(one);
+				if (std::holds_alternative<sf::Vector2i>(two)) {
+					sf::Vector2i t = std::get<sf::Vector2i>(two);
+					return 1000 * o.x + o.y < 1000 + t.x + t.y;
+				}
+				else if (std::holds_alternative<Tunnel>(two)) {
+					return true;
+				}
+			}
+			else if (std::holds_alternative<Tunnel>(one)) {
+				if (std::holds_alternative<sf::Vector2i>(two)) {
+					return false;
+				}
+				else if (std::holds_alternative<Tunnel>(two)) {
+					// Compare first points
+					sf::Vector3i o = std::get<0>(std::get<Tunnel>(one).getEnds());
+					sf::Vector3i t = std::get<0>(std::get<Tunnel>(two).getEnds());
+					return 1000 * o.x + o.y < 1000 * t.x + t.y;
+				}
+			}
 		}
-	};
+	};*/
+	// Map of previous position by index of visited points
+	auto previous = std::map<size_t, size_t>();
 	potentialPoints.push(start);
 	visitedPoints.push_back(start);
 	while (!potentialPoints.empty()) {
 		// Get the first point
-		sf::Vector2i point = potentialPoints.front();
+		Point p = potentialPoints.front();
 		potentialPoints.pop();
-		// Ensure it has a road
-		Tile fromTile = gMap->getTileAt(point.x, point.y);
-		if (!fromTile.road.has_value()) {
-			continue;
-		}
-		// Check if it is the correct one
-		if (point == end) {
-			// Gather points along the path
-			std::vector<sf::Vector2i> pathPoints;
-			while (point != start) {
-				pathPoints.push_back(point);
-				point = previous[point];
+		if (std::holds_alternative<sf::Vector2i>(p)) {
+			sf::Vector2i point = std::get<sf::Vector2i>(p);
+			size_t index = std::find_if(visitedPoints.begin(), visitedPoints.end(), [point, tileFind](Point p) { return tileFind(p, point); }) - visitedPoints.begin();
+			for (Tunnel t : gMap->getTunnelsForTile(point)) {
+				if (std::find_if(visitedPoints.begin(), visitedPoints.end(), [t, tunnelFind](Point p) { return tunnelFind(p, t); }) == visitedPoints.end()) {
+					potentialPoints.push(t);
+					visitedPoints.push_back(t);
+					previous[visitedPoints.size() - 1] = index;
+				}
 			}
-			// Add start as well
-			pathPoints.push_back(start);
-			std::reverse(pathPoints.begin(), pathPoints.end());
-			return pathPoints;
+			// Ensure it has a road
+			Tile fromTile = gMap->getTileAt(point.x, point.y);
+
+			if (!fromTile.road.has_value()) {
+				continue;
+			}
+			// Check if it is the correct one
+			if (point == end) {
+				// Gather points along the path
+				std::vector<std::variant<sf::Vector2i, Tunnel>> pathPoints;
+				while (!(std::holds_alternative<sf::Vector2i>(p) && std::get<sf::Vector2i>(p) == start)) {
+					pathPoints.push_back(p);
+					index = previous[index];
+					p = visitedPoints.at(index);
+				}
+				// Add start as well
+				pathPoints.push_back(start);
+				std::reverse(pathPoints.begin(), pathPoints.end());
+				return pathPoints;
+			}
+			// Add the points around it
+			std::vector<sf::Vector2i> toAdd = fromTile.road.value().getConnectedTiles(point);
+			// Add any points to potential points we've not visited
+			for (auto it = toAdd.begin(); it != toAdd.end(); it++) {
+				if (std::find_if(visitedPoints.begin(), visitedPoints.end(), [it, tileFind](Point p) { return tileFind(p, *it); }) == visitedPoints.end()) {
+					potentialPoints.push(*it);
+					visitedPoints.push_back(*it);
+					previous[visitedPoints.size() - 1] = index;
+				}
+			}
 		}
-		// Add the points around it
-		std::vector<sf::Vector2i> toAdd = fromTile.road.value().getConnectedTiles(point);
-		// Add any points to potential points we've not visited
-		for (auto it = toAdd.begin(); it != toAdd.end(); it++) {
-			if (std::find(visitedPoints.begin(), visitedPoints.end(), *it) == visitedPoints.end()) {
-				potentialPoints.push(*it);
-				visitedPoints.push_back(*it);
-				previous[*it] = point;
+		else if (std::holds_alternative<Tunnel>(p)) {
+			Tunnel t = std::get<Tunnel>(p);
+			size_t index = std::find_if(visitedPoints.begin(), visitedPoints.end(), [t, tunnelFind](Point p) { return tunnelFind(p, t); }) - visitedPoints.begin();
+			// Can try to add either end, since one should already be visited
+			std::vector<sf::Vector3i> toCheck = { std::get<0>(t.getEnds()), std::get<1>(t.getEnds()) };
+			for (sf::Vector3i point : toCheck) {
+				sf::Vector2i a = Utils::toVector2i(point);
+				if (std::find_if(visitedPoints.begin(), visitedPoints.end(), [a, tileFind](Point one) { return tileFind(one, a); }) == visitedPoints.end()) {
+					potentialPoints.push(a);
+					visitedPoints.push_back(a);
+					previous[visitedPoints.size() - 1] = index;
+				}
 			}
 		}
 	}

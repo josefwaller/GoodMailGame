@@ -2,10 +2,12 @@
 #include <SFML/System/Vector3.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <vector>
+#include <variant>
 #include "Component/Component.h"
 #include "System/SpeedPoint/SpeedPoint.h"
 #include "System/Utils/Utils.h"
 #include "GameMap/Tile/Road/Road.h"
+#include "GameMap/Tunnel/Tunnel.h"
 
 class GameMap;
 
@@ -32,7 +34,7 @@ public:
 	 * Will eventually accomodate bridges/etc
 	 * Returns all the tiles along the path, including start and end
 	 */
-	static std::vector<sf::Vector2i> findCarPath(GameMap* gMap, sf::Vector2i start, sf::Vector2i end);
+	static std::vector<std::variant<sf::Vector2i, Tunnel>> findCarPath(GameMap* gMap, sf::Vector2i start, sf::Vector2i end);
 protected:
 	gtime_t getTimeBetween(sf::Vector3f from, sf::Vector3f to, float speed);
 };

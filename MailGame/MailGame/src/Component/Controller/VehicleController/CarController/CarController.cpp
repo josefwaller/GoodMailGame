@@ -25,7 +25,7 @@ void CarController::update(float delta) {
 }
 
 void CarController::onArriveAtPoint(size_t pointIndex, gtime_t arriveTime) {
-	sf::Vector2i tile = this->path.at(pointIndex - 1);
+	sf::Vector2i tile = Utils::toVector2i(this->points.at(pointIndex).pos - sf::Vector3f(0.5f, 0.5f, 0));
 	this->getEntity()->ai->onArriveAtTile(tile);
 }
 void CarController::onArriveAtDest(gtime_t arriveTime) {
@@ -53,17 +53,46 @@ std::vector<SpeedPoint> CarController::getPathBetweenStops(VehicleControllerStop
 	sf::Vector2i to = toTiles.front();
 	// Get the path between
 	this->path = Pathfinder::findCarPath(this->getEntity()->getGameMap(), from, to);
-	std::vector<SpeedPoint> points = { sf::Vector3f(path.front().x + 0.5f, path.front().y + 0.5f, this->getEntity()->getGameMap()->getHeightAt(path.front().x + 0.5f, path.front().y + 0.5f)) };
-	sf::Vector2i prevPoint = this->path.front();
+	auto pFront = this->path.front();
+	if (!std::holds_alternative<sf::Vector2i>(pFront)) {
+		throw std::runtime_error("Front of path must always be a point!");
+	}
+	sf::Vector2i prevPoint = std::get<sf::Vector2i>(this->path.front());
+	std::vector<SpeedPoint> points = { sf::Vector3f(prevPoint.x + 0.5f, prevPoint.y + 0.5f, this->getEntity()->getGameMap()->getHeightAt(prevPoint.x + 0.5f, prevPoint.y + 0.5f)) };
 	for (auto it = this->path.begin() + 1; it != this->path.end(); it++) {
-		sf::Vector3f nextPoint((prevPoint.x + it->x) / 2.0f + 0.5f, (prevPoint.y + it->y) / 2.0f + 0.5f, 0.0f);
-		// Set the height
-		nextPoint.z = this->getEntity()->getGameMap()->getHeightAt(nextPoint.x, nextPoint.y);
-		points.push_back(nextPoint);
-		prevPoint = *it;
+		if (std::holds_alternative<sf::Vector2i>(*it)) {
+			sf::Vector2i thisPoint = std::get<sf::Vector2i>(*it);
+			sf::Vector3f nextPoint((prevPoint.x + thisPoint.x) / 2.0f + 0.5f, (prevPoint.y + thisPoint.y) / 2.0f + 0.5f, 0.0f);
+			// Set the height
+			nextPoint.z = this->getEntity()->getGameMap()->getHeightAt(nextPoint.x, nextPoint.y);
+			points.push_back(nextPoint);
+			prevPoint = thisPoint;
+		}
+		else if (std::holds_alternative<Tunnel>(*it)) {
+			Tunnel toGoThrough = std::get<Tunnel>(*it);
+			auto ends = toGoThrough.getEnds();
+			sf::Vector3i start;
+			sf::Vector3i end;
+			// Figure out which way down the bridge we are going
+			if (Utils::toVector2i(std::get<0>(ends)) == prevPoint) {
+				start = std::get<0>(ends);
+				end = std::get<1>(ends);
+			}
+			else {
+				start = std::get<1>(ends);
+				end = std::get<0>(ends);
+			}
+			points.push_back(sf::Vector3f(start) + sf::Vector3f(0.5f, 0.5f, 0.0f));
+			points.push_back(sf::Vector3f(end) + sf::Vector3f(0.5f, 0.5f, 0.0f));
+			prevPoint = Utils::toVector2i(points.back().getPos());
+		}
+		else {
+			throw std::runtime_error("Invalid type of path segment!");
+		}
 	}
 	// Add the last point
-	points.push_back(sf::Vector3f(path.back().x + 0.5f, path.back().y + 0.5f, this->getEntity()->getGameMap()->getHeightAt(path.back().x + 0.5f, path.back().y + 0.5f)));
+	sf::Vector2i lastPoint = std::get<sf::Vector2i>(path.back());
+	points.push_back(sf::Vector3f(lastPoint.x + 0.5f, lastPoint.y + 0.5f, this->getEntity()->getGameMap()->getHeightAt(lastPoint.x + 0.5f, lastPoint.y + 0.5f)));
 	// Start and end at rest
 	points.at(0).setSpeed(0.0f);
 	points.at(points.size() - 1).setSpeed(0.0f);
