@@ -70,21 +70,25 @@ std::vector<SpeedPoint> CarController::getPathBetweenStops(VehicleControllerStop
 		}
 		else if (std::holds_alternative<Tunnel>(*it)) {
 			Tunnel toGoThrough = std::get<Tunnel>(*it);
-			auto ends = toGoThrough.getEnds();
-			sf::Vector3i start;
-			sf::Vector3i end;
-			// Figure out which way down the bridge we are going
-			if (Utils::toVector2i(std::get<0>(ends)) == prevPoint) {
-				start = std::get<0>(ends);
-				end = std::get<1>(ends);
+			auto entrances = toGoThrough.getEntrances();
+			std::vector<sf::Vector3f> tunnelPoints;
+			sf::Vector2i exitTile;
+			if (prevPoint + sf::Vector2i(entrances.first.getDirection().getUnitVector()) == Utils::toVector2i(entrances.first.getPosition())) {
+				// Go through the tunnel starting from the first direction
+				tunnelPoints = toGoThrough.getPoints();
+				exitTile = Utils::toVector2i(entrances.second.getPosition()) + Utils::toVector2i(entrances.second.getDirection().getUnitVector());
 			}
 			else {
-				start = std::get<1>(ends);
-				end = std::get<0>(ends);
+				tunnelPoints = toGoThrough.getPoints();
+				std::reverse(tunnelPoints.begin(), tunnelPoints.end());
+				exitTile = Utils::toVector2i(entrances.first.getPosition()) + Utils::toVector2i(entrances.first.getDirection().getUnitVector());
 			}
-			points.push_back(sf::Vector3f(start) + sf::Vector3f(0.5f, 0.5f, 0.0f));
-			points.push_back(sf::Vector3f(end) + sf::Vector3f(0.5f, 0.5f, 0.0f));
-			prevPoint = Utils::toVector2i(points.back().getPos());
+			for (sf::Vector3f p : tunnelPoints) {
+				// Here should be the tunnel speed logic
+				points.push_back(SpeedPoint(p));
+			}
+			points.push_back(SpeedPoint(sf::Vector3f(exitTile.x, exitTile.y, this->getEntity()->getGameMap()->getHeightAt(sf::Vector2f(exitTile) + sf::Vector2f(0.5f, 0.5f)))));
+			prevPoint = exitTile;
 		}
 		else {
 			throw std::runtime_error("Invalid type of path segment!");

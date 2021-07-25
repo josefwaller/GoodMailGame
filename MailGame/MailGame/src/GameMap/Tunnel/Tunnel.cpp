@@ -4,10 +4,27 @@
 #include <SFML/Graphics/VertexArray.hpp>
 #include "Game/Game.h"
 
-Tunnel::Tunnel(sf::Vector3i pointOne, sf::Vector3i pointTwo, TransitType t, Game* game) : points(std::make_tuple(pointOne, pointTwo)), type(t), game(game) {}
+id_t Tunnel::TUNNEL_ID = 0;
 
-std::tuple<sf::Vector3i, sf::Vector3i> Tunnel::getEnds() {
-	return this->points;
+TunnelEntrance::TunnelEntrance(sf::Vector3i t, IsoRotation d) : position(t), direction(d) {};
+
+sf::Vector3i TunnelEntrance::getPosition() {
+	return this->position;
+}
+
+IsoRotation TunnelEntrance::getDirection() {
+	return this->direction;
+}
+Tunnel::Tunnel(sf::Vector3i pointOne, sf::Vector3i pointTwo, TransitType t, Game* game)
+	: id(TUNNEL_ID++), tunnelPoints({ sf::Vector3f(pointOne), sf::Vector3f(pointTwo) }), type(t), game(game),
+	startDirection(IsoRotation::fromUnitVector(Utils::getUnitVector(sf::Vector3f(pointTwo - pointOne)))),
+	endDirection(IsoRotation::fromUnitVector(Utils::getUnitVector(sf::Vector3f(pointOne - pointTwo)))) {}
+
+std::pair<TunnelEntrance, TunnelEntrance> Tunnel::getEntrances() {
+	return {
+		TunnelEntrance(sf::Vector3i(this->tunnelPoints.front()), this->startDirection),
+		TunnelEntrance(sf::Vector3i(this->tunnelPoints.back()), this->endDirection)
+	};
 }
 
 TransitType Tunnel::getType() {
@@ -18,6 +35,10 @@ bool Tunnel::canGetLock(sf::Vector2i) {
 	return true;
 }
 
+std::vector<sf::Vector3f> Tunnel::getPoints() {
+	return this->tunnelPoints;
+}
+
 void Tunnel::getLock(sf::Vector2i) {
 }
 
@@ -25,8 +46,8 @@ void Tunnel::releaseLock(sf::Vector2i) {
 }
 
 void Tunnel::render(sf::RenderWindow* window) {
-	sf::Vector3f pOne(sf::Vector3f(std::get<0>(this->points)) + sf::Vector3f(0.5f, 0.5f, 0.5f));
-	sf::Vector3f pTwo(sf::Vector3f(std::get<1>(this->points)) + sf::Vector3f(0.5f, 0.5f, 0.5f));
+	sf::Vector3f pOne(sf::Vector3f(this->tunnelPoints.front()) + sf::Vector3f(0.5f, 0.5f, 0.5f));
+	sf::Vector3f pTwo(sf::Vector3f(this->tunnelPoints.back()) + sf::Vector3f(0.5f, 0.5f, 0.5f));
 	sf::Color color = this->type == TransitType::Car ? sf::Color::Red : sf::Color::Cyan;
 	sf::Vertex arr[2] = {
 		sf::Vertex(this->game->worldToScreenPos(pOne), color),
@@ -36,5 +57,5 @@ void Tunnel::render(sf::RenderWindow* window) {
 }
 
 bool Tunnel::operator==(Tunnel other) {
-	return std::get<0>(this->points) == std::get<0>(other.points) && std::get<1>(this->points) == std::get<1>(other.points);
+	return this->id == other.id;
 }

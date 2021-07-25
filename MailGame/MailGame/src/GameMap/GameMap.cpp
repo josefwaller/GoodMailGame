@@ -685,8 +685,11 @@ void GameMap::addTunnel(sf::Vector2i tileOne, sf::Vector2i tileTwo, TransitType 
 std::vector<Tunnel> GameMap::getTunnelsForTile(sf::Vector2i tile) {
 	std::vector<Tunnel> toReturn;
 	for (Tunnel t : this->tunnels) {
-		if (Utils::toVector2i(std::get<0>(t.getEnds())) == tile || Utils::toVector2i(std::get<1>(t.getEnds())) == tile) {
-			toReturn.push_back(t);
+		for (TunnelEntrance e : { t.getEntrances().first, t.getEntrances().second }) {
+			if (Utils::toVector2i(sf::Vector3f(e.getPosition()) + e.getDirection().getReverse().getUnitVector3D()) == tile) {
+				toReturn.push_back(t);
+				break;
+			}
 		}
 	}
 	return toReturn;

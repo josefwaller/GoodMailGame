@@ -155,7 +155,10 @@ std::vector<std::variant<sf::Vector2i, Tunnel>> Pathfinder::findCarPath(GameMap*
 			Tunnel t = std::get<Tunnel>(p);
 			size_t index = std::find_if(visitedPoints.begin(), visitedPoints.end(), [t, tunnelFind](Point p) { return tunnelFind(p, t); }) - visitedPoints.begin();
 			// Can try to add either end, since one should already be visited
-			std::vector<sf::Vector3i> toCheck = { std::get<0>(t.getEnds()), std::get<1>(t.getEnds()) };
+			std::vector<sf::Vector3i> toCheck;
+			for (TunnelEntrance e : { t.getEntrances().first, t.getEntrances().second }) {
+				toCheck.push_back(e.getPosition() + sf::Vector3i(e.getDirection().getReverse().getUnitVector3D()));
+			}
 			for (sf::Vector3i point : toCheck) {
 				sf::Vector2i a = Utils::toVector2i(point);
 				if (std::find_if(visitedPoints.begin(), visitedPoints.end(), [a, tileFind](Point one) { return tileFind(one, a); }) == visitedPoints.end()) {
