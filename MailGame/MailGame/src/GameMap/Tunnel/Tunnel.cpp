@@ -55,8 +55,8 @@ void Tunnel::releaseLock(sf::Vector2i) {
 }
 
 void Tunnel::render(sf::RenderWindow* window) {
-	sf::Vector3f pOne(sf::Vector3f(this->tunnelPoints.front()) + sf::Vector3f(0.5f, 0.5f, 0.5f));
-	sf::Vector3f pTwo(sf::Vector3f(this->tunnelPoints.back()) + sf::Vector3f(0.5f, 0.5f, 0.5f));
+	sf::Vector3f pOne(this->tunnelPoints.front() + this->startDirection.getReverse().getUnitVector3D() / 2.0f);
+	sf::Vector3f pTwo(this->tunnelPoints.back() + this->endDirection.getReverse().getUnitVector3D() / 2.0f);
 	sf::Color color = this->type == TransitType::Car ? sf::Color::Red : sf::Color::Cyan;
 	sf::Vertex arr[2] = {
 		sf::Vertex(this->game->worldToScreenPos(pOne), color),
