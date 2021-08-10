@@ -21,6 +21,14 @@ Tunnel::Tunnel(sf::Vector3i pointOne, sf::Vector3i pointTwo, TransitType t, Game
 	startDirection(IsoRotation::fromUnitVector(Utils::getUnitVector(sf::Vector3f(pointTwo - pointOne)))),
 	endDirection(IsoRotation::fromUnitVector(Utils::getUnitVector(sf::Vector3f(pointOne - pointTwo)))) {}
 
+Tunnel::Tunnel(SaveData data, Game* g) : game(g) {
+	using namespace SaveKeys;
+	this->id = data.getSizeT(ID);
+	this->tunnelPoints = data.getVector3fVector(POINTS);
+	this->startDirection = data.getIsoRotation(START);
+	this->endDirection = data.getIsoRotation(END);
+}
+
 std::pair<TunnelEntrance, TunnelEntrance> Tunnel::getEntrances() {
 	return {
 		TunnelEntrance(sf::Vector3i(this->tunnelPoints.front()), this->startDirection),
@@ -59,4 +67,14 @@ void Tunnel::render(sf::RenderWindow* window) {
 
 bool Tunnel::operator==(Tunnel other) {
 	return this->id == other.id;
+}
+
+SaveData Tunnel::getSaveData() {
+	using namespace SaveKeys;
+	SaveData data(TUNNEL);
+	data.addIsoRotation(START, this->startDirection);
+	data.addIsoRotation(END, this->endDirection);
+	data.addVector3fVector(POINTS, this->tunnelPoints);
+	data.addSizeT(ID, this->id);
+	return data;
 }

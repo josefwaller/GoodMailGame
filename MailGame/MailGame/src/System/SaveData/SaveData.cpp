@@ -98,6 +98,21 @@ void SaveData::addVector2iVector(sdkey_t key, std::vector<sf::Vector2i> value) {
 	this->addData(data);
 }
 
+void SaveData::addVector3fVector(sdkey_t key, std::vector<sf::Vector3f> value) {
+	using namespace SaveKeys;
+	SaveData data(key);
+	data.addSizeT(SaveKeys::SIZE, value.size());
+	for (size_t i = 0; i < value.size(); i++) {
+		SaveData d(VECTOR_2I);;
+		d.addSizeT(INDEX, i);
+		d.addFloat(X, value[i].x);
+		d.addFloat(Y, value[i].y);
+		d.addFloat(Z, value[i].z);
+		data.addData(d);
+	}
+	this->addData(data);
+}
+
 void SaveData::addVehicleControllerStopVector(sdkey_t key, std::vector<VehicleControllerStop> values) {
 	using namespace SaveKeys;
 	SaveData data(key);
@@ -196,6 +211,17 @@ std::vector<sf::Vector2i> SaveData::getVector2iVector(sdkey_t key) {
 	values.resize(data.getSizeT(SIZE));
 	for (SaveData d : data.getDatas()) {
 		values[d.getSizeT(INDEX)] = sf::Vector2i(d.getInt(X), d.getInt(Y));
+	}
+	return values;
+}
+
+std::vector<sf::Vector3f> SaveData::getVector3fVector(sdkey_t key) {
+	using namespace SaveKeys;
+	SaveData data = this->getData(key);
+	std::vector<sf::Vector3f> values;
+	values.resize(data.getSizeT(SIZE));
+	for (SaveData d : data.getDatas()) {
+		values[d.getSizeT(INDEX)] = sf::Vector3f(d.getFloat(X), d.getFloat(Y), d.getFloat(Z));
 	}
 	return values;
 }

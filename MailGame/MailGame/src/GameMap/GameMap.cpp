@@ -742,6 +742,10 @@ SaveData GameMap::getSaveData() {
 			sd.addData(s);
 		}
 	}
+	// Save tunnels
+	for (Tunnel t : this->tunnels) {
+		sd.addData(t.getSaveData());
+	}
 	return sd;
 }
 void GameMap::loadFromSaveData(SaveData data) {
@@ -773,6 +777,9 @@ void GameMap::loadFromSaveData(SaveData data) {
 		}
 		else if (d.getName() == POINT) {
 			this->pointHeights[d.getSizeT(X)][d.getSizeT(Y)] = d.getSizeT(HEIGHT);
+		}
+		else if (d.getName() == TUNNEL) {
+			this->tunnels.push_back(Tunnel(d, this->game));
 		}
 	}
 }

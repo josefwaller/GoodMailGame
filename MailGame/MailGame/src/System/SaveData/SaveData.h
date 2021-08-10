@@ -45,6 +45,7 @@ public:
 	void addRoutePointVector(sdkey_t key, std::vector<RoutePoint> value);
 	void addVehicleControllerStopVector(sdkey_t key, std::vector<VehicleControllerStop> value);
 	void addVector2iVector(sdkey_t key, std::vector<sf::Vector2i> value);
+	void addVector3fVector(sdkey_t key, std::vector<sf::Vector3f> value);
 
 	std::string getString(sdkey_t);
 	size_t getSizeT(sdkey_t);
@@ -60,6 +61,7 @@ public:
 	// This method will eventually be removed
 	std::vector<VehicleControllerStop> getVehicleControllerStopVector(sdkey_t, Game*);
 	std::vector<sf::Vector2i> getVector2iVector(sdkey_t);
+	std::vector<sf::Vector3f> getVector3fVector(sdkey_t);
 	// Check if a value exists
 	bool hasValue(sdkey_t);
 	// Get the string to save to file

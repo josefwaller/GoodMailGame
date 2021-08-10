@@ -5,6 +5,7 @@
 #include <utility>
 #include "System/TransitType/TransitType.h"
 #include "System/IsoRotation/IsoRotation.h"
+#include "System/SaveData/SaveData.h"
 #include "Constants.h"
 
 class Game;
@@ -23,6 +24,7 @@ class Tunnel {
 public:
 	// Constructor for a straight tunnel
 	Tunnel(sf::Vector3i pointOne, sf::Vector3i pointTwo, TransitType type, Game* g);
+	Tunnel(SaveData data, Game* g);
 	std::pair<TunnelEntrance, TunnelEntrance> getEntrances();
 	std::vector<sf::Vector3f> getPoints();
 	TransitType getType();
@@ -31,6 +33,8 @@ public:
 	void releaseLock(sf::Vector2i point);
 	void render(sf::RenderWindow* window);
 	bool operator==(Tunnel other);
+
+	SaveData getSaveData();
 private:
 	static id_t TUNNEL_ID;
 	id_t id;
