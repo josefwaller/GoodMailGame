@@ -72,20 +72,24 @@ std::vector<SpeedPoint> CarController::getPathBetweenStops(VehicleControllerStop
 			Tunnel toGoThrough = std::get<Tunnel>(*it);
 			auto entrances = toGoThrough.getEntrances();
 			std::vector<sf::Vector3f> tunnelPoints;
-			sf::Vector2i exitTile;
-			IsoRotation exitDirection;
+			// The entrances to start and end going through the tunnel
+			TunnelEntrance start = entrances.first;
+			TunnelEntrance end = entrances.first;
 			if (prevPoint + sf::Vector2i(entrances.first.getDirection().getUnitVector()) == Utils::toVector2i(entrances.first.getPosition())) {
 				// Go through the tunnel starting from the first direction
 				tunnelPoints = toGoThrough.getPoints();
-				exitTile = Utils::toVector2i(entrances.second.getPosition());
-				exitDirection = entrances.second.getDirection().getReverse();
+				start = entrances.first;
+				end = entrances.second;
 			}
 			else {
 				tunnelPoints = toGoThrough.getPoints();
 				std::reverse(tunnelPoints.begin(), tunnelPoints.end());
-				exitTile = Utils::toVector2i(entrances.first.getPosition());
-				exitDirection = entrances.first.getDirection().getReverse();
+				start = entrances.second;
+				end = entrances.first;
 			}
+			points.push_back(sf::Vector3f(start.getPosition()) + sf::Vector3f(0.5f, 0.5f, 0) + start.getDirection().getReverse().getUnitVector3D() / 2.0f);
+			sf::Vector2i exitTile = Utils::toVector2i(end.getPosition());
+			IsoRotation exitDirection = end.getDirection().getReverse();
 			for (sf::Vector3f p : tunnelPoints) {
 				// Here should be the tunnel speed logic
 				points.push_back(SpeedPoint(p));
