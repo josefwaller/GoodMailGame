@@ -16,7 +16,8 @@ IsoRotation TunnelEntrance::getDirection() {
 	return this->direction;
 }
 Tunnel::Tunnel(sf::Vector3i pointOne, sf::Vector3i pointTwo, TransitType t, Game* game)
-	: id(TUNNEL_ID++), tunnelPoints({ sf::Vector3f(pointOne), sf::Vector3f(pointTwo) }), type(t), game(game),
+// Points are + Vector3f(0.5, 0.5, 0) since we want to center the positions on the x,y grid but keep z so that the car is on the ground
+	: id(TUNNEL_ID++), tunnelPoints({ sf::Vector3f(pointOne) + sf::Vector3f(0.5, 0.5, 0), sf::Vector3f(pointTwo) + sf::Vector3f(0.5, 0.5, 0) }), type(t), game(game),
 	startDirection(IsoRotation::fromUnitVector(Utils::getUnitVector(sf::Vector3f(pointTwo - pointOne)))),
 	endDirection(IsoRotation::fromUnitVector(Utils::getUnitVector(sf::Vector3f(pointOne - pointTwo)))) {}
 

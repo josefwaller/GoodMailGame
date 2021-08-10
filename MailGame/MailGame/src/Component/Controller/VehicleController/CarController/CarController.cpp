@@ -76,18 +76,18 @@ std::vector<SpeedPoint> CarController::getPathBetweenStops(VehicleControllerStop
 			if (prevPoint + sf::Vector2i(entrances.first.getDirection().getUnitVector()) == Utils::toVector2i(entrances.first.getPosition())) {
 				// Go through the tunnel starting from the first direction
 				tunnelPoints = toGoThrough.getPoints();
-				exitTile = Utils::toVector2i(entrances.second.getPosition()) + Utils::toVector2i(entrances.second.getDirection().getUnitVector());
+				exitTile = Utils::toVector2i(entrances.second.getPosition()) + Utils::toVector2i(entrances.second.getDirection().getReverse().getUnitVector());
 			}
 			else {
 				tunnelPoints = toGoThrough.getPoints();
 				std::reverse(tunnelPoints.begin(), tunnelPoints.end());
-				exitTile = Utils::toVector2i(entrances.first.getPosition()) + Utils::toVector2i(entrances.first.getDirection().getUnitVector());
+				exitTile = Utils::toVector2i(entrances.first.getPosition()) + Utils::toVector2i(entrances.first.getDirection().getReverse().getUnitVector());
 			}
 			for (sf::Vector3f p : tunnelPoints) {
 				// Here should be the tunnel speed logic
 				points.push_back(SpeedPoint(p));
 			}
-			points.push_back(SpeedPoint(sf::Vector3f(exitTile.x, exitTile.y, this->getEntity()->getGameMap()->getHeightAt(sf::Vector2f(exitTile) + sf::Vector2f(0.5f, 0.5f)))));
+			points.push_back(SpeedPoint(sf::Vector3f(exitTile.x + 0.5f, exitTile.y + 0.5f, this->getEntity()->getGameMap()->getHeightAt(sf::Vector2f(exitTile) + sf::Vector2f(0.5f, 0.5f)))));
 			prevPoint = exitTile;
 		}
 		else {
