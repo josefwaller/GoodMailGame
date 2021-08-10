@@ -73,21 +73,28 @@ std::vector<SpeedPoint> CarController::getPathBetweenStops(VehicleControllerStop
 			auto entrances = toGoThrough.getEntrances();
 			std::vector<sf::Vector3f> tunnelPoints;
 			sf::Vector2i exitTile;
+			IsoRotation exitDirection;
 			if (prevPoint + sf::Vector2i(entrances.first.getDirection().getUnitVector()) == Utils::toVector2i(entrances.first.getPosition())) {
 				// Go through the tunnel starting from the first direction
 				tunnelPoints = toGoThrough.getPoints();
-				exitTile = Utils::toVector2i(entrances.second.getPosition()) + Utils::toVector2i(entrances.second.getDirection().getReverse().getUnitVector());
+				exitTile = Utils::toVector2i(entrances.second.getPosition());
+				exitDirection = entrances.second.getDirection().getReverse();
 			}
 			else {
 				tunnelPoints = toGoThrough.getPoints();
 				std::reverse(tunnelPoints.begin(), tunnelPoints.end());
-				exitTile = Utils::toVector2i(entrances.first.getPosition()) + Utils::toVector2i(entrances.first.getDirection().getReverse().getUnitVector());
+				exitTile = Utils::toVector2i(entrances.first.getPosition());
+				exitDirection = entrances.first.getDirection().getReverse();
 			}
 			for (sf::Vector3f p : tunnelPoints) {
 				// Here should be the tunnel speed logic
 				points.push_back(SpeedPoint(p));
 			}
-			points.push_back(SpeedPoint(sf::Vector3f(exitTile.x + 0.5f, exitTile.y + 0.5f, this->getEntity()->getGameMap()->getHeightAt(sf::Vector2f(exitTile) + sf::Vector2f(0.5f, 0.5f)))));
+			// No we calculate where to ad a point, since we add poitns ad the edges of tiles
+			// So we add the direction's unit vector / 2 to the center of the tile
+			sf::Vector3f exitPoint = sf::Vector3f(exitTile.x + 0.5, exitTile.y + 0.5, 0) + exitDirection.getUnitVector3D() / 2.0f;
+			exitPoint.z = this->getEntity()->getGameMap()->getHeightAt(Utils::toVector2f(exitPoint));
+			points.push_back(SpeedPoint(exitPoint));
 			prevPoint = exitTile;
 		}
 		else {
