@@ -35,7 +35,7 @@ std::vector<SpeedPoint> RailsPathfinder::findPathBetweenPoints(
 	float speed) {
 	return {};
 }
-std::optional<std::vector<RailsPathfinder::Segment>> RailsPathfinder::findRailwayPath(
+std::vector<std::vector<RailsPathfinder::Segment>> RailsPathfinder::findRailwayPath(
 	sf::Vector2i fromTile,
 	sf::Vector2i toTile,
 	IsoRotation startingRotation,
@@ -43,10 +43,55 @@ std::optional<std::vector<RailsPathfinder::Segment>> RailsPathfinder::findRailwa
 ) {
 	// Utility typedef
 	typedef std::pair<sf::Vector2i, IsoRotation> railwayPart;
-	// The tiles it has already been to
-	std::vector<railwayPart> visited;
-	std::vector<railwayPart> potential;
-	std::map<railwayPart, railwayPart, bool(*)(railwayPart, railwayPart)> previous([](railwayPart one, railwayPart two) {
+
+	// Struct of a path up to a point
+	struct Path {
+		Path(railwayPart p, std::vector<railwayPart> prev) : current(p), previous(prev) {}
+		railwayPart current;
+		std::vector<railwayPart> previous;
+	};
+	std::vector<Path> currentPaths = { Path({ fromTile, startingRotation }, {}) };
+	std::vector<std::vector<RailsPathfinder::Segment>> toReturn;
+
+	while (!currentPaths.empty()) {
+		Path p = currentPaths.back();
+		currentPaths.pop_back();
+		// Check if it's the desintation
+		if (p.current.first == toTile) {
+			std::vector<std::pair<sf::Vector2i, Railway>> path;
+			IsoRotation rot = startingRotation;
+			// We want to skip the first element of previous since that is the starting tile
+			// And we don't include that in the returned path
+			for (auto it = p.previous.begin() + 1; it != p.previous.end(); it++) {
+				railwayPart pt = *it;
+				path.push_back({ pt.first, Railway(rot.getReverse(), pt.second) });
+				rot = pt.second.getReverse();
+			}
+			// For right now, we just create one big segment
+			toReturn.push_back({ Segment(path) });
+		}
+		else {
+			// Get the tile and ingoing direction if the train were to follow this path
+			sf::Vector2i tilePos = p.current.first + sf::Vector2i(p.current.second.getUnitVector());
+			IsoRotation ingoingRotation = p.current.second;
+			// Go through all the railways for this tile
+			for (IsoRotation r : gMap->getTileAt(tilePos).getOutgoingRailDirections(ingoingRotation.getReverse())) {
+				std::vector<railwayPart> newPath = p.previous;
+				newPath.push_back(p.current);
+				railwayPart toAdd = { tilePos, r };
+				// Check that we are not adding a cycle
+				if (std::find_if(newPath.begin(), newPath.end(), [toAdd](railwayPart p) { return p.first == toAdd.first && p.second == toAdd.second; }) == newPath.end()) {
+					currentPaths.push_back(Path(toAdd, newPath));
+				}
+			}
+		}
+	}
+	return toReturn;
+}
+/*// The tiles it has already been to
+std::vector<railwayPart> visited;
+std::vector<railwayPart> potential;
+std::map<railwayPart, railwayPart, bool(*)(railwayPart, railwayPart)> previous([](railwayPart one, railwayPart two) {
 #define f(var) var.first.x + var.first.y * 1000 + var.second.getRotation() * 1000 * 1000
 		return f(one) < f(two);
 #undef f
@@ -63,7 +108,7 @@ std::optional<std::vector<RailsPathfinder::Segment>> RailsPathfinder::findRailwa
 		auto rots = gMap->getTileAt(toTile).getOutgoingRailDirections(startingRotation.getReverse());
 		if (!rots.empty()) {
 			// They can go directly to the tile
-			return std::vector<Segment>();
+			return { {} };
 		}
 	}
 	potential.push_back({ startingTile, startingRotation.getReverse() });
@@ -85,7 +130,7 @@ std::optional<std::vector<RailsPathfinder::Segment>> RailsPathfinder::findRailwa
 					path.push_back({ current.first, Railway(current.second, outgoingRot) });
 					if (current.first == startingTile && current.second == startingRotation.getReverse()) {
 						std::reverse(path.begin(), path.end());
-						return std::vector<Segment>({ Segment(path) });
+						return { std::vector<Segment>({ Segment(path) }) };
 					}
 					outgoingRot = current.second.getReverse();
 					current = previous.at(current);
@@ -108,7 +153,7 @@ std::optional<std::vector<RailsPathfinder::Segment>> RailsPathfinder::findRailwa
 		visited.push_back(pair);
 	}
 	return {};
-}
+}*/
 
 std::vector<SpeedPoint> RailsPathfinder::railwayPathToSpeedPointPath(std::vector<std::pair<sf::Vector2i, Railway>> path) {
 	if (path.empty()) {

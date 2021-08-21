@@ -22,7 +22,7 @@ void TrainController::init() {
 	auto depart = this->getDockPath(depot.lock());
 	auto arrive = this->getDockPath(this->stops.at(this->stopIndex).getEntityTarget().lock());
 	// Set path
-	this->path = RailsPathfinder::findRailwayPath(depart.front().first, arrive.front().first, depart.front().second.getTo(), this->getEntity()->getGameMap()).value();
+	this->path = RailsPathfinder::findRailwayPath(depart.front().first, arrive.front().first, depart.front().second.getTo(), this->getEntity()->getGameMap()).front();
 	this->pathIndex = 0;
 	// Set points
 	this->setPoints(Utils::speedPointVectorToRoutePointVector(this->getPointsForSegment(this->path.at(this->pathIndex)), this->departTime, this->model));
@@ -48,10 +48,10 @@ void TrainController::onArriveAtDest(gtime_t arriveTime) {
 			from = this->points.back().pos;
 			to = this->getDockPath(this->stops.at(this->stopIndex).getEntityTarget().lock()).front().first;
 			auto p = RailsPathfinder::findRailwayPath(Utils::toVector2i(from), to, this->getEntity()->transform->getRotation(), this->getEntity()->getGameMap());
-			if (!p.has_value()) {
+			if (p.empty()) {
 				throw std::runtime_error("Not implemented yet");
 			}
-			this->path = p.value();
+			this->path = p.front();
 			this->pathIndex = 0;
 			this->setPoints(Utils::speedPointVectorToRoutePointVector(this->getPointsForSegment(this->path.at(this->pathIndex)), arriveTime, this->model));
 		}
