@@ -56,25 +56,28 @@ std::vector<std::vector<RailsPathfinder::Segment>> RailsPathfinder::findRailwayP
 	while (!currentPaths.empty()) {
 		Path p = currentPaths.back();
 		currentPaths.pop_back();
+		// Get the tile and ingoing direction if the train were to follow this path
+		sf::Vector2i tilePos = p.current.first + sf::Vector2i(p.current.second.getUnitVector());
+		IsoRotation ingoingRotation = p.current.second;
 		// Check if it's the desintation
-		if (std::find(toTiles.begin(), toTiles.end(), p.current.first) != toTiles.end()) {
-			std::vector<std::pair<sf::Vector2i, Railway>> path;
-			IsoRotation rot = startingRotation;
-			// We want to skip the first element of previous since that is the starting tile
-			// And we don't include that in the returned path
-			for (auto it = p.previous.begin() + 1; it != p.previous.end(); it++) {
-				railwayPart pt = *it;
-				path.push_back({ pt.first, Railway(rot.getReverse(), pt.second) });
-				rot = pt.second;
+		if (std::find(toTiles.begin(), toTiles.end(), tilePos) != toTiles.end()) {
+			// We have to quickly check that we can enter the tile from this direction
+			if (!gMap->getTileAt(tilePos).getOutgoingRailDirections(ingoingRotation.getReverse()).empty()) {
+				std::vector<std::pair<sf::Vector2i, Railway>> path;
+				IsoRotation rot = startingRotation;
+				// We want to skip the first element of previous since that is the starting tile
+				// And we don't include that in the returned path
+				for (auto it = p.previous.begin() + 1; it != p.previous.end(); it++) {
+					railwayPart pt = *it;
+					path.push_back({ pt.first, Railway(rot.getReverse(), pt.second) });
+					rot = pt.second;
+				}
+				path.push_back({ tilePos, Railway(rot.getReverse(), rot) });
+				// For right now, we just create one big segment
+				toReturn.push_back({ Segment(path) });
 			}
-			path.push_back({ p.current.first, Railway(rot.getReverse(), rot) });
-			// For right now, we just create one big segment
-			toReturn.push_back({ Segment(path) });
 		}
 		else {
-			// Get the tile and ingoing direction if the train were to follow this path
-			sf::Vector2i tilePos = p.current.first + sf::Vector2i(p.current.second.getUnitVector());
-			IsoRotation ingoingRotation = p.current.second;
 			// Go through all the railways for this tile
 			for (IsoRotation r : gMap->getTileAt(tilePos).getOutgoingRailDirections(ingoingRotation.getReverse())) {
 				std::vector<railwayPart> newPath = p.previous;
