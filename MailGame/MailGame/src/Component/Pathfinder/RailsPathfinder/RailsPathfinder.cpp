@@ -6,6 +6,28 @@
 #include <algorithm>
 #include "GameMap/GameMap.h"
 
+using Segment = RailsPathfinder::Segment;
+
+Segment::Segment(Tunnel t) {
+	this->type = Segment::Type::Tunnel;
+	this->tunnel = t;
+}
+Segment::Segment(std::vector<std::pair<sf::Vector2i, Railway>> path) {
+	this->type = Segment::Type::Path;
+	this->path = path;
+}
+
+Segment::Type Segment::getType() {
+	return this->type;
+}
+
+std::vector<std::pair<sf::Vector2i, Railway>> Segment::getPath() {
+	return this->path.value();
+}
+Tunnel Segment::getTunnel() {
+	return this->tunnel.value();
+}
+
 std::vector<SpeedPoint> RailsPathfinder::findPathBetweenPoints(
 	sf::Vector3f from,
 	sf::Vector3f to,
@@ -13,7 +35,7 @@ std::vector<SpeedPoint> RailsPathfinder::findPathBetweenPoints(
 	float speed) {
 	return {};
 }
-std::optional<std::vector<std::pair<sf::Vector2i, Railway>>> RailsPathfinder::findRailwayPath(
+std::optional<std::vector<RailsPathfinder::Segment>> RailsPathfinder::findRailwayPath(
 	sf::Vector2i fromTile,
 	sf::Vector2i toTile,
 	IsoRotation startingRotation,
@@ -41,7 +63,7 @@ std::optional<std::vector<std::pair<sf::Vector2i, Railway>>> RailsPathfinder::fi
 		auto rots = gMap->getTileAt(toTile).getOutgoingRailDirections(startingRotation.getReverse());
 		if (!rots.empty()) {
 			// They can go directly to the tile
-			return std::vector<std::pair<sf::Vector2i, Railway>>();
+			return std::vector<Segment>();
 		}
 	}
 	potential.push_back({ startingTile, startingRotation.getReverse() });
@@ -63,7 +85,7 @@ std::optional<std::vector<std::pair<sf::Vector2i, Railway>>> RailsPathfinder::fi
 					path.push_back({ current.first, Railway(current.second, outgoingRot) });
 					if (current.first == startingTile && current.second == startingRotation.getReverse()) {
 						std::reverse(path.begin(), path.end());
-						return path;
+						return std::vector<Segment>({ Segment(path) });
 					}
 					outgoingRot = current.second.getReverse();
 					current = previous.at(current);
