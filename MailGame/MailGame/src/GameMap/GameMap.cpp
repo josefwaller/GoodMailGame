@@ -175,9 +175,6 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 			s = getRoadSprite(tile.airplaneRoad.value(), this->game->getRotation());
 			s.setColor(tile.airplaneRoad.value().isRunway ? sf::Color::Blue : sf::Color::Red);
 		}
-		else if (!tile.getRailways().empty()) {
-			s = EMPTY_SPRITE;
-		}
 		else {
 			sf::Color tileColor = (x + y) % 2 == 0 ? sf::Color(0, 150, 0) : sf::Color(0, 175, 0);
 			sf::VertexArray arr(sf::PrimitiveType::Quads, 4);
@@ -215,8 +212,8 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 			sf::Vector2f toPoint = center + 0.5f * r.getTo().getUnitVector();
 			// Render line
 			sf::VertexArray arr(sf::PrimitiveType::Lines, 2);
-			arr[0] = sf::Vertex(this->game->worldToScreenPos(Utils::toVector3f(fromPoint)), r.getIsLocked() ? sf::Color::White : sf::Color::Black);
-			arr[1] = sf::Vertex(this->game->worldToScreenPos(Utils::toVector3f(toPoint)), r.isStation ? sf::Color::Blue : sf::Color::Red);
+			arr[0] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(fromPoint.x, fromPoint.y, this->getHeightAt(fromPoint))), r.getIsLocked() ? sf::Color::White : sf::Color::Black);
+			arr[1] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(toPoint.x, toPoint.y, this->getHeightAt(toPoint))), r.isStation ? sf::Color::Blue : sf::Color::Red);
 			window->draw(arr);
 		}
 	}
