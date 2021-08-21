@@ -15,7 +15,7 @@ public:
 	virtual void update(float delta) override;
 	virtual void onDelete() override;
 protected:
-	std::vector<SpeedPoint> getPointsForSegment(RailsPathfinder::Segment s);
+	std::vector<SpeedPoint> getPointsForSegment(RailsPathfinder::Segment s, std::optional<int> endingSpeed = {});
 	virtual void onArriveAtDest(gtime_t arriveTime) override;
 
 	virtual std::optional<SaveData> getSaveData() override;
@@ -37,9 +37,10 @@ private:
 	std::queue<std::pair<sf::Vector2i, Railway>> lockedRailways;
 	// Get the length of the train
 	float getTrainLength();
-	// Get the path to dock at this entity
-	// Will eventually return several paths, and the train must choose which one
-	std::vector<std::pair<sf::Vector2i, Railway>> getDockPath(std::shared_ptr<Entity> e);
+	// Get all the tiles that are valid "docking" points
+	// i.e. get all the places the train can go to dock with this entity
+	// Usually just get the tiles at the end of the connected train station
+	std::vector<sf::Vector2i> getDockTiles(std::shared_ptr<Entity> e);
 	// Get the tile the train can go to, used for running pathfinding again when the train is blocked
 	sf::Vector2i getDest();
 };

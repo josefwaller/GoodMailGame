@@ -19,13 +19,13 @@ void TrainController::init() {
 	std::weak_ptr<Entity> depot = this->stops.front().getEntityTarget();
 	// Get a path from the depot path to the first station
 	// TODO: It should maybe go over all the points returned from getDockPath(depot) first?
-	auto depart = this->getDockPath(depot.lock());
-	auto arrive = this->getDockPath(this->stops.at(this->stopIndex).getEntityTarget().lock());
+	auto depart = this->getDockTiles(depot.lock()).front();
+	auto arrive = this->getDockTiles(this->stops.at(this->stopIndex).getEntityTarget().lock());
 	// Set path
-	this->path = RailsPathfinder::findRailwayPath(depart.front().first, arrive.front().first, depart.front().second.getTo(), this->getEntity()->getGameMap()).front();
+	this->path = RailsPathfinder::findRailwayPath(depart, arrive, depot.lock()->transform->getRotation(), this->getEntity()->getGameMap()).front();
 	this->pathIndex = 0;
 	// Set points
-	this->setPoints(Utils::speedPointVectorToRoutePointVector(this->getPointsForSegment(this->path.at(this->pathIndex)), this->departTime, this->model));
+	this->setPoints(Utils::speedPointVectorToRoutePointVector(this->getPointsForSegment(this->path.at(this->pathIndex), this->pathIndex == this->path.size() - 1 ? 0.0f : std::optional<int>()), this->departTime, this->model));
 }
 
 void TrainController::update(float delta) {
@@ -33,48 +33,36 @@ void TrainController::update(float delta) {
 }
 
 void TrainController::onArriveAtDest(gtime_t arriveTime) {
-	sf::Vector3f from;
-	sf::Vector2i to;
 	switch (this->state) {
-	case State::ArrivingAtStation:
-		this->stopIndex++;
-		if (this->stopIndex >= this->stops.size()) {
-			this->getEntity()->ai->onArriveAtDest();
-		}
-		else {
-			this->getEntity()->ai->onArriveAtStop(this->stopIndex - 1);
-			this->state = State::InTransit;
-			// Now set points to the path between stations
-			from = this->points.back().pos;
-			to = this->getDockPath(this->stops.at(this->stopIndex).getEntityTarget().lock()).front().first;
-			auto p = RailsPathfinder::findRailwayPath(Utils::toVector2i(from), to, this->getEntity()->transform->getRotation(), this->getEntity()->getGameMap());
-			if (p.empty()) {
-				throw std::runtime_error("Not implemented yet");
-			}
-			this->path = p.front();
-			this->pathIndex = 0;
-			this->setPoints(Utils::speedPointVectorToRoutePointVector(this->getPointsForSegment(this->path.at(this->pathIndex)), arriveTime, this->model));
-		}
-		break;
 	case State::InTransit:
 		// If we just arrived at a station
 		this->pathIndex++;
 		if (this->pathIndex >= this->path.size()) {
-			this->state = State::ArrivingAtStation;
-			// Set points for station
-			// Usually, we would go over all the possibilities and find one we can get a lock on, but we're not right now
-			auto path = this->getDockPath(this->stops.at(this->stopIndex).getEntityTarget().lock());
-			std::vector<SpeedPoint> s = this->getPointsForSegment(RailsPathfinder::Segment(path));
-			s.back().setSpeed(0.0f);
-			this->setPoints(Utils::speedPointVectorToRoutePointVector(s, arriveTime, this->model, this->points.back().speedAtPoint));
+			this->stopIndex++;
+			if (this->stopIndex >= this->stops.size()) {
+				this->getEntity()->ai->onArriveAtDest();
+			}
+			else {
+				this->getEntity()->ai->onArriveAtStop(this->stopIndex - 1);
+				// Now set points to the path between stations
+				sf::Vector2i from = Utils::toVector2i(this->points.back().pos);
+				std::vector<sf::Vector2i> to = this->getDockTiles(this->stops.at(this->stopIndex).getEntityTarget().lock());
+				auto p = RailsPathfinder::findRailwayPath(from, to, this->getEntity()->transform->getRotation(), this->getEntity()->getGameMap());
+				if (p.empty()) {
+					throw std::runtime_error("Not implemented yet");
+				}
+				this->path = p.front();
+				this->pathIndex = 0;
+				this->setPoints(Utils::speedPointVectorToRoutePointVector(this->getPointsForSegment(this->path.at(this->pathIndex)), arriveTime, this->model, this->points.back().speedAtPoint));
+			}
 		}
 		else {
-			this->setPoints(Utils::speedPointVectorToRoutePointVector(this->getPointsForSegment(this->path.at(this->pathIndex)), arriveTime, this->model, this->points.back().speedAtPoint));
+			this->setPoints(Utils::speedPointVectorToRoutePointVector(this->getPointsForSegment(this->path.at(this->pathIndex), this->pathIndex == this->path.size() - 1 ? 0.0f : std::optional<int>()), arriveTime, this->model, this->points.back().speedAtPoint));
 		}
 	}
 }
 
-std::vector<SpeedPoint> TrainController::getPointsForSegment(RailsPathfinder::Segment s) {
+std::vector<SpeedPoint> TrainController::getPointsForSegment(RailsPathfinder::Segment s, std::optional<int> endingSpeed) {
 	using Type = RailsPathfinder::Segment::Type;
 	switch (s.getType()) {
 	case Type::Path:
@@ -85,6 +73,9 @@ std::vector<SpeedPoint> TrainController::getPointsForSegment(RailsPathfinder::Se
 		for (auto p : path) {
 			sf::Vector2f point = sf::Vector2f(p.first) + sf::Vector2f(0.5f, 0.5f) + 0.5f * p.second.getTo().getUnitVector();
 			points.push_back(sf::Vector3f(point.x, point.y, this->getEntity()->getGameMap()->getHeightAt(point)));
+		}
+		if (endingSpeed.has_value()) {
+			points.back().setSpeed(endingSpeed.value());
 		}
 		return points;
 	}
@@ -100,47 +91,53 @@ void TrainController::onDelete() {
 	}
 }
 
-std::vector<std::pair<sf::Vector2i, Railway>> TrainController::getDockPath(std::shared_ptr<Entity> e) {
+std::vector<sf::Vector2i> TrainController::getDockTiles(std::shared_ptr<Entity> e) {
 	if (e->tag == EntityTag::Warehouse) {
 		// Find all the docks attached to the warehouse
 		std::vector<sf::Vector2i> availableDocks = getConnectedDocks(e, EntityTag::TrainDock);
 		// Now look for a train station near the dock
-		sf::Vector2i pos = availableDocks.front();
-		for (int x = -1; x < 2; x++) {
-			for (int y = -1; y < 2; y++) {
-				if (x == 0 || y == 0) {
-					Tile t = this->getEntity()->getGameMap()->getTileAt(pos.x + x, pos.y + y);
-					if (t.getRailways().size() == 1 && t.getRailways().front().isStation) {
-						// Find how far back the train station goes
-						pos = sf::Vector2i(pos.x + x, pos.y + y);
-						IsoRotation currentRot;
-						for (IsoRotation rot : IsoRotation::CARDINAL_DIRECTIONS) {
-							if (!t.getOutgoingRailDirections(rot).empty()) {
-								currentRot = rot;
-								break;
-							}
+		std::vector<sf::Vector2i> startingPoints;
+		for (sf::Vector2i dock : availableDocks) {
+			// Get all the points the docks are facing
+			startingPoints.push_back(dock + sf::Vector2i(this->getEntity()->getGameMap()->getTileAt(dock).building.lock()->transform->getRotation().getUnitVector()));
+		}
+		// Now we simply gather all station tiles that are connected to the starting points
+		std::vector<sf::Vector2i> stationTiles;
+		for (sf::Vector2i s : startingPoints) {
+			auto r = this->getEntity()->getGameMap()->getTileAt(s).getRailways();
+			if (!r.empty() && r.front().isStation) {
+				stationTiles.push_back(s);
+			}
+		}
+		for (size_t i = 0; i < stationTiles.size(); i++) {
+			for (int x = -1; x < 2; x++) {
+				for (int y = -1; y < 2; y++) {
+					sf::Vector2i tile = stationTiles.at(i) + sf::Vector2i(x, y);
+					// Check we are not going back and forth
+					if (std::find(stationTiles.begin(), stationTiles.end(), tile) == stationTiles.end()) {
+						auto r = this->getEntity()->getGameMap()->getTileAt(tile).getRailways();
+						if (!r.empty() && r.front().isStation) {
+							stationTiles.push_back(tile);
 						}
-						std::vector<std::pair<sf::Vector2i, Railway>> path;
-						while (t.getRailways().size() == 1 && t.getRailways().front().isStation) {
-							path.push_back({ pos, t.getRailways().front() });
-							// If it is a station, it must be straight
-							pos = pos + Utils::toVector2i(currentRot.getUnitVector());
-							t = e->getGameMap()->getTileAt(pos.x, pos.y);
-						}
-						std::reverse(path.begin(), path.end());
-						return path;
 					}
 				}
 			}
 		}
-		throw std::runtime_error("No path mean crash right now");
+		// Now we just filter out for the ones at the end
+		std::vector<sf::Vector2i> toReturn;
+		for (sf::Vector2i t : stationTiles) {
+			if (std::find(stationTiles.begin(), stationTiles.end(), t + sf::Vector2i(this->getEntity()->getGameMap()->getTileAt(t).getRailways().front().getTo().getUnitVector())) == stationTiles.end()) {
+				toReturn.push_back(t);
+			}
+		}
+		return toReturn;
 	}
 	else if (e->tag == EntityTag::TrainStation) {
 		sf::Vector2i tile = Utils::toVector2i(e->transitStop->getTrainStop().tile);
 		if (this->getEntity()->getGameMap()->getTileAt(tile).getRailways().empty()) {
 			throw std::runtime_error("TrainStation has no railways!");
 		}
-		return { { tile, this->getEntity()->getGameMap()->getTileAt(tile).getRailways().front() } };
+		return { { tile } };
 	}
 }
 

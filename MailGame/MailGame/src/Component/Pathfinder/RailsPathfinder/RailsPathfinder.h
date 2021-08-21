@@ -33,14 +33,14 @@ public:
 		float speed) override;
 
 	/*
-	 * Find all the paths between fromTile and toTile using railways
+	 * Find all the paths starting at fromTile and ending at any tile in toTiles using railways
 	 * Assumes the train is leaving fromTile in the drection specified by startingRotation
 	 * i.e. startingTile is (0, 1) and startingRotation is north, it assumes that the train is inbetween (0, 1) and (0, 2) heading north
-	 * includes every tile between fromTile and toTile, but not those tiles or the railways on them
+	 * includes every tile between fromTile and toTile and toTile, but not fromTile
 	 */
 	static std::vector<std::vector<Segment>> findRailwayPath(
 		sf::Vector2i fromTile,
-		sf::Vector2i toTile,
+		std::vector<sf::Vector2i> toTile,
 		IsoRotation startingRotation,
 		GameMap* gMap
 	);
