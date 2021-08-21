@@ -27,6 +27,7 @@ Tunnel::Tunnel(SaveData data, Game* g) : game(g) {
 	this->tunnelPoints = data.getVector3fVector(POINTS);
 	this->startDirection = data.getIsoRotation(START);
 	this->endDirection = data.getIsoRotation(END);
+	this->type = (TransitType)data.getSizeT(TYPE);
 }
 
 std::pair<TunnelEntrance, TunnelEntrance> Tunnel::getEntrances() {
@@ -76,5 +77,6 @@ SaveData Tunnel::getSaveData() {
 	data.addIsoRotation(END, this->endDirection);
 	data.addVector3fVector(POINTS, this->tunnelPoints);
 	data.addSizeT(ID, this->id);
+	data.addSizeT(TYPE, (size_t)this->type);
 	return data;
 }
