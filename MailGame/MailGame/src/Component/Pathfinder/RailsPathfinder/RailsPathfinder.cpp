@@ -72,7 +72,8 @@ std::vector<std::vector<RailsPathfinder::Segment>> RailsPathfinder::findRailwayP
 					path.push_back({ pt.first, Railway(rot.getReverse(), pt.second) });
 					rot = pt.second;
 				}
-				path.push_back({ tilePos, Railway(rot.getReverse(), rot) });
+				path.push_back({ p.current.first, Railway(rot.getReverse(), p.current.second) });
+				path.push_back({ tilePos, gMap->getTileAt(tilePos).getRailways().front() });
 				// For right now, we just create one big segment
 				toReturn.push_back({ Segment(path) });
 			}
