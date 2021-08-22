@@ -60,6 +60,8 @@ public:
 	void addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to);
 	// Add a railway station at the position given in the direction given, currently stations must be straight
 	void addRailwayStation(size_t x, size_t y, IsoRotation direction);
+	// Add a railway signal to the tile
+	void addRailwaySignal(sf::Vector2i tile);
 	// Remove a railway track at the position given
 	void removeRailTrack(size_t x, size_t y);
 	// Add/remove airplane road

@@ -1,6 +1,6 @@
 #include "./Tile.h"
 
-Tile::Tile(TileType t, id_t cityId) : postalCode(0), isLocked(false), cityId(cityId), railways({}), type(t) {
+Tile::Tile(TileType t, id_t cityId) : postalCode(0), isLocked(false), cityId(cityId), railways({}), type(t), isRailwaySignal(false) {
 }
 
 std::vector<IsoRotation> Tile::getOutgoingRailDirections(IsoRotation ingoingDirection) {
@@ -77,4 +77,8 @@ void Tile::releaseRailwayLock(Railway rail) {
 		throw std::runtime_error("Cannot get lock on railway that does not exist");
 	}
 	return r->releaseLock();
+}
+
+bool Tile::hasRailwaySignal() {
+	return this->isRailwaySignal;
 }

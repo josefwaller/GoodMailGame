@@ -41,7 +41,7 @@ private:
 	// Get the length of the train
 	float getTrainLength();
 	// Try and get unblocked
-	void tryGetUnblocked(sf::Vector2i from, std::vector<sf::Vector2i> to, IsoRotation rot);
+	void tryGetUnblocked(sf::Vector2i from, std::vector<sf::Vector2i> to, IsoRotation rot, float startingSpeed);
 	// Get all the tiles that are valid "docking" points
 	// i.e. get all the places the train can go to dock with this entity
 	// Usually just get the tiles at the end of the connected train station

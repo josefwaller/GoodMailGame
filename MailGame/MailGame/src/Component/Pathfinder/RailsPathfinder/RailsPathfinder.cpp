@@ -64,18 +64,26 @@ std::vector<std::vector<RailsPathfinder::Segment>> RailsPathfinder::findRailwayP
 			// We have to quickly check that we can enter the tile from this direction
 			if (!gMap->getTileAt(tilePos).getOutgoingRailDirections(ingoingRotation.getReverse()).empty()) {
 				std::vector<std::pair<sf::Vector2i, Railway>> path;
+				std::vector<Segment> fullPath;
 				IsoRotation rot = startingRotation;
 				// We want to skip the first element of previous since that is the starting tile
 				// And we don't include that in the returned path
 				for (auto it = p.previous.begin() + 1; it != p.previous.end(); it++) {
 					railwayPart pt = *it;
+					if (gMap->getTileAt(pt.first).hasRailwaySignal()) {
+						if (!path.empty()) {
+							fullPath.push_back(Segment(path));
+						}
+						path = {};
+					}
 					path.push_back({ pt.first, Railway(rot.getReverse(), pt.second) });
 					rot = pt.second;
 				}
 				path.push_back({ p.current.first, Railway(rot.getReverse(), p.current.second) });
 				path.push_back({ tilePos, gMap->getTileAt(tilePos).getRailways().front() });
+				fullPath.push_back(Segment(path));
 				// For right now, we just create one big segment
-				toReturn.push_back({ Segment(path) });
+				toReturn.push_back(fullPath);
 			}
 		}
 		else {

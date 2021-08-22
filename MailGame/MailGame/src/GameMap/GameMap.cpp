@@ -177,6 +177,9 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 		}
 		else {
 			sf::Color tileColor = (x + y) % 2 == 0 ? sf::Color(0, 150, 0) : sf::Color(0, 175, 0);
+			if (tile.hasRailwaySignal()) {
+				tileColor = sf::Color(212, 0, 0);
+			}
 			sf::VertexArray arr(sf::PrimitiveType::Quads, 4);
 			arr[0] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(x, y, this->pointHeights.at(x).at(y))), tileColor);
 			arr[1] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(x + 1, y, this->pointHeights.at(x + 1).at(y))), tileColor);
@@ -597,6 +600,12 @@ void GameMap::addRailwayStation(size_t x, size_t y, IsoRotation direction) {
 		if (this->tiles[x][y].getRailways().empty()) {
 			this->tiles[x][y].addRailway(Railway(direction.getReverse(), direction, true));
 		}
+	}
+}
+
+void GameMap::addRailwaySignal(sf::Vector2i tile) {
+	if (this->getTileAt(tile).type != TileType::OffMap) {
+		this->tiles[tile.x][tile.y].isRailwaySignal = true;
 	}
 }
 

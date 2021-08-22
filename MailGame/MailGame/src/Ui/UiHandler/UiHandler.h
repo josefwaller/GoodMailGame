@@ -27,7 +27,8 @@ public:
 		ShowingCityLimits,
 		ShowingResidencePaths,
 		Terraforming,
-		BuildingTunnel
+		BuildingTunnel,
+		BuildingRailwaySignal,
 	};
 
 	UiHandler(Game* g);

@@ -138,6 +138,8 @@ bool UiHandler::handleEvent(sf::Event e) {
 				this->tunnelStart = this->getHoveredTile();
 			}
 		}
+		case UiState::BuildingRailwaySignal:
+			this->game->getGameMap()->addRailwaySignal(this->getHoveredTile());
 		}
 	case sf::Event::KeyPressed:
 		if (ImGui::GetIO().WantCaptureKeyboard) {
@@ -352,6 +354,9 @@ void UiHandler::update() {
 			if (ImGui::Button("Cancel")) {
 				this->changeState(UiState::Default);
 			}
+		}
+		if (ImGui::Button("Railway Signal")) {
+			this->changeState(UiState::BuildingRailwaySignal);
 		}
 	}
 	// Delete/Stop deleting buttons

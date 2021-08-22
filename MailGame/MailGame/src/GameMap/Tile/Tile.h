@@ -34,6 +34,8 @@ struct Tile {
 	// The id of the city the tile belongs to (0 is no city)
 	id_t cityId;
 
+	bool isRailwaySignal;
+
 	Tile(TileType t = TileType::Land, id_t cityId = 0);
 	/**
 	 *Get the connected tiles from the ingoing direction provided
@@ -50,6 +52,8 @@ struct Tile {
 
 	// Check whether it can get a tile lock
 	bool canGetLock();
+	// Get whether there is a railway signal on this tile
+	bool hasRailwaySignal();
 
 	/*** These methods ignore everything from the railway object except from and to directions ***/
 	// Check if we can get a railway lock on this tile

@@ -23,10 +23,10 @@ void TrainController::init() {
 	auto arrive = this->getDockTiles(this->stops.at(this->stopIndex).getEntityTarget().lock());
 	this->getEntity()->transform->setRotation(depot.lock()->transform->getRotation());
 	// Set path
-	this->tryGetUnblocked(depart, arrive, depot.lock()->transform->getRotation());
+	this->tryGetUnblocked(depart, arrive, depot.lock()->transform->getRotation(), 0.0f);
 }
 
-void TrainController::tryGetUnblocked(sf::Vector2i from, std::vector<sf::Vector2i> to, IsoRotation rot) {
+void TrainController::tryGetUnblocked(sf::Vector2i from, std::vector<sf::Vector2i> to, IsoRotation rot, float startingSpeed) {
 	auto allPaths = RailsPathfinder::findRailwayPath(from, to, rot, this->getEntity()->getGameMap());
 	for (auto path : allPaths) {
 		// Check if we can get the segment
@@ -35,7 +35,7 @@ void TrainController::tryGetUnblocked(sf::Vector2i from, std::vector<sf::Vector2
 			this->pathIndex = 0;
 			this->path = path;
 			// Set points
-			this->setPoints(Utils::speedPointVectorToRoutePointVector(this->getPointsForSegment(this->path.at(this->pathIndex), this->pathIndex == this->path.size() - 1 ? 0.0f : std::optional<int>()), this->getEntity()->getGame()->getTime(), this->model));
+			this->setPoints(Utils::speedPointVectorToRoutePointVector(this->getPointsForSegment(this->path.at(this->pathIndex), this->pathIndex == this->path.size() - 1 ? 0.0f : std::optional<int>()), this->getEntity()->getGame()->getTime(), this->model, startingSpeed));
 			return;
 		}
 	}
@@ -45,7 +45,8 @@ void TrainController::tryGetUnblocked(sf::Vector2i from, std::vector<sf::Vector2
 void TrainController::update(float delta) {
 	switch (this->state) {
 	case State::Blocked: {
-		this->tryGetUnblocked(Utils::toVector2i(this->getEntity()->transform->getPosition()), this->getDockTiles(this->stops.at(this->stopIndex).getEntityTarget().lock()), this->getEntity()->transform->getRotation());
+		IsoRotation blockedRotation = this->lockedRailways.empty() ? this->getEntity()->transform->getRotation() : this->lockedRailways.back().second.getTo();
+		this->tryGetUnblocked(Utils::toVector2i(this->getEntity()->transform->getPosition()), this->getDockTiles(this->stops.at(this->stopIndex).getEntityTarget().lock()), blockedRotation, this->traversedPoints.empty() ? 0.0f : this->traversedPoints.back().speedAtPoint);
 	}
 	}
 	VehicleController::update(delta);
@@ -86,33 +87,16 @@ void TrainController::onArriveAtDest(gtime_t arriveTime) {
 				// Now set points to the path between stations
 				sf::Vector2i from = Utils::toVector2i(this->points.back().pos);
 				std::vector<sf::Vector2i> to = this->getDockTiles(this->stops.at(this->stopIndex).getEntityTarget().lock());
-				auto allPaths = RailsPathfinder::findRailwayPath(from, to, this->getEntity()->transform->getRotation(), this->getEntity()->getGameMap());
-				if (allPaths.empty()) {
-					throw std::runtime_error("Not implemented yet");
-				}
-				bool foundPath = false;
-				for (auto p : allPaths) {
-					if (this->tryGetLockForSegment(p.front())) {
-						this->path = p;
-						this->pathIndex = 0;
-						this->setPoints(Utils::speedPointVectorToRoutePointVector(this->getPointsForSegment(this->path.at(this->pathIndex)), arriveTime, this->model, this->points.back().speedAtPoint));
-						foundPath = true;
-						break;
-					}
-				}
-				if (!foundPath) {
-					this->path = allPaths.front();
-					this->pathIndex = 0;
-					this->state = State::Blocked;
-				}
+				this->tryGetUnblocked(from, to, this->lockedRailways.back().second.getTo(), this->traversedPoints.back().speedAtPoint);
 			}
 		}
 		else {
 			if (this->tryGetLockForSegment(this->path.at(this->pathIndex))) {
-				this->setPoints(Utils::speedPointVectorToRoutePointVector(this->getPointsForSegment(this->path.at(this->pathIndex), this->pathIndex == this->path.size() - 1 ? 0.0f : std::optional<int>()), arriveTime, this->model, this->points.back().speedAtPoint));
+				this->setPoints(Utils::speedPointVectorToRoutePointVector(this->getPointsForSegment(this->path.at(this->pathIndex), this->pathIndex == this->path.size() - 1 ? 0.0f : std::optional<int>()), arriveTime, this->model, this->traversedPoints.back().speedAtPoint));
 			}
 			else {
-				this->state = State::Blocked;
+				// Check for any other possibilities
+				this->tryGetUnblocked(this->lockedRailways.back().first, this->getDockTiles(this->stops.at(this->stopIndex).getEntityTarget().lock()), this->lockedRailways.back().second.getTo(), this->traversedPoints.back().speedAtPoint);
 			}
 		}
 	}
@@ -130,6 +114,9 @@ std::vector<SpeedPoint> TrainController::getPointsForSegment(RailsPathfinder::Se
 	switch (s.getType()) {
 	case Type::Path:
 		auto path = s.getPath();
+		if (path.empty()) {
+			return {};
+		}
 		// Start from the from direction of the first tile
 		sf::Vector2f frontPoint = sf::Vector2f(path.front().first) + sf::Vector2f(0.5f, 0.5f) + 0.5f * path.front().second.getFrom().getUnitVector();
 		std::vector<SpeedPoint> points = { SpeedPoint(sf::Vector3f(frontPoint.x, frontPoint.y, this->getEntity()->getGameMap()->getHeightAt(frontPoint))) };
