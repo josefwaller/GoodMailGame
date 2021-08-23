@@ -4,12 +4,14 @@
 #include "Entity/Entity.h"
 #include "Game/Game.h"
 #include <algorithm>
+#include <variant>
 #include "GameMap/GameMap.h"
 
 using Segment = RailsPathfinder::Segment;
 
-Segment::Segment(Tunnel t) {
+Segment::Segment(Tunnel t, bool isReversed) {
 	this->type = Segment::Type::Tunnel;
+	this->tunnelIsReversed = isReversed;
 	this->tunnel = t;
 }
 Segment::Segment(std::vector<std::pair<sf::Vector2i, Railway>> path) {
@@ -26,6 +28,9 @@ std::vector<std::pair<sf::Vector2i, Railway>> Segment::getPath() {
 }
 Tunnel Segment::getTunnel() {
 	return this->tunnel.value();
+}
+bool Segment::getTunnelReversed() {
+	return this->tunnelIsReversed;
 }
 
 std::vector<SpeedPoint> RailsPathfinder::findPathBetweenPoints(
@@ -44,57 +49,95 @@ std::vector<std::vector<RailsPathfinder::Segment>> RailsPathfinder::findRailwayP
 	// Utility typedef
 	typedef std::pair<sf::Vector2i, IsoRotation> railwayPart;
 
-	// Struct of a path up to a point
-	struct Path {
-		Path(railwayPart p, std::vector<railwayPart> prev) : current(p), previous(prev) {}
-		railwayPart current;
-		std::vector<railwayPart> previous;
-	};
-	std::vector<Path> currentPaths = { Path({ fromTile, startingRotation }, {}) };
+	std::vector<std::vector<Segment>> currentPaths;
+	sf::Vector2i startingTile = fromTile + sf::Vector2i(startingRotation.getUnitVector());
+	for (IsoRotation r : gMap->getTileAt(startingTile).getOutgoingRailDirections(startingRotation.getReverse())) {
+		currentPaths.push_back({ Segment({ {startingTile, Railway(startingRotation.getReverse(), r)} }) });
+	}
 	std::vector<std::vector<RailsPathfinder::Segment>> toReturn;
 
 	while (!currentPaths.empty()) {
-		Path p = currentPaths.back();
+		std::vector<Segment> p = currentPaths.back();
 		currentPaths.pop_back();
-		// Get the tile and ingoing direction if the train were to follow this path
-		sf::Vector2i tilePos = p.current.first + sf::Vector2i(p.current.second.getUnitVector());
-		IsoRotation ingoingRotation = p.current.second;
+		sf::Vector2i tilePos;
+		IsoRotation ingoingRotation;
+		switch (p.back().getType()) {
+		case Segment::Type::Path: {
+			auto pair = p.back().getPath().back();
+			// Get the tile and ingoing direction if the train were to follow this path
+			tilePos = pair.first + sf::Vector2i(pair.second.getTo().getUnitVector());
+			ingoingRotation = pair.second.getTo();
+			break;
+		}
+		case Segment::Type::Tunnel: {
+			auto entrances = p.back().getTunnel().getEntrances();
+			TunnelEntrance e = TunnelEntrance(sf::Vector3i(), IsoRotation(IsoRotation::NORTH));
+			if (p.back().getTunnelReversed()) {
+				e = entrances.first;
+			}
+			else {
+				e = entrances.second;
+			}
+			tilePos = Utils::toVector2i(e.getPosition()) + Utils::toVector2i(e.getDirection().getReverse().getUnitVector());
+			ingoingRotation = e.getDirection().getReverse();
+			break;
+		}
+		}
 		// Check if it's the desintation
 		if (std::find(toTiles.begin(), toTiles.end(), tilePos) != toTiles.end()) {
 			// We have to quickly check that we can enter the tile from this direction
 			if (!gMap->getTileAt(tilePos).getOutgoingRailDirections(ingoingRotation.getReverse()).empty()) {
-				std::vector<std::pair<sf::Vector2i, Railway>> path;
-				std::vector<Segment> fullPath;
-				IsoRotation rot = startingRotation;
-				// We want to skip the first element of previous since that is the starting tile
-				// And we don't include that in the returned path
-				for (auto it = p.previous.begin() + 1; it != p.previous.end(); it++) {
-					railwayPart pt = *it;
-					if (gMap->getTileAt(pt.first).hasRailwaySignal()) {
-						if (!path.empty()) {
-							fullPath.push_back(Segment(path));
-						}
-						path = {};
-					}
-					path.push_back({ pt.first, Railway(rot.getReverse(), pt.second) });
-					rot = pt.second;
-				}
-				path.push_back({ p.current.first, Railway(rot.getReverse(), p.current.second) });
-				path.push_back({ tilePos, gMap->getTileAt(tilePos).getRailways().front() });
-				fullPath.push_back(Segment(path));
-				// For right now, we just create one big segment
-				toReturn.push_back(fullPath);
+				toReturn.push_back(p);
 			}
 		}
 		else {
 			// Go through all the railways for this tile
 			for (IsoRotation r : gMap->getTileAt(tilePos).getOutgoingRailDirections(ingoingRotation.getReverse())) {
-				std::vector<railwayPart> newPath = p.previous;
-				newPath.push_back(p.current);
-				railwayPart toAdd = { tilePos, r };
+				std::pair<sf::Vector2i, Railway> toAdd = { tilePos, Railway(ingoingRotation.getReverse(), r) };
 				// Check that we are not adding a cycle
-				if (std::find_if(newPath.begin(), newPath.end(), [toAdd](railwayPart p) { return p.first == toAdd.first && p.second == toAdd.second; }) == newPath.end()) {
-					currentPaths.push_back(Path(toAdd, newPath));
+				bool isLoop = false;
+				for (Segment s : p) {
+					if (s.getType() == Segment::Type::Path) {
+						auto path = s.getPath();
+						if (std::find_if(path.begin(), path.end(), [&toAdd](std::pair<sf::Vector2i, Railway> kv) { return kv.first == toAdd.first && kv.second == toAdd.second; }) != path.end()) {
+							isLoop = true;
+							break;
+						}
+					}
+				}
+				if (!isLoop) {
+					std::vector<Segment> newPath = p;
+					if (newPath.back().getType() != Segment::Type::Path) {
+						newPath.push_back(Segment({}));
+					}
+					std::vector<std::pair<sf::Vector2i, Railway>> newSeg = newPath.back().getPath();
+					newSeg.push_back(toAdd);
+					newPath[newPath.size() - 1] = Segment(newSeg);
+					currentPaths.push_back(newPath);
+				}
+			}
+			// Go through all the tunnels
+			for (Tunnel t : gMap->getTunnels(tilePos)) {
+				if (std::find_if(p.begin(), p.end(), [&t](Segment s) { return s.getType() == Segment::Type::Tunnel && s.getTunnel() == t; }) == p.end()) {
+					sf::Vector3i exitPos;
+					IsoRotation exitDir;
+					railwayPart exit;
+					bool isReversed = false;
+					if (t.getEntrances().first.getDirection() == ingoingRotation) {
+						exitPos = t.getEntrances().second.getPosition();
+						exitDir = t.getEntrances().second.getDirection();
+					}
+					else if (t.getEntrances().second.getDirection() == ingoingRotation) {
+						exitPos = t.getEntrances().first.getPosition();
+						exitDir = t.getEntrances().first.getDirection();
+						isReversed = true;
+					}
+					else {
+						continue;
+					}
+					std::vector<Segment> newPath = p;
+					newPath.push_back(Segment(t, isReversed));
+					currentPaths.push_back(newPath);
 				}
 			}
 		}

@@ -23,6 +23,7 @@ public:
 
 	// Get save data
 	SaveData getSaveData();
+	bool operator==(Railway other);
 private:
 	IsoRotation from;
 	IsoRotation to;

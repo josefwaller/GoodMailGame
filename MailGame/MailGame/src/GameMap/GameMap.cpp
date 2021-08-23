@@ -700,6 +700,15 @@ std::vector<Tunnel> GameMap::getTunnelsForTile(sf::Vector2i tile) {
 	}
 	return toReturn;
 }
+std::vector<Tunnel> GameMap::getTunnels(sf::Vector2i tile) {
+	std::vector<Tunnel> toReturn;
+	for (Tunnel t : this->tunnels) {
+		if (Utils::toVector2i(t.getEntrances().first.getPosition()) == tile || Utils::toVector2i(t.getEntrances().second.getPosition()) == tile) {
+			toReturn.push_back(t);
+		}
+	}
+	return toReturn;
+}
 SaveData GameMap::getSaveData() {
 	using namespace SaveKeys;
 	SaveData sd(GAMEMAP);

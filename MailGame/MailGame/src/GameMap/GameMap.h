@@ -89,6 +89,8 @@ public:
 	void addTunnel(sf::Vector2i start, sf::Vector2i end, TransitType type);
 	// Get the tunnels that start or end at a given tile
 	std::vector<Tunnel> getTunnelsForTile(sf::Vector2i tile);
+	// Get tunnels that start of end on a tile, not accounding for direction
+	std::vector<Tunnel> getTunnels(sf::Vector2i tile);
 	// Get a list of all the residences on the map
 	std::vector<sf::Vector2i> getResidences();
 	// Get the save data for the map

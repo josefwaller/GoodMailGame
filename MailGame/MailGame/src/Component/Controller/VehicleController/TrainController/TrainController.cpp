@@ -54,7 +54,9 @@ void TrainController::update(float delta) {
 
 bool TrainController::tryGetLockForSegment(RailsPathfinder::Segment segment) {
 	// Check if we can get a lock for the entire segment
-	if (segment.getType() == RailsPathfinder::Segment::Type::Path) {
+	using Type = RailsPathfinder::Segment::Type;
+	switch (segment.getType()) {
+	case Type::Path: {
 		auto rails = segment.getPath();
 		for (auto kv : rails) {
 			if (std::find_if(this->lockedRailways.begin(), this->lockedRailways.end(), [&kv](std::pair<sf::Vector2i, Railway> p) { return p.first == kv.first && p.second.getTo() == kv.second.getTo(); }) == this->lockedRailways.end()) {
@@ -68,6 +70,9 @@ bool TrainController::tryGetLockForSegment(RailsPathfinder::Segment segment) {
 			this->getEntity()->getGameMap()->getRailwayLock(kv.first, kv.second);
 			this->lockedRailways.push_back(kv);
 		}
+	}
+	case Type::Tunnel:
+		return true;
 	}
 	return true;
 }
@@ -102,17 +107,12 @@ void TrainController::onArriveAtDest(gtime_t arriveTime) {
 	}
 }
 void TrainController::onArriveAtPoint(gtime_t arriveTime, size_t pointIndex) {
-	if (this->traversedPoints.size() > 2.0 + 0.3 * this->cargoCars.size()) {
-		auto toUnlock = this->lockedRailways.front();
-		this->getEntity()->getGameMap()->releaseRailwayLock(toUnlock.first, toUnlock.second);
-		this->lockedRailways.pop_front();
-	}
 }
 
 std::vector<SpeedPoint> TrainController::getPointsForSegment(RailsPathfinder::Segment s, std::optional<int> endingSpeed) {
 	using Type = RailsPathfinder::Segment::Type;
 	switch (s.getType()) {
-	case Type::Path:
+	case Type::Path: {
 		auto path = s.getPath();
 		if (path.empty()) {
 			return {};
@@ -128,6 +128,18 @@ std::vector<SpeedPoint> TrainController::getPointsForSegment(RailsPathfinder::Se
 			points.back().setSpeed(endingSpeed.value());
 		}
 		return points;
+	}
+	case Type::Tunnel: {
+		std::vector<SpeedPoint> toReturn;
+		auto points = s.getTunnel().getPoints();
+		if (s.getTunnelReversed()) {
+			std::reverse(points.begin(), points.end());
+		}
+		for (auto p : points) {
+			toReturn.push_back(SpeedPoint(p));
+		}
+		return toReturn;
+	}
 	}
 }
 
@@ -183,7 +195,7 @@ std::vector<sf::Vector2i> TrainController::getDockTiles(std::shared_ptr<Entity> 
 		return toReturn;
 	}
 	else if (e->tag == EntityTag::TrainStation) {
-		sf::Vector2i tile = Utils::toVector2i(e->transitStop->getTrainStop().tile);
+		sf::Vector2i tile = Utils::toVector2i(e->transform->getPosition());
 		if (this->getEntity()->getGameMap()->getTileAt(tile).getRailways().empty()) {
 			throw std::runtime_error("TrainStation has no railways!");
 		}

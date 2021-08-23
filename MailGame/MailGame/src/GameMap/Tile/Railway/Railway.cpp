@@ -24,6 +24,7 @@ SaveData Railway::getSaveData() {
 IsoRotation Railway::getFrom() { return this->from; };
 IsoRotation Railway::getTo() { return this->to; }
 
+bool Railway::operator==(Railway other) { return this->to == other.to && this->from == other.from; }
 bool Railway::getIsLocked() { return this->isLocked; };
 void Railway::getLock() {
 #ifdef _DEBUG

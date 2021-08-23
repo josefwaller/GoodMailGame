@@ -13,14 +13,16 @@ public:
 			Tunnel,
 			Station
 		};
-		Segment(Tunnel t);
+		Segment(Tunnel t, bool isReversed = false);
 		Segment(std::vector<std::pair<sf::Vector2i, Railway>> p);
 		Type getType();
 		Tunnel getTunnel();
+		bool getTunnelReversed();
 		std::vector<std::pair<sf::Vector2i, Railway>> getPath();
 	private:
 		Type type;
 		std::optional<Tunnel> tunnel;
+		bool tunnelIsReversed;
 		std::optional<std::vector<std::pair<sf::Vector2i, Railway>>> path;
 	};
 	/*
