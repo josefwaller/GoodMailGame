@@ -602,6 +602,17 @@ void GameMap::addRailwayStation(size_t x, size_t y, IsoRotation direction) {
 		}
 	}
 }
+void GameMap::removeTunnel(size_t x, size_t y) {
+	if (this->getTileAt(x, y).type != TileType::OffMap) {
+		auto tuns = this->tunnels;
+		sf::Vector2i v(x, y);
+		for (auto it = tuns.begin(); it != tuns.end(); it++) {
+			if (Utils::toVector2i(it->getEntrances().first.getPosition()) == v || Utils::toVector2i(it->getEntrances().second.getPosition()) == v) {
+				this->tunnels.erase(std::find(this->tunnels.begin(), this->tunnels.end(), *it));
+			}
+		}
+	}
+}
 
 void GameMap::addRailwaySignal(sf::Vector2i tile) {
 	if (this->getTileAt(tile).type != TileType::OffMap) {

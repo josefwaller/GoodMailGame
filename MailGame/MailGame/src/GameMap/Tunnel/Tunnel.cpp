@@ -17,9 +17,19 @@ IsoRotation TunnelEntrance::getDirection() {
 }
 Tunnel::Tunnel(sf::Vector3i pointOne, sf::Vector3i pointTwo, TransitType t, Game* game)
 // Points are + Vector3f(0.5, 0.5, 0) since we want to center the positions on the x,y grid but keep z so that the car is on the ground
-	: id(TUNNEL_ID++), tunnelPoints({ sf::Vector3f(pointOne) + sf::Vector3f(0.5, 0.5, 0), sf::Vector3f(pointTwo) + sf::Vector3f(0.5, 0.5, 0) }), type(t), game(game),
+	: id(TUNNEL_ID++), type(t), game(game),
 	startDirection(IsoRotation::fromUnitVector(Utils::getUnitVector(sf::Vector3f(pointTwo - pointOne)))),
-	endDirection(IsoRotation::fromUnitVector(Utils::getUnitVector(sf::Vector3f(pointOne - pointTwo)))) {}
+	endDirection(IsoRotation::fromUnitVector(Utils::getUnitVector(sf::Vector3f(pointOne - pointTwo)))) {
+	sf::Vector3f first = sf::Vector3f(pointOne) + sf::Vector3f(0.5, 0.5, 0);
+	sf::Vector3f last = sf::Vector3f(pointTwo) + sf::Vector3f(0.5, 0.5, 0);
+	sf::Vector3f unit = Utils::getUnitVector(last - first);
+	for (size_t i = 0; i < Utils::getVectorDistance(last, first); i++) {
+		this->tunnelPoints.push_back(first);
+		first += unit;
+	}
+	this->tunnelPoints.push_back(first);
+	this->tunnelPoints.push_back(last);
+}
 
 Tunnel::Tunnel(SaveData data, Game* g) : game(g) {
 	using namespace SaveKeys;

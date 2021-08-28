@@ -87,6 +87,8 @@ public:
 	void addRoadInDirection(size_t x, size_t y, IsoRotation rot);
 	// Add a tunnel
 	void addTunnel(sf::Vector2i start, sf::Vector2i end, TransitType type);
+	// Remove tunnel
+	void removeTunnel(size_t x, size_t y);
 	// Get the tunnels that start or end at a given tile
 	std::vector<Tunnel> getTunnelsForTile(sf::Vector2i tile);
 	// Get tunnels that start of end on a tile, not accounding for direction

@@ -112,6 +112,8 @@ bool UiHandler::handleEvent(sf::Event e) {
 			this->game->getGameMap()->removeRailTrack(tile.x, tile.y);
 			// Remove airplane road
 			this->game->getGameMap()->removeAirplaneRoad(tile.x, tile.y);
+			// Remove tunnels
+			this->game->getGameMap()->removeTunnel(tile.x, tile.y);
 			break;
 		}
 		case UiState::DeletingRailwaysAndRoads: {
