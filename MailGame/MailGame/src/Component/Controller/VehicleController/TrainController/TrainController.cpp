@@ -59,7 +59,7 @@ bool TrainController::tryGetLockForSegment(RailsPathfinder::Segment segment, flo
 	case Type::Path: {
 		auto rails = segment.getPath();
 		for (auto kv : rails) {
-			if (std::find_if(this->railLocks.begin(), this->railLocks.end(), [&kv](RailLock r) { return r.getLockedTile().first == kv.first && r.getLockedTile().second.getTo() == kv.second.getTo(); }) == this->railLocks.end()) {
+			if (std::find_if(this->railLocks.begin(), this->railLocks.end(), [&kv](RailLock r) { return !r.getIsTunnel() && r.getLockedTile().first == kv.first && r.getLockedTile().second.getTo() == kv.second.getTo(); }) == this->railLocks.end()) {
 				if (!this->getEntity()->getGameMap()->getTileAt(kv.first).canGetRailwayLock(kv.second)) {
 					return false;
 				}
@@ -78,9 +78,15 @@ bool TrainController::tryGetLockForSegment(RailsPathfinder::Segment segment, flo
 				sf::Vector3f(to.x, to.y, this->getEntity()->getGameMap()->getHeightAt(to))
 			);
 		}
+		break;
 	}
 	case Type::Tunnel:
-		return true;
+		if (!segment.getTunnel().canGetLock()) {
+			return false;
+		}
+		this->railLocks.push_back(RailLock(segment.getTunnel(), distance + segment.getTunnel().getDistance()));
+		this->getEntity()->getGameMap()->getTunnelLock(segment.getTunnel());
+		break;
 	}
 	return true;
 }
@@ -127,6 +133,7 @@ void TrainController::onArriveAtPoint(gtime_t arriveTime, size_t pointIndex) {
 
 void TrainController::releaseLock(RailLock lock) {
 	if (lock.getIsTunnel()) {
+		this->getEntity()->getGameMap()->releaseTunnelLock(lock.getLockedTunnel());
 	}
 	else {
 		this->getEntity()->getGameMap()->releaseRailwayLock(lock.getLockedTile().first, lock.getLockedTile().second);
@@ -173,7 +180,7 @@ void TrainController::onDelete() {
 	while (!this->railLocks.empty()) {
 		auto p = this->railLocks.back();
 		this->railLocks.pop_back();
-		this->getEntity()->getGameMap()->releaseRailwayLock(p.getLockedTile().first, p.getLockedTile().second);
+		this->releaseLock(p);
 	}
 }
 

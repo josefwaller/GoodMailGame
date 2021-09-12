@@ -29,9 +29,10 @@ public:
 	TunnelEntrance getOtherEntrance(TunnelEntrance e);
 	std::vector<sf::Vector3f> getPoints();
 	TransitType getType();
-	bool canGetLock(sf::Vector2i point);
-	void getLock(sf::Vector2i point);
-	void releaseLock(sf::Vector2i point);
+	bool canGetLock();
+	void getLock();
+	void releaseLock();
+	float getDistance();
 	void render(sf::RenderWindow* window);
 	bool operator==(Tunnel other);
 
@@ -48,5 +49,6 @@ private:
 	IsoRotation startDirection;
 	IsoRotation endDirection;
 	TransitType type;
+	bool isLocked;
 	Game* game;
 };

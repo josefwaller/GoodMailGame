@@ -17,7 +17,7 @@ IsoRotation TunnelEntrance::getDirection() {
 }
 Tunnel::Tunnel(sf::Vector3i pointOne, sf::Vector3i pointTwo, TransitType t, Game* game)
 // Points are + Vector3f(0.5, 0.5, 0) since we want to center the positions on the x,y grid but keep z so that the car is on the ground
-	: id(TUNNEL_ID++), type(t), game(game),
+	: id(TUNNEL_ID++), type(t), game(game), isLocked(false),
 	startDirection(IsoRotation::fromUnitVector(Utils::getUnitVector(sf::Vector3f(pointTwo - pointOne)))),
 	endDirection(IsoRotation::fromUnitVector(Utils::getUnitVector(sf::Vector3f(pointOne - pointTwo)))) {
 	sf::Vector3f first = sf::Vector3f(pointOne) + sf::Vector3f(0.5, 0.5, 0);
@@ -37,6 +37,7 @@ Tunnel::Tunnel(SaveData data, Game* g) : game(g) {
 	this->tunnelPoints = data.getVector3fVector(POINTS);
 	this->startDirection = data.getIsoRotation(START);
 	this->endDirection = data.getIsoRotation(END);
+	this->isLocked = false;
 	this->type = (TransitType)data.getSizeT(TYPE);
 }
 
@@ -51,33 +52,46 @@ TransitType Tunnel::getType() {
 	return this->type;
 }
 
-bool Tunnel::canGetLock(sf::Vector2i) {
-	return true;
+bool Tunnel::canGetLock() {
+	return !this->isLocked;
 }
 
 std::vector<sf::Vector3f> Tunnel::getPoints() {
 	return this->tunnelPoints;
 }
 
-void Tunnel::getLock(sf::Vector2i) {
+void Tunnel::getLock() {
+	this->isLocked = true;
 }
 
-void Tunnel::releaseLock(sf::Vector2i) {
+void Tunnel::releaseLock() {
+	this->isLocked = false;
 }
 
 void Tunnel::render(sf::RenderWindow* window) {
 	sf::Vector3f pOne(this->tunnelPoints.front() + this->startDirection.getReverse().getUnitVector3D() / 2.0f);
 	sf::Vector3f pTwo(this->tunnelPoints.back() + this->endDirection.getReverse().getUnitVector3D() / 2.0f);
 	sf::Color color = this->type == TransitType::Car ? sf::Color::Red : sf::Color::Cyan;
+	sf::Color color2 = this->isLocked ? sf::Color::White : sf::Color::Black;
 	sf::Vertex arr[2] = {
 		sf::Vertex(this->game->worldToScreenPos(pOne), color),
-		sf::Vertex(this->game->worldToScreenPos(pTwo), color)
+		sf::Vertex(this->game->worldToScreenPos(pTwo), color2)
 	};
 	window->draw(arr, 2, sf::PrimitiveType::Lines);
 }
 
 bool Tunnel::operator==(Tunnel other) {
 	return this->id == other.id;
+}
+
+float Tunnel::getDistance() {
+	if (this->tunnelPoints.empty()) return 0.0f;
+
+	float dist = 0.0f;
+	for (auto it = this->tunnelPoints.begin(); it != this->tunnelPoints.end() - 1; it++) {
+		dist += Utils::getVectorDistance(*it, *(it + 1));
+	}
+	return dist;
 }
 
 SaveData Tunnel::getSaveData() {
@@ -88,5 +102,6 @@ SaveData Tunnel::getSaveData() {
 	data.addVector3fVector(POINTS, this->tunnelPoints);
 	data.addSizeT(ID, this->id);
 	data.addSizeT(TYPE, (size_t)this->type);
+	data.addBool(IS_LOCKED, this->isLocked);
 	return data;
 }

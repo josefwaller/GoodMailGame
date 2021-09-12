@@ -565,7 +565,27 @@ void GameMap::getRailwayLock(sf::Vector2i tile, Railway r) {
 void GameMap::releaseRailwayLock(sf::Vector2i tile, Railway r) {
 	this->tiles[tile.x][tile.y].releaseRailwayLock(r);
 }
-
+bool GameMap::canGetTunnelLock(Tunnel t) {
+	for (auto it = this->tunnels.begin(); it != this->tunnels.end(); it++) {
+		if (*it == t) {
+			return it->canGetLock();
+		}
+	}
+}
+void GameMap::getTunnelLock(Tunnel t) {
+	for (auto it = this->tunnels.begin(); it != this->tunnels.end(); it++) {
+		if (*it == t) {
+			return it->getLock();
+		}
+	}
+}
+void GameMap::releaseTunnelLock(Tunnel t) {
+	for (auto it = this->tunnels.begin(); it != this->tunnels.end(); it++) {
+		if (*it == t) {
+			return it->releaseLock();
+		}
+	}
+}
 void GameMap::setBuildingForTile(size_t x, size_t y, std::weak_ptr<Entity> building) {
 	if (this->getTileAt(x, y).type != TileType::OffMap) {
 		this->tiles[x][y].building = building;

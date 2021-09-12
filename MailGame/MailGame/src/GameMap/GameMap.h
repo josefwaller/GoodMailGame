@@ -79,6 +79,10 @@ public:
 	// Get/release railway lock
 	void getRailwayLock(sf::Vector2i tile, Railway railway);
 	void releaseRailwayLock(sf::Vector2i tile, Railway railway);
+	// Get/release tunnel locks
+	bool canGetTunnelLock(Tunnel t);
+	void getTunnelLock(Tunnel t);
+	void releaseTunnelLock(Tunnel t);
 	// Check if there is a road on the given tile
 	bool hasRoadAt(size_t x, size_t y);
 	// check if there is a road leading in the given direction on a tile
