@@ -9,7 +9,7 @@
 #include "System/Utils/Utils.h"
 #include "GameMap/GameMap.h"
 
-TrainController::TrainController(gtime_t departTime, VehicleModel model, std::vector<std::weak_ptr<Entity>> trainCars) : VehicleController(departTime, model, trainCars), stopIndex(0), state(State::InTransit) {}
+TrainController::TrainController(gtime_t departTime, VehicleModel model, std::vector<std::weak_ptr<Entity>> trainCars) : VehicleController(departTime, model, trainCars), stopIndex(0), state(State::InTransit), pathIndex(0) {}
 
 void TrainController::init() {
 	// Get the stops
@@ -30,7 +30,7 @@ void TrainController::tryGetUnblocked(sf::Vector2i from, std::vector<sf::Vector2
 	auto allPaths = RailsPathfinder::findRailwayPath(from, to, rot, this->getEntity()->getGameMap());
 	for (auto path : allPaths) {
 		// Check if we can get the segment
-		if (this->tryGetLockForSegment(path.front())) {
+		if (this->tryGetLockForSegment(path.front(), this->getDistanceSoFar())) {
 			this->state = State::InTransit;
 			this->pathIndex = 0;
 			this->path = path;
@@ -52,7 +52,7 @@ void TrainController::update(float delta) {
 	VehicleController::update(delta);
 }
 
-bool TrainController::tryGetLockForSegment(RailsPathfinder::Segment segment) {
+bool TrainController::tryGetLockForSegment(RailsPathfinder::Segment segment, float distance) {
 	// Check if we can get a lock for the entire segment
 	using Type = RailsPathfinder::Segment::Type;
 	switch (segment.getType()) {
@@ -66,9 +66,17 @@ bool TrainController::tryGetLockForSegment(RailsPathfinder::Segment segment) {
 			}
 		}
 		// Get the lock
+		float distanceOffset = 0.0f;
 		for (auto kv : rails) {
 			this->getEntity()->getGameMap()->getRailwayLock(kv.first, kv.second);
-			this->railLocks.push_back(RailLock(kv.first, kv.second, 0.0f));
+			this->railLocks.push_back(RailLock(kv.first, kv.second, distance + distanceOffset));
+			// Calculate the distance travelled
+			sf::Vector2f from = sf::Vector2f(kv.first) + kv.second.getFrom().getUnitVector() / 2.0f;
+			sf::Vector2f to = sf::Vector2f(kv.first) + kv.second.getTo().getUnitVector() / 2.0f;
+			distanceOffset += Utils::getVectorDistance(
+				sf::Vector3f(from.x, from.y, this->getEntity()->getGameMap()->getHeightAt(from)),
+				sf::Vector3f(to.x, to.y, this->getEntity()->getGameMap()->getHeightAt(to))
+			);
 		}
 	}
 	case Type::Tunnel:
@@ -96,7 +104,7 @@ void TrainController::onArriveAtDest(gtime_t arriveTime) {
 			}
 		}
 		else {
-			if (this->tryGetLockForSegment(this->path.at(this->pathIndex))) {
+			if (this->tryGetLockForSegment(this->path.at(this->pathIndex), this->getDistanceSoFar())) {
 				this->setPoints(Utils::speedPointVectorToRoutePointVector(this->getPointsForSegment(this->path.at(this->pathIndex), this->pathIndex == this->path.size() - 1 ? 0.0f : std::optional<int>()), arriveTime, this->model, this->traversedPoints.back().speedAtPoint));
 			}
 			else {
@@ -107,6 +115,22 @@ void TrainController::onArriveAtDest(gtime_t arriveTime) {
 	}
 }
 void TrainController::onArriveAtPoint(gtime_t arriveTime, size_t pointIndex) {
+	float dist = this->getDistanceSoFar();
+	for (int i = this->railLocks.size() - 1; i >= 0; i--) {
+		RailLock l = this->railLocks.at(i);
+		if (l.getDistance() < dist - this->getTrainLength()) {
+			this->releaseLock(l);
+			this->railLocks.erase(std::next(this->railLocks.begin(), i));
+		}
+	}
+}
+
+void TrainController::releaseLock(RailLock lock) {
+	if (lock.getIsTunnel()) {
+	}
+	else {
+		this->getEntity()->getGameMap()->releaseRailwayLock(lock.getLockedTile().first, lock.getLockedTile().second);
+	}
 }
 
 std::vector<SpeedPoint> TrainController::getPointsForSegment(RailsPathfinder::Segment s, std::optional<int> endingSpeed) {
@@ -204,7 +228,7 @@ std::vector<sf::Vector2i> TrainController::getDockTiles(std::shared_ptr<Entity> 
 }
 
 float TrainController::getTrainLength() {
-	return 2.0f + 0.3f * this->cargoCars.size();
+	return 1.0f + 0.3f * this->cargoCars.size();
 }
 
 std::optional<SaveData> TrainController::getSaveData() {
@@ -227,4 +251,13 @@ void TrainController::fromSaveData(SaveData data) {
 
 sf::Vector2i TrainController::getDest() {
 	return this->dest;
+}
+
+float TrainController::getDistanceSoFar() {
+	if (this->traversedPoints.empty()) return 0.0f;
+	float dist = 0.0f;
+	for (auto it = this->traversedPoints.begin(); it != this->traversedPoints.end() - 1; it++) {
+		dist += Utils::getVectorDistance(it->pos, (it + 1)->pos);
+	}
+	return dist;
 }

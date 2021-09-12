@@ -18,12 +18,15 @@ public:
 	virtual void onDelete() override;
 protected:
 	std::vector<SpeedPoint> getPointsForSegment(RailsPathfinder::Segment s, std::optional<int> endingSpeed = {});
-	bool tryGetLockForSegment(RailsPathfinder::Segment segment);
+	bool tryGetLockForSegment(RailsPathfinder::Segment segment, float distance);
+	void releaseLock(RailLock lock);
 	virtual void onArriveAtDest(gtime_t arriveTime) override;
 	virtual void onArriveAtPoint(gtime_t arriveTime, size_t pointIndex) override;
 
 	virtual std::optional<SaveData> getSaveData() override;
 	virtual void fromSaveData(SaveData data) override;
+
+	float getDistanceSoFar();
 private:
 	// The stops the train is going over
 	std::vector<VehicleControllerStop> stops;
