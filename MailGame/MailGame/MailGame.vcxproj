@@ -146,6 +146,7 @@
     <ClCompile Include="src\Component\Controller\VehicleController\BoatController\BoatController.cpp" />
     <ClCompile Include="src\Component\Controller\VehicleController\PlaneController\PlaneController.cpp" />
     <ClCompile Include="src\Component\Controller\VehicleController\CarController\CarController.cpp" />
+    <ClCompile Include="src\Component\Controller\VehicleController\TrainController\RailLock.cpp" />
     <ClCompile Include="src\Component\Controller\VehicleController\TrainController\TrainController.cpp" />
     <ClCompile Include="src\Component\Controller\VehicleController\VehicleController.cpp" />
     <ClCompile Include="src\Component\Controller\DepotController\TruckDepotController\TruckDepotController.cpp" />
@@ -221,6 +222,7 @@
     <ClInclude Include="src\Component\Controller\VehicleController\BoatController\BoatController.h" />
     <ClInclude Include="src\Component\Controller\VehicleController\PlaneController\PlaneController.h" />
     <ClInclude Include="src\Component\Controller\VehicleController\CarController\CarController.h" />
+    <ClInclude Include="src\Component\Controller\VehicleController\TrainController\RailLock.h" />
     <ClInclude Include="src\Component\Controller\VehicleController\TrainController\TrainController.h" />
     <ClInclude Include="src\Component\Controller\VehicleController\VehicleController.h" />
     <ClInclude Include="src\Component\Controller\DepotController\TruckDepotController\TruckDepotController.h" />

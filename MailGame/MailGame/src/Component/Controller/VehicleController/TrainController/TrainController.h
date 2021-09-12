@@ -2,6 +2,7 @@
 #include "Component/Controller/VehicleController/VehicleController.h"
 #include "GameMap/Tile/Railway/Railway.h"
 #include "Component/Pathfinder/RailsPathfinder/RailsPathfinder.h"
+#include "./RailLock.h"
 #include <deque>
 
 class TrainController : public VehicleController {
@@ -36,8 +37,8 @@ private:
 	size_t pathIndex;
 	// The destination, or tile the train is currently heading to
 	sf::Vector2i dest;
-	// The tiles the train has a lock on
-	std::deque<std::pair<sf::Vector2i, Railway>> lockedRailways;
+	// The tiles/tunnels/bridges that the train has a lock on
+	std::vector<RailLock> railLocks;
 	// Get the length of the train
 	float getTrainLength();
 	// Try and get unblocked
