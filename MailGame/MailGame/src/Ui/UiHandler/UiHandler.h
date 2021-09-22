@@ -101,4 +101,9 @@ private:
 		sf::PrimitiveType t = sf::PrimitiveType::Quads,
 		sf::Color c = sf::Color::White
 	);
+	// Get the direction a tile is sloped in
+	std::optional<IsoRotation> getTileSlopeDirection(sf::Vector2i exit);
+	std::optional<sf::Vector2i> getTunnelExitForTile(sf::Vector2i entrance);
+	// Get the height at the bottom of a slope
+	std::optional<unsigned int> getBottomSlopeHeight(sf::Vector2i t);
 };

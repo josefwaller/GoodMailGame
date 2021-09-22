@@ -131,13 +131,9 @@ bool UiHandler::handleEvent(sf::Event e) {
 			break;
 		}
 		case UiState::BuildingTunnel: {
-			if (this->tunnelStart.has_value()) {
-				this->game->getGameMap()->addTunnel(this->tunnelStart.value(), this->getHoveredTile(), this->tunnelType);
-				this->tunnelStart.reset();
-				this->changeState(UiState::Default);
-			}
-			else {
-				this->tunnelStart = this->getHoveredTile();
+			sf::Vector2i tile = this->getHoveredTile();
+			if (this->getTunnelExitForTile(tile).has_value()) {
+				this->game->getGameMap()->addTunnel(tile, this->getTunnelExitForTile(tile).value(), this->tunnelType);
 			}
 		}
 		case UiState::BuildingRailwaySignal:
@@ -563,7 +559,20 @@ void UiHandler::render(sf::RenderWindow* w) {
 		circle.setFillColor(sf::Color::Red);
 		circle.setRadius(2.0f);
 		w->draw(circle);
+		break;
 	}
+	case UiState::BuildingTunnel:
+		sf::Vector2i entrance = this->getHoveredTile();
+		std::optional<sf::Vector2i> exit = this->getTunnelExitForTile(entrance);
+		if (exit.has_value()) {
+			sf::Vector3f pOne(entrance.x + 0.5f, entrance.y + 0.5f, this->game->getGameMap()->getHeightAt(sf::Vector2f(entrance) + sf::Vector2f(0.5, 0.5)));
+			sf::Vector3f pTwo(exit.value().x + 0.5f, exit.value().y + 0.5f, this->game->getGameMap()->getHeightAt(sf::Vector2f(exit.value()) + sf::Vector2f(0.5, 0.5)));
+			sf::VertexArray line(sf::PrimitiveType::Lines, 2);
+			line[0] = sf::Vertex(this->game->worldToScreenPos(pOne), sf::Color::Red);
+			line[1] = sf::Vertex(this->game->worldToScreenPos(pTwo), sf::Color::Blue);
+			w->draw(line);
+		}
+		break;
 	}
 	// Outline the sprite currently being hovered
 	sf::VertexArray vArr = getDrawableTile(this->getHoveredTile(), sf::PrimitiveType::LinesStrip, sf::Color::White);
@@ -703,4 +712,46 @@ void UiHandler::addPathToDraw(std::vector<RoutePoint> path) {
 
 void UiHandler::setSavefileName(const char name[200]) {
 	strncpy_s(this->savefileName, name, 200);
+}
+
+std::optional<IsoRotation> UiHandler::getTileSlopeDirection(sf::Vector2i tile) {
+	GameMap* gMap = this->game->getGameMap();
+	unsigned int topLeft = gMap->getPointHeight(tile);
+	unsigned int topRight = gMap->getPointHeight(tile + sf::Vector2i(1, 0));
+	unsigned int botLeft = gMap->getPointHeight(tile + sf::Vector2i(0, 1));
+	unsigned int botRight = gMap->getPointHeight(tile + sf::Vector2i(1, 1));
+	if (topLeft == topRight && botLeft == botRight && topLeft != botLeft) {
+		return topLeft > botLeft ? IsoRotation::SOUTH : IsoRotation::NORTH;
+	}
+	else if (topLeft == botLeft && topRight == botRight && topLeft != topRight) {
+		return topLeft > topRight ? IsoRotation::EAST : IsoRotation::WEST;
+	}
+	return {};
+}
+std::optional<sf::Vector2i> UiHandler::getTunnelExitForTile(sf::Vector2i tile) {
+	auto dir = this->getTileSlopeDirection(tile);
+	if (dir.has_value()) {
+		unsigned int baseHeight = this->getBottomSlopeHeight(tile).value();
+		IsoRotation unit = dir.value().getReverse();
+		for (sf::Vector2i t = tile + sf::Vector2i(unit.getUnitVector()); this->game->getGameMap()->getTileAt(t).type != TileType::OffMap; t += sf::Vector2i(unit.getUnitVector())) {
+			if (this->getTileSlopeDirection(t).value_or(IsoRotation::SOUTH_EAST) == unit && this->getBottomSlopeHeight(t).value_or(10000) == baseHeight) {
+				return t;
+			}
+		}
+	}
+	return {};
+}
+
+std::optional<unsigned int> UiHandler::getBottomSlopeHeight(sf::Vector2i t) {
+	auto d = this->getTileSlopeDirection(t);
+	if (!d.has_value()) {
+		return {};
+	}
+	IsoRotation dir = d.value();
+	if (dir == IsoRotation::SOUTH)
+		return this->game->getGameMap()->getPointHeight(t + sf::Vector2i(0, 1));
+	else if (dir == IsoRotation::EAST)
+		return this->game->getGameMap()->getPointHeight(t + sf::Vector2i(1, 0));
+	// South and East can both use the top-left corner
+	return this->game->getGameMap()->getPointHeight(t);
 }
