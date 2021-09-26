@@ -33,18 +33,26 @@ bool UiHandler::handleEvent(sf::Event e) {
 			return true;
 		}
 		switch (this->currentState) {
-		case UiState::BuildingEntity:
+		case UiState::BuildingEntity: {
 			if (!this->recipe) {
 				throw std::runtime_error("BuildingEntity but with no ConstructionRecipe!");
 			}
 			mousePos = this->game->getMousePosition();
-			if (this->recipe.value().isValid(this->game, sf::Vector3f(mousePos.x, mousePos.y, 0), this->currentRotation)) {
+			GameMap* gMap = this->game->getGameMap();
+			sf::Vector3f pos(mousePos.x, mousePos.y, std::max({
+				gMap->getPointHeight(sf::Vector2i(std::floor(mousePos.x), std::floor(mousePos.y))),
+				gMap->getPointHeight(sf::Vector2i(std::floor(mousePos.x), std::ceil(mousePos.y))),
+				gMap->getPointHeight(sf::Vector2i(std::ceil(mousePos.x), std::floor(mousePos.y))),
+				gMap->getPointHeight(sf::Vector2i(std::ceil(mousePos.x), std::ceil(mousePos.y))),
+				}));
+			if (this->recipe.value().isValid(this->game, pos, this->currentRotation)) {
 				this->game->addEntity(
-					this->recipe.value().buildRecipe(this->game, sf::Vector3f(mousePos.x, mousePos.y, this->game->getGameMap()->getPointHeight(tilePos.x, tilePos.y)), this->currentRotation)
+					this->recipe.value().buildRecipe(this->game, pos, this->currentRotation)
 				);
 			}
 			this->changeState(UiState::Default);
 			return true;
+		}
 		case UiState::BuildingRailTracks:
 			if (this->isStation) {
 				this->game->getGameMap()->addRailwayStation(
