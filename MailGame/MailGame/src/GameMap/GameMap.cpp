@@ -111,35 +111,93 @@ void GameMap::render(sf::RenderWindow* window) {
 }
 
 sf::Sprite GameMap::getRoadSprite(Road road, IsoRotation gameRotation, std::vector<std::vector<unsigned int>> heights) {
-	std::string spriteString = "road-";
-	if (IsoRotation(IsoRotation::NORTH) < gameRotation) {
-	}
-	std::map<IsoRotation, bool> hasDirection;
-	for (IsoRotation r : road.getDirections()) {
-		hasDirection[r + gameRotation] = true;
-	}
-	for (IsoRotation r : IsoRotation::CARDINAL_DIRECTIONS) {
-		spriteString += hasDirection[r] ? "1" : "0";
-	}
+	std::string spriteString = "road_";
+	sf::Vector2f origin;
 	if (heights[0][0] != heights[0][1] || heights[0][0] != heights[1][0]) {
 		// Must be a ramp
+		spriteString += "slantFlat_";
+		origin = sf::Vector2f(255, 304);
 		if (heights[0][0] > heights[0][1]) {
-			spriteString += "-ramp-N";
+			spriteString += "SE";
 		}
 		else if (heights[0][0] < heights[0][1]) {
-			spriteString += "-ramp-S";
+			spriteString += "NW";
 		}
 		else if (heights[0][0] > heights[1][0]) {
-			spriteString += "-ramp-W";
+			spriteString += "NE";
 		}
 		else if (heights[0][0] < heights[1][0]) {
-			spriteString += "-ramp-E";
+			spriteString += "SW";
 		}
 		else {
 			throw std::runtime_error("Tiles not set up properly for roads");
 		}
 	}
-	return ResourceLoader::get()->getSprite("tiles/tiles", spriteString);
+	else {
+		origin = sf::Vector2f(256, 314);
+		// Get number of outgoing road connections
+		size_t c = (road.hasNorth ? 1 : 0) + (road.hasEast ? 1 : 0) + (road.hasSouth ? 1 : 0) + (road.hasWest ? 1 : 0);
+		// Check if 4 way intersection
+		if (c == 4) {
+			spriteString += "crossroad_NE";
+		}
+		// Check if the road is a 3 way intersection
+		if (c == 3) {
+			spriteString += "intersection_";
+			// Set the sprite name
+			if (!road.hasNorth) {
+				spriteString += "SW";
+			}
+			else if (!road.hasEast) {
+				spriteString += "NW";
+			}
+			else if (!road.hasSouth) {
+				spriteString += "NE";
+			}
+			else {
+				spriteString += "SE";
+			}
+		}
+		else if (c == 2) {
+			// If the road is straight
+			if (road.hasNorth && road.hasSouth) {
+				spriteString += "straight_SE";
+			}
+			else if (road.hasEast && road.hasWest) {
+				spriteString += "straight_SW";
+			}
+			else if (road.hasNorth && road.hasEast) {
+				spriteString += "bend_NE";
+			}
+			else if (road.hasEast && road.hasSouth) {
+				spriteString += "bend_SE";
+			}
+			else if (road.hasSouth && road.hasWest) {
+				spriteString += "bend_SW";
+			}
+			else {
+				spriteString += "bend_NW";
+			}
+		}
+		else if (c == 1) {
+			spriteString += "end_";
+			if (road.hasNorth) {
+				spriteString += "SE";
+			}
+			else if (road.hasEast) {
+				spriteString += "SW";
+			}
+			else if (road.hasSouth) {
+				spriteString += "NW";
+			}
+			else if (road.hasWest) {
+				spriteString += "NE";
+			}
+		}
+	}
+	sf::Sprite spr = ResourceLoader::get()->getIndividualSprite("roadTiles/" + spriteString + ".png");
+	spr.setOrigin(origin);
+	return spr;
 }
 void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 	sf::Vector2f p = this->game->worldToScreenPos(sf::Vector3f(x, y, 0));
@@ -162,6 +220,16 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 	bool drawSprite = true;
 	switch (tile.type) {
 	case TileType::Land:
+		sf::Color tileColor = (x + y) % 2 == 0 ? sf::Color(0, 150, 0) : sf::Color(0, 175, 0);
+		if (tile.hasRailwaySignal()) {
+			tileColor = sf::Color(212, 0, 0);
+		}
+		sf::VertexArray arr(sf::PrimitiveType::Quads, 4);
+		arr[0] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(x, y, this->pointHeights.at(x).at(y))), tileColor);
+		arr[1] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(x + 1, y, this->pointHeights.at(x + 1).at(y))), tileColor);
+		arr[2] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(x + 1, y + 1, this->pointHeights.at(x + 1).at(y + 1))), tileColor);
+		arr[3] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(x, y + 1, this->pointHeights.at(x).at(y + 1))), tileColor);
+		window->draw(arr);
 		if (tile.road.has_value()) {
 			std::vector<std::vector<unsigned int>> heights(2, std::vector<unsigned int>(2));
 			for (size_t i = 0; i < 2; i++) {
@@ -171,36 +239,14 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 			}
 			s = getRoadSprite(tile.road.value(), this->game->getRotation(), heights);
 		}
-		else if (tile.airplaneRoad.has_value()) {
+		if (tile.airplaneRoad.has_value()) {
 			s = getRoadSprite(tile.airplaneRoad.value(), this->game->getRotation());
 			s.setColor(tile.airplaneRoad.value().isRunway ? sf::Color::Blue : sf::Color::Red);
 		}
-		else {
-			sf::Color tileColor = (x + y) % 2 == 0 ? sf::Color(0, 150, 0) : sf::Color(0, 175, 0);
-			if (tile.hasRailwaySignal()) {
-				tileColor = sf::Color(212, 0, 0);
-			}
-			sf::VertexArray arr(sf::PrimitiveType::Quads, 4);
-			arr[0] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(x, y, this->pointHeights.at(x).at(y))), tileColor);
-			arr[1] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(x + 1, y, this->pointHeights.at(x + 1).at(y))), tileColor);
-			arr[2] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(x + 1, y + 1, this->pointHeights.at(x + 1).at(y + 1))), tileColor);
-			arr[3] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(x, y + 1, this->pointHeights.at(x).at(y + 1))), tileColor);
-			window->draw(arr);
-			drawSprite = false;
-		}
 	}
 	if (drawSprite) {
-		unsigned int height = 100000;
-		for (size_t xOff = 0; xOff < 2; xOff++) {
-			for (size_t yOff = 0; yOff < 2; yOff++) {
-				if (height > this->pointHeights.at(x + xOff).at(y + yOff)) {
-					height = this->pointHeights.at(x + xOff).at(y + yOff);
-				}
-			}
-		}
-		sf::Vector3f pos((float)x + 0.5f, (float)y + 0.5f, (float)height);
+		sf::Vector3f pos((float)x + 0.5f, (float)y + 0.5f, this->getHeightAt((float)x + 0.5f, (float)y + 0.5f));
 		s.setPosition(this->game->worldToScreenPos(pos));
-		s = Utils::setupBuildingSprite(s, false);
 		if (!tile.canGetLock()) {
 			s.setColor(sf::Color(0, 255, 51));
 		}

@@ -25,5 +25,5 @@ public:
 	// Optional parameter to center it
 	sf::Sprite getSprite(std::string sheetName, std::string spriteName, bool center = false);
 	// Get a single sprite fro its own image
-	sf::Sprite getIndividualSprite(std::string spriteName);
+	sf::Sprite getIndividualSprite(std::string spriteName, bool center = false);
 };

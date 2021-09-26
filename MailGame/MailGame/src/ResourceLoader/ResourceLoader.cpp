@@ -56,7 +56,7 @@ sf::Sprite ResourceLoader::getSprite(std::string sheetName, std::string spriteNa
 	return spr;
 }
 
-sf::Sprite ResourceLoader::getIndividualSprite(std::string spriteName) {
+sf::Sprite ResourceLoader::getIndividualSprite(std::string spriteName, bool center) {
 	// Check if we already have the file loaded
 	if (this->spritesheets.find(spriteName) == this->spritesheets.end()) {
 		sf::Texture* t = &this->spritesheets[spriteName].texture;
@@ -64,5 +64,9 @@ sf::Sprite ResourceLoader::getIndividualSprite(std::string spriteName) {
 			// TBA
 		}
 	}
-	return sf::Sprite(this->spritesheets[spriteName].texture);
+	sf::Sprite spr(this->spritesheets[spriteName].texture);
+	if (center) {
+		spr.setOrigin(spr.getLocalBounds().width / 2.0f, spr.getLocalBounds().height / 2.0f);
+	}
+	return spr;
 }
