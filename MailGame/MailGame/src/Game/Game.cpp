@@ -152,7 +152,7 @@ sf::Vector2f Game::worldToScreenPos(sf::Vector3f pos) {
 		pos2D = sf::Vector2f(pos.y, -pos.x);
 		break;
 	}
-	return sf::Vector2f(TILE_WIDTH * (pos2D.x - pos2D.y), TILE_HEIGHT * (pos2D.x + pos2D.y) - pos.z * TILE_HEIGHT * 0.75f);
+	return sf::Vector2f(TILE_WIDTH * (pos2D.x - pos2D.y), TILE_HEIGHT * (pos2D.x + pos2D.y) - pos.z * TILE_HEIGHT * 0.6f);
 }
 
 void Game::addEntity(std::shared_ptr<Entity> e) {
