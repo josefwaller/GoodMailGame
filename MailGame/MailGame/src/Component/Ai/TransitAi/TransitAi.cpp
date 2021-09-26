@@ -19,10 +19,8 @@ TransitAi::TransitAi(
 void TransitAi::renderUi() {
 	ImGui::PushID(this->getEntity()->getId());
 	char buf[200];
-	sprintf_s(buf, "%s %llu", entityTagToString(this->getEntity()->tag).c_str(), this->getEntity()->getId());
-	ImGui::Begin(buf);
-
-	ImGui::End();
+	sprintf_s(buf, "%u / %u mail objects", this->getEntity()->mailContainer->getNumLetters(), this->getCapacity(this->route));
+	ImGui::Text(buf);
 	ImGui::PopID();
 }
 std::vector<VehicleControllerStop> TransitAi::getStops() {

@@ -96,11 +96,10 @@ void VehicleController::renderUi() {
 	if (ImGui::Begin(this->getEntity()->getName().c_str())) {
 		size_t numMail = this->getEntity()->mailContainer->getNumLetters();
 		char buf[200];
-		sprintf_s(buf, "%zu letters", numMail);
+		this->getEntity()->ai->renderUi();
 		ImGui::Text(buf);
 		sf::Vector3f pos = this->getEntity()->transform->getPosition();
 		sprintf_s(buf, "Position: (%f, %f, %f)", pos.x, pos.y, pos.z);
-		ImGui::Text(buf);
 		std::string s = this->getEntity()->transform->getRotation().toString();
 		sprintf_s(buf, "Rotation: %s", s.c_str());
 		ImGui::Text(buf);
