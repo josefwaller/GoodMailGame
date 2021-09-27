@@ -97,7 +97,6 @@ void VehicleController::renderUi() {
 		size_t numMail = this->getEntity()->mailContainer->getNumLetters();
 		char buf[200];
 		this->getEntity()->ai->renderUi();
-		ImGui::Text(buf);
 		sf::Vector3f pos = this->getEntity()->transform->getPosition();
 		sprintf_s(buf, "Position: (%f, %f, %f)", pos.x, pos.y, pos.z);
 		std::string s = this->getEntity()->transform->getRotation().toString();

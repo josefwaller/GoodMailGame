@@ -60,16 +60,10 @@ void PickupDeliveryAi::renderUi() {
 	ImGui::PushID(this->getEntity()->getId());
 	// Draw GUI
 	char buf[200];
-	sprintf_s(buf, "Mail Truck %llu", this->getEntity()->getId());
-	ImGui::Begin(buf);
-	sprintf_s(buf, "%zu letters",
-		this->getEntity()->mailContainer->getNumLetters()
+	sprintf_s(buf, "%u / %u mail objects",
+		this->getEntity()->mailContainer->getNumLetters(), this->getCapacity(this->route)
 	);
 	ImGui::Text(buf);
-	sf::Vector3f pos = this->getEntity()->transform->getPosition();
-	sprintf_s(buf, "Position (%f, %f, %f)", pos.x, pos.y, pos.z);
-	ImGui::Text(buf);
-	ImGui::End();
 	ImGui::PopID();
 }
 void PickupDeliveryAi::dropOffMail(sf::Vector2i pos) {
