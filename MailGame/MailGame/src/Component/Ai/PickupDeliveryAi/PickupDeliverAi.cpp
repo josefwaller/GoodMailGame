@@ -133,18 +133,19 @@ void PickupDeliveryAi::pickupMailFromOffice() {
 	// Now gather all the tiles between the stops
 	std::vector<sf::Vector2i> allPoints;
 	sf::Vector2i prevPoint = route.stops[0].target.value();
-	sf::Vector3f prev(prevPoint.x, prevPoint.y, 0);
 	VehicleModelInfo mInfo = VehicleModelInfo::getModelInfo(this->route.model);
 	for (size_t i = 0; i < route.stops.size(); i++) {
 		if (!route.stops[i].target.has_value())
 			continue;
 		// Get the points
-		sf::Vector3f nextPoint(route.stops[i].target.value().x, route.stops[i].target.value().y, 0);
-		std::vector<SpeedPoint> pointsBetween = this->getEntity()->pathfinder->findPathBetweenPoints(prev, nextPoint, this->route.departTime, mInfo.getSpeed());
-		prev = nextPoint;
+		sf::Vector2i nextPoint = route.stops[i].target.value();
+		std::vector<std::variant<sf::Vector2i, Tunnel>> pointsBetween = Pathfinder::findCarPath(this->getEntity()->getGameMap(), prevPoint, nextPoint);
+		prevPoint = nextPoint;
 		// Add to all points
 		for (auto it = pointsBetween.begin(); it != pointsBetween.end(); it++) {
-			allPoints.push_back(sf::Vector2i(it->getPos().x, it->getPos().y));
+			if (std::holds_alternative<sf::Vector2i>(*it)) {
+				allPoints.push_back(std::get<sf::Vector2i>(*it));
+			}
 		}
 	}
 	// Add all the points beside these points
