@@ -99,6 +99,9 @@ public:
 	std::vector<Tunnel> getTunnels(sf::Vector2i tile);
 	// Get a list of all the residences on the map
 	std::vector<sf::Vector2i> getResidences();
+	// Get the height of the higher point of the two in the direction given
+	// I.e. if rot is North, then get the higher hight of the top two points
+	unsigned int getMaxHeightInDirection(size_t x, size_t y, IsoRotation rot);
 	// Get the save data for the map
 	SaveData getSaveData();
 private:

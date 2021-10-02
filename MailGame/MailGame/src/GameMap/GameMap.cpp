@@ -260,10 +260,12 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 			sf::Vector2f center = sf::Vector2f(x, y) + sf::Vector2f(0.5, 0.5);
 			sf::Vector2f fromPoint = center + 0.5f * r.getFrom().getUnitVector();
 			sf::Vector2f toPoint = center + 0.5f * r.getTo().getUnitVector();
+			unsigned int toHeight = this->getMaxHeightInDirection(x, y, r.getTo());
+			unsigned int fromHeight = this->getMaxHeightInDirection(x, y, r.getFrom());
 			// Render line
 			sf::VertexArray arr(sf::PrimitiveType::Lines, 2);
-			arr[0] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(fromPoint.x, fromPoint.y, this->getHeightAt(fromPoint))), r.getIsLocked() ? sf::Color::White : sf::Color::Black);
-			arr[1] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(toPoint.x, toPoint.y, this->getHeightAt(toPoint))), r.isStation ? sf::Color::Blue : sf::Color::Red);
+			arr[0] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(fromPoint.x, fromPoint.y, fromHeight)), r.getIsLocked() ? sf::Color::White : sf::Color::Black);
+			arr[1] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(toPoint.x, toPoint.y, toHeight)), r.isStation ? sf::Color::Blue : sf::Color::Red);
 			window->draw(arr);
 		}
 	}
@@ -874,5 +876,17 @@ void GameMap::loadFromSaveData(SaveData data) {
 		else if (d.getName() == TUNNEL) {
 			this->tunnels.push_back(Tunnel(d, this->game));
 		}
+	}
+}
+unsigned int GameMap::getMaxHeightInDirection(size_t x, size_t y, IsoRotation rot) {
+	switch (rot.getRotation()) {
+	case IsoRotation::NORTH:
+		return std::max(this->getPointHeight(x, y), this->getPointHeight(x + 1, y));
+	case IsoRotation::EAST:
+		return std::max(this->getPointHeight(x + 1, y), this->getPointHeight(x + 1, y + 1));
+	case IsoRotation::SOUTH:
+		return std::max(this->getPointHeight(x, y + 1), this->getPointHeight(x + 1, y + 1));
+	case IsoRotation::WEST:
+		return std::max(this->getPointHeight(x, y), this->getPointHeight(x, y + 1));
 	}
 }

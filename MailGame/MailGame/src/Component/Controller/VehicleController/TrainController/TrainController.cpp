@@ -150,10 +150,10 @@ std::vector<SpeedPoint> TrainController::getPointsForSegment(RailsPathfinder::Se
 		}
 		// Start from the from direction of the first tile
 		sf::Vector2f frontPoint = sf::Vector2f(path.front().first) + sf::Vector2f(0.5f, 0.5f) + 0.5f * path.front().second.getFrom().getUnitVector();
-		std::vector<SpeedPoint> points = { SpeedPoint(sf::Vector3f(frontPoint.x, frontPoint.y, this->getEntity()->getGameMap()->getHeightAt(frontPoint))) };
+		std::vector<SpeedPoint> points = { SpeedPoint(sf::Vector3f(frontPoint.x, frontPoint.y, this->getEntity()->getGameMap()->getMaxHeightInDirection(path.front().first.x, path.front().first.y, path.front().second.getTo()))) };
 		for (auto p : path) {
 			sf::Vector2f point = sf::Vector2f(p.first) + sf::Vector2f(0.5f, 0.5f) + 0.5f * p.second.getTo().getUnitVector();
-			points.push_back(sf::Vector3f(point.x, point.y, this->getEntity()->getGameMap()->getHeightAt(point)));
+			points.push_back(sf::Vector3f(point.x, point.y, this->getEntity()->getGameMap()->getMaxHeightInDirection(p.first.x, p.first.y, p.second.getTo())));
 		}
 		if (endingSpeed.has_value()) {
 			points.back().setSpeed(endingSpeed.value());
