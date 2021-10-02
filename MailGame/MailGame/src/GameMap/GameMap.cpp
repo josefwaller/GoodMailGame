@@ -51,7 +51,7 @@ GameMap::GameMap(Game* g) : game(g) {
 void GameMap::generateNew() {
 	FastNoiseLite noise(18);
 	noise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_Perlin);
-	noise.SetFrequency(0.07f);
+	noise.SetFrequency(0.1f);
 	noise.SetFractalType(FastNoiseLite::FractalType::FractalType_FBm);
 	noise.SetFractalOctaves(1);
 	noise.SetFractalLacunarity(0.1f);
@@ -60,9 +60,10 @@ void GameMap::generateNew() {
 	// Set up point heights
 	this->pointHeights = std::vector<std::vector<unsigned int>>(MAP_WIDTH + 1, std::vector<unsigned int>(MAP_HEIGHT + 1, 0.0f));
 	this->pointHeightLocked = std::vector<std::vector<bool>>(MAP_WIDTH + 1, std::vector<bool>(MAP_HEIGHT + 1, false));
+	sf::Vector2f scale(2, 2);
 	for (size_t i = 0; i < MAP_WIDTH + 1; i++) {
 		for (size_t j = 0; j < MAP_HEIGHT + 1; j++) {
-			float n = noise.GetNoise((float)i, (float)j);
+			float n = noise.GetNoise((float)i / scale.x, (float)j / scale.y);
 			unsigned int val = (unsigned int)abs(round((float)(MAX_HEIGHT - MIN_HEIGHT) * (n + 1.0f) / 2) + MIN_HEIGHT);
 			pointHeights.at(i).at(j) = val;
 		}
