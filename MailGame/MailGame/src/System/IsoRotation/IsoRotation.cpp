@@ -57,7 +57,7 @@ sf::Vector2f IsoRotation::getUnitVector() const {
 		throw std::runtime_error("getUnitVector called on an invalid IsoRotation!");
 	}
 }
-// Get an IsoRotation from a unit vector, assuming it's a valid one
+// Get an IsoRotation from a unit vector, rounding to the nearest pi / 4
 IsoRotation IsoRotation::fromUnitVector(sf::Vector2f u) {
 	// We have to check if x is 0 first since atan is not defined for that
 	if (u.x == 0) {
@@ -79,7 +79,7 @@ IsoRotation IsoRotation::fromUnitVector(sf::Vector2f u) {
 	theta = PI / 2 - theta;
 	while (theta < 0) { theta += 2 * PI; }
 	size_t numEights = (size_t)round(theta / (PI / 4));
-	if (numEights > 7) {
+	if (numEights > 8) {
 		throw std::runtime_error("i am bad at math :(");
 	}
 	return IsoRotation::CARDINAL_AND_ORDINAL_DIRECTIONS[numEights % IsoRotation::CARDINAL_AND_ORDINAL_DIRECTIONS.size()];
@@ -103,6 +103,22 @@ std::string IsoRotation::toString() {
 			x(WEST)
 			x(NORTH_WEST)
 	default: return "Invalid Rotation";
+	}
+}
+
+bool IsoRotation::getIsCardinal() {
+	return !this->getIsOrdinal();
+}
+
+bool IsoRotation::getIsOrdinal() {
+	switch (this->getRotation()) {
+	case IsoRotation::NORTH:
+	case IsoRotation::EAST:
+	case IsoRotation::SOUTH:
+	case IsoRotation::WEST:
+		return false;
+	default:
+		return true;
 	}
 }
 

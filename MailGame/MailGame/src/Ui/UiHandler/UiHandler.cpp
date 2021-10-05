@@ -19,7 +19,7 @@
 
 const std::vector<float> UiHandler::GAME_SPEEDS = { 0.1f, 0.25f, 0.5f, 1.0f, 2.0f, 5.0f, 10.0f, 25.0f, 50.0f };
 UiHandler::UiHandler(Game* g) : game(g), currentState(UiState::Default), recipe(), currentGameSpeed(3),
-from(IsoRotation::NORTH), to(IsoRotation::SOUTH), isStation(false) {
+isStation(false) {
 	cityLimitColors.insert({ 0, sf::Color::Blue });
 }
 
@@ -54,21 +54,7 @@ bool UiHandler::handleEvent(sf::Event e) {
 			return true;
 		}
 		case UiState::BuildingRailTracks:
-			if (this->isStation) {
-				this->game->getGameMap()->addRailwayStation(
-					(size_t)tilePos.x,
-					(size_t)tilePos.y,
-					to
-				);
-			}
-			else {
-				this->game->getGameMap()->addRailTrack(
-					(size_t)tilePos.x,
-					(size_t)tilePos.y,
-					from,
-					to
-				);
-			}
+			this->startLocation = this->game->getMousePosition();
 			break;
 		case UiState::BuildingRoad: {
 			// Pretty messy, but just temporary so should be fine
@@ -147,29 +133,18 @@ bool UiHandler::handleEvent(sf::Event e) {
 		case UiState::BuildingRailwaySignal:
 			this->game->getGameMap()->addRailwaySignal(this->getHoveredTile());
 		}
+		break;
+	case sf::Event::MouseButtonReleased:
+		if (this->currentState == UiState::BuildingRailTracks) {
+			for (auto kv : this->getRailwaysToBuild(this->startLocation.value(), this->game->getMousePosition())) {
+				this->game->getGameMap()->addRailTrack(kv.first.x, kv.first.y, kv.second.getFrom(), kv.second.getTo());
+			}
+			this->startLocation.reset();
+		}
+		break;
 	case sf::Event::KeyPressed:
 		if (ImGui::GetIO().WantCaptureKeyboard) {
 			return true;
-		}
-		switch (e.key.code) {
-			// Rotate the building/track if R is pressed
-		case sf::Keyboard::R:
-			if (this->currentState == UiState::BuildingRailTracks) {
-				this->from.rotateQuaterClockwise();
-				this->to.rotateQuaterClockwise();
-			}
-			else if (this->currentState == UiState::BuildingEntity) {
-				this->currentRotation.rotateQuaterClockwise();
-			}
-			break;
-		case sf::Keyboard::T:
-			if (this->currentState == UiState::BuildingRailTracks) {
-				// Toggle between straight and curved track
-				this->to.rotateQuaterClockwise();
-				if (this->from == this->to) {
-					this->to.rotateQuaterClockwise();
-				}
-			}
 		}
 		break;
 	}
@@ -335,8 +310,6 @@ void UiHandler::update() {
 			this->changeState(UiState::BuildingTunnel);
 		}
 		if (this->currentState == UiState::BuildingRailTracks) {
-			this->from = this->chooseDirection("From:", this->from);
-			this->to = this->chooseDirection("To:", this->to);
 			if (ImGui::Button(this->isStation ? "Station" : "Rail")) {
 				this->isStation = !this->isStation;
 			}
@@ -470,14 +443,13 @@ void UiHandler::update() {
 void UiHandler::render(sf::RenderWindow* w) {
 	// Variables in switch statement
 	bool isValid;
-	sf::Vector2f mousePos;
+	sf::Vector2f mousePos = this->game->getMousePosition();
 	switch (this->currentState) {
 	case UiState::BuildingEntity: {
 		// Draw the recipe being build
 		if (!this->recipe) {
 			throw std::runtime_error("Tried to draw a construction sprite with no recipe!");
 		}
-		mousePos = this->game->getMousePosition();
 		isValid = this->recipe.value().isValid(this->game, sf::Vector3f(mousePos.x, mousePos.y, 0), this->currentRotation);
 		this->recipe.value().renderConstructionSprite(
 			this->game,
@@ -487,9 +459,13 @@ void UiHandler::render(sf::RenderWindow* w) {
 		break;
 	}
 	case UiState::BuildingRailTracks: {
-		// Draw 2 lines that correspond with the direction
-		this->drawArrow(w, this->getHoveredTile(), this->from.getReverse(), false);
-		this->drawArrow(w, this->getHoveredTile(), this->to, true);
+		// Draw a line
+		if (this->startLocation.has_value()) {
+			auto rails = this->getRailwaysToBuild(this->startLocation.value(), this->game->getMousePosition());
+			for (auto it = rails.begin(); it != rails.end(); it++) {
+				this->game->getGameMap()->renderRailway(it->first, it->second, w);
+			}
+		}
 		break;
 	}
 	case UiState::BuildingRoad:
@@ -762,4 +738,52 @@ std::optional<unsigned int> UiHandler::getBottomSlopeHeight(sf::Vector2i t) {
 		return this->game->getGameMap()->getPointHeight(t + sf::Vector2i(1, 0));
 	// South and East can both use the top-left corner
 	return this->game->getGameMap()->getPointHeight(t);
+}
+
+std::vector<std::pair<sf::Vector2i, Railway>> UiHandler::getRailwaysToBuild(sf::Vector2f from, sf::Vector2f to) {
+	sf::Vector2f diff = to - from;
+	IsoRotation rot = IsoRotation::fromUnitVector(diff);
+	sf::Vector2f unit;
+	switch (rot.getRotation()) {
+	case IsoRotation::NORTH:
+	case IsoRotation::EAST:
+	case IsoRotation::SOUTH:
+	case IsoRotation::WEST:
+		unit = rot.getUnitVector();
+		break;
+	case IsoRotation::NORTH_EAST:
+		unit = sf::Vector2f(0.5, -0.5);
+		break;
+	case IsoRotation::SOUTH_EAST:
+		unit = sf::Vector2f(0.5, 0.5);
+		break;
+	case IsoRotation::SOUTH_WEST:
+		unit = sf::Vector2f(-0.5, 0.5);
+		break;
+	case IsoRotation::NORTH_WEST:
+		unit = sf::Vector2f(-0.5, -0.5);
+		break;
+	}
+	sf::Vector2f start2d = sf::Vector2f(sf::Vector2i(from)) + sf::Vector2f(0.0f, 0.5f);
+	if (rot.getIsCardinal()) {
+		start2d += rot.getUnitVector() / 2.0f + sf::Vector2f(0.5f, 0);
+		auto x = 0;
+	}
+	// Round the length
+	size_t numSegments = (size_t)floor(sqrtf(diff.x * diff.x + diff.y * diff.y));
+	sf::Vector2f start(start2d.x, start2d.y);
+	std::vector<std::pair<sf::Vector2i, Railway>> toReturn;
+	for (size_t i = 1; i < numSegments + 1; i++) {
+		sf::Vector2f end = start + unit;
+		sf::Vector2i tile(std::min(floor(start.x), floor(end.x)), std::min(floor(start.y), floor(end.y)));
+		sf::Vector2f center(tile.x + 0.5f, tile.y + 0.5f);
+		IsoRotation from = IsoRotation::fromUnitVector(start - center);
+		IsoRotation to = IsoRotation::fromUnitVector(end - center);
+		if (from.getIsOrdinal() || to.getIsOrdinal()) {
+			auto x = 0;
+		}
+		toReturn.push_back({ tile, Railway(from, to) });
+		start = end;
+	}
+	return toReturn;
 }

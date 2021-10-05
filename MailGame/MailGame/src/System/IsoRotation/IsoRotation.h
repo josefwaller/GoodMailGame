@@ -48,6 +48,9 @@ public:
 	// Get unit vector in 3D space (with Z = 0)
 	sf::Vector3f getUnitVector3D() const;
 	std::string toString();
+	// Get whether a rotation is cardinal or ordinal
+	bool getIsCardinal();
+	bool getIsOrdinal();
 	// Get an IsoRotation from a unit vector, assuming it's a valid one
 	static IsoRotation fromUnitVector(sf::Vector2f u);
 	static IsoRotation fromUnitVector(sf::Vector3f u);
