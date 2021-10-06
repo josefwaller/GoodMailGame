@@ -744,31 +744,35 @@ std::vector<std::pair<sf::Vector2i, Railway>> UiHandler::getRailwaysToBuild(sf::
 	sf::Vector2f diff = to - from;
 	IsoRotation rot = IsoRotation::fromUnitVector(diff);
 	sf::Vector2f unit;
+	sf::Vector2f offset;
+	sf::Vector2f startTile = sf::Vector2f(sf::Vector2i(from)) + sf::Vector2f(0.5f, 0.5f);
+	sf::Vector2f temp(startTile - to);
 	switch (rot.getRotation()) {
 	case IsoRotation::NORTH:
 	case IsoRotation::EAST:
 	case IsoRotation::SOUTH:
 	case IsoRotation::WEST:
 		unit = rot.getUnitVector();
+		offset = sf::Vector2f(0.5f, 0.5f) + rot.getReverse().getUnitVector() / 2.0f;
 		break;
 	case IsoRotation::NORTH_EAST:
 		unit = sf::Vector2f(0.5, -0.5);
+		offset = diff.y / diff.x > -1 ? sf::Vector2f(0.5f, 1) : sf::Vector2f(0, 0.5f);
 		break;
 	case IsoRotation::SOUTH_EAST:
 		unit = sf::Vector2f(0.5, 0.5);
+		offset = diff.y / diff.x > 1 ? sf::Vector2f(0, 0.5f) : sf::Vector2f(0.5f, 0);
 		break;
 	case IsoRotation::SOUTH_WEST:
 		unit = sf::Vector2f(-0.5, 0.5);
+		offset = diff.y / diff.x > -1 ? sf::Vector2f(0.5f, 0) : sf::Vector2f(1, 0.5f);
 		break;
 	case IsoRotation::NORTH_WEST:
 		unit = sf::Vector2f(-0.5, -0.5);
+		offset = diff.y / diff.x > 1 ? sf::Vector2f(1, 0.5f) : sf::Vector2f(0.5, 1);
 		break;
 	}
-	sf::Vector2f start2d = sf::Vector2f(sf::Vector2i(from)) + sf::Vector2f(0.0f, 0.5f);
-	if (rot.getIsCardinal()) {
-		start2d += rot.getUnitVector() / 2.0f + sf::Vector2f(0.5f, 0);
-		auto x = 0;
-	}
+	sf::Vector2f start2d = sf::Vector2f(sf::Vector2i(from)) + offset;
 	// Round the length
 	size_t numSegments = (size_t)floor(sqrtf(diff.x * diff.x + diff.y * diff.y));
 	sf::Vector2f start(start2d.x, start2d.y);
