@@ -9,11 +9,13 @@ class Railway {
 public:
 	// Whether the railway is a station or not
 	bool isStation;
-	Railway(IsoRotation from, IsoRotation to, bool isStation = false);
+	Railway(IsoRotation from, IsoRotation to, bool isOneWay = true, bool isStation = false);
 	Railway(SaveData data);
 	// Get directions
 	IsoRotation getFrom();
 	IsoRotation getTo();
+	// Get whether the railway is one way or two way
+	bool getIsOneWay();
 
 	// Get whether the railway is locked
 	bool getIsLocked();
@@ -32,4 +34,5 @@ private:
 	std::vector<std::pair<IsoRotation, IsoRotation>> directions;
 	// Whether the railway is locked or not
 	bool isLocked;
+	bool isOneWay;
 };

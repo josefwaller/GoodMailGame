@@ -58,7 +58,7 @@ public:
 	void addRoad(size_t x, size_t y, Road r);
 	void removeRoad(size_t x, size_t y);
 	// Add rail track at the tile given
-	void addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to);
+	void addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to, bool isOneWay);
 	// Add a railway station at the position given in the direction given, currently stations must be straight
 	void addRailwayStation(size_t x, size_t y, IsoRotation direction);
 	// Add a railway signal to the tile

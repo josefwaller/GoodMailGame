@@ -12,6 +12,9 @@ std::vector<IsoRotation> Tile::getOutgoingRailDirections(IsoRotation ingoingDire
 		if (r.getFrom() == from) {
 			toReturn.push_back(r.getTo());
 		}
+		else if (!r.getIsOneWay() && r.getTo() == from) {
+			toReturn.push_back(r.getFrom());
+		}
 	}
 	return toReturn;
 }
@@ -19,7 +22,7 @@ std::vector<IsoRotation> Tile::getOutgoingRailDirections(IsoRotation ingoingDire
 void Tile::addRailway(Railway r) {
 	// Make sure we don't have this railway anymore
 	for (Railway rail : this->railways) {
-		if (rail.getFrom() == r.getFrom() && rail.getTo() == r.getTo()) {
+		if ((rail.getFrom() == r.getFrom() && rail.getTo() == r.getTo()) || (rail.getFrom() == r.getTo() && rail.getTo() == r.getFrom())) {
 			return;
 		}
 	}
@@ -45,6 +48,15 @@ bool Tile::canGetLock() {
 
 	return true;
 }
+// To be replaced, need a better system for returning individual railways from pathfinder
+bool railwayMatch(Railway one, Railway two) {
+	if (one.getFrom() == two.getFrom() && one.getTo() == two.getTo())
+		return true;
+	else if (!one.getIsOneWay())
+		return one.getFrom() == two.getTo() && one.getTo() == two.getFrom();
+	return false;
+}
+
 bool Tile::canGetRailwayLock(Railway rail) {
 	for (Railway r : this->railways) {
 		if (!r.getIsLocked()) {
@@ -65,14 +77,14 @@ bool Tile::canGetRailwayLock(Railway rail) {
 }
 
 void Tile::getRailwayLock(Railway rail) {
-	auto r = std::find_if(this->railways.begin(), this->railways.end(), [&rail](Railway r) { return r.getFrom() == rail.getFrom() && r.getTo() == rail.getTo(); });
+	auto r = std::find_if(this->railways.begin(), this->railways.end(), [&rail](Railway r) { return railwayMatch(r, rail);  });
 	if (r == this->railways.end()) {
 		throw std::runtime_error("Cannot release lock on railway that does not exist");
 	}
 	return r->getLock();
 }
 void Tile::releaseRailwayLock(Railway rail) {
-	auto r = std::find_if(this->railways.begin(), this->railways.end(), [&rail](Railway r) { return r.getFrom() == rail.getFrom() && r.getTo() == rail.getTo(); });
+	auto r = std::find_if(this->railways.begin(), this->railways.end(), [&rail](Railway r) { return railwayMatch(r, rail); });
 	if (r == this->railways.end()) {
 		throw std::runtime_error("Cannot get lock on railway that does not exist");
 	}

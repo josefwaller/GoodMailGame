@@ -10,7 +10,7 @@ TrainDepotController::TrainDepotController() : DepotController(TransitType::Trai
 void TrainDepotController::init() {
 	IsoRotation rot = this->getEntity()->transform->getRotation().getReverse();
 	sf::Vector3f pos = this->getEntity()->transform->getPosition();
-	this->getEntity()->getGame()->getGameMap()->addRailTrack((size_t)floor(pos.x), (size_t)floor(pos.y), rot, rot);
+	this->getEntity()->getGame()->getGameMap()->addRailTrack((size_t)floor(pos.x), (size_t)floor(pos.y), rot, rot, true);
 }
 
 void TrainDepotController::spawnVehicleForRoute(TransitRoute route) {

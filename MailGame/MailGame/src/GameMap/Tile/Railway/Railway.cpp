@@ -3,7 +3,7 @@
 #include "System/SaveData/SaveData.h"
 #include <algorithm>
 
-Railway::Railway(IsoRotation f, IsoRotation t, bool station) : from(f), to(t), isStation(station), isLocked(false) {}
+Railway::Railway(IsoRotation f, IsoRotation t, bool isOneWay, bool station) : from(f), to(t), isStation(station), isLocked(false), isOneWay(isOneWay) {}
 
 Railway::Railway(SaveData data) {
 	using namespace SaveKeys;
@@ -23,6 +23,7 @@ SaveData Railway::getSaveData() {
 
 IsoRotation Railway::getFrom() { return this->from; };
 IsoRotation Railway::getTo() { return this->to; }
+bool Railway::getIsOneWay() { return this->isOneWay; }
 
 bool Railway::operator==(Railway other) { return this->to == other.to && this->from == other.from; }
 bool Railway::getIsLocked() { return this->isLocked; };

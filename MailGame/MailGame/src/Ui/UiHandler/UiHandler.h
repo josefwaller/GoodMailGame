@@ -76,6 +76,7 @@ private:
 	// The railway currently being built
 	std::optional<sf::Vector2f> startLocation;
 	bool isStation;
+	bool isOneWay;
 	// The airplaneroad being built
 	AirplaneRoad airplaneRoadToBuild;
 	// If tarraforming, whether the player is raising or lowering a point

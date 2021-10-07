@@ -136,8 +136,15 @@ bool UiHandler::handleEvent(sf::Event e) {
 		break;
 	case sf::Event::MouseButtonReleased:
 		if (this->currentState == UiState::BuildingRailTracks) {
-			for (auto kv : this->getRailwaysToBuild(this->startLocation.value(), this->game->getMousePosition())) {
-				this->game->getGameMap()->addRailTrack(kv.first.x, kv.first.y, kv.second.getFrom(), kv.second.getTo());
+			if (this->startLocation.has_value()) {
+				for (auto kv : this->getRailwaysToBuild(this->startLocation.value(), this->game->getMousePosition())) {
+					if (this->isStation) {
+						this->game->getGameMap()->addRailwayStation(kv.first.x, kv.first.y, kv.second.getFrom());
+					}
+					else {
+						this->game->getGameMap()->addRailTrack(kv.first.x, kv.first.y, kv.second.getFrom(), kv.second.getTo(), this->isOneWay);
+					}
+				}
 			}
 			this->startLocation.reset();
 		}
@@ -312,6 +319,9 @@ void UiHandler::update() {
 		if (this->currentState == UiState::BuildingRailTracks) {
 			if (ImGui::Button(this->isStation ? "Station" : "Rail")) {
 				this->isStation = !this->isStation;
+			}
+			if (ImGui::Button(this->isOneWay ? "One Way" : "Two Way")) {
+				this->isOneWay = !this->isOneWay;
 			}
 			if (ImGui::Button("Cancel")) {
 				this->changeState(UiState::Default);
@@ -619,7 +629,7 @@ void UiHandler::drawArrow(sf::RenderWindow* window, sf::Vector2i tile, IsoRotati
 	if (!isOutgoing)
 		rot = rot.getReverse();
 	arrow.setPosition(
-		this->game->worldToScreenPos(sf::Vector3f((float)tile.x, (float)tile.y, 0)
+		this->game->worldToScreenPos(sf::Vector3f((float)tile.x, (float)tile.y, this->game->getGameMap()->getHeightAt(sf::Vector2f(tile)))
 			+ sf::Vector3f(0.5f, 0.5f, 0)
 			+ rot.getUnitVector3D() / 2.0f)
 	);
@@ -792,7 +802,7 @@ std::vector<std::pair<sf::Vector2i, Railway>> UiHandler::getRailwaysToBuild(sf::
 		if (from.getIsOrdinal() || to.getIsOrdinal()) {
 			auto x = 0;
 		}
-		toReturn.push_back({ tile, Railway(from, to) });
+		toReturn.push_back({ tile, Railway(from, to, this->isOneWay) });
 		start = end;
 	}
 	return toReturn;

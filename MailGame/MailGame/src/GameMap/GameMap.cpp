@@ -290,11 +290,17 @@ void GameMap::renderRailway(sf::Vector2i t, Railway r, sf::RenderWindow* w, std:
 	sf::Vector2f toPoint = center + 0.5f * r.getTo().getUnitVector();
 	unsigned int toHeight = this->getMaxHeightInDirection(t.x, t.y, r.getTo());
 	unsigned int fromHeight = this->getMaxHeightInDirection(t.x, t.y, r.getFrom());
+	std::pair<sf::Color, sf::Color> colors;
 	// Render line
 	sf::VertexArray arr(sf::PrimitiveType::Lines, 2);
-	arr[0] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(fromPoint.x, fromPoint.y, fromHeight)), color.value_or(r.getIsLocked() ? sf::Color::White : sf::Color::Black));
+	arr[0] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(fromPoint.x, fromPoint.y, fromHeight)), color.value_or(r.getIsLocked() ? sf::Color::White : sf::Color::Red));
 	arr[1] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(toPoint.x, toPoint.y, toHeight)), color.value_or(r.isStation ? sf::Color::Blue : sf::Color::Red));
 	w->draw(arr);
+	if (r.getIsOneWay()) {
+		sf::Color arrowColor(0, 0, 255, 100);
+		this->game->getUi()->drawArrow(w, t, r.getFrom().getReverse(), false, arrowColor);
+		this->game->getUi()->drawArrow(w, t, r.getTo(), true, arrowColor);
+	}
 }
 void GameMap::prepareTileForRoad(size_t x, size_t y, Road r) {
 	if (r.hasNorth || r.hasSouth) {
@@ -658,9 +664,9 @@ void GameMap::removeRoad(size_t x, size_t y) {
 		this->tiles.at(x).at(y).road.reset();
 	}
 }
-void GameMap::addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to) {
+void GameMap::addRailTrack(size_t x, size_t y, IsoRotation from, IsoRotation to, bool isOneWay) {
 	if (this->getTileAt(x, y).type != TileType::OffMap) {
-		this->tiles[x][y].addRailway(Railway(from, to));
+		this->tiles[x][y].addRailway(Railway(from, to, isOneWay));
 	}
 }
 void GameMap::removeRailTrack(size_t x, size_t y) {
@@ -670,7 +676,7 @@ void GameMap::removeRailTrack(size_t x, size_t y) {
 void GameMap::addRailwayStation(size_t x, size_t y, IsoRotation direction) {
 	if (this->getTileAt(x, y).type != TileType::OffMap) {
 		if (this->tiles[x][y].getRailways().empty()) {
-			this->tiles[x][y].addRailway(Railway(direction.getReverse(), direction, true));
+			this->tiles[x][y].addRailway(Railway(direction.getReverse(), direction, false, true));
 		}
 	}
 }

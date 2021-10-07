@@ -57,7 +57,7 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 		ConstructionRecipe(
 			"Train Depot",
 			[&](Game* g, sf::Vector3f pos, IsoRotation rot) {
-				g->getGameMap()->addRailTrack((size_t)pos.x, (size_t)pos.y, rot, rot);
+				g->getGameMap()->addRailTrack((size_t)pos.x, (size_t)pos.y, rot, rot, true);
 				return BuildingPresets::trainStation(g, pos, rot);
 			},
 			IsoSprite(

@@ -171,7 +171,7 @@ std::shared_ptr<Entity> BuildingPresets::railwaySwitch(Game* g, sf::Vector3f pos
 	sf::Vector2f unit = rot.getUnitVector();
 	sf::Vector2i tile((int)floor(pos.x + unit.x), (int)floor(pos.y + unit.y));
 	// Add a straight, perpindicular railway
-	g->getGameMap()->addRailTrack((size_t)tile.x, (size_t)tile.y, (rot + 1), (rot - 1));
+	g->getGameMap()->addRailTrack((size_t)tile.x, (size_t)tile.y, (rot + 1), (rot - 1), false);
 	// Add the entity
 	return Entity::createEntity(
 		g,
