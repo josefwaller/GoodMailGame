@@ -463,7 +463,13 @@ void UiHandler::render(sf::RenderWindow* w) {
 		if (this->startLocation.has_value()) {
 			auto rails = this->getRailwaysToBuild(this->startLocation.value(), this->game->getMousePosition());
 			for (auto it = rails.begin(); it != rails.end(); it++) {
-				this->game->getGameMap()->renderRailway(it->first, it->second, w);
+				this->game->getGameMap()->renderRailway(it->first, it->second, w, sf::Color::White);
+			}
+		}
+		else {
+			auto rails = this->getRailwaysToBuild(sf::Vector2f(this->getHoveredTile()) + sf::Vector2f(0.5f, 0.5f), this->game->getMousePosition());
+			if (rails.size() > 0) {
+				this->game->getGameMap()->renderRailway(rails.front().first, rails.front().second, w, sf::Color::White);
 			}
 		}
 		break;
@@ -774,7 +780,7 @@ std::vector<std::pair<sf::Vector2i, Railway>> UiHandler::getRailwaysToBuild(sf::
 	}
 	sf::Vector2f start2d = sf::Vector2f(sf::Vector2i(from)) + offset;
 	// Round the length
-	size_t numSegments = (size_t)floor(sqrtf(diff.x * diff.x + diff.y * diff.y));
+	size_t numSegments = (size_t)std::max((int)ceil(sqrtf(diff.x * diff.x + diff.y * diff.y)), 1);
 	sf::Vector2f start(start2d.x, start2d.y);
 	std::vector<std::pair<sf::Vector2i, Railway>> toReturn;
 	for (size_t i = 1; i < numSegments + 1; i++) {

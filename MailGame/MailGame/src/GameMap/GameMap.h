@@ -48,7 +48,7 @@ public:
 	float getHeightAt(sf::Vector2f);
 
 	void render(sf::RenderWindow* window);
-	void renderRailway(sf::Vector2i tile, Railway rail, sf::RenderWindow* window);
+	void renderRailway(sf::Vector2i tile, Railway rail, sf::RenderWindow* window, std::optional<sf::Color> color = {});
 
 	// Set the building for a specific tile
 	void setBuildingForTile(size_t x, size_t y, std::weak_ptr<Entity> building);

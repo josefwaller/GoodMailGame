@@ -283,7 +283,7 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 		window->draw(arr);
 	}
 }
-void GameMap::renderRailway(sf::Vector2i t, Railway r, sf::RenderWindow* w) {
+void GameMap::renderRailway(sf::Vector2i t, Railway r, sf::RenderWindow* w, std::optional<sf::Color> color) {
 	// Point is center of tile + the direction
 	sf::Vector2f center = sf::Vector2f(t) + sf::Vector2f(0.5, 0.5);
 	sf::Vector2f fromPoint = center + 0.5f * r.getFrom().getUnitVector();
@@ -292,8 +292,8 @@ void GameMap::renderRailway(sf::Vector2i t, Railway r, sf::RenderWindow* w) {
 	unsigned int fromHeight = this->getMaxHeightInDirection(t.x, t.y, r.getFrom());
 	// Render line
 	sf::VertexArray arr(sf::PrimitiveType::Lines, 2);
-	arr[0] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(fromPoint.x, fromPoint.y, fromHeight)), r.getIsLocked() ? sf::Color::White : sf::Color::Black);
-	arr[1] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(toPoint.x, toPoint.y, toHeight)), r.isStation ? sf::Color::Blue : sf::Color::Red);
+	arr[0] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(fromPoint.x, fromPoint.y, fromHeight)), color.value_or(r.getIsLocked() ? sf::Color::White : sf::Color::Black));
+	arr[1] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(toPoint.x, toPoint.y, toHeight)), color.value_or(r.isStation ? sf::Color::Blue : sf::Color::Red));
 	w->draw(arr);
 }
 void GameMap::prepareTileForRoad(size_t x, size_t y, Road r) {
