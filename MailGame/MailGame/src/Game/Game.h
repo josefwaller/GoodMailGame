@@ -48,7 +48,10 @@ public:
 	// Get the UI
 	UiHandler* getUi();
 	// Get mouse position in game coordinates
+	// Deprecated, gets the mouse position on the z = 0 plane
 	sf::Vector2f getMousePosition();
+	// Get the location on the ground where the mouse cursor would be
+	sf::Vector3f getGroundMousePosition();
 	// Get mouse position relative to the window
 	sf::Vector2i getWindowMousePosition();
 	// Get the rotation of the camera
@@ -96,6 +99,10 @@ public:
 	// Set the game speed
 	float getGameSpeed();
 	void setGameSpeed(float multiplier);
+
+	// tmep
+	sf::Vector3f from;
+	sf::Vector3f to;
 private:
 	// The window for the game
 	sf::RenderWindow* window;

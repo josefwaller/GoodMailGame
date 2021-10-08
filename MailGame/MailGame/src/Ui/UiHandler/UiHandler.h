@@ -52,6 +52,8 @@ public:
 	static hour_t chooseHour(const char* label, hour_t default);
 	// Set the default file name
 	void setSavefileName(const char name[200]);
+	// Get the tile the mouse is currently hovering over
+	sf::Vector2i getHoveredTile();
 private:
 	Game* game;
 	// Current state of the Ui
@@ -90,8 +92,6 @@ private:
 	// The first tile the tunnel should start from, when building
 	std::optional<sf::Vector2i> tunnelStart;
 	TransitType tunnelType;
-	// Get the tile the mouse is currently hovering over
-	sf::Vector2i getHoveredTile();
 	// Get the point that the mouse is currently closest to
 	sf::Vector2i getHoveredPoint();
 	// Return a vertex array that is over the tile given, in screen coords

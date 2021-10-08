@@ -54,7 +54,7 @@ bool UiHandler::handleEvent(sf::Event e) {
 			return true;
 		}
 		case UiState::BuildingRailTracks:
-			this->startLocation = this->game->getMousePosition();
+			this->startLocation = sf::Vector2f(this->getHoveredTile()) + sf::Vector2f(0.5f, 0.5f);
 			break;
 		case UiState::BuildingRoad: {
 			// Pretty messy, but just temporary so should be fine
@@ -233,6 +233,14 @@ void UiHandler::update() {
 	sprintf_s(buf, "%f of letters are less than a day old", percent * 100.0f);
 	ImGui::Text(buf);
 
+	sf::Vector3f from = this->game->from;
+	float v[3] = {
+		from.x,
+		from.y,
+		from.z
+	};
+	ImGui::DragFloat3("From", v, 0.01f, 0.0f, 1.0f);
+	this->game->from = { v[0], v[1], v[2] };
 	if (ImGui::Button("Rotate Camera")) {
 		this->game->rotateCamera();
 	}
@@ -620,6 +628,14 @@ void UiHandler::render(sf::RenderWindow* w) {
 			prev = *it;
 		}
 	}
+
+	// Render the current mouse position
+	sf::CircleShape c;
+	c.setFillColor(sf::Color::Red);
+	c.setRadius(5.0f);
+	c.setOrigin(sf::Vector2f(1, 1) * c.getRadius());
+	c.setPosition(this->game->worldToScreenPos(this->game->getGroundMousePosition()));
+	w->draw(c);
 
 	this->pathsToDraw = {};
 }

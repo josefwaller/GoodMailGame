@@ -244,13 +244,56 @@ void Game::render(sf::RenderWindow* w) {
 #endif
 	// Render Ui
 	this->uiHandler.render(w);
+
+	sf::VertexArray arr(sf::Lines, 2);
+	arr[0] = sf::Vertex(this->worldToScreenPos(this->from), sf::Color::Red);
+	arr[1] = sf::Vertex(this->worldToScreenPos(this->to), sf::Color::Blue);
+	w->draw(arr);
+}
+// Gives the formula for the plane that goes through the three points provided
+// in the ax + by + cz = d format
+std::vector<float> getPlaneEquation(sf::Vector3f A, sf::Vector3f B, sf::Vector3f C) {
+	sf::Vector3f AB = B - A;
+	sf::Vector3f AC = C - A;
+	// Cross product
+	float a = AB.y * AC.z - AC.y * AB.z;
+	float b = AB.z * AC.x - AC.z * AB.x;
+	float c = AB.x * AC.y - AC.x * AB.y;
+	float d = (a * A.x + b * A.y + c * A.z);
+	return {
+		a,
+		b,
+		c,
+		d
+	};
 }
 sf::Vector2f Game::getMousePosition() {
+	return screenToWorldPos(this->window->mapPixelToCoords(sf::Vector2i(sf::Mouse::getPosition(*(this->window))), this->gameView));
+}
+sf::Vector3f Game::getGroundMousePosition() {
+	// Get the tile that is being hovered
+	sf::Vector2i tile = this->uiHandler.getHoveredTile();
+	// Get the plane from the tile
+	std::vector<float> gamePlane = getPlaneEquation(
+		sf::Vector3f(tile.x, tile.y, this->gameMap.getPointHeight(tile.x, tile.y)),
+		sf::Vector3f(tile.x, tile.y + 1, this->gameMap.getPointHeight(tile.x, tile.y + 1)),
+		sf::Vector3f(tile.x + 1, tile.y + 1, this->gameMap.getPointHeight(tile.x + 1, tile.y + 1))
+	);
+	// The vector pointing directly at the camera, computed via trial and error
+	sf::Vector3f mouseVector(0.15f, 0.15f, 0.5f);
+	mouseVector = mouseVector / sqrtf(powf(mouseVector.x, 2) + powf(mouseVector.y, 2) + powf(mouseVector.z, 2));
+	//TODO maybe: Rotate the mousevector if camera is rotated
 	// Get mouse position
 	sf::Vector2f pos(
-		this->window->mapPixelToCoords(sf::Vector2i(sf::Mouse::getPosition(*(this->window))), this->gameView)
+		screenToWorldPos(this->window->mapPixelToCoords(sf::Vector2i(sf::Mouse::getPosition(*(this->window))), this->gameView))
 	);
-	return screenToWorldPos(pos);
+	// See https://math.stackexchange.com/questions/100439/determine-where-a-vector-will-intersect-a-plane
+	float a = gamePlane[0];
+	float b = gamePlane[1];
+	float c = gamePlane[2];
+	float d = gamePlane[3];
+	float length = (d - a * pos.x - b * pos.y - c * 0) / (a * mouseVector.x + b * mouseVector.y + c * mouseVector.z);
+	return sf::Vector3f(pos.x, pos.y, 0.0f) + mouseVector * length;
 }
 sf::Vector2i Game::getWindowMousePosition() {
 	return sf::Vector2i(this->window->mapPixelToCoords(sf::Mouse::getPosition(*(this->window)), this->gameView));
