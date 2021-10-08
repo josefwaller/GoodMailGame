@@ -252,6 +252,9 @@ sf::Vector2f Game::getMousePosition() {
 	);
 	return screenToWorldPos(pos);
 }
+sf::Vector2i Game::getWindowMousePosition() {
+	return sf::Vector2i(this->window->mapPixelToCoords(sf::Mouse::getPosition(*(this->window)), this->gameView));
+}
 sf::Vector2f Game::screenToWorldPos(sf::Vector2f pos) {
 	// Cancel out tile dimensions
 	pos.x /= TILE_WIDTH;

@@ -49,6 +49,8 @@ public:
 	UiHandler* getUi();
 	// Get mouse position in game coordinates
 	sf::Vector2f getMousePosition();
+	// Get mouse position relative to the window
+	sf::Vector2i getWindowMousePosition();
 	// Get the rotation of the camera
 	IsoRotation getRotation();
 	// Rotate the camera

@@ -158,7 +158,36 @@ bool UiHandler::handleEvent(sf::Event e) {
 	return false;
 }
 
+// Simple utility function for calculating the area of a triangle
+float triangleArea(sf::Vector2f a, sf::Vector2f b, sf::Vector2f c) {
+	return std::fabsf((a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y)) / 2);
+}
 sf::Vector2i UiHandler::getHoveredTile() {
+	// Use this algorithm to check if the point is in a tile: https://stackoverflow.com/questions/5922027/how-to-determine-if-a-point-is-within-a-quadrilateral
+	for (size_t x = 0; x < GameMap::MAP_WIDTH; x++) {
+		for (size_t y = 0; y < GameMap::MAP_HEIGHT; y++) {
+			// Get the points of this tile on the screen
+			// Note that this does not account for the gameView transformation
+			std::vector<sf::Vector2f> screenPoints = {
+				this->game->worldToScreenPos(sf::Vector3f(x, y, this->game->getGameMap()->getPointHeight(x, y))),
+				this->game->worldToScreenPos(sf::Vector3f(x + 1, y, this->game->getGameMap()->getPointHeight(x + 1, y))),
+				this->game->worldToScreenPos(sf::Vector3f(x + 1, y + 1, this->game->getGameMap()->getPointHeight(x + 1, y + 1))),
+				this->game->worldToScreenPos(sf::Vector3f(x, y + 1, this->game->getGameMap()->getPointHeight(x, y + 1))),
+			};
+			// Get the area of the tile
+			float tileArea = triangleArea(screenPoints[0], screenPoints[1], screenPoints[2]) + triangleArea(screenPoints[2], screenPoints[3], screenPoints[0]);
+			// Now calculate the area of all the triangles formed between the mouse coordinates and the tile's points
+			sf::Vector2f mousePos(this->game->getWindowMousePosition());
+			float pointArea = 0.0f;
+			for (size_t i = 0; i < 4; i++) {
+				pointArea += triangleArea(mousePos, screenPoints[i], screenPoints[(i + 1) % 4]);
+			}
+			// Check if they are the same (within a margin of error)
+			if (abs(pointArea - tileArea) < 0.001f) {
+				return sf::Vector2i(x, y);
+			}
+		}
+	}
 	sf::Vector2f mousePos = this->game->getMousePosition();
 	return sf::Vector2i((int)floor(mousePos.x), (int)floor(mousePos.y));
 }
