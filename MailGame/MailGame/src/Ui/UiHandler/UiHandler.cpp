@@ -137,7 +137,8 @@ bool UiHandler::handleEvent(sf::Event e) {
 	case sf::Event::MouseButtonReleased:
 		if (this->currentState == UiState::BuildingRailTracks) {
 			if (this->startLocation.has_value()) {
-				for (auto kv : this->getRailwaysToBuild(this->startLocation.value(), this->game->getMousePosition())) {
+				sf::Vector3f mousePos = this->game->getGroundMousePosition();
+				for (auto kv : this->getRailwaysToBuild(this->startLocation.value(), sf::Vector2f(mousePos.x, mousePos.y))) {
 					if (this->isStation) {
 						this->game->getGameMap()->addRailwayStation(kv.first.x, kv.first.y, kv.second.getFrom());
 					}
@@ -400,9 +401,16 @@ void UiHandler::update() {
 		}
 	}
 	// Print mouse position
-	sf::Vector2f mousePos = this->game->getMousePosition();
+	sf::Vector3f mousePos = this->game->getGroundMousePosition();
 	sf::Vector2i tile = this->getHoveredTile();
-	sprintf_s(buf, "Mouse position is (%.2f,%.2f), tile is (%d, %d), height at mouse is %f", mousePos.x, mousePos.y, tile.x, tile.y, this->game->getGameMap()->getHeightAt(mousePos));
+	sprintf_s(buf, "Mouse position is (%.2f,%.2f,%.2f), tile is (%d, %d)", mousePos.x, mousePos.y, mousePos.z, tile.x, tile.y);
+	ImGui::Text(buf);
+	sprintf_s(buf, "Heights around tile are %u, %u, %u, %u",
+		this->game->getGameMap()->getPointHeight(tile),
+		this->game->getGameMap()->getPointHeight(tile + sf::Vector2i(1, 0)),
+		this->game->getGameMap()->getPointHeight(tile + sf::Vector2i(1, 1)),
+		this->game->getGameMap()->getPointHeight(tile + sf::Vector2i(0, 1))
+	);
 	ImGui::Text(buf);
 
 	// Postal codes ui
@@ -507,14 +515,16 @@ void UiHandler::render(sf::RenderWindow* w) {
 	}
 	case UiState::BuildingRailTracks: {
 		// Draw a line
+		sf::Vector3f m = this->game->getGroundMousePosition();
+		sf::Vector2f mousePos(m.x, m.y);
 		if (this->startLocation.has_value()) {
-			auto rails = this->getRailwaysToBuild(this->startLocation.value(), this->game->getMousePosition());
+			auto rails = this->getRailwaysToBuild(this->startLocation.value(), mousePos);
 			for (auto it = rails.begin(); it != rails.end(); it++) {
 				this->game->getGameMap()->renderRailway(it->first, it->second, w, sf::Color::White);
 			}
 		}
 		else {
-			auto rails = this->getRailwaysToBuild(sf::Vector2f(this->getHoveredTile()) + sf::Vector2f(0.5f, 0.5f), this->game->getMousePosition());
+			auto rails = this->getRailwaysToBuild(sf::Vector2f(this->getHoveredTile()) + sf::Vector2f(0.5f, 0.5f), mousePos);
 			if (rails.size() > 0) {
 				this->game->getGameMap()->renderRailway(rails.front().first, rails.front().second, w, sf::Color::White);
 			}
