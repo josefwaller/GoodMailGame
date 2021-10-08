@@ -571,15 +571,7 @@ float GameMap::getHeightAt(float x, float y) {
 	// Get the points around the position to get the height
 	sf::Vector3f pos(x, y, 0);
 	sf::Vector3f dir(0, 0, 1);
-	return Utils::getVectorPlaneIntersection(
-		pos,
-		dir,
-		Utils::getPlaneThroughPoints(
-			sf::Vector3f(x, y, this->getPointHeight(x, y)),
-			sf::Vector3f(x + 1, y, this->getPointHeight(x + 1, y)),
-			sf::Vector3f(x + 1, y + 1, this->getPointHeight(x + 1, y + 1))
-		)
-	).z;
+	return Utils::getVectorPlaneIntersection(pos, dir, this->getPlaneForTile(sf::Vector2i(floor(x), floor(y)), sf::Vector2f(x, y))).z;
 }
 
 bool GameMap::canGetTileLock(size_t x, size_t y, TransitType type) {
@@ -883,5 +875,25 @@ unsigned int GameMap::getMaxHeightInDirection(size_t x, size_t y, IsoRotation ro
 		return std::max(this->getPointHeight(x, y + 1), this->getPointHeight(x + 1, y + 1));
 	case IsoRotation::WEST:
 		return std::max(this->getPointHeight(x, y), this->getPointHeight(x, y + 1));
+	}
+}
+std::vector<float> GameMap::getPlaneForTile(sf::Vector2i tile, sf::Vector2f offset) {
+	offset.x -= floorf(offset.x);
+	offset.y -= floorf(offset.y);
+	bool a = this->getPointHeight(tile) == this->getPointHeight(tile + sf::Vector2i(1, 1));
+	bool b = this->getPointHeight(tile + sf::Vector2i(1, 0)) == this->getPointHeight(tile + sf::Vector2i(0, 1));
+	sf::Vector3f topLeft(tile.x, tile.y, this->getPointHeight(tile));
+	sf::Vector3f topRight(tile.x + 1, tile.y, this->getPointHeight(tile + sf::Vector2i(1, 0)));
+	sf::Vector3f botLeft(tile.x, tile.y + 1, this->getPointHeight(tile + sf::Vector2i(0, 1)));
+	sf::Vector3f botRight(tile.x + 1, tile.y + 1, this->getPointHeight(tile + sf::Vector2i(1, 1)));
+	// If the tile is flat or a ramp
+	if (a && b || (!a && !b)) {
+		return Utils::getPlaneThroughPoints(topLeft, topRight, botLeft);
+	}
+	else if (a) {
+		return offset.x > offset.y ? Utils::getPlaneThroughPoints(topLeft, topRight, botRight) : Utils::getPlaneThroughPoints(topLeft, botLeft, botRight);
+	}
+	else if (b) {
+		return offset.y < 1 - offset.x ? Utils::getPlaneThroughPoints(botLeft, topLeft, topRight) : Utils::getPlaneThroughPoints(botLeft, botRight, topRight);
 	}
 }

@@ -255,24 +255,50 @@ void Game::render(sf::RenderWindow* w) {
 sf::Vector2f Game::getMousePosition() {
 	return screenToWorldPos(this->window->mapPixelToCoords(sf::Vector2i(sf::Mouse::getPosition(*(this->window))), this->gameView));
 }
+bool isUnderSlope(sf::Vector2f slopePointOne, sf::Vector2f slopePointTwo, sf::Vector2f point) {
+	float m = (slopePointOne.y - slopePointTwo.y) / (slopePointOne.x - slopePointTwo.x);
+	float b = slopePointOne.y - slopePointOne.x * m;
+	return point.x * m + b < point.y;
+}
 sf::Vector3f Game::getGroundMousePosition() {
 	// Get the tile that is being hovered
 	sf::Vector2i tile = this->uiHandler.getHoveredTile();
-	// Get the plane from the tile
-	std::vector<float> gamePlane = Utils::getPlaneThroughPoints(
-		sf::Vector3f(tile.x, tile.y, this->gameMap.getPointHeight(tile.x, tile.y)),
-		sf::Vector3f(tile.x, tile.y + 1, this->gameMap.getPointHeight(tile.x, tile.y + 1)),
-		sf::Vector3f(tile.x + 1, tile.y + 1, this->gameMap.getPointHeight(tile.x + 1, tile.y + 1))
-	);
 	// The vector pointing directly at the camera, computed via trial and error
 	sf::Vector3f mouseVector(0.15f, 0.15f, 0.5f);
 	mouseVector = mouseVector / sqrtf(powf(mouseVector.x, 2) + powf(mouseVector.y, 2) + powf(mouseVector.z, 2));
 	//TODO maybe: Rotate the mousevector if camera is rotated
 	// Get mouse position
+	sf::Vector2f absoluteMousePos = this->window->mapPixelToCoords(sf::Mouse::getPosition(*(this->window)), this->gameView);
 	sf::Vector2f mousePos(
-		screenToWorldPos(this->window->mapPixelToCoords(sf::Vector2i(sf::Mouse::getPosition(*(this->window))), this->gameView))
+		screenToWorldPos(absoluteMousePos)
 	);
-	return Utils::getVectorPlaneIntersection(sf::Vector3f(mousePos.x, mousePos.y, 0.0f), mouseVector, gamePlane);
+	// We have to do some more complicated stuff in order to figure out "which" plane we want
+	// Check which triangular slice of the tile the cursor is in, by checing where the tile is rendered on the screen
+	sf::Vector2f topLeft = this->worldToScreenPos(sf::Vector3f(tile.x, tile.y, this->gameMap.getPointHeight(tile)));
+	sf::Vector2f topRight = this->worldToScreenPos(sf::Vector3f(tile.x + 1, tile.y, this->gameMap.getPointHeight(tile + sf::Vector2i(1, 0))));
+	sf::Vector2f botLeft = this->worldToScreenPos(sf::Vector3f(tile.x, tile.y + 1, this->gameMap.getPointHeight(tile + sf::Vector2i(0, 1))));
+	sf::Vector2f botRight = this->worldToScreenPos(sf::Vector3f(tile.x + 1, tile.y + 1, this->gameMap.getPointHeight(tile + sf::Vector2i(1, 1))));
+	bool underTopLeftBotRight = isUnderSlope(topLeft, botRight, absoluteMousePos);
+	bool underTopRightBotLeft = isUnderSlope(topRight, botLeft, absoluteMousePos);
+	sf::Vector2f offset;
+	if (underTopLeftBotRight) {
+		if (underTopRightBotLeft) {
+			offset = sf::Vector2f(0.5, 0.75f);
+		}
+		else {
+			offset = sf::Vector2f(0, 0.5f);
+		}
+	}
+	else {
+		if (underTopRightBotLeft) {
+			offset = sf::Vector2f(0.75f, 0.5f);
+		}
+		else {
+			offset = sf::Vector2f(0.5f, 0);
+		}
+	}
+	// Get the height
+	return Utils::getVectorPlaneIntersection(sf::Vector3f(mousePos.x, mousePos.y, 0.0f), mouseVector, this->gameMap.getPlaneForTile(sf::Vector2i(tile), offset));
 }
 sf::Vector2i Game::getWindowMousePosition() {
 	return sf::Vector2i(this->window->mapPixelToCoords(sf::Mouse::getPosition(*(this->window)), this->gameView));

@@ -105,6 +105,9 @@ public:
 	unsigned int getMaxHeightInDirection(size_t x, size_t y, IsoRotation rot);
 	// Get the save data for the map
 	SaveData getSaveData();
+	// Get the plane that is flush with teh tile at the point given
+	// Offset is used for when half of the tile is a ramp and half is not
+	std::vector<float> getPlaneForTile(sf::Vector2i tile, sf::Vector2f offset);
 private:
 	Game* game;
 	std::vector<std::vector<Tile>> tiles;
