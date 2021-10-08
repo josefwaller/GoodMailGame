@@ -569,31 +569,17 @@ float GameMap::getHeightAt(sf::Vector2f p) {
 
 float GameMap::getHeightAt(float x, float y) {
 	// Get the points around the position to get the height
-	size_t minX = floor(x);
-	size_t maxX = minX + 1;
-	size_t minY = floor(y);
-	size_t maxY = minY + 1;
-
-	unsigned int topLeft = this->getPointHeight(minX, minY);
-	unsigned int botLeft = this->getPointHeight(minX, maxY);
-	unsigned int topRight = this->getPointHeight(maxX, minY);
-	unsigned int botRight = this->getPointHeight(maxX, maxY);
-
-	// All points are equal, so just return height
-	if (topLeft == botLeft && botLeft == topRight && topRight == botRight) {
-		return (float)topLeft;
-	}
-	// Check for ramp
-	// Top to bottom
-	if (topLeft == botLeft && topRight == botRight) {
-		return (float)(botLeft)+(x - (float)minX) * ((float)botRight - (float)botLeft);
-	}
-	// Left to right
-	else if (topLeft == topRight && botLeft == botRight) {
-		return (float)(topLeft)+(y - (float)minY) * ((float)botLeft - (float)topLeft);
-	}
-	// TBA
-	return 0.0f;
+	sf::Vector3f pos(x, y, 0);
+	sf::Vector3f dir(0, 0, 1);
+	return Utils::getVectorPlaneIntersection(
+		pos,
+		dir,
+		Utils::getPlaneThroughPoints(
+			sf::Vector3f(x, y, this->getPointHeight(x, y)),
+			sf::Vector3f(x + 1, y, this->getPointHeight(x + 1, y)),
+			sf::Vector3f(x + 1, y + 1, this->getPointHeight(x + 1, y + 1))
+		)
+	).z;
 }
 
 bool GameMap::canGetTileLock(size_t x, size_t y, TransitType type) {

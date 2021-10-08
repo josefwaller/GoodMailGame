@@ -23,6 +23,11 @@ public:
 	// Get the color to represent a certain time of day
 	static sf::Color getTimeColor(gtime_t time);
 
+	// Get the plane that goes through the three points
+	// Returned in the format ax + by + cz = d
+	static std::vector<float> getPlaneThroughPoints(sf::Vector3f A, sf::Vector3f B, sf::Vector3f C);
+	// Get the intersection of a vector and a plane
+	static sf::Vector3f getVectorPlaneIntersection(sf::Vector3f vectorPos, sf::Vector3f vectorDirection, std::vector<float> plane);
 	static std::vector<RoutePoint> toRoutePointVector(std::vector<sf::Vector3f> points, gtime_t time, float speed);
 	// Convert a list of SpeedPoints to a list of RoutePoints
 	static std::vector<RoutePoint> speedPointVectorToRoutePointVector(std::vector<SpeedPoint> points, gtime_t departTime, VehicleModel model, float startingSpeed = 0.0f);

@@ -57,6 +57,32 @@ sf::Color Utils::getTimeColor(gtime_t time) {
 	sf::Color toReturn = sf::Color(255 * (r + m), 255 * (g + m), 255 * (b + m), 255);
 	return toReturn;
 }
+// Gives the formula for the plane that goes through the three points provided
+// in the ax + by + cz = d format
+std::vector<float> Utils::getPlaneThroughPoints(sf::Vector3f A, sf::Vector3f B, sf::Vector3f C) {
+	sf::Vector3f AB = B - A;
+	sf::Vector3f AC = C - A;
+	// Cross product
+	float a = AB.y * AC.z - AC.y * AB.z;
+	float b = AB.z * AC.x - AC.z * AB.x;
+	float c = AB.x * AC.y - AC.x * AB.y;
+	float d = (a * A.x + b * A.y + c * A.z);
+	return {
+		a,
+		b,
+		c,
+		d
+	};
+}
+sf::Vector3f Utils::getVectorPlaneIntersection(sf::Vector3f pos, sf::Vector3f dir, std::vector<float> plane) {
+	// See https://math.stackexchange.com/questions/100439/determine-where-a-vector-will-intersect-a-plane
+	float a = plane[0];
+	float b = plane[1];
+	float c = plane[2];
+	float d = plane[3];
+	float length = (d - a * pos.x - b * pos.y - c * pos.z) / (a * dir.x + b * dir.y + c * dir.z);
+	return pos + dir * length;
+}
 std::vector<RoutePoint> Utils::toRoutePointVector(std::vector<sf::Vector3f> points, gtime_t time, float speed) {
 	std::vector<RoutePoint> toReturn;
 	sf::Vector3f lastPos = points.front();
