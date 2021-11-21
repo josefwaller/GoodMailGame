@@ -25,9 +25,9 @@ void ResidenceController::init() {
 			// Don't add yourself as a destination
 			if (tile.building.lock() != this->getEntity()) {
 				// Add one from the same city and two from different cities
-				if ((i == 0 && tile.cityId == cityId) || (i != 0 && tile.cityId != cityId)) {
-					break;
-				}
+		//		if ((i == 0 && tile.cityId == cityId) || (i != 0 && tile.cityId != cityId)) {
+				break;
+				//		}
 			}
 		}
 		this->destinations.push_back({ rand() % 24, res });

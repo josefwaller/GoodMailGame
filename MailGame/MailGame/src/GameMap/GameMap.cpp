@@ -15,8 +15,8 @@
 #include <bitset>
 #include <algorithm>
 
-const size_t GameMap::MAP_HEIGHT = 100;
-const size_t GameMap::MAP_WIDTH = 100;
+const size_t GameMap::MAP_HEIGHT = 40;
+const size_t GameMap::MAP_WIDTH = 40;
 
 const unsigned int GameMap::MIN_HEIGHT = 0;
 const unsigned int GameMap::MAX_HEIGHT = 10;
@@ -69,9 +69,9 @@ void GameMap::generateNew() {
 		}
 	}
 	// Generate city
-	generateCityAt({ MAP_WIDTH / 4, MAP_HEIGHT / 4 }, 1);
-	generateCityAt({ MAP_WIDTH * 3 / 4, MAP_HEIGHT * 3 / 4 }, 2);
-	generateCityAt({ MAP_WIDTH * 3 / 4, MAP_HEIGHT / 4 }, 3);
+	generateCityAt({ MAP_WIDTH / 2, MAP_HEIGHT / 2 }, 1);
+	//	generateCityAt({ MAP_WIDTH * 3 / 4, MAP_HEIGHT * 3 / 4 }, 2);
+	//	generateCityAt({ MAP_WIDTH * 3 / 4, MAP_HEIGHT / 4 }, 3);
 }
 void GameMap::render(sf::RenderWindow* window) {
 	// Render all the tiles on screen
