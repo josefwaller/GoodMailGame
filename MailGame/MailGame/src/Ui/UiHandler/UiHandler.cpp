@@ -25,7 +25,6 @@ isStation(false) {
 
 bool UiHandler::handleEvent(sf::Event e) {
 	sf::Vector2i tilePos;
-	sf::Vector2f mousePos;
 	tilePos = sf::Vector2i(this->game->getMousePosition());
 	switch (e.type) {
 	case sf::Event::MouseButtonPressed:
@@ -37,7 +36,7 @@ bool UiHandler::handleEvent(sf::Event e) {
 			if (!this->recipe) {
 				throw std::runtime_error("BuildingEntity but with no ConstructionRecipe!");
 			}
-			mousePos = this->game->getMousePosition();
+			sf::Vector3f mousePos = this->game->getGroundMousePosition();
 			GameMap* gMap = this->game->getGameMap();
 			sf::Vector3f pos(mousePos.x, mousePos.y, std::max({
 				gMap->getPointHeight(sf::Vector2i(std::floor(mousePos.x), std::floor(mousePos.y))),
