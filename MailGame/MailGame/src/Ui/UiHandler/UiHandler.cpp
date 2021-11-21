@@ -153,6 +153,9 @@ bool UiHandler::handleEvent(sf::Event e) {
 		if (ImGui::GetIO().WantCaptureKeyboard) {
 			return true;
 		}
+		if (e.key.code == sf::Keyboard::R) {
+			this->currentRotation.rotateQuaterClockwise();
+		}
 		break;
 	}
 	return false;
