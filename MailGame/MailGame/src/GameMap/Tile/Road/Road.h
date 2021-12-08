@@ -11,6 +11,7 @@ struct Road {
 	bool hasSouth;
 	bool hasWest;
 	Road() : hasNorth(false), hasEast(false), hasSouth(false), hasWest(false) {}
+	Road(bool n, bool e, bool s, bool w) : hasNorth(n), hasSouth(s), hasEast(e), hasWest(w) {}
 	// Initialize a road that just points in a given direction
 	Road(IsoRotation dir) :
 		hasNorth(dir.getRotation() == IsoRotation::NORTH),
@@ -61,5 +62,12 @@ struct Road {
 			toReturn.push_back(tile + sf::Vector2i(-1, 0));
 		}
 		return toReturn;
+	}
+
+	void combineWithRoad(Road other) {
+		this->hasNorth |= other.hasNorth;
+		this->hasEast |= other.hasEast;
+		this->hasWest |= other.hasWest;
+		this->hasSouth |= other.hasSouth;
 	}
 };

@@ -10,6 +10,9 @@ sf::Sprite Utils::setupBuildingSprite(sf::Sprite spr, bool isBuilding) {
 	return spr;
 }
 
+float Utils::getVectorDistance(sf::Vector2f one, sf::Vector2f two) {
+	return sqrtf(powf(one.x - two.x, 2) + powf(one.y - two.y, 2));
+}
 float Utils::getVectorDistance(sf::Vector3f one, sf::Vector3f two) {
 	return sqrtf(powf(one.x - two.x, 2) + powf(one.y - two.y, 2) + powf(one.z - two.z, 2));
 }

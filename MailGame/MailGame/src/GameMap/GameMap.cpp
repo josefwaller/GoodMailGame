@@ -19,9 +19,9 @@ const size_t GameMap::MAP_HEIGHT = 40;
 const size_t GameMap::MAP_WIDTH = 40;
 
 const unsigned int GameMap::MIN_HEIGHT = 0;
-const unsigned int GameMap::MAX_HEIGHT = 10;
+const unsigned int GameMap::MAX_HEIGHT = 5;
 
-const unsigned int GameMap::SEA_LEVEL = 4;
+const unsigned int GameMap::SEA_LEVEL = 1;
 
 // Load the sprites
 const sf::Sprite GameMap::EMPTY_SPRITE = ResourceLoader::get()->getSprite("tiles/tiles", "empty");
@@ -634,7 +634,12 @@ void GameMap::setCodeForTile(size_t x, size_t y, id_t id) {
 }
 void GameMap::addRoad(size_t x, size_t y, Road r) {
 	if (this->getTileAt(x, y).type != TileType::OffMap) {
-		this->tiles.at(x).at(y).road = r;
+		if (this->tiles.at(x).at(y).road.has_value()) {
+			this->tiles.at(x).at(y).road.value().combineWithRoad(r);
+		}
+		else {
+			this->tiles.at(x).at(y).road = r;
+		}
 	}
 }
 void GameMap::removeRoad(size_t x, size_t y) {

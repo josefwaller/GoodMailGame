@@ -16,6 +16,7 @@ public:
 	// This is pretty messy, but hopefully will not make it into the final version
 	static sf::Sprite setupBuildingSprite(sf::Sprite spr, bool isBuilding = true);
 	// Get distance between vector3fs
+	static float getVectorDistance(sf::Vector2f one, sf::Vector2f two);
 	static float getVectorDistance(sf::Vector3f one, sf::Vector3f two);
 	// Get unit vector
 	static sf::Vector3f getUnitVector(sf::Vector3f vector);

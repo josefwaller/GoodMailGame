@@ -75,8 +75,9 @@ private:
 	// The game speeds, and the index of the current game speed
 	static const std::vector<float> GAME_SPEEDS;
 	size_t currentGameSpeed;
-	// The railway currently being built
+	// The start location of the road or railway currently being built
 	std::optional<sf::Vector2f> startLocation;
+	// The railway currently being built
 	bool isStation;
 	bool isOneWay;
 	// The airplaneroad being built
@@ -106,6 +107,8 @@ private:
 	std::optional<sf::Vector2i> getTunnelExitForTile(sf::Vector2i entrance);
 	// Get the height at the bottom of a slope
 	std::optional<unsigned int> getBottomSlopeHeight(sf::Vector2i t);
+	// Get the roads to build when the player drags to build roads
+	std::vector<std::pair<sf::Vector2i, Road>> getRoadsToBuild(sf::Vector2f from, sf::Vector2f to);
 	// Get the railways to build if the player clicks and drags from one point to another
 	std::vector<std::pair<sf::Vector2i, Railway>> getRailwaysToBuild(sf::Vector2f from, sf::Vector2f to);
 };

@@ -55,15 +55,9 @@ bool UiHandler::handleEvent(sf::Event e) {
 		case UiState::BuildingRailTracks:
 			this->startLocation = sf::Vector2f(this->getHoveredTile()) + sf::Vector2f(0.5f, 0.5f);
 			break;
-		case UiState::BuildingRoad: {
-			// Pretty messy, but just temporary so should be fine
-			sf::Vector2i tile = this->getHoveredTile();
-			this->game->getGameMap()->addRoad(tile.x, tile.y, (Road)this->airplaneRoadToBuild);
-			break;
-		}
+		case UiState::BuildingRoad:
 		case UiState::BuildingAirplaneRoad: {
-			sf::Vector2i tile = this->getHoveredTile();
-			this->game->getGameMap()->addAirplaneRoad(tile.x, tile.y, this->airplaneRoadToBuild);
+			this->startLocation = sf::Vector2f(this->getHoveredTile());
 			break;
 		}
 		case UiState::SelectingEntity:
@@ -134,7 +128,15 @@ bool UiHandler::handleEvent(sf::Event e) {
 		}
 		break;
 	case sf::Event::MouseButtonReleased:
-		if (this->currentState == UiState::BuildingRailTracks) {
+		switch (this->currentState) {
+		case UiState::BuildingAirplaneRoad:
+		case UiState::BuildingRoad: {
+			auto toBuild = this->getRoadsToBuild(this->startLocation.value(), sf::Vector2f(this->getHoveredTile()));
+			for (std::pair<sf::Vector2i, Road> b : toBuild) {
+				this->game->getGameMap()->addRoad(b.first.x, b.first.y, b.second);
+			}
+		}
+		case UiState::BuildingRailTracks:
 			if (this->startLocation.has_value()) {
 				sf::Vector3f mousePos = this->game->getGroundMousePosition();
 				for (auto kv : this->getRailwaysToBuild(this->startLocation.value(), sf::Vector2f(mousePos.x, mousePos.y))) {
@@ -811,6 +813,46 @@ std::optional<unsigned int> UiHandler::getBottomSlopeHeight(sf::Vector2i t) {
 		return this->game->getGameMap()->getPointHeight(t + sf::Vector2i(1, 0));
 	// South and East can both use the top-left corner
 	return this->game->getGameMap()->getPointHeight(t);
+}
+
+std::vector<std::pair<sf::Vector2i, Road>> UiHandler::getRoadsToBuild(sf::Vector2f from, sf::Vector2f to) {
+	// Get the centers to correctly determine if the road is going north-south or east-west
+	sf::Vector2f centerFrom = from + sf::Vector2f(0.5, 0.5);
+	sf::Vector2f centerTo = to + sf::Vector2f(0.5, 0.5);
+	sf::Vector2f diff = centerTo - centerFrom;
+	IsoRotation rot;
+	if (diff.x > diff.y) {
+		if (-diff.x > diff.y) {
+			rot = IsoRotation::NORTH;
+		}
+		else {
+			rot = IsoRotation::EAST;
+		}
+	}
+	else {
+		if (-diff.x > diff.y) {
+			rot = IsoRotation::WEST;
+		}
+		else {
+			rot = IsoRotation::SOUTH;
+		}
+	}
+	bool isVert = (rot == IsoRotation::NORTH || rot == IsoRotation::SOUTH);
+	// Get the to positions snapped to either being completely horizontal or completely vertical
+	sf::Vector2f snappedTo = isVert ? sf::Vector2f(from.x, to.y) : sf::Vector2f(to.x, from.y);
+	// Add the first road
+	std::vector<std::pair<sf::Vector2i, Road>> toReturn = {
+		{ sf::Vector2i(from), Road(rot) }
+	};
+	// Add the roads inbetween
+	size_t length = Utils::getVectorDistance(snappedTo, from);
+	Road r = isVert ? Road(true, false, true, false) : Road(false, true, false, true);
+	for (size_t i = 1; i < length; i++) {
+		toReturn.push_back({ sf::Vector2i(from + rot.getUnitVector() * (float)i), r });
+	}
+	// Add the last road
+	toReturn.push_back({ sf::Vector2i(snappedTo), Road(rot.getReverse()) });
+	return toReturn;
 }
 
 std::vector<std::pair<sf::Vector2i, Railway>> UiHandler::getRailwaysToBuild(sf::Vector2f from, sf::Vector2f to) {
