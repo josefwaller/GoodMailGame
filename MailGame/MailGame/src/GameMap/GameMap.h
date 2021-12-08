@@ -48,6 +48,7 @@ public:
 	float getHeightAt(sf::Vector2f);
 
 	void render(sf::RenderWindow* window);
+	void renderRoad(sf::Vector2i tile, Road road, sf::RenderWindow* window, std::optional<sf::Color> color = {});
 	void renderRailway(sf::Vector2i tile, Railway rail, sf::RenderWindow* window, std::optional<sf::Color> color = {});
 
 	// Set the building for a specific tile

@@ -131,9 +131,16 @@ bool UiHandler::handleEvent(sf::Event e) {
 		switch (this->currentState) {
 		case UiState::BuildingAirplaneRoad:
 		case UiState::BuildingRoad: {
-			auto toBuild = this->getRoadsToBuild(this->startLocation.value(), sf::Vector2f(this->getHoveredTile()));
-			for (std::pair<sf::Vector2i, Road> b : toBuild) {
-				this->game->getGameMap()->addRoad(b.first.x, b.first.y, b.second);
+			if (this->startLocation.has_value()) {
+				auto toBuild = this->getRoadsToBuild(this->startLocation.value(), sf::Vector2f(this->getHoveredTile()));
+				for (std::pair<sf::Vector2i, Road> b : toBuild) {
+					if (this->currentState == UiState::BuildingAirplaneRoad) {
+						this->game->getGameMap()->addAirplaneRoad(b.first.x, b.first.y, AirplaneRoad(b.second, this->airplaneRoadToBuild.isRunway));
+					}
+					else {
+						this->game->getGameMap()->addRoad(b.first.x, b.first.y, b.second);
+					}
+				}
 			}
 		}
 		case UiState::BuildingRailTracks:
@@ -369,15 +376,9 @@ void UiHandler::update() {
 				this->changeState(UiState::Default);
 			}
 		}
-		else if (this->currentState == UiState::BuildingAirplaneRoad || this->currentState == UiState::BuildingRoad) {
-			ImGui::Checkbox("North", &this->airplaneRoadToBuild.hasNorth);
-			ImGui::Checkbox("East", &this->airplaneRoadToBuild.hasEast);
-			ImGui::Checkbox("South", &this->airplaneRoadToBuild.hasSouth);
-			ImGui::Checkbox("West", &this->airplaneRoadToBuild.hasWest);
-			if (this->currentState == UiState::BuildingAirplaneRoad)
-				ImGui::Checkbox("Is Runway", &this->airplaneRoadToBuild.isRunway);
+		else if (this->currentState == UiState::BuildingAirplaneRoad) {
+			ImGui::Checkbox("Is Runway", &this->airplaneRoadToBuild.isRunway);
 		}
-
 		if (this->currentState == UiState::BuildingEntity) {
 			if (ImGui::Button("Rotate")) {
 				this->currentRotation.rotateQuaterClockwise();
@@ -517,6 +518,20 @@ void UiHandler::render(sf::RenderWindow* w) {
 			w);
 		break;
 	}
+	case UiState::BuildingRoad:
+	case UiState::BuildingAirplaneRoad: {
+		sf::Color c = sf::Color::White;
+		if (this->currentState == UiState::BuildingAirplaneRoad) {
+			c = this->airplaneRoadToBuild.isRunway ? sf::Color::Blue : sf::Color::Red;
+		}
+		c.a = 100;
+		if (this->startLocation.has_value()) {
+			auto toBuild = this->getRoadsToBuild(this->startLocation.value(), sf::Vector2f(this->getHoveredTile()));
+			for (auto p : toBuild) {
+				this->game->getGameMap()->renderRoad(p.first, p.second, w, c);
+			}
+		}
+	}
 	case UiState::BuildingRailTracks: {
 		// Draw a line
 		sf::Vector3f m = this->game->getGroundMousePosition();
@@ -533,16 +548,6 @@ void UiHandler::render(sf::RenderWindow* w) {
 				this->game->getGameMap()->renderRailway(rails.front().first, rails.front().second, w, sf::Color::White);
 			}
 		}
-		break;
-	}
-	case UiState::BuildingRoad:
-	case UiState::BuildingAirplaneRoad: {
-		sf::Sprite toRender = GameMap::getRoadSprite(this->airplaneRoadToBuild, this->game->getRotation());
-		toRender.setColor(sf::Color(255, 130, 25));
-		sf::Vector2i tile = this->getHoveredTile();
-		toRender = Utils::setupBuildingSprite(toRender);
-		toRender.setPosition(this->game->worldToScreenPos(sf::Vector3f(tile.x + 0.5f, tile.y + 0.5f, 0.0f)));
-		w->draw(toRender);
 		break;
 	}
 	case UiState::EditingPostalCodes: {

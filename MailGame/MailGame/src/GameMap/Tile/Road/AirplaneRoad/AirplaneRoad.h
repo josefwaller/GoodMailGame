@@ -4,6 +4,7 @@
 struct AirplaneRoad : public Road {
 	bool isRunway;
 	AirplaneRoad() : Road(), isRunway(false) {};
+	AirplaneRoad(Road r, bool isRun) : Road(r), isRunway(isRun) {}
 	AirplaneRoad(IsoRotation rot) : Road(rot), isRunway(false) {}
 	AirplaneRoad(SaveData data) : Road(data), isRunway(data.getBool(SaveKeys::IS_RUNWAY)) {}
 	SaveData getSaveData() {

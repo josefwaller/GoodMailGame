@@ -232,27 +232,14 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 		arr[3] = sf::Vertex(this->game->worldToScreenPos(sf::Vector3f(x, y + 1, this->pointHeights.at(x).at(y + 1))), tileColor);
 		window->draw(arr);
 		if (tile.road.has_value()) {
-			std::vector<std::vector<unsigned int>> heights(2, std::vector<unsigned int>(2));
-			for (size_t i = 0; i < 2; i++) {
-				for (size_t j = 0; j < 2; j++) {
-					heights[i][j] = this->pointHeights.at(x + i).at(y + j);
-				}
-			}
-			s = getRoadSprite(tile.road.value(), this->game->getRotation(), heights);
-		}
+			this->renderRoad(sf::Vector2i(x, y), tile.road.value(), window);
+	}
 		if (tile.airplaneRoad.has_value()) {
-			s = getRoadSprite(tile.airplaneRoad.value(), this->game->getRotation());
-			s.setColor(tile.airplaneRoad.value().isRunway ? sf::Color::Blue : sf::Color::Red);
+			this->renderRoad(sf::Vector2i(x, y), tile.airplaneRoad.value(), window, tile.airplaneRoad.value().isRunway ? sf::Color::Blue : sf::Color::Red);
 		}
 	}
 	if (drawSprite) {
-		sf::Vector3f pos((float)x + 0.5f, (float)y + 0.5f, this->getHeightAt((float)x + 0.5f, (float)y + 0.5f));
-		s.setPosition(this->game->worldToScreenPos(pos));
-		if (!tile.canGetLock()) {
-			s.setColor(sf::Color(0, 255, 51));
-		}
-		window->draw(s);
-	}
+}
 	// Draw the railway if it has one
 	if (!tile.getRailways().empty()) {
 		for (Railway r : tile.getRailways()) {
@@ -282,6 +269,22 @@ void GameMap::renderTile(sf::RenderWindow* window, size_t x, size_t y) {
 		}
 		window->draw(arr);
 	}
+}
+
+void GameMap::renderRoad(sf::Vector2i tile, Road road, sf::RenderWindow* w, std::optional<sf::Color> color) {
+	std::vector<std::vector<unsigned int>> heights(2, std::vector<unsigned int>(2));
+	for (size_t i = 0; i < 2; i++) {
+		for (size_t j = 0; j < 2; j++) {
+			heights[i][j] = this->pointHeights.at(tile.x + i).at(tile.y + j);
+		}
+	}
+	sf::Sprite s = getRoadSprite(road, this->game->getRotation(), heights);
+
+	if (color.has_value())
+		s.setColor(color.value());
+	sf::Vector3f pos((float)tile.x + 0.5f, (float)tile.y + 0.5f, this->getHeightAt((float)tile.x + 0.5f, (float)tile.y + 0.5f));
+	s.setPosition(this->game->worldToScreenPos(pos));
+	w->draw(s);
 }
 void GameMap::renderRailway(sf::Vector2i t, Railway r, sf::RenderWindow* w, std::optional<sf::Color> color) {
 	// Point is center of tile + the direction
