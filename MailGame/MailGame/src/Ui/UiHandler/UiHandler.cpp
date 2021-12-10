@@ -135,7 +135,7 @@ bool UiHandler::handleEvent(sf::Event e) {
 				auto toBuild = this->getRoadsToBuild(this->startLocation.value(), sf::Vector2f(this->getHoveredTile()));
 				for (std::pair<sf::Vector2i, Road> b : toBuild) {
 					if (this->currentState == UiState::BuildingAirplaneRoad) {
-						this->game->getGameMap()->addAirplaneRoad(b.first.x, b.first.y, AirplaneRoad(b.second, this->airplaneRoadToBuild.isRunway));
+						this->game->getGameMap()->addAirplaneRoad(b.first.x, b.first.y, AirplaneRoad(b.second, this->isRunway));
 					}
 					else {
 						this->game->getGameMap()->addRoad(b.first.x, b.first.y, b.second);
@@ -360,13 +360,9 @@ void UiHandler::update() {
 		}
 		if (ImGui::Button("Airplane roads")) {
 			this->changeState(UiState::BuildingAirplaneRoad);
-			this->airplaneRoadToBuild = AirplaneRoad();
 		}
 		if (ImGui::Button("Tunnel")) {
 			this->changeState(UiState::BuildingTunnel);
-		}
-		else if (this->currentState == UiState::BuildingAirplaneRoad) {
-			ImGui::Checkbox("Is Runway", &this->airplaneRoadToBuild.isRunway);
 		}
 		if (this->currentState == UiState::BuildingEntity) {
 			if (ImGui::Button("Rotate")) {
@@ -455,11 +451,18 @@ void UiHandler::update() {
 	ImGui::End();
 	// Draw the various windows to build things
 	switch (this->currentState) {
+	case UiState::BuildingAirplaneRoad: {
+		ImGui::Begin("Building airplane roads");
+		this->isRunway = checkbox("Runway: ", this->isRunway);
+		ImGui::End();
+		break;
+	}
 	case UiState::BuildingRailTracks: {
 		ImGui::Begin("Building Rails");
-		this->isStation = ImGui::Checkbox("Station: ", &this->isStation);
-		this->isOneWay = ImGui::Checkbox("One way rail: ", &this->isOneWay);
+		this->isStation = checkbox("Station: ", this->isStation);
+		this->isOneWay = checkbox("One way rail: ", this->isOneWay);
 		ImGui::End();
+		break;
 	}
 	}
 	// Draw the Tech tree window
@@ -520,7 +523,7 @@ void UiHandler::render(sf::RenderWindow* w) {
 	case UiState::BuildingAirplaneRoad: {
 		sf::Color c = sf::Color::White;
 		if (this->currentState == UiState::BuildingAirplaneRoad) {
-			c = this->airplaneRoadToBuild.isRunway ? sf::Color::Blue : sf::Color::Red;
+			c = this->isRunway ? sf::Color::Blue : sf::Color::Red;
 		}
 		c.a = 100;
 		if (this->startLocation.has_value()) {
@@ -908,4 +911,10 @@ std::vector<std::pair<sf::Vector2i, Railway>> UiHandler::getRailwaysToBuild(sf::
 		start = end;
 	}
 	return toReturn;
+}
+
+bool UiHandler::checkbox(const char* label, bool value) {
+	bool v = value;
+	ImGui::Checkbox(label, &v);
+	return v;
 }

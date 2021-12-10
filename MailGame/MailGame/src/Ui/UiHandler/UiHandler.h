@@ -80,8 +80,8 @@ private:
 	// The railway currently being built
 	bool isStation;
 	bool isOneWay;
-	// The airplaneroad being built
-	AirplaneRoad airplaneRoadToBuild;
+	// Is the airplane road being built a runway?
+	bool isRunway;
 	// If tarraforming, whether the player is raising or lowering a point
 	bool isLowering;
 	// The paths to draw
@@ -111,4 +111,6 @@ private:
 	std::vector<std::pair<sf::Vector2i, Road>> getRoadsToBuild(sf::Vector2f from, sf::Vector2f to);
 	// Get the railways to build if the player clicks and drags from one point to another
 	std::vector<std::pair<sf::Vector2i, Railway>> getRailwaysToBuild(sf::Vector2f from, sf::Vector2f to);
+	// Utility function for IMGui checkboxes
+	bool checkbox(const char* label, bool val);
 };
