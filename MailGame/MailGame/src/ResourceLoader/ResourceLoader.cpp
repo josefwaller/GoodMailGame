@@ -70,3 +70,14 @@ sf::Sprite ResourceLoader::getIndividualSprite(std::string spriteName, bool cent
 	}
 	return spr;
 }
+
+sf::Font ResourceLoader::getFont(std::string fontFile) {
+	if (this->fonts.find(fontFile) == this->fonts.end()) {
+		sf::Font f;
+		if (!f.loadFromFile("assets/fonts/" + fontFile)) {
+			throw std::runtime_error("Font file not found!");
+		}
+		this->fonts.insert({ fontFile, f });
+	}
+	return this->fonts.at(fontFile);
+}

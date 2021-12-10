@@ -233,6 +233,11 @@ void Game::render(sf::RenderWindow* w) {
 	for (auto it = toRender.begin(); it != toRender.end(); it++) {
 		(*it)->renderer->render(w);
 	}
+	for (auto it = this->entities.begin(); it != this->entities.end(); it++) {
+		if ((*it)->mailContainer) {
+			(*it)->mailContainer->renderUi(w);
+		}
+	}
 
 #ifdef _DEBUG
 	// Render clickboxes

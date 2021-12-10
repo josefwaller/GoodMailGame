@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include "Mail/Mail.h"
+#include <SFML/Graphics/RenderWindow.hpp>
 
 // The component responsible for holding mail
 class MailContainer : public Component {
@@ -24,6 +25,8 @@ public:
 	size_t getNumLetters();
 	// Get the mail
 	std::vector<Mail> getMail();
+	// Render the number of letters above the entity
+	void renderUi(sf::RenderWindow* window);
 
 	virtual std::optional<SaveData> getSaveData() override;
 	void fromSaveData(SaveData data) override;

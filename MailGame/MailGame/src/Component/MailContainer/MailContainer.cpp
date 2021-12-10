@@ -1,8 +1,13 @@
 #include "MailContainer.h"
 #include "System/SaveData/SaveData.h"
+#include "Entity/Entity.h"
+#include "Game/Game.h"
+#include "Component/Transform/Transform.h"
 #include "Component/ComponentType/ComponentType.h"
 #include <algorithm>
 #include <stdexcept>
+#include <SFML/Graphics/Text.hpp>
+#include "ResourceLoader/ResourceLoader.h"
 
 void MailContainer::addMail(std::vector<Mail> toAdd) {
 	this->mail.insert(this->mail.end(), toAdd.begin(), toAdd.end());
@@ -74,4 +79,19 @@ void MailContainer::fromSaveData(SaveData data) {
 	for (SaveData d : data.getDatas()) {
 		this->mail.push_back(Mail(d));
 	}
+}
+
+void MailContainer::renderUi(sf::RenderWindow* w) {
+	sf::Vector2f pos = this->getEntity()->getGame()->worldToScreenPos(this->getEntity()->transform->getPosition());
+	sf::Text t;
+	sf::Font f = ResourceLoader::get()->getFont("Arial.ttf");
+	t.setFont(f);
+	t.setPosition(pos);
+	t.setOutlineColor(sf::Color::Black);
+	t.setOutlineThickness(2.0f);
+	sf::Rect r(t.getLocalBounds());
+	t.setOrigin(sf::Vector2f(0.5 * r.width, 1 * r.height));
+	std::string s = std::to_string(this->mail.size());
+	t.setString(s);
+	w->draw(t);
 }
