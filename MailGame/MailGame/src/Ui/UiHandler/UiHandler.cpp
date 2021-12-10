@@ -365,17 +365,6 @@ void UiHandler::update() {
 		if (ImGui::Button("Tunnel")) {
 			this->changeState(UiState::BuildingTunnel);
 		}
-		if (this->currentState == UiState::BuildingRailTracks) {
-			if (ImGui::Button(this->isStation ? "Station" : "Rail")) {
-				this->isStation = !this->isStation;
-			}
-			if (ImGui::Button(this->isOneWay ? "One Way" : "Two Way")) {
-				this->isOneWay = !this->isOneWay;
-			}
-			if (ImGui::Button("Cancel")) {
-				this->changeState(UiState::Default);
-			}
-		}
 		else if (this->currentState == UiState::BuildingAirplaneRoad) {
 			ImGui::Checkbox("Is Runway", &this->airplaneRoadToBuild.isRunway);
 		}
@@ -464,6 +453,15 @@ void UiHandler::update() {
 		}
 	}
 	ImGui::End();
+	// Draw the various windows to build things
+	switch (this->currentState) {
+	case UiState::BuildingRailTracks: {
+		ImGui::Begin("Building Rails");
+		this->isStation = ImGui::Checkbox("Station: ", &this->isStation);
+		this->isOneWay = ImGui::Checkbox("One way rail: ", &this->isOneWay);
+		ImGui::End();
+	}
+	}
 	// Draw the Tech tree window
 	this->game->getTechTree()->update();
 	// Render option to show/hide UI for entity
