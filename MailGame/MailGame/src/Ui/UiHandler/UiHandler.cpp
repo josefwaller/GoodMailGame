@@ -31,6 +31,12 @@ bool UiHandler::handleEvent(sf::Event e) {
 		if (ImGui::GetIO().WantCaptureMouse) {
 			return true;
 		}
+		if (e.key.code == sf::Mouse::Right) {
+			this->changeState(UiState::Default);
+		}
+		else if (e.key.code != sf::Mouse::Left) {
+			return true;
+		}
 		switch (this->currentState) {
 		case UiState::BuildingEntity: {
 			if (!this->recipe) {
@@ -220,9 +226,6 @@ void UiHandler::selectEntity(std::function<void(std::weak_ptr<Entity>)> callback
 void UiHandler::update() {
 	char buf[200];
 	ImGui::Begin("Game Controls");
-	float fps = 1000.0f / (float)deltaClock.restart().asMilliseconds();
-	sprintf_s(buf, "%f FPS", fps);
-	ImGui::Text(buf);
 	// Print available money
 	sprintf_s(buf, "%d / %d CAD available", game->getExcessMoney(), game->getMonthlyBudget());
 	ImGui::Text(buf);
@@ -245,14 +248,6 @@ void UiHandler::update() {
 	sprintf_s(buf, "%f of letters are less than a day old", percent * 100.0f);
 	ImGui::Text(buf);
 
-	sf::Vector3f from = this->game->from;
-	float v[3] = {
-		from.x,
-		from.y,
-		from.z
-	};
-	ImGui::DragFloat3("From", v, 0.01f, 0.0f, 1.0f);
-	this->game->from = { v[0], v[1], v[2] };
 	if (ImGui::Button("Rotate Camera")) {
 		this->game->rotateCamera();
 	}
@@ -260,19 +255,26 @@ void UiHandler::update() {
 	ImGui::Text("Game Speed ");
 	ImGui::SameLine();
 	ImGui::Text(std::to_string(GAME_SPEEDS[this->currentGameSpeed]).c_str());
-	if (ImGui::Button("<<") && this->currentGameSpeed > 0) {
-		this->currentGameSpeed--;
-		this->game->setGameSpeed(GAME_SPEEDS[this->currentGameSpeed]);
+	if (ImGui::Button("<<")) {
+		this->currentGameSpeed = 0;
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("<")) {
+		this->currentGameSpeed = std::max(0ULL, this->currentGameSpeed - 1);
 	}
 	ImGui::SameLine();
 	if (ImGui::Button(this->game->getIsPaused() ? ">" : "||")) {
 		this->game->togglePause();
 	}
 	ImGui::SameLine();
-	if (ImGui::Button(">>") && this->currentGameSpeed < GAME_SPEEDS.size() - 1) {
-		this->currentGameSpeed++;
-		this->game->setGameSpeed(GAME_SPEEDS[this->currentGameSpeed]);
+	if (ImGui::Button(">")) {
+		this->currentGameSpeed = std::min(GAME_SPEEDS.size() - 1, this->currentGameSpeed + 1);
 	}
+	ImGui::SameLine();
+	if (ImGui::Button(">>")) {
+		this->currentGameSpeed = GAME_SPEEDS.size() - 1;
+	}
+	this->game->setGameSpeed(GAME_SPEEDS[this->currentGameSpeed]);
 	ImGui::Text((std::string("Game.time: ") + std::to_string(this->game->getTime())).c_str());
 	ImGui::Text("Savefile: ");
 	ImGui::SameLine();
@@ -287,122 +289,6 @@ void UiHandler::update() {
 		file << toWrite;
 		file.close();
 	}
-	if (this->currentState == UiState::ShowingCityLimits) {
-		if (ImGui::Button("Hide City Limits")) {
-			this->changeState(UiState::Default);
-		}
-		for (auto it = this->cityLimitColors.begin(); it != this->cityLimitColors.end(); it++) {
-			sprintf_s(buf, "%llu", it->first);
-			sf::Color color = it->second;
-			float c[3] = { color.r / 256.0f, color.g / 256.0f, color.b / 256.0f };
-			ImGui::ColorEdit3(buf, c);
-			it->second = sf::Color(256.0f * c[0], 256.0f * c[1], 256.0f * c[2]);
-		}
-	}
-	else {
-		if (ImGui::Button("Show City Limits")) {
-			this->changeState(UiState::ShowingCityLimits);
-		}
-	}
-	if (ImGui::Button(this->currentState == UiState::ShowingResidencePaths ? "Hide Residence Paths" : "Show Residence Paths")) {
-		this->changeState(this->currentState == UiState::ShowingResidencePaths ? UiState::Default : UiState::ShowingResidencePaths);
-	}
-	if (this->currentState != UiState::Terraforming) {
-		if (ImGui::Button("Change point heights")) {
-			this->changeState(UiState::Terraforming);
-		}
-	}
-	else
-	{
-		if (ImGui::Button("Stop changing point heights")) {
-			this->changeState(UiState::Default);
-		}
-		if (ImGui::Button(this->isLowering ? "Lowering point" : "Raising point")) {
-			this->isLowering = !this->isLowering;
-		}
-	}
-	if (this->currentState == UiState::BuildingTunnel) {
-		if (this->tunnelStart.has_value()) {
-			ImGui::Text("Choose tunnel end");
-		}
-		else {
-			ImGui::Text("Choose tunnel start");
-		}
-		if (ImGui::BeginCombo("Tunnel Type:", this->tunnelType == TransitType::Car ? "Road" : "Railway")) {
-			if (ImGui::Selectable("Road")) {
-				this->tunnelType = TransitType::Car;
-			}
-			if (ImGui::Selectable("Railway")) {
-				this->tunnelType = TransitType::Train;
-			}
-			ImGui::EndCombo();
-		}
-		if (ImGui::Button("Cancel")) {
-			this->changeState(UiState::Default);
-			this->tunnelStart.reset();
-		}
-	}
-
-	if (ImGui::CollapsingHeader("Build")) {
-		for (auto kv : Construction::recipes) {
-			if (this->game->getTechTree()->getTechUnlocked(kv.second.getRequiredTech())) {
-				if (ImGui::Button(kv.second.getDisplayName().c_str())) {
-					this->recipe = kv.second;
-					this->changeState(UiState::BuildingEntity);
-				}
-			}
-		}
-		if (ImGui::Button("Road")) {
-			this->changeState(UiState::BuildingRoad);
-		}
-		if (ImGui::Button("RailWay")) {
-			this->changeState(UiState::BuildingRailTracks);
-		}
-		if (ImGui::Button("Airplane roads")) {
-			this->changeState(UiState::BuildingAirplaneRoad);
-		}
-		if (ImGui::Button("Tunnel")) {
-			this->changeState(UiState::BuildingTunnel);
-		}
-		if (this->currentState == UiState::BuildingEntity) {
-			if (ImGui::Button("Rotate")) {
-				this->currentRotation.rotateQuaterClockwise();
-			}
-			if (ImGui::Button("Cancel")) {
-				this->changeState(UiState::Default);
-			}
-		}
-		if (ImGui::Button("Railway Signal")) {
-			this->changeState(UiState::BuildingRailwaySignal);
-		}
-	}
-	// Delete/Stop deleting buttons
-	if (this->currentState == UiState::Deleting || this->currentState == UiState::DeletingRailwaysAndRoads) {
-		if (ImGui::Button("Stop Deleting")) {
-			this->currentState = UiState::Default;
-		}
-	}
-	else {
-		if (ImGui::Button("Delete")) {
-			this->currentState = UiState::Deleting;
-		}
-		if (ImGui::Button("Delete Roads/Railways")) {
-			this->currentState = UiState::DeletingRailwaysAndRoads;
-		}
-	}
-	// Print mouse position
-	sf::Vector3f mousePos = this->game->getGroundMousePosition();
-	sf::Vector2i tile = this->getHoveredTile();
-	sprintf_s(buf, "Mouse position is (%.2f,%.2f,%.2f), tile is (%d, %d)", mousePos.x, mousePos.y, mousePos.z, tile.x, tile.y);
-	ImGui::Text(buf);
-	sprintf_s(buf, "Heights around tile are %u, %u, %u, %u",
-		this->game->getGameMap()->getPointHeight(tile),
-		this->game->getGameMap()->getPointHeight(tile + sf::Vector2i(1, 0)),
-		this->game->getGameMap()->getPointHeight(tile + sf::Vector2i(1, 1)),
-		this->game->getGameMap()->getPointHeight(tile + sf::Vector2i(0, 1))
-	);
-	ImGui::Text(buf);
-
 	// Postal codes ui
 	if (this->currentState == UiState::EditingPostalCodes) {
 		if (ImGui::CollapsingHeader("Postal Codes")) {
@@ -448,22 +334,103 @@ void UiHandler::update() {
 			this->changeState(UiState::EditingPostalCodes);
 		}
 	}
+
+	ImGui::End();
+	ImGui::Begin("Visualize");
+	this->showingCityLimits = checkbox("Show city limits", this->showingCityLimits);
+	if (this->showingCityLimits) {
+		for (auto it = this->cityLimitColors.begin(); it != this->cityLimitColors.end(); it++) {
+			sprintf_s(buf, "%llu", it->first);
+			sf::Color color = it->second;
+			float c[3] = { color.r / 256.0f, color.g / 256.0f, color.b / 256.0f };
+			ImGui::ColorEdit3(buf, c);
+			it->second = sf::Color(256.0f * c[0], 256.0f * c[1], 256.0f * c[2]);
+		}
+	}
+	this->showingResidencePaths = checkbox("Show Residence Paths", this->showingResidencePaths);
+	ImGui::End();
+
+	ImGui::Begin("Build/Delete");
+	if (ImGui::Button("Open road building")) {
+		this->roadWindowOpen = true;
+	}
+	if (ImGui::Button("Open railway building")) {
+		this->railsWindowOpen = true;
+	}
+	if (ImGui::Button("Open airplane road building")) {
+		this->airplaneRoadWindowOpen = true;
+	}
+	if (ImGui::CollapsingHeader("Buildings")) {
+		for (auto kv : Construction::recipes) {
+			if (this->game->getTechTree()->getTechUnlocked(kv.second.getRequiredTech())) {
+				if (ImGui::Button(kv.second.getDisplayName().c_str())) {
+					this->recipe = kv.second;
+					this->changeState(UiState::BuildingEntity);
+				}
+			}
+		}
+	}
+	// Delete/Stop deleting buttons
+	if (this->currentState == UiState::Deleting || this->currentState == UiState::DeletingRailwaysAndRoads) {
+		if (ImGui::Button("Stop Deleting")) {
+			this->currentState = UiState::Default;
+		}
+	}
+	else {
+		if (ImGui::Button("Delete")) {
+			this->currentState = UiState::Deleting;
+		}
+		if (ImGui::Button("Delete Roads/Railways")) {
+			this->currentState = UiState::DeletingRailwaysAndRoads;
+		}
+	}
+	ImGui::End();
+	ImGui::Begin("Debug Info");
+	// Print mouse position
+	sf::Vector3f mousePos = this->game->getGroundMousePosition();
+	sf::Vector2i tile = this->getHoveredTile();
+	sprintf_s(buf, "Mouse position is (%.2f,%.2f,%.2f), tile is (%d, %d)", mousePos.x, mousePos.y, mousePos.z, tile.x, tile.y);
+	ImGui::Text(buf);
+	sprintf_s(buf, "Heights around tile are %u, %u, %u, %u",
+		this->game->getGameMap()->getPointHeight(tile),
+		this->game->getGameMap()->getPointHeight(tile + sf::Vector2i(1, 0)),
+		this->game->getGameMap()->getPointHeight(tile + sf::Vector2i(1, 1)),
+		this->game->getGameMap()->getPointHeight(tile + sf::Vector2i(0, 1))
+	);
+	ImGui::Text(buf);
 	ImGui::End();
 	// Draw the various windows to build things
-	switch (this->currentState) {
-	case UiState::BuildingAirplaneRoad: {
-		ImGui::Begin("Building airplane roads");
-		this->isRunway = checkbox("Runway: ", this->isRunway);
+	if (this->roadWindowOpen) {
+		ImGui::Begin("Road building");
+		if (ImGui::Button("Roads")) {
+			this->changeState(UiState::BuildingRoad);
+		}
+		if (ImGui::Button("Tunnel")) {
+			this->changeState(UiState::BuildingTunnel);
+			this->tunnelType = TransitType::Car;
+		}
 		ImGui::End();
-		break;
 	}
-	case UiState::BuildingRailTracks: {
-		ImGui::Begin("Building Rails");
+	if (this->railsWindowOpen) {
+		ImGui::Begin("Railway Building");
+		if (ImGui::Button("Rails")) {
+			this->changeState(UiState::BuildingRailTracks);
+		}
+		if (ImGui::Button("Tunnel")) {
+			this->changeState(UiState::BuildingTunnel);
+			this->tunnelType = TransitType::Train;
+		}
 		this->isStation = checkbox("Station: ", this->isStation);
 		this->isOneWay = checkbox("One way rail: ", this->isOneWay);
 		ImGui::End();
-		break;
 	}
+	if (this->airplaneRoadWindowOpen) {
+		ImGui::Begin("Airplane road Building");
+		if (ImGui::Button("Runways")) {
+			this->changeState(UiState::BuildingAirplaneRoad);
+		}
+		this->isRunway = checkbox("Runway: ", this->isRunway);
+		ImGui::End();
 	}
 	// Draw the Tech tree window
 	this->game->getTechTree()->update();
@@ -569,44 +536,7 @@ void UiHandler::render(sf::RenderWindow* w) {
 		}
 		break;
 	}
-	case UiState::ShowingCityLimits: {
-		GameMap* gMap = this->game->getGameMap();
-		for (size_t x = 0; x < gMap->MAP_WIDTH; x++) {
-			for (size_t y = 0; y < gMap->MAP_HEIGHT; y++) {
-				Tile t = gMap->getTileAt(x, y);
-				// Insert color if does not exist
-				if (this->cityLimitColors.count(t.cityId) == 0) {
-					this->cityLimitColors.insert({ t.cityId, sf::Color(rand() % 256, rand() % 256, rand() % 256) });
-				}
-				sf::Color color = this->cityLimitColors.find(t.cityId)->second;
-				color.a = 100.0f;
-				sf::VertexArray toRender = this->getDrawableTile(
-					sf::Vector2i(x, y),
-					sf::PrimitiveType::Quads,
-					color
-				);
-				w->draw(toRender);
-			}
-		}
-		break;
-	}
-	case UiState::ShowingResidencePaths: {
-		GameMap* gMap = this->game->getGameMap();
-		sf::Vector2i t = this->getHoveredTile();
-		Tile tile = gMap->getTileAt(t);
-		if (tile.building.lock() && tile.building.lock()->tag == EntityTag::Residence) {
-			std::vector<sf::Vector2i> dests = std::dynamic_pointer_cast<ResidenceController>(tile.building.lock()->controller)->getDestinations();
-			for (sf::Vector2i d : dests) {
-				sf::VertexArray toRender(sf::PrimitiveType::LinesStrip, 2);
-				toRender[0].position = this->game->worldToScreenPos(Utils::toVector3f(t));
-				toRender[0].color = sf::Color::Red;
-				toRender[1].position = this->game->worldToScreenPos(Utils::toVector3f(d));
-				toRender[1].color = sf::Color::Green;
-				w->draw(toRender);
-			}
-		}
-		break;
-	}
+	
 	case UiState::Terraforming: {
 		sf::Vector2i point = this->getHoveredPoint();
 		unsigned int height = this->game->getGameMap()->getPointHeight(point.x, point.y);
@@ -631,6 +561,43 @@ void UiHandler::render(sf::RenderWindow* w) {
 		}
 		break;
 	}
+	if (this->showingCityLimits) {
+		GameMap* gMap = this->game->getGameMap();
+		for (size_t x = 0; x < gMap->MAP_WIDTH; x++) {
+			for (size_t y = 0; y < gMap->MAP_HEIGHT; y++) {
+				Tile t = gMap->getTileAt(x, y);
+				// Insert color if does not exist
+				if (this->cityLimitColors.count(t.cityId) == 0) {
+					this->cityLimitColors.insert({ t.cityId, sf::Color(rand() % 256, rand() % 256, rand() % 256) });
+				}
+				sf::Color color = this->cityLimitColors.find(t.cityId)->second;
+				color.a = 100.0f;
+				sf::VertexArray toRender = this->getDrawableTile(
+					sf::Vector2i(x, y),
+					sf::PrimitiveType::Quads,
+					color
+				);
+				w->draw(toRender);
+			}
+		}
+	}
+	if (this->showingResidencePaths) {
+			GameMap* gMap = this->game->getGameMap();
+			sf::Vector2i t = this->getHoveredTile();
+			Tile tile = gMap->getTileAt(t);
+			if (tile.building.lock() && tile.building.lock()->tag == EntityTag::Residence) {
+				std::vector<sf::Vector2i> dests = std::dynamic_pointer_cast<ResidenceController>(tile.building.lock()->controller)->getDestinations();
+				for (sf::Vector2i d : dests) {
+					sf::VertexArray toRender(sf::PrimitiveType::LinesStrip, 2);
+					toRender[0].position = this->game->worldToScreenPos(Utils::toVector3f(t));
+					toRender[0].color = sf::Color::Red;
+					toRender[1].position = this->game->worldToScreenPos(Utils::toVector3f(d));
+					toRender[1].color = sf::Color::Green;
+					w->draw(toRender);
+				}
+			}
+	}
+
 	// Outline the sprite currently being hovered
 	sf::VertexArray vArr = getDrawableTile(this->getHoveredTile(), sf::PrimitiveType::LinesStrip, sf::Color::White);
 	w->draw(vArr);

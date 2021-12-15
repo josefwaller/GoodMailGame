@@ -24,8 +24,6 @@ public:
 		BuildingAirplaneRoad,
 		Deleting,
 		DeletingRailwaysAndRoads,
-		ShowingCityLimits,
-		ShowingResidencePaths,
 		Terraforming,
 		BuildingTunnel,
 		BuildingRailwaySignal,
@@ -77,6 +75,10 @@ private:
 	size_t currentGameSpeed;
 	// The start location of the road or railway currently being built
 	std::optional<sf::Vector2f> startLocation;
+	// Which windows are currently open
+	bool roadWindowOpen;
+	bool railsWindowOpen;
+	bool airplaneRoadWindowOpen;
 	// The railway currently being built
 	bool isStation;
 	bool isOneWay;
@@ -84,6 +86,10 @@ private:
 	bool isRunway;
 	// If tarraforming, whether the player is raising or lowering a point
 	bool isLowering;
+	// Whether the visualization is turned on for postal codes/city limits/residence paths
+	bool showingCityLimits;
+	bool showingPostalCodes;
+	bool showingResidencePaths;
 	// The paths to draw
 	std::vector<std::vector<RoutePoint>> pathsToDraw;
 	// The entities to render UI for
