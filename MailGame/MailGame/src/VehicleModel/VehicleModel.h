@@ -45,7 +45,8 @@ public:
 		std::string name,
 		unsigned int capacity,
 		Technology requiredTech = Technology::Default,
-		money_t money = 100,
+		money_t initialCost = 100,
+		money_t costPerTile = 1,
 		std::vector<CargoCarModel> allowedCargoCars = {},
 		unsigned int maxNumCargoCars = 0);
 	float getSpeed();
@@ -54,7 +55,8 @@ public:
 	gtime_t getUnloadTime();
 	std::string getName();
 	Technology getRequiredTechnology();
-	money_t getCostPerRoute();
+	money_t getInitialCost();
+	money_t getCostPerTile();
 	std::vector<CargoCarModel> getAllowedCargoCars();
 	unsigned int getMaxNumCargoCars();
 	unsigned int getCapacity();
@@ -67,7 +69,8 @@ private:
 	gtime_t unloadTime;
 	std::string name;
 	Technology requiredTechnology;
-	money_t cost;
+	money_t initialCost;
+	money_t costPerTile;
 	std::vector<CargoCarModel> allowedCargoCars;
 	unsigned int maxNumCargoCars;
 	unsigned int capacity;

@@ -144,7 +144,7 @@ void PostOfficeController::onHourChange(hour_t newHour) {
 money_t PostOfficeController::getCost() {
 	money_t toReturn = 0;
 	for (auto it = this->routes.begin(); it != this->routes.end(); it++) {
-		toReturn += VehicleModelInfo::getModelInfo(VehicleModel::MailTruck).getCostPerRoute();
+		toReturn += VehicleModelInfo::getModelInfo(VehicleModel::MailTruck).getInitialCost();
 	}
 	return toReturn;
 }
