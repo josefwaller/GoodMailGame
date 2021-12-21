@@ -225,7 +225,7 @@ void UiHandler::selectEntity(std::function<void(std::weak_ptr<Entity>)> callback
 }
 void UiHandler::update() {
 	char buf[200];
-	ImGui::Begin("Game Controls");
+	ImGui::Begin("Game");
 	// Print available money
 	sprintf_s(buf, "%d / %d CAD available", game->getExcessMoney(), game->getMonthlyBudget());
 	ImGui::Text(buf);
@@ -466,6 +466,11 @@ void UiHandler::update() {
 			it->lock()->controller->renderUi();
 		}
 	}
+
+	// Cheats menu for debugging and other things
+	ImGui::Begin("Cheats");
+	game->setEnforceBudget(checkbox("Enforce Budget: ", game->getEnforceBudget()));
+	ImGui::End();
 }
 
 void UiHandler::render(sf::RenderWindow* w) {

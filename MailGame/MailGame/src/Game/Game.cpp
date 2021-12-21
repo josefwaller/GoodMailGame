@@ -31,7 +31,7 @@ const std::vector<EntityTag> Game::WHITELIST_ENTITY_TAG = {
 	EntityTag::AirplaneDock
 };
 // Initialize Game
-Game::Game(App* a, sf::RenderWindow* w) : time(0), gameMap(this), uiHandler(this), window(w), rotation(IsoRotation::NORTH), entities(), budget(400), eventManager(this), timeMultiplier(1), expenses(), isPaused(true) {
+Game::Game(App* a, sf::RenderWindow* w) : time(0), gameMap(this), uiHandler(this), window(w), rotation(IsoRotation::NORTH), entities(), budget(400), eventManager(this), timeMultiplier(1), expenses(), isPaused(true), enforceBudget(true) {
 	this->gameView.setSize(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT));
 }
 void Game::generateNew() {
@@ -250,11 +250,6 @@ void Game::render(sf::RenderWindow* w) {
 #endif
 	// Render Ui
 	this->uiHandler.render(w);
-
-	sf::VertexArray arr(sf::Lines, 2);
-	arr[0] = sf::Vertex(this->worldToScreenPos(this->from), sf::Color::Red);
-	arr[1] = sf::Vertex(this->worldToScreenPos(this->to), sf::Color::Blue);
-	w->draw(arr);
 }
 
 sf::Vector2f Game::getMousePosition() {
@@ -428,3 +423,5 @@ void Game::setGameSpeed(float multiplier) {
 	this->timeMultiplier = multiplier;
 }
 bool Game::getIsPaused() { return this->isPaused; }
+bool Game::getEnforceBudget() { return this->enforceBudget; }
+void Game::setEnforceBudget(bool b) { this->enforceBudget = b; }

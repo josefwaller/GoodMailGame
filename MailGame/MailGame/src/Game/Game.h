@@ -100,9 +100,9 @@ public:
 	float getGameSpeed();
 	void setGameSpeed(float multiplier);
 
-	// tmep
-	sf::Vector3f from;
-	sf::Vector3f to;
+	// Get whether the game should enforce the budget or not
+	bool getEnforceBudget();
+	void setEnforceBudget(bool b);
 private:
 	// The window for the game
 	sf::RenderWindow* window;
@@ -133,6 +133,7 @@ private:
 	bool isPaused;
 	// The monthly budget of the player
 	money_t budget;
+	bool enforceBudget;
 	// The amount of money the player spends per month, currently calculated each tick
 	money_t expenses;
 	// The game time multiplier
