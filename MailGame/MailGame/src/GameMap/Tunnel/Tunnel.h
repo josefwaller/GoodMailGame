@@ -14,7 +14,10 @@ class TunnelEntrance {
 public:
 	TunnelEntrance(sf::Vector3i, IsoRotation);
 	sf::Vector3i getPosition();
+	// the direction facing into this tunnel entrance
 	IsoRotation getDirection();
+	// Get the tile that the vehicle would arrive at upon exiting the tunnel via this entrance
+	sf::Vector2i getExitTile();
 private:
 	sf::Vector3i position;
 	IsoRotation direction;

@@ -40,12 +40,16 @@ public:
 			Tile,
 			Tunnel,
 		};
-		RoadSegment(std::variant<sf::Vector2i, Tunnel> d);
+		RoadSegment(std::variant<sf::Vector2i, Tunnel> d, bool tunnelReversed = false);
 		Type getType();
 		sf::Vector2i getTile();
 		Tunnel getTunnel();
+		// Get whether the car should go through the tunnel backwards
+		// i.e. It enters through entrances.second and exits through entrances.first
+		bool getTunnelReversed();
 	private:
 		std::variant<sf::Vector2i, Tunnel> data;
+		bool tunnelReversed;
 	};
 	static std::vector<RoadSegment> findCarPath(GameMap* gMap, sf::Vector2i start, sf::Vector2i end);
 protected:

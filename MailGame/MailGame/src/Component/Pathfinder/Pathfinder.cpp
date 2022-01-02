@@ -64,7 +64,7 @@ std::vector<sf::Vector2i> Pathfinder::findBoatPath(GameMap* gMap, sf::Vector2i s
 	return {};
 }
 
-Pathfinder::RoadSegment::RoadSegment(std::variant<sf::Vector2i, Tunnel> d) { this->data = d; }
+Pathfinder::RoadSegment::RoadSegment(std::variant<sf::Vector2i, Tunnel> d, bool r): data(d), tunnelReversed(r) {}
 sf::Vector2i Pathfinder::RoadSegment::getTile() {
 	return std::get<sf::Vector2i>(this->data);
 }
@@ -73,6 +73,9 @@ Tunnel Pathfinder::RoadSegment::getTunnel() {
 }
 Pathfinder::RoadSegment::Type Pathfinder::RoadSegment::getType() {
 	return std::holds_alternative<sf::Vector2i>(this->data) ? Type::Tile : Type::Tunnel;
+}
+bool Pathfinder::RoadSegment::getTunnelReversed() {
+	return this->tunnelReversed;
 }
 std::vector<Pathfinder::RoadSegment> Pathfinder::findCarPath(GameMap* gMap, sf::Vector2i start, sf::Vector2i end) {
 	using Point = std::variant<sf::Vector2i, Tunnel>;
@@ -114,8 +117,25 @@ std::vector<Pathfinder::RoadSegment> Pathfinder::findCarPath(GameMap* gMap, sf::
 			if (point == end) {
 				// Gather points along the path
 				std::vector<RoadSegment> pathPoints;
+				sf::Vector2i prevPoint = end;
 				while (!(std::holds_alternative<sf::Vector2i>(p) && std::get<sf::Vector2i>(p) == start)) {
-					pathPoints.push_back(RoadSegment(std::variant<sf::Vector2i, Tunnel>(p)));
+					bool isReversed = false;
+					if (std::holds_alternative<Tunnel>(p)) {
+						// Check if we need to reverse the tunnel
+						sf::Vector2i prevPoint;
+						auto prev = pathPoints.back();
+						if (prev.getType() == RoadSegment::Type::Tile) {
+							prevPoint = prev.getTile();
+						}
+						else {
+							prevPoint = Utils::toVector2i(prev.getTunnelReversed() ? prev.getTunnel().getEntrances().second.getPosition() : prev.getTunnel().getEntrances().first.getPosition());
+						}
+						auto ents = std::get<Tunnel>(p).getEntrances();
+						if (ents.first.getExitTile() == prevPoint) {
+							isReversed = true;
+						}
+					}
+					pathPoints.push_back(RoadSegment(std::variant<sf::Vector2i, Tunnel>(p), isReversed));
 					index = previous[index];
 					p = visitedPoints.at(index);
 				}

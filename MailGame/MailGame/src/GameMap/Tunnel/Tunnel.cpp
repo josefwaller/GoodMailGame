@@ -15,6 +15,10 @@ sf::Vector3i TunnelEntrance::getPosition() {
 IsoRotation TunnelEntrance::getDirection() {
 	return this->direction;
 }
+
+sf::Vector2i TunnelEntrance::getExitTile() {
+	return Utils::toVector2i(this->position) + sf::Vector2i(this->direction.getReverse().getUnitVector());
+}
 Tunnel::Tunnel(sf::Vector3i pointOne, sf::Vector3i pointTwo, TransitType t, Game* game)
 // Points are + Vector3f(0.5, 0.5, 0) since we want to center the positions on the x,y grid but keep z so that the car is on the ground
 	: id(TUNNEL_ID++), type(t), game(game), isLocked(false),

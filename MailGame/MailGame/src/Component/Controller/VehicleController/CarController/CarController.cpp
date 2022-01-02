@@ -76,7 +76,7 @@ std::vector<SpeedPoint> CarController::getPathBetweenStops(VehicleControllerStop
 			// The entrances to start and end going through the tunnel
 			TunnelEntrance start = entrances.first;
 			TunnelEntrance end = entrances.first;
-			if (prevPoint + sf::Vector2i(entrances.first.getDirection().getUnitVector()) == Utils::toVector2i(entrances.first.getPosition())) {
+			if (!it->getTunnelReversed()) {
 				// Go through the tunnel starting from the first direction
 				tunnelPoints = toGoThrough.getPoints();
 				start = entrances.first;
