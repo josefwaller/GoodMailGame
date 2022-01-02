@@ -23,4 +23,6 @@ public:
 	Route(SaveData data);
 	// Get save data
 	SaveData getSaveData();
+	// The length of the route
+	float length;
 };

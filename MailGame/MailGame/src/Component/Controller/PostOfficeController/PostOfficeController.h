@@ -10,6 +10,9 @@ public:
 	virtual void update(float delta) override;
 	virtual void onHourChange(hour_t newHour) override;
 	virtual void renderUi() override;
+	// Get the cost of a given route
+	money_t getRouteCost(MailTruckRoute r);
+	// Get the cost of the entire post office
 	virtual money_t getCost() override;
 
 	// Update the attributes from the Ui

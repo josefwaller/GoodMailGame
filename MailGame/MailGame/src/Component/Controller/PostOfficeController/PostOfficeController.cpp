@@ -33,6 +33,9 @@ void PostOfficeController::renderUi() {
 		// Create a collapsing header
 		std::string routeName = "Route " + std::to_string(it->id);
 		if (ImGui::CollapsingHeader(routeName.c_str())) {
+			// Show cost
+			sprintf_s(buf, "Cost: $%d.00", this->getRouteCost(*it));
+			ImGui::Text(buf);
 			// Add dropdown for time
 			if (ImGui::BeginCombo("Departure Time", std::to_string(it->departTime).c_str())) {
 				for (size_t i = 0; i < 24; i++) {
@@ -141,11 +144,14 @@ void PostOfficeController::onHourChange(hour_t newHour) {
 	}
 }
 
+money_t PostOfficeController::getRouteCost(MailTruckRoute r) {
+	auto mInfo = VehicleModelInfo::getModelInfo(VehicleModel::MailTruck);
+	return mInfo.getInitialCost() + r.length * mInfo.getCostPerTile();
+}
 money_t PostOfficeController::getCost() {
 	money_t toReturn = 0;
 	for (auto it = this->routes.begin(); it != this->routes.end(); it++) {
-		auto mInfo = VehicleModelInfo::getModelInfo(VehicleModel::MailTruck);
-		toReturn += mInfo.getInitialCost() + this->getRouteLength(*it) * mInfo.getCostPerTile();
+		toReturn += this->getRouteCost(*it);
 	}
 	return toReturn;
 }
@@ -161,6 +167,7 @@ void PostOfficeController::setStopTile(size_t routeIndex, size_t stopIndex, sf::
 		if (this->routes.at(routeIndex).isDelivering) {
 			this->resetPostalCode();
 		}
+		this->routes[routeIndex].length = this->getRouteLength(this->routes[routeIndex]);
 	}
 }
 void PostOfficeController::addStop(size_t routeIndex, MailTruckRouteStop stop) {
@@ -173,6 +180,7 @@ void PostOfficeController::deleteStop(size_t routeIndex, size_t stopIndex) {
 	if (this->routes.at(routeIndex).isDelivering) {
 		this->resetPostalCode();
 	}
+	this->routes[routeIndex].length = this->getRouteLength(this->routes[routeIndex]);
 }
 void PostOfficeController::setRouteTime(size_t routeIndex, int time) {
 	this->routes[routeIndex].departTime = time;
@@ -199,6 +207,9 @@ std::optional<SaveData> PostOfficeController::getSaveData() {
 void PostOfficeController::fromSaveData(SaveData data) {
 	for (SaveData d : data.getDatas()) {
 		this->routes.push_back(MailTruckRoute(d));
+	}
+	for (auto it = this->routes.begin(); it != this->routes.end(); it++) {
+		it->length = this->getRouteLength(*it);
 	}
 	this->resetPostalCode();
 }
@@ -278,5 +289,18 @@ size_t PostOfficeController::getRouteLength(MailTruckRoute r) {
 	// Finally it comes pack to the office
 	std::vector<Segment> p = Pathfinder::findCarPath(this->getEntity()->getGameMap(), lastPoint, dockPoint);
 	path.insert(path.end(), p.begin(), p.end());
-	return path.size();
+	// Now we just sum up the distance
+	sf::Vector2f prev = sf::Vector2f(path.front().getTile());
+	float length = 0.0f;
+	for (auto it = path.begin(); it != path.end(); it++) {
+		if (it->getType() == Segment::Type::Tile) {
+			length += Utils::getVectorDistance(sf::Vector2f(it->getTile()), prev);
+			prev = sf::Vector2f(it->getTile());
+		}
+		else if (it->getType() == Segment::Type::Tunnel) {
+			// Since we know that the pathfinding will go directly to the entrance and exit of the tunnel, we just need to add the tunnel length
+			length += it->getTunnel().getLength();
+		}
+	}
+	return length;
 }

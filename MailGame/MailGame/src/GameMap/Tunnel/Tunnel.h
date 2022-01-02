@@ -31,6 +31,8 @@ public:
 	std::pair<TunnelEntrance, TunnelEntrance> getEntrances();
 	TunnelEntrance getOtherEntrance(TunnelEntrance e);
 	std::vector<sf::Vector3f> getPoints();
+	// Get the length of the tunnel
+	float getLength();
 	TransitType getType();
 	bool canGetLock();
 	void getLock();
