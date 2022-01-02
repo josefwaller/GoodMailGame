@@ -6,11 +6,20 @@
 #include "ConstructionRecipe//ConstructionRecipe.h"
 #include "System/Utils/Utils.h"
 
+// Add a road at the position given in the direction of the rotation given
+void addRoad(Game* g, sf::Vector3f pos, IsoRotation rot) {
+	// rot.getReverse since rot is the outgoing direction, but we set roads using the ingoing directions
+	g->getGameMap()->addRoad((size_t)floorf(pos.x), (size_t)floorf(pos.y), Road(rot.getReverse()));
+}
+
 std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 	{ EntityTag::PostOffice,
 		ConstructionRecipe(
 			"Post Office",
-			&BuildingPresets::postOffice,
+			[&](Game * g, sf::Vector3f pos, IsoRotation rot) {
+				addRoad(g, pos, rot);
+				return BuildingPresets::postOffice(g, pos, rot);
+			},
 			IsoSprite(
 				ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-N"),
 				ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-E"),

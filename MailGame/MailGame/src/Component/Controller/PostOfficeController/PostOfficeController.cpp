@@ -144,7 +144,8 @@ void PostOfficeController::onHourChange(hour_t newHour) {
 money_t PostOfficeController::getCost() {
 	money_t toReturn = 0;
 	for (auto it = this->routes.begin(); it != this->routes.end(); it++) {
-		toReturn += VehicleModelInfo::getModelInfo(VehicleModel::MailTruck).getInitialCost();
+		auto mInfo = VehicleModelInfo::getModelInfo(VehicleModel::MailTruck);
+		toReturn += mInfo.getInitialCost() + this->getRouteLength(*it) * mInfo.getCostPerTile();
 	}
 	return toReturn;
 }
@@ -251,4 +252,30 @@ void PostOfficeController::resetPostalCode() {
 			}
 		}
 	}
+}
+
+size_t PostOfficeController::getRouteLength(MailTruckRoute r) {
+	size_t len = 0;
+	sf::Vector2i dockPoint = Utils::toVector2i(this->getEntity()->transform->getPosition());
+	sf::Vector2i lastPoint = dockPoint;
+	std::vector<std::variant<sf::Vector2i, Tunnel>> path = {lastPoint };
+	for (MailTruckRouteStop target : r.stops) {
+		if (target.target.has_value()) {
+			// Time and speed shouldn't matter here
+			std::vector<std::variant<sf::Vector2i, Tunnel>> p = Pathfinder::findCarPath(this->getEntity()->getGameMap(), lastPoint, target.target.value());
+			path.insert(path.end(), p.begin(), p.end());
+			// Set last point
+			auto var = p.back();
+			if (std::holds_alternative<sf::Vector2i>(var)) {
+				lastPoint = std::get<sf::Vector2i>(var);
+			}
+			else {
+				lastPoint = Utils::toVector2i(std::get<Tunnel>(var).getEntrances().first.getPosition());
+			}
+		}
+	}
+	// Finally it comes pack to the office
+	std::vector<std::variant<sf::Vector2i, Tunnel>> p = Pathfinder::findCarPath(this->getEntity()->getGameMap(), lastPoint, dockPoint);
+	path.insert(path.end(), p.begin(), p.end());
+	return path.size();
 }

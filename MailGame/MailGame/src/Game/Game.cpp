@@ -425,3 +425,4 @@ void Game::setGameSpeed(float multiplier) {
 bool Game::getIsPaused() { return this->isPaused; }
 bool Game::getEnforceBudget() { return this->enforceBudget; }
 void Game::setEnforceBudget(bool b) { this->enforceBudget = b; }
+bool Game::canAffordCost(money_t cost) { return !this->enforceBudget || cost < this->getExcessMoney(); }

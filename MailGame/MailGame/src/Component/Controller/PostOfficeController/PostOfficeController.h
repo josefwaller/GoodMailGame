@@ -34,4 +34,6 @@ private:
 	MailTruckRoute prepareRouteForTruck(MailTruckRoute route);
 	// Reset the postal code to all the tiles that this post office delivers to
 	void resetPostalCode();
+	// Get length of the given route in tiles
+	size_t getRouteLength(MailTruckRoute r);
 };

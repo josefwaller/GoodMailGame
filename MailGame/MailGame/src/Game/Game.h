@@ -92,6 +92,9 @@ public:
 	money_t getExcessMoney();
 	// Get the total monthly budget the player has
 	money_t getMonthlyBudget();
+	// Check whether there is enough money to afford a cost
+	// Accounts for if enforcing the budget is turned off
+	bool canAffordCost(money_t cost);
 	// Get the event system
 	EventManager* getEventManager();
 	// Get the tech tree
