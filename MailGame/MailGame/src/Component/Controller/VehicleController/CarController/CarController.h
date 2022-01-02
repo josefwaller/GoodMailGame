@@ -1,6 +1,7 @@
 #pragma once
 #include "Component/Controller/VehicleController/VehicleController.h"
 #include "GameMap/Tunnel/Tunnel.h"
+#include "Component/Pathfinder/Pathfinder.h"
 
 class CarController : public VehicleController {
 public:
@@ -20,7 +21,7 @@ private:
 	// Get the dock coordinates for a given entity
 	std::vector<sf::Vector2i> getDockTiles(std::shared_ptr<Entity> e);
 	// The path the car is taking
-	std::vector<std::variant<sf::Vector2i, Tunnel>> path;
+	std::vector<Pathfinder::RoadSegment> path;
 	// Set the points for VehicleController to use
 	void resetPath();
 };

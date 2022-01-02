@@ -44,6 +44,7 @@ void CarController::onArriveAtDest(gtime_t arriveTime) {
 }
 
 std::vector<SpeedPoint> CarController::getPathBetweenStops(VehicleControllerStop fromStop, VehicleControllerStop toStop) {
+	using Segment = Pathfinder::RoadSegment;
 	float speed = VehicleModelInfo::getModelInfo(this->model).getSpeed();
 	std::vector<sf::Vector2i> fromTiles = fromStop.hasEntityTarget() ? this->getDockTiles(fromStop.getEntityTarget().lock()) : std::vector<sf::Vector2i>({ fromStop.getTileTarget() });
 	std::vector<sf::Vector2i> toTiles = toStop.hasEntityTarget() ? this->getDockTiles(toStop.getEntityTarget().lock()) : std::vector<sf::Vector2i>({ toStop.getTileTarget() });
@@ -53,23 +54,23 @@ std::vector<SpeedPoint> CarController::getPathBetweenStops(VehicleControllerStop
 	sf::Vector2i to = toTiles.front();
 	// Get the path between
 	this->path = Pathfinder::findCarPath(this->getEntity()->getGameMap(), from, to);
-	auto pFront = this->path.front();
-	if (!std::holds_alternative<sf::Vector2i>(pFront)) {
+	Segment pFront = this->path.front();
+	if (pFront.getType() != Segment::Type::Tile) {
 		throw std::runtime_error("Front of path must always be a point!");
 	}
-	sf::Vector2i prevPoint = std::get<sf::Vector2i>(this->path.front());
+	sf::Vector2i prevPoint = pFront.getTile();
 	std::vector<SpeedPoint> points = { sf::Vector3f(prevPoint.x + 0.5f, prevPoint.y + 0.5f, this->getEntity()->getGameMap()->getHeightAt(prevPoint.x + 0.5f, prevPoint.y + 0.5f)) };
 	for (auto it = this->path.begin() + 1; it != this->path.end(); it++) {
-		if (std::holds_alternative<sf::Vector2i>(*it)) {
-			sf::Vector2i thisPoint = std::get<sf::Vector2i>(*it);
+		if (it->getType() == Segment::Type::Tile) {
+			sf::Vector2i thisPoint = it->getTile();
 			sf::Vector3f nextPoint((prevPoint.x + thisPoint.x) / 2.0f + 0.5f, (prevPoint.y + thisPoint.y) / 2.0f + 0.5f, 0.0f);
 			// Set the height
 			nextPoint.z = this->getEntity()->getGameMap()->getHeightAt(nextPoint.x, nextPoint.y);
 			points.push_back(nextPoint);
 			prevPoint = thisPoint;
 		}
-		else if (std::holds_alternative<Tunnel>(*it)) {
-			Tunnel toGoThrough = std::get<Tunnel>(*it);
+		else if (it->getType() == Segment::Type::Tunnel) {
+			Tunnel toGoThrough = it->getTunnel();
 			auto entrances = toGoThrough.getEntrances();
 			std::vector<sf::Vector3f> tunnelPoints;
 			// The entrances to start and end going through the tunnel
@@ -106,7 +107,7 @@ std::vector<SpeedPoint> CarController::getPathBetweenStops(VehicleControllerStop
 		}
 	}
 	// Add the last point
-	sf::Vector2i lastPoint = std::get<sf::Vector2i>(path.back());
+	sf::Vector2i lastPoint = path.back().getTile();
 	points.push_back(sf::Vector3f(lastPoint.x + 0.5f, lastPoint.y + 0.5f, this->getEntity()->getGameMap()->getHeightAt(lastPoint.x + 0.5f, lastPoint.y + 0.5f)));
 	// Start and end at rest
 	points.at(0).setSpeed(0.0f);

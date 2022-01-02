@@ -34,7 +34,20 @@ public:
 	 * Will eventually accomodate bridges/etc
 	 * Returns all the tiles along the path, including start and end
 	 */
-	static std::vector<std::variant<sf::Vector2i, Tunnel>> findCarPath(GameMap* gMap, sf::Vector2i start, sf::Vector2i end);
+	class RoadSegment {
+	public:
+		enum class Type {
+			Tile,
+			Tunnel,
+		};
+		RoadSegment(std::variant<sf::Vector2i, Tunnel> d);
+		Type getType();
+		sf::Vector2i getTile();
+		Tunnel getTunnel();
+	private:
+		std::variant<sf::Vector2i, Tunnel> data;
+	};
+	static std::vector<RoadSegment> findCarPath(GameMap* gMap, sf::Vector2i start, sf::Vector2i end);
 protected:
 	gtime_t getTimeBetween(sf::Vector3f from, sf::Vector3f to, float speed);
 };

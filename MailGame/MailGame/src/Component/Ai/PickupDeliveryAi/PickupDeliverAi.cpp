@@ -119,6 +119,7 @@ void PickupDeliveryAi::onArriveAtDest() {
 	this->getEntity()->getGame()->removeEntity(this->getEntity());
 }
 void PickupDeliveryAi::pickupMailFromOffice() {
+	using Segment = Pathfinder::RoadSegment;
 	// Get the position of the post office
 	TransitStop::CarStop carStop = this->office.lock()->transitStop->getCarStop();
 	sf::Vector3f pos3D(carStop.tile + carStop.dir.value().getUnitVector3D());
@@ -139,12 +140,12 @@ void PickupDeliveryAi::pickupMailFromOffice() {
 			continue;
 		// Get the points
 		sf::Vector2i nextPoint = route.stops[i].target.value();
-		std::vector<std::variant<sf::Vector2i, Tunnel>> pointsBetween = Pathfinder::findCarPath(this->getEntity()->getGameMap(), prevPoint, nextPoint);
+		std::vector<Segment> pointsBetween = Pathfinder::findCarPath(this->getEntity()->getGameMap(), prevPoint, nextPoint);
 		prevPoint = nextPoint;
 		// Add to all points
 		for (auto it = pointsBetween.begin(); it != pointsBetween.end(); it++) {
-			if (std::holds_alternative<sf::Vector2i>(*it)) {
-				allPoints.push_back(std::get<sf::Vector2i>(*it));
+			if (it->getType() == Segment::Type::Tile) {
+				allPoints.push_back(it->getTile());
 			}
 		}
 	}

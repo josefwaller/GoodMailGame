@@ -64,7 +64,17 @@ std::vector<sf::Vector2i> Pathfinder::findBoatPath(GameMap* gMap, sf::Vector2i s
 	return {};
 }
 
-std::vector<std::variant<sf::Vector2i, Tunnel>> Pathfinder::findCarPath(GameMap* gMap, sf::Vector2i start, sf::Vector2i end) {
+Pathfinder::RoadSegment::RoadSegment(std::variant<sf::Vector2i, Tunnel> d) { this->data = d; }
+sf::Vector2i Pathfinder::RoadSegment::getTile() {
+	return std::get<sf::Vector2i>(this->data);
+}
+Tunnel Pathfinder::RoadSegment::getTunnel() {
+	return std::get<Tunnel>(this->data);
+}
+Pathfinder::RoadSegment::Type Pathfinder::RoadSegment::getType() {
+	return std::holds_alternative<sf::Vector2i>(this->data) ? Type::Tile : Type::Tunnel;
+}
+std::vector<Pathfinder::RoadSegment> Pathfinder::findCarPath(GameMap* gMap, sf::Vector2i start, sf::Vector2i end) {
 	using Point = std::variant<sf::Vector2i, Tunnel>;
 	auto tunnelFind = [](Point p, Tunnel t) {
 		return std::holds_alternative<Tunnel>(p) && std::get<Tunnel>(p) == t;
@@ -76,32 +86,6 @@ std::vector<std::variant<sf::Vector2i, Tunnel>> Pathfinder::findCarPath(GameMap*
 	// Find a path along only road from pos to stop
 	std::queue<Point> potentialPoints;
 	std::vector<Point> visitedPoints;
-	//	Basic sorting - Tunnels are always greater
-	/*auto previous = std::map<Point, Point, std::function<bool(Point one, Point two)>>{
-		[](Point one, Point two) {
-			if (std::holds_alternative<sf::Vector2i>(one)) {
-				sf::Vector2i o = std::get<sf::Vector2i>(one);
-				if (std::holds_alternative<sf::Vector2i>(two)) {
-					sf::Vector2i t = std::get<sf::Vector2i>(two);
-					return 1000 * o.x + o.y < 1000 + t.x + t.y;
-				}
-				else if (std::holds_alternative<Tunnel>(two)) {
-					return true;
-				}
-			}
-			else if (std::holds_alternative<Tunnel>(one)) {
-				if (std::holds_alternative<sf::Vector2i>(two)) {
-					return false;
-				}
-				else if (std::holds_alternative<Tunnel>(two)) {
-					// Compare first points
-					sf::Vector3i o = std::get<0>(std::get<Tunnel>(one).getEnds());
-					sf::Vector3i t = std::get<0>(std::get<Tunnel>(two).getEnds());
-					return 1000 * o.x + o.y < 1000 * t.x + t.y;
-				}
-			}
-		}
-	};*/
 	// Map of previous position by index of visited points
 	auto previous = std::map<size_t, size_t>();
 	potentialPoints.push(start);
@@ -129,14 +113,14 @@ std::vector<std::variant<sf::Vector2i, Tunnel>> Pathfinder::findCarPath(GameMap*
 			// Check if it is the correct one
 			if (point == end) {
 				// Gather points along the path
-				std::vector<std::variant<sf::Vector2i, Tunnel>> pathPoints;
+				std::vector<RoadSegment> pathPoints;
 				while (!(std::holds_alternative<sf::Vector2i>(p) && std::get<sf::Vector2i>(p) == start)) {
-					pathPoints.push_back(p);
+					pathPoints.push_back(RoadSegment(std::variant<sf::Vector2i, Tunnel>(p)));
 					index = previous[index];
 					p = visitedPoints.at(index);
 				}
 				// Add start as well
-				pathPoints.push_back(start);
+				pathPoints.push_back(RoadSegment(std::variant<sf::Vector2i, Tunnel>(start)));
 				std::reverse(pathPoints.begin(), pathPoints.end());
 				return pathPoints;
 			}
