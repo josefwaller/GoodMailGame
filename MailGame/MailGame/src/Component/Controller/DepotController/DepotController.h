@@ -52,14 +52,18 @@ public:
 	// Remove a code to be picked up for a stop
 	void removeStopDropOff(size_t stopIndex, size_t routeIndex, long long code);
 
+	// Recalculate the length of the given route
+	// Should be implemented by the children classes as different types of vehicles follow different routes
+	virtual void resetRouteLength(size_t routeId) = 0;
+
 	virtual std::optional<SaveData> getSaveData() override;
 	virtual void fromSaveData(SaveData data) override;
 
 protected:
 	TransitRoute prepareRouteForVehicle(TransitRoute route);
-private:
 	// The routes assigned to the depot, keyed by id
 	std::map<size_t, TransitRoute> routes;
+private:
 	// The routes to delete, done after drawing UI in order to prevent conflicts
 	std::vector<TransitRoute> toDelete;
 	// The models available

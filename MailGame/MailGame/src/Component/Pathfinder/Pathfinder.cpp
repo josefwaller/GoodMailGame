@@ -175,3 +175,47 @@ std::vector<Pathfinder::RoadSegment> Pathfinder::findCarPath(GameMap* gMap, sf::
 	}
 	throw std::runtime_error("Cannot find a path");
 }
+
+float Pathfinder::getCarRouteLength(GameMap* gMap, sf::Vector2i start, std::vector<sf::Vector2i> stops) {
+	using Segment = Pathfinder::RoadSegment;
+	sf::Vector2i dockPoint = start;
+	sf::Vector2i lastPoint = dockPoint;
+	std::vector<Segment> path = { Segment(lastPoint) };
+	for (sf::Vector2i stop: stops) {
+		// Time and speed shouldn't matter here
+		std::vector<Segment> p = Pathfinder::findCarPath(gMap, lastPoint, stop);
+		path.insert(path.end(), p.begin(), p.end());
+		// Set last point
+		auto var = p.back();
+		if (var.getType() == Segment::Type::Tile) {
+			lastPoint = var.getTile();
+		}
+		else {
+			lastPoint = Utils::toVector2i(var.getTunnel().getEntrances().first.getPosition());
+		}
+	}
+	// Finally it comes pack to the office
+	std::vector<Segment> p = Pathfinder::findCarPath(gMap, lastPoint, dockPoint);
+	path.insert(path.end(), p.begin(), p.end());
+	// Now we just sum up the distance
+	sf::Vector2f prev = sf::Vector2f(path.front().getTile());
+	float length = 0.0f;
+	for (auto it = path.begin(); it != path.end(); it++) {
+		if (it->getType() == Segment::Type::Tile) {
+			length += Utils::getVectorDistance(sf::Vector2f(it->getTile()), prev);
+			prev = sf::Vector2f(it->getTile());
+		}
+		else if (it->getType() == Segment::Type::Tunnel) {
+			// Since we know that the pathfinding will go directly to the entrance and exit of the tunnel, we just need to add the tunnel length
+			length += it->getTunnel().getLength();
+			if (it->getTunnelReversed()) {
+				prev = sf::Vector2f(Utils::toVector2i(it->getTunnel().getEntrances().first.getPosition()));
+			}
+			else {
+				prev = sf::Vector2f(Utils::toVector2i(it->getTunnel().getEntrances().second.getPosition()));
+			}
+		}
+	}
+	return length;
+
+}

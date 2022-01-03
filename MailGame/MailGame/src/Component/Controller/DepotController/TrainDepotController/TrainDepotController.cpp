@@ -29,3 +29,5 @@ void TrainDepotController::spawnVehicleForRoute(TransitRoute route) {
 const char* TrainDepotController::getUiName() {
 	return "Train Depot";
 }
+void TrainDepotController::resetRouteLength(size_t routeId) {
+}

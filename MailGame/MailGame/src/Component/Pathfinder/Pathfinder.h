@@ -52,6 +52,8 @@ public:
 		bool tunnelReversed;
 	};
 	static std::vector<RoadSegment> findCarPath(GameMap* gMap, sf::Vector2i start, sf::Vector2i end);
+	// Get the length of the route going through the stops given
+	static float getCarRouteLength(GameMap* gMap, sf::Vector2i start, std::vector<sf::Vector2i> stops);
 protected:
 	gtime_t getTimeBetween(sf::Vector3f from, sf::Vector3f to, float speed);
 };

@@ -20,3 +20,7 @@ void BoatDepotController::spawnVehicleForRoute(TransitRoute route) {
 const char* BoatDepotController::getUiName() {
 	return "Boat Depot";
 }
+
+void BoatDepotController::resetRouteLength(size_t routeIndex) {
+
+}

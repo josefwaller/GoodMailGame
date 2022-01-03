@@ -30,6 +30,10 @@ void DepotController::renderUi() {
 
 		sprintf_s(buf, "Route %zu", route.id);
 		if (ImGui::CollapsingHeader(buf)) {
+			auto mInfo = VehicleModelInfo::getModelInfo(route.model);
+			money_t c = mInfo.getInitialCost() + route.length * mInfo.getCostPerTile();
+			sprintf_s(buf, "Cost: $%d.00 ($%d + %fm * $%d/m)", c, mInfo.getInitialCost(), route.length, mInfo.getCostPerTile());
+			ImGui::Text(buf);
 			// Departure time
 			sprintf_s(buf, "%d:00", route.departTime);
 			if (ImGui::BeginCombo("Departure Time", buf)) {
@@ -282,12 +286,15 @@ void DepotController::setRouteNumberCargoCars(size_t routeId, unsigned int num) 
 }
 void DepotController::addStop(TransitRouteStop stop, size_t routeId) {
 	this->routes.find(routeId)->second.stops.push_back(stop);
+	this->resetRouteLength(routeId);
 }
 void DepotController::deleteStop(size_t stopIndex, size_t routeId) {
 	this->routes.find(routeId)->second.stops.erase(this->routes.find(routeId)->second.stops.begin() + stopIndex);
+	this->resetRouteLength(routeId);
 }
 void DepotController::setStopTarget(size_t stopIndex, size_t routeId, std::weak_ptr<Entity> target) {
 	this->routes.find(routeId)->second.stops[stopIndex].target = target;
+	this->resetRouteLength(routeId);
 }
 void DepotController::setStopPickUp(size_t stopIndex, size_t routeId, long long code) {
 	this->routes.find(routeId)->second.stops[stopIndex].toPickUp.push_back(code);
@@ -315,5 +322,6 @@ void DepotController::fromSaveData(SaveData data) {
 	for (SaveData d : data.getDatas()) {
 		TransitRoute r(d, this->getEntity()->getGame());
 		this->routes.insert({ r.id, r });
+		this->resetRouteLength(r.id);
 	}
 }

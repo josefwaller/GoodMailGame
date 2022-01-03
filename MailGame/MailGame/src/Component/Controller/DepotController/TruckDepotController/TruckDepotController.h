@@ -7,4 +7,5 @@ public:
 	TruckDepotController();
 	virtual void spawnVehicleForRoute(TransitRoute route) override;
 	const char* getUiName() override;
+	virtual void resetRouteLength(size_t routeId) override;
 };

@@ -6,4 +6,5 @@ public:
 	PlaneDepotController();
 	virtual void spawnVehicleForRoute(TransitRoute route) override;
 	virtual const char* getUiName() override;
+	virtual void resetRouteLength(size_t routeId) override;
 };

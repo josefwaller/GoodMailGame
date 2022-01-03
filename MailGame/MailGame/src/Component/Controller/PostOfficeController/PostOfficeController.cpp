@@ -267,47 +267,11 @@ void PostOfficeController::resetPostalCode() {
 }
 
 size_t PostOfficeController::getRouteLength(MailTruckRoute r) {
-	using Segment = Pathfinder::RoadSegment;
-	size_t len = 0;
-	sf::Vector2i dockPoint = Utils::toVector2i(this->getEntity()->transform->getPosition());
-	sf::Vector2i lastPoint = dockPoint;
-	std::vector<Segment> path = { Segment(lastPoint) };
-	for (MailTruckRouteStop target : r.stops) {
-		if (target.target.has_value()) {
-			// Time and speed shouldn't matter here
-			std::vector<Segment> p = Pathfinder::findCarPath(this->getEntity()->getGameMap(), lastPoint, target.target.value());
-			path.insert(path.end(), p.begin(), p.end());
-			// Set last point
-			auto var = p.back();
-			if (var.getType() == Segment::Type::Tile) {
-				lastPoint = var.getTile();
-			}
-			else {
-				lastPoint = Utils::toVector2i(var.getTunnel().getEntrances().first.getPosition());
-			}
+	std::vector<sf::Vector2i> stops;
+	for (MailTruckRouteStop stop : r.stops) {
+		if (stop.target.has_value()) {
+			stops.push_back(stop.target.value());
 		}
 	}
-	// Finally it comes pack to the office
-	std::vector<Segment> p = Pathfinder::findCarPath(this->getEntity()->getGameMap(), lastPoint, dockPoint);
-	path.insert(path.end(), p.begin(), p.end());
-	// Now we just sum up the distance
-	sf::Vector2f prev = sf::Vector2f(path.front().getTile());
-	float length = 0.0f;
-	for (auto it = path.begin(); it != path.end(); it++) {
-		if (it->getType() == Segment::Type::Tile) {
-			length += Utils::getVectorDistance(sf::Vector2f(it->getTile()), prev);
-			prev = sf::Vector2f(it->getTile());
-		}
-		else if (it->getType() == Segment::Type::Tunnel) {
-			// Since we know that the pathfinding will go directly to the entrance and exit of the tunnel, we just need to add the tunnel length
-			length += it->getTunnel().getLength();
-			if (it->getTunnelReversed()) {
-				prev = sf::Vector2f(Utils::toVector2i(it->getTunnel().getEntrances().first.getPosition()));
-			}
-			else {
-				prev = sf::Vector2f(Utils::toVector2i(it->getTunnel().getEntrances().second.getPosition()));
-			}
-		}
-	}
-	return length;
+	return Pathfinder::getCarRouteLength(this->getEntity()->getGameMap(), Utils::toVector2i(this->getEntity()->transform->getPosition()), stops);
 }

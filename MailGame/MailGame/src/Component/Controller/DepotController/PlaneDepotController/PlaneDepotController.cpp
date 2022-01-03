@@ -23,3 +23,7 @@ void PlaneDepotController::spawnVehicleForRoute(TransitRoute route) {
 const char* PlaneDepotController::getUiName() {
 	return "Airport";
 }
+
+void PlaneDepotController::resetRouteLength(size_t routeId) {
+
+}
