@@ -14,12 +14,14 @@ SaveData Route::getSaveData() {
 	if (this->cargoCarModel.has_value())
 		data.addString(CARGO_CAR_MODEL, cargoCarModelToString(this->cargoCarModel.value()));
 	data.addSizeT(NUM_CARGO_CARS, this->numCargoCars);
+	data.addFloat(LENGTH, this->length);
 	return data;
 }
 
 Route::Route(SaveData data)
-	: Route(data.getHourT(SaveKeys::DEPART_TIME),
-		stringToVehicleModel(data.getString(SaveKeys::VEHICLE_MODEL)),
-		data.hasValue(SaveKeys::CARGO_CAR_MODEL) ? stringToCargoCarModel(data.getString(SaveKeys::CARGO_CAR_MODEL)) : std::optional<CargoCarModel>(),
-		(unsigned int)data.getSizeT(SaveKeys::NUM_CARGO_CARS)
-	) {}
+	: departTime(data.getHourT(SaveKeys::DEPART_TIME)),
+		model(stringToVehicleModel(data.getString(SaveKeys::VEHICLE_MODEL))),
+		cargoCarModel(data.hasValue(SaveKeys::CARGO_CAR_MODEL) ? stringToCargoCarModel(data.getString(SaveKeys::CARGO_CAR_MODEL)) : std::optional<CargoCarModel>()),
+		numCargoCars((unsigned int)data.getSizeT(SaveKeys::NUM_CARGO_CARS)),
+		length(data.getFloat(SaveKeys::LENGTH)),
+		id(ROUTE_ID++) {}

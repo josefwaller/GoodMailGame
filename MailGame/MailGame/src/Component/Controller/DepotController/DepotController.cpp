@@ -322,6 +322,5 @@ void DepotController::fromSaveData(SaveData data) {
 	for (SaveData d : data.getDatas()) {
 		TransitRoute r(d, this->getEntity()->getGame());
 		this->routes.insert({ r.id, r });
-		this->resetRouteLength(r.id);
 	}
 }

@@ -17,6 +17,7 @@ typedef long money_t;
 typedef std::string sdkey_t;
 
 namespace SaveKeys {
+	const sdkey_t LENGTH = "length";
 	const sdkey_t GAMEMAP = "GameMap";
 	const sdkey_t TILE = "tile";
 	const sdkey_t X = "x";
