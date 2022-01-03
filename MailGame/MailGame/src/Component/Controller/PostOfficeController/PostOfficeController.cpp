@@ -25,6 +25,7 @@ void PostOfficeController::renderUi() {
 	ImGui::Begin(buf);
 	sprintf_s(buf, "%zu mail objects", this->getEntity()->mailContainer->getNumLetters());
 	ImGui::Text(buf);
+	auto mInfo = VehicleModelInfo::getModelInfo(VehicleModel::MailTruck);
 	for (auto it = this->routes.begin(); it != this->routes.end(); it++) {
 		// Get the route index
 		size_t index = (size_t)(it - this->routes.begin());
@@ -34,7 +35,7 @@ void PostOfficeController::renderUi() {
 		std::string routeName = "Route " + std::to_string(it->id);
 		if (ImGui::CollapsingHeader(routeName.c_str())) {
 			// Show cost
-			sprintf_s(buf, "Cost: $%d.00", this->getRouteCost(*it));
+			sprintf_s(buf, "Cost: $%d.00 ($%d.00 + %fm * $%d/m)", this->getRouteCost(*it), mInfo.getInitialCost(), it->length, mInfo.getCostPerTile());
 			ImGui::Text(buf);
 			// Add dropdown for time
 			if (ImGui::BeginCombo("Departure Time", std::to_string(it->departTime).c_str())) {
@@ -300,6 +301,12 @@ size_t PostOfficeController::getRouteLength(MailTruckRoute r) {
 		else if (it->getType() == Segment::Type::Tunnel) {
 			// Since we know that the pathfinding will go directly to the entrance and exit of the tunnel, we just need to add the tunnel length
 			length += it->getTunnel().getLength();
+			if (it->getTunnelReversed()) {
+				prev = sf::Vector2f(Utils::toVector2i(it->getTunnel().getEntrances().first.getPosition()));
+			}
+			else {
+				prev = sf::Vector2f(Utils::toVector2i(it->getTunnel().getEntrances().second.getPosition()));
+			}
 		}
 	}
 	return length;
