@@ -148,6 +148,8 @@ bool UiHandler::handleEvent(sf::Event e) {
 					}
 				}
 			}
+			this->startLocation.reset();
+			break;
 		}
 		case UiState::BuildingRailTracks:
 			if (this->startLocation.has_value()) {
