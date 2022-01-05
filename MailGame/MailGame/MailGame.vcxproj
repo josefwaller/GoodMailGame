@@ -129,6 +129,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\App\App.cpp" />
+    <ClCompile Include="src\Component\ClickBox\PolygonClickBox\Polygon.cpp" />
+    <ClCompile Include="src\Component\ClickBox\PolygonClickBox\PolygonClickBox.cpp" />
     <ClCompile Include="src\Component\ClickBox\RectClickBox\RectClickBox.cpp" />
     <ClCompile Include="src\Component\Component.cpp" />
     <ClCompile Include="src\Component\ComponentType\ComponentType.cpp" />
@@ -205,6 +207,8 @@
   <ItemGroup>
     <ClInclude Include="src\App\App.h" />
     <ClInclude Include="src\Component\ClickBox\ClickBox.h" />
+    <ClInclude Include="src\Component\ClickBox\PolygonClickBox\Polygon.h" />
+    <ClInclude Include="src\Component\ClickBox\PolygonClickBox\PolygonClickBox.h" />
     <ClInclude Include="src\Component\ClickBox\RectClickBox\RectClickBox.h" />
     <ClInclude Include="src\Component\Component.h" />
     <ClInclude Include="src\Component\ComponentType\ComponentType.h" />

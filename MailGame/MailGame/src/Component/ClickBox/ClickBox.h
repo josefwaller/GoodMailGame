@@ -9,7 +9,5 @@
 class ClickBox : public Component {
 public:
 	virtual bool checkIfClicked(sf::Vector2f mouseCoords) = 0;
-#ifdef _DEBUG
 	virtual void renderClickBox(sf::RenderWindow* window) = 0;
-#endif
 };

@@ -234,6 +234,12 @@
     <ClCompile Include="src\Component\Controller\VehicleController\TrainController\RailLock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Component\ClickBox\PolygonClickBox\PolygonClickBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\ClickBox\PolygonClickBox\Polygon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h">
@@ -444,6 +450,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Component\Controller\VehicleController\TrainController\RailLock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\ClickBox\PolygonClickBox\Polygon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\ClickBox\PolygonClickBox\PolygonClickBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

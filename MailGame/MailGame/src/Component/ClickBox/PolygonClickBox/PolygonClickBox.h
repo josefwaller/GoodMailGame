@@ -1,13 +1,18 @@
 #pragma once
 #include "Component/ClickBox/ClickBox.h"
+#include "./Polygon.h"
 
-// A polygon defined by a sequence of 2D points
-// Check if the click is inside the polygon, assuming (0,0) is the entity's position for the points
+/**
+ * A clickbox in the shape of a convex polygon
+ * May have different shapes based on rotation
+ * (0,0) in the polygon is the entity's position
+ */
 class PolygonClickBox : public ClickBox {
 public:
-	PolygonClickBox(std::vector<sf::Vector2f> points);
+	// One polygon
+	PolygonClickBox(Polygon p);
 	virtual bool checkIfClicked(sf::Vector2f mouseCoords) override;
 	virtual void renderClickBox(sf::RenderWindow* window) override;
 private:
-	std::vector<sf::Vector2f> points;
+	Polygon poly;
 };

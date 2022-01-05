@@ -23,12 +23,24 @@
 #include "Component/Pathfinder/AirPathfinder/AirPathfinder.h"
 // Clickboxes
 #include "Component/ClickBox/RectClickBox/RectClickBox.h"
+#include "Component/ClickBox/PolygonClickBox/PolygonClickBox.h"
 // Mail Container
 #include "Component/MailContainer/MailContainer.h"
 // Pathfinders
 #include "Component/Pathfinder/AirPathfinder/AirPathfinder.h"
 #include "Component/Pathfinder/RailsPathfinder/RailsPathfinder.h"
 #include "Component/Pathfinder/RoadPathfinder/RoadPathfinder.h"
+
+PolygonClickBox getOneTileBuildingHitbox(sf::Vector3f pos) {
+	return PolygonClickBox(Polygon({
+			pos + sf::Vector3f(1, 0, 0),
+			pos + sf::Vector3f(1, 1, 0),
+			pos + sf::Vector3f(0, 1, 0),
+			pos + sf::Vector3f(0, 1, 1),
+			pos + sf::Vector3f(0, 0, 1),
+			pos + sf::Vector3f(1, 0, 1)
+		}));
+}
 
 std::shared_ptr<Entity> BuildingPresets::residence(Game* g, sf::Vector3f pos, IsoRotation rot) {
 	return Entity::createEntity(
@@ -66,7 +78,7 @@ std::shared_ptr<Entity> BuildingPresets::postOffice(Game* g, sf::Vector3f pos, I
 			ResourceLoader::get()->getSprite("buildings/buildings", "postOffice-W")
 		)),
 		new PostOfficeController(),
-		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
+		new PolygonClickBox(getOneTileBuildingHitbox(pos)),
 		new MailContainer(),
 		new TransitStop(getDefaultBuildingTransitStop(pos, rot)),
 		new RoadPathfinder()

@@ -23,7 +23,6 @@ sf::FloatRect RectClickBox::getPositionedRect() {
 	return sf::FloatRect(pos.x + rect.left, pos.y + rect.top, rect.width, rect.height);
 }
 
-#ifdef _DEBUG
 void RectClickBox::renderClickBox(sf::RenderWindow* window) {
 	// Get the actual rect
 	sf::FloatRect actualRect = getPositionedRect();
@@ -41,4 +40,3 @@ void RectClickBox::renderClickBox(sf::RenderWindow* window) {
 	}
 	//	window->draw(v);
 }
-#endif

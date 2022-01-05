@@ -128,9 +128,11 @@ bool UiHandler::handleEvent(sf::Event e) {
 			if (this->getTunnelExitForTile(tile).has_value()) {
 				this->game->getGameMap()->addTunnel(tile, this->getTunnelExitForTile(tile).value(), this->tunnelType);
 			}
+			break;
 		}
 		case UiState::BuildingRailwaySignal:
 			this->game->getGameMap()->addRailwaySignal(this->getHoveredTile());
+			break;
 		}
 		break;
 	case sf::Event::MouseButtonReleased:
