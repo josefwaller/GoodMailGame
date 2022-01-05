@@ -18,6 +18,7 @@
 
 void PostOfficeController::renderUi() {
 	sf::Vector3f pos = this->getEntity()->transform->getPosition();
+	auto ui = this->getEntity()->getGame()->getUi();
 	// Print num letters
 	char buf[200];
 	sprintf_s(buf, "%zu mail objects", this->getEntity()->mailContainer->getNumLetters());
@@ -35,7 +36,11 @@ void PostOfficeController::renderUi() {
 			sprintf_s(buf, "Cost: $%d.00 ($%d.00 + %fm * $%d/m)", this->getRouteCost(*it), mInfo.getInitialCost(), it->length, mInfo.getCostPerTile());
 			ImGui::Text(buf);
 			// Add dropdown for time
-			if (ImGui::BeginCombo("Departure Time", std::to_string(it->departTime).c_str())) {
+			hour_t routeTime = ui->selectTime("Depart Time", it->departTime);
+			if (routeTime != it->departTime) {
+				this->setRouteTime(index, routeTime);
+			}
+			/*if (ImGui::BeginCombo("Departure Time", std::to_string(it->departTime).c_str())) {
 				for (size_t i = 0; i < 24; i++) {
 					if (ImGui::Selectable(std::to_string(i).c_str())) {
 						this->setRouteTime(index, (int)i);
@@ -45,7 +50,7 @@ void PostOfficeController::renderUi() {
 					}
 				}
 				ImGui::EndCombo();
-			}
+			}*/
 			if (ImGui::BeginCombo("Type", it->isDelivering ? "Delivering" : "Picking Up")) {
 				if (ImGui::Selectable("Delivering")) {
 					this->setRouteType(index, true);

@@ -891,6 +891,12 @@ bool UiHandler::checkbox(const char* label, bool value) {
 	return v;
 }
 
+hour_t UiHandler::selectTime(const char* label, hour_t v) {
+	int f = (int)v;
+	ImGui::SliderInt(label, &f, 0, 23, "%d:00");
+	return (hour_t)f;
+}
+
 void UiHandler::beginEntityWindow(std::weak_ptr<Entity> e) {
 	if (!e.lock())
 		return;

@@ -52,6 +52,8 @@ public:
 	void setSavefileName(const char name[200]);
 	// Get the tile the mouse is currently hovering over
 	sf::Vector2i getHoveredTile();
+	// Useful widgets
+	hour_t selectTime(const char* label, hour_t v);
 private:
 	Game* game;
 	// Current state of the Ui
