@@ -18,9 +18,22 @@
 #include "Component/Pathfinder/RailsPathfinder/RailsPathfinder.h"
 #include "Component/Pathfinder/AirPathfinder/AirPathfinder.h"
 #include "Game/Game.h"
+// ClickBoxes
+#include "Component/ClickBox/PolygonClickBox/PolygonClickBox.h"
 // Ai
 #include "Component/Ai/PickupDeliveryAi/PickupDeliveryAi.h"
 #include "Component/Ai/TransitAi/TransitAi.h"
+
+
+PolygonClickBox getGenericVehicleClickbox() {
+	float size = 20;
+	return PolygonClickBox(Polygon({
+		sf::Vector2f(-size, -size),
+		sf::Vector2f(size, -size),
+		sf::Vector2f(size, size),
+		sf::Vector2f(-size, size)
+	}));
+}
 
 std::shared_ptr<Entity> VehiclePresets::mailTruck(
 	Game* g,
@@ -47,7 +60,7 @@ std::shared_ptr<Entity> VehiclePresets::mailTruck(
 			)
 		),
 		new CarController(spawnTime, route.model, {}),
-		nullptr,
+		new PolygonClickBox(getGenericVehicleClickbox()),
 		new MailContainer(),
 		nullptr,
 		new RoadPathfinder(),
@@ -76,7 +89,7 @@ std::shared_ptr<Entity> VehiclePresets::cargoTruck(
 			)
 		),
 		new CarController(spawnTime, route.model),
-		nullptr,
+		new PolygonClickBox(getGenericVehicleClickbox()),
 		new MailContainer(),
 		nullptr,
 		new RoadPathfinder(),
@@ -118,7 +131,7 @@ std::shared_ptr<Entity> VehiclePresets::train(
 			)
 		),
 		new TrainController(spawnTime, route.model, trainCars),
-		nullptr,
+		new PolygonClickBox(getGenericVehicleClickbox()),
 		new MailContainer(),
 		nullptr,
 		new RailsPathfinder(),
@@ -146,7 +159,7 @@ std::shared_ptr<Entity> VehiclePresets::plane(
 			)
 		),
 		new PlaneController(spawnTime, route.model),
-		nullptr,
+		new PolygonClickBox(getGenericVehicleClickbox()),
 		new MailContainer(),
 		nullptr,
 		new AirPathfinder(),
@@ -167,7 +180,7 @@ std::shared_ptr<Entity> VehiclePresets::boat(Game* g, sf::Vector3f pos, IsoRotat
 			)
 		),
 		new BoatController(departTime, route.model, {}),
-		nullptr,
+		new PolygonClickBox(getGenericVehicleClickbox()),
 		new MailContainer(),
 		nullptr,
 		nullptr,
