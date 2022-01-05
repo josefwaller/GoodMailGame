@@ -2,6 +2,7 @@
 
 #include "ResourceLoader/ResourceLoader.h"
 #include "Game/Game.h"
+#include "GameMap/GameMap.h"
 #include "Entity/Entity.h"
 
 // Compoennts
@@ -33,13 +34,11 @@
 
 PolygonClickBox getOneTileBuildingHitbox(sf::Vector3f pos) {
 	return PolygonClickBox(Polygon({
-			pos + sf::Vector3f(1, 0, 0),
-			pos + sf::Vector3f(1, 1, 0),
-			pos + sf::Vector3f(0, 1, 0),
-			pos + sf::Vector3f(0, 1, 1),
-			pos + sf::Vector3f(0, 0, 1),
-			pos + sf::Vector3f(1, 0, 1)
-		}));
+		sf::Vector2f(0, 0),
+		sf::Vector2f(Game::TILE_WIDTH, Game::TILE_HEIGHT),
+		sf::Vector2f(0, 2 * Game::TILE_HEIGHT),
+		sf::Vector2f(-Game::TILE_WIDTH, Game::TILE_HEIGHT)
+	}));
 }
 
 std::shared_ptr<Entity> BuildingPresets::residence(Game* g, sf::Vector3f pos, IsoRotation rot) {

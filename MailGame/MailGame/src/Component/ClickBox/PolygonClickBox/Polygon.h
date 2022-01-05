@@ -1,17 +1,17 @@
 #pragma once
 #include <vector>
-#include <SFML/System/Vector3.hpp>
+#include <SFML/System/Vector2.hpp>
 /**
- * A convex polygon in 3D space, used for click detection
+ * A convex polygon, used for click detection
  */
 class Polygon {
 public:
 	// Initialize with a list of points, in order
 	// Point i is connected to points i - 1 and i + 1
-	Polygon(std::vector<sf::Vector3f> points);
+	Polygon(std::vector<sf::Vector2f> points);
 	// Get the points
-	std::vector<sf::Vector3f> getPoints();
+	std::vector<sf::Vector2f> getPoints();
 private:
 	// The points
-	std::vector<sf::Vector3f> points;
+	std::vector<sf::Vector2f> points;
 };

@@ -1,15 +1,14 @@
 #include "PolygonClickBox.h"
 #include "Game/Game.h"
 #include "Entity/Entity.h"
+#include "Component/Transform/Transform.h"
 #include <SFML/Graphics/VertexArray.hpp>
 
 PolygonClickBox::PolygonClickBox(Polygon p) : poly(p) {}
 
 bool PolygonClickBox::checkIfClicked(sf::Vector2f mouseCoords) {
-	std::vector<sf::Vector2f> screenPoints;
-	for (auto p : this->poly.getPoints()) {
-		screenPoints.push_back(this->getEntity()->getGame()->worldToScreenPos(p));
-	}
+	mouseCoords -= this->getEntity()->getGame()->worldToScreenPos(this->getEntity()->transform->getPosition());
+	std::vector<sf::Vector2f> screenPoints = this->poly.getPoints();
 	// Used 2D ray casting
 	size_t numHits = 0;
 	for (size_t i = 0; i < screenPoints.size(); i++) {
@@ -46,11 +45,12 @@ bool PolygonClickBox::checkIfClicked(sf::Vector2f mouseCoords) {
 void PolygonClickBox::renderClickBox(sf::RenderWindow* window) {
 	auto points = this->poly.getPoints();
 	Game* g = this->getEntity()->getGame();
+	sf::Vector2f offset = g->worldToScreenPos(this->getEntity()->transform->getPosition());
 	sf::VertexArray arr(sf::PrimitiveType::LinesStrip, points.size() + 1);
 	sf::Color c = this->checkIfClicked(sf::Vector2f(g->getWindowMousePosition())) ? sf::Color::Green : sf::Color::Red;
 	for (auto it = points.begin(); it != points.end(); it++) {
-		arr[it - points.begin()] = sf::Vertex(g->worldToScreenPos(*it), c);
+		arr[it - points.begin()] = sf::Vertex(*it + offset, c);
 	}
-	arr[points.size()] = sf::Vertex(g->worldToScreenPos(points.front()), c);
+	arr[points.size()] = sf::Vertex(points.front() + offset, c);
 	window->draw(arr);
 }
