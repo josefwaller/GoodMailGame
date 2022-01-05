@@ -13,12 +13,8 @@
 DepotController::DepotController(TransitType t, std::vector<VehicleModel> models) : type(t), availableModels(models) {}
 
 void DepotController::renderUi() {
-	ImGui::PushID((int)this->getEntity()->getId());
 	char buf[200];
 	sf::Vector3f pos = this->getEntity()->transform->getPosition();
-	std::string s = entityTagToString(this->getEntity()->tag);
-	sprintf_s(buf, "%s at (%f, %f)", s.c_str(), pos.x, pos.y);
-	ImGui::Begin(buf);
 	if (ImGui::Button(this->showRoutes ? "Hide Routes" : "Show Routes")) {
 		this->showRoutes = !this->showRoutes;
 	}
@@ -165,9 +161,6 @@ void DepotController::renderUi() {
 			throw std::runtime_error("No available models in DepotController!");
 		this->addRoute(TransitRoute(0, this->availableModels.front()));
 	}
-
-	ImGui::End();
-	ImGui::PopID();
 }
 void DepotController::update(float) {
 	// Delete routes

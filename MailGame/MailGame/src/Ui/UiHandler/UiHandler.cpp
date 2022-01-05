@@ -458,9 +458,12 @@ void UiHandler::update() {
 		return true;
 		}), this->toRenderUi.end());
 	// Render Ui for entities
-	for (auto it = this->toRenderUi.begin(); it != this->toRenderUi.end(); it++) {
+	auto r = this->toRenderUi;
+	for (auto it = r.begin(); it != r.end(); it++) {
 		if (it->lock() && it->lock()->controller) {
+			this->beginEntityWindow(*it);
 			it->lock()->controller->renderUi();
+			this->endEntityWindow();
 		}
 	}
 
@@ -886,4 +889,22 @@ bool UiHandler::checkbox(const char* label, bool value) {
 	bool v = value;
 	ImGui::Checkbox(label, &v);
 	return v;
+}
+
+void UiHandler::beginEntityWindow(std::weak_ptr<Entity> e) {
+	if (!e.lock())
+		return;
+	
+	ImGui::PushID(e.lock()->getId());
+	char buf[200];
+	sprintf_s(buf, "%s", e.lock()->getName().c_str());
+	ImGui::Begin(buf);
+	if (ImGui::Button("Close")) {
+		this->toRenderUi.erase(std::remove_if(this->toRenderUi.begin(), this->toRenderUi.end(), [&](std::weak_ptr<Entity> ent) { return ent.lock() && ent.lock()->getId() == e.lock()->getId(); }), this->toRenderUi.end());
+	}
+}
+
+void UiHandler::endEntityWindow() {
+	ImGui::End();
+	ImGui::PopID();
 }

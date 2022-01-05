@@ -119,4 +119,7 @@ private:
 	std::vector<std::pair<sf::Vector2i, Railway>> getRailwaysToBuild(sf::Vector2f from, sf::Vector2f to);
 	// Utility function for IMGui checkboxes
 	bool checkbox(const char* label, bool val);
+	// Begin/End an entity's window
+	void beginEntityWindow(std::weak_ptr<Entity> e);
+	void endEntityWindow();
 };

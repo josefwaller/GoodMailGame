@@ -17,12 +17,9 @@
 #include <imgui.h>
 
 void PostOfficeController::renderUi() {
-	ImGui::PushID((int)this->getEntity()->getId());
 	sf::Vector3f pos = this->getEntity()->transform->getPosition();
 	// Print num letters
 	char buf[200];
-	sprintf_s(buf, "Post Office at (%f, %f)", pos.x, pos.y);
-	ImGui::Begin(buf);
 	sprintf_s(buf, "%zu mail objects", this->getEntity()->mailContainer->getNumLetters());
 	ImGui::Text(buf);
 	auto mInfo = VehicleModelInfo::getModelInfo(VehicleModel::MailTruck);
@@ -104,8 +101,6 @@ void PostOfficeController::renderUi() {
 		pCode.setColor(pColor);
 		PostalCodeDatabase::get()->setPostalCode(this->postalCodeId.value(), pCode);
 	}
-	ImGui::End();
-	ImGui::PopID();
 }
 
 void PostOfficeController::update(float) {

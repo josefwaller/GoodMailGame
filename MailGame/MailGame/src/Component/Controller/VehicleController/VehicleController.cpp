@@ -93,17 +93,14 @@ void VehicleController::update(float delta) {
 }
 
 void VehicleController::renderUi() {
-	if (ImGui::Begin(this->getEntity()->getName().c_str())) {
-		size_t numMail = this->getEntity()->mailContainer->getNumLetters();
-		char buf[200];
-		this->getEntity()->ai->renderUi();
-		sf::Vector3f pos = this->getEntity()->transform->getPosition();
-		sprintf_s(buf, "Position: (%f, %f, %f)", pos.x, pos.y, pos.z);
-		std::string s = this->getEntity()->transform->getRotation().toString();
-		sprintf_s(buf, "Rotation: %s", s.c_str());
-		ImGui::Text(buf);
-		ImGui::End();
-	}
+	size_t numMail = this->getEntity()->mailContainer->getNumLetters();
+	char buf[200];
+	this->getEntity()->ai->renderUi();
+	sf::Vector3f pos = this->getEntity()->transform->getPosition();
+	sprintf_s(buf, "Position: (%f, %f, %f)", pos.x, pos.y, pos.z);
+	std::string s = this->getEntity()->transform->getRotation().toString();
+	sprintf_s(buf, "Rotation: %s", s.c_str());
+	ImGui::Text(buf);
 }
 
 float VehicleController::getPathDistance(sf::Vector3f from, sf::Vector3f to) {
