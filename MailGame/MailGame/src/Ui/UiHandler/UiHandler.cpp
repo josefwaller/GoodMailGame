@@ -38,6 +38,16 @@ bool UiHandler::handleEvent(sf::Event e) {
 			return true;
 		}
 		switch (this->currentState) {
+		case UiState::Default: {
+			// Maybe open an entity's UI
+			auto e = this->game->getEntities();
+			for (auto it = e.begin(); it != e.end(); it++) {
+				if ((*it)->clickBox && (*it)->clickBox->checkIfClicked(this->game->getWindowMousePosition())) {
+					this->toRenderUi.push_back((*it));
+				}
+			}
+			break;
+		}
 		case UiState::BuildingEntity: {
 			if (!this->recipe) {
 				throw std::runtime_error("BuildingEntity but with no ConstructionRecipe!");
@@ -390,6 +400,9 @@ void UiHandler::update() {
 	}
 	ImGui::End();
 	ImGui::Begin("Debug Info");
+	// Print FPS
+	sprintf_s(buf, "FPS: %f", 1.0f / this->deltaClock.restart().asSeconds());
+	ImGui::Text(buf);
 	// Print mouse position
 	sf::Vector3f mousePos = this->game->getGroundMousePosition();
 	sf::Vector2i tile = this->getHoveredTile();
@@ -438,26 +451,6 @@ void UiHandler::update() {
 	}
 	// Draw the Tech tree window
 	this->game->getTechTree()->update();
-	// Render option to show/hide UI for entity
-	ImGui::Begin("Open Entity Ui");
-	std::vector<std::shared_ptr<Entity>> entities = this->game->getEntities();
-	for (auto it = entities.begin(); it != entities.end(); it++) {
-		if ((*it)->tag != EntityTag::Residence && ImGui::Button((*it)->getName().c_str())) {
-			std::shared_ptr<Entity> e(*it);
-			auto i = std::find_if(this->toRenderUi.begin(), this->toRenderUi.end(), [e](std::weak_ptr<Entity> a) {
-				if (a.lock() == e)
-					return true;
-				return false;
-				});
-			if (i == this->toRenderUi.end()) {
-				this->toRenderUi.push_back(e);
-			}
-			else {
-				this->toRenderUi.erase(i);
-			}
-		}
-	}
-	ImGui::End();
 	// Remove deleted entities
 	this->toRenderUi.erase(std::remove_if(this->toRenderUi.begin(), this->toRenderUi.end(), [](std::weak_ptr<Entity> a) {
 		if (a.lock())

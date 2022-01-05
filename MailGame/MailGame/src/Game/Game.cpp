@@ -300,8 +300,8 @@ sf::Vector3f Game::getGroundMousePosition() {
 	// Get the height
 	return Utils::getVectorPlaneIntersection(sf::Vector3f(mousePos.x, mousePos.y, 0.0f), mouseVector, this->gameMap.getPlaneForTile(sf::Vector2i(tile), offset));
 }
-sf::Vector2i Game::getWindowMousePosition() {
-	return sf::Vector2i(this->window->mapPixelToCoords(sf::Mouse::getPosition(*(this->window)), this->gameView));
+sf::Vector2f Game::getWindowMousePosition() {
+	return this->window->mapPixelToCoords(sf::Mouse::getPosition(*(this->window)), this->gameView);
 }
 sf::Vector2f Game::screenToWorldPos(sf::Vector2f pos) {
 	// Cancel out tile dimensions

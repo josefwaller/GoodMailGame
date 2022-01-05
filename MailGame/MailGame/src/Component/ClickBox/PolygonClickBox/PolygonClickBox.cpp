@@ -47,7 +47,7 @@ void PolygonClickBox::renderClickBox(sf::RenderWindow* window) {
 	Game* g = this->getEntity()->getGame();
 	sf::Vector2f offset = this->getOffset();
 	sf::VertexArray arr(sf::PrimitiveType::LinesStrip, points.size() + 1);
-	sf::Color c = this->checkIfClicked(sf::Vector2f(g->getWindowMousePosition())) ? sf::Color::Green : sf::Color::Red;
+	sf::Color c = this->checkIfClicked(g->getWindowMousePosition()) ? sf::Color::Green : sf::Color::Red;
 	for (auto it = points.begin(); it != points.end(); it++) {
 		arr[it - points.begin()] = sf::Vertex(*it + offset, c);
 	}

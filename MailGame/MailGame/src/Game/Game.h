@@ -52,8 +52,8 @@ public:
 	sf::Vector2f getMousePosition();
 	// Get the location on the ground where the mouse cursor would be
 	sf::Vector3f getGroundMousePosition();
-	// Get mouse position relative to the window
-	sf::Vector2i getWindowMousePosition();
+	// Get mouse position relative to the window coordinates
+	sf::Vector2f getWindowMousePosition();
 	// Get the rotation of the camera
 	IsoRotation getRotation();
 	// Rotate the camera
