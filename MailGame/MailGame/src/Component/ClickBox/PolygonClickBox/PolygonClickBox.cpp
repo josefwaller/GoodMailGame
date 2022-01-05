@@ -4,10 +4,10 @@
 #include "Component/Transform/Transform.h"
 #include <SFML/Graphics/VertexArray.hpp>
 
-PolygonClickBox::PolygonClickBox(Polygon p) : poly(p) {}
+PolygonClickBox::PolygonClickBox(Polygon p, bool r) : poly(p), relativeToCenter(r) {}
 
 bool PolygonClickBox::checkIfClicked(sf::Vector2f mouseCoords) {
-	mouseCoords -= this->getEntity()->getGame()->worldToScreenPos(this->getEntity()->transform->getPosition());
+	mouseCoords -= this->getOffset();
 	std::vector<sf::Vector2f> screenPoints = this->poly.getPoints();
 	// Used 2D ray casting
 	size_t numHits = 0;
@@ -45,7 +45,7 @@ bool PolygonClickBox::checkIfClicked(sf::Vector2f mouseCoords) {
 void PolygonClickBox::renderClickBox(sf::RenderWindow* window) {
 	auto points = this->poly.getPoints();
 	Game* g = this->getEntity()->getGame();
-	sf::Vector2f offset = g->worldToScreenPos(this->getEntity()->transform->getPosition());
+	sf::Vector2f offset = this->getOffset();
 	sf::VertexArray arr(sf::PrimitiveType::LinesStrip, points.size() + 1);
 	sf::Color c = this->checkIfClicked(sf::Vector2f(g->getWindowMousePosition())) ? sf::Color::Green : sf::Color::Red;
 	for (auto it = points.begin(); it != points.end(); it++) {
@@ -53,4 +53,12 @@ void PolygonClickBox::renderClickBox(sf::RenderWindow* window) {
 	}
 	arr[points.size()] = sf::Vertex(points.front() + offset, c);
 	window->draw(arr);
+}
+
+sf::Vector2f PolygonClickBox::getOffset() {
+	sf::Vector3f offset = this->getEntity()->transform->getPosition();
+	if (this->relativeToCenter) {
+		offset += sf::Vector3f(0.5, 0.5, 0);
+	}
+	return this->getEntity()->getGame()->worldToScreenPos(offset);
 }

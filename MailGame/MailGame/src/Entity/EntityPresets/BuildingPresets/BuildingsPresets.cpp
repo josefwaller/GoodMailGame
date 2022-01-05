@@ -33,12 +33,15 @@
 #include "Component/Pathfinder/RoadPathfinder/RoadPathfinder.h"
 
 PolygonClickBox getOneTileBuildingHitbox(sf::Vector3f pos) {
+	const float HEIGHT = 40;
 	return PolygonClickBox(Polygon({
-		sf::Vector2f(0, 0),
-		sf::Vector2f(Game::TILE_WIDTH, Game::TILE_HEIGHT),
-		sf::Vector2f(0, 2 * Game::TILE_HEIGHT),
-		sf::Vector2f(-Game::TILE_WIDTH, Game::TILE_HEIGHT)
-	}));
+		sf::Vector2f(-Game::TILE_WIDTH, -HEIGHT),
+		sf::Vector2f(-Game::TILE_WIDTH, 0),
+		sf::Vector2f(0, Game::TILE_HEIGHT),
+		sf::Vector2f(Game::TILE_WIDTH, 0),
+		sf::Vector2f(Game::TILE_WIDTH, -HEIGHT),
+		sf::Vector2f(0, -Game::TILE_HEIGHT - HEIGHT)
+	}), true);
 }
 
 std::shared_ptr<Entity> BuildingPresets::residence(Game* g, sf::Vector3f pos, IsoRotation rot) {
@@ -53,12 +56,7 @@ std::shared_ptr<Entity> BuildingPresets::residence(Game* g, sf::Vector3f pos, Is
 			ResourceLoader::get()->getSprite("buildings/buildings", "building-NW-3")
 		)),
 		new ResidenceController(g->getTime()),
-		new RectClickBox(sf::FloatRect(
-			0,
-			0,
-			1,
-			1)
-		),
+		nullptr,
 		nullptr,
 		new TransitStop(getDefaultBuildingTransitStop(pos, rot))
 	);
@@ -122,7 +120,7 @@ std::shared_ptr<Entity> BuildingPresets::cargoTruckDepot(Game* g, sf::Vector3f p
 			ResourceLoader::get()->getSprite("buildings/buildings", "cargoTruckDepot-W")
 		)),
 		new TruckDepotController(),
-		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
+		new PolygonClickBox(getOneTileBuildingHitbox(pos)),
 		new MailContainer(),
 		new TransitStop(getDefaultBuildingTransitStop(pos, rot)),
 		new RoadPathfinder()
@@ -149,7 +147,7 @@ std::shared_ptr<Entity> BuildingPresets::trainStation(Game* g, sf::Vector3f pos,
 			ResourceLoader::get()->getSprite("buildings/buildings", "trainstation-W")
 		)),
 		new TrainDepotController(),
-		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
+		new PolygonClickBox(getOneTileBuildingHitbox(pos)),
 		new MailContainer(),
 		new TransitStop(carStop, trainStop),
 		new RailsPathfinder()
@@ -169,7 +167,7 @@ std::shared_ptr<Entity> BuildingPresets::airport(Game* g, sf::Vector3f pos, IsoR
 			)
 		),
 		new PlaneDepotController(),
-		new RectClickBox(sf::FloatRect(0, 0, 1, 1)),
+		new PolygonClickBox(getOneTileBuildingHitbox(pos)),
 		new MailContainer(),
 		nullptr,
 		new AirPathfinder()
@@ -238,7 +236,7 @@ std::shared_ptr<Entity> BuildingPresets::boatDepot(Game* g, sf::Vector3f pos, Is
 			)
 		),
 		new BoatDepotController(),
-		nullptr,
+		new PolygonClickBox(getOneTileBuildingHitbox(pos)),
 		new MailContainer()
 	);
 }

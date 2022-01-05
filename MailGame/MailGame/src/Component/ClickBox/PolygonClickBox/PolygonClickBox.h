@@ -10,9 +10,11 @@
 class PolygonClickBox : public ClickBox {
 public:
 	// One polygon
-	PolygonClickBox(Polygon p);
+	PolygonClickBox(Polygon p, bool relativeToCenter = false);
 	virtual bool checkIfClicked(sf::Vector2f mouseCoords) override;
 	virtual void renderClickBox(sf::RenderWindow* window) override;
 private:
 	Polygon poly;
+	bool relativeToCenter;
+	sf::Vector2f getOffset();
 };
