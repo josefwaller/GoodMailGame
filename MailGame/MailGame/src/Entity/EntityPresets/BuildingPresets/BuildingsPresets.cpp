@@ -41,7 +41,7 @@ PolygonClickBox getOneTileBuildingHitbox(sf::Vector3f pos) {
 		sf::Vector2f(Game::TILE_WIDTH, 0),
 		sf::Vector2f(Game::TILE_WIDTH, -HEIGHT),
 		sf::Vector2f(0, -Game::TILE_HEIGHT - HEIGHT)
-	}), true);
+	}), sf::Vector3f(0.5, 0.5, 0));
 }
 
 std::shared_ptr<Entity> BuildingPresets::residence(Game* g, sf::Vector3f pos, IsoRotation rot) {
@@ -215,7 +215,15 @@ std::shared_ptr<Entity> BuildingPresets::warehouse(Game* g, sf::Vector3f pos, Is
 			sf::Vector3f(-1, -0.5, 0)
 		),
 		nullptr,
-		new RectClickBox(sf::FloatRect(0, 0, 2, 2)),
+		new PolygonClickBox(
+			Polygon({
+				sf::Vector2f(-2 * Game::TILE_WIDTH, 0),
+				sf::Vector2f(0, -2 * Game::TILE_HEIGHT),
+				sf::Vector2f(2 * Game::TILE_WIDTH, 0),
+				sf::Vector2f(0, 2 * Game::TILE_HEIGHT)
+			}),
+			sf::Vector3f(1, 1, 0)
+		),
 		new MailContainer()
 	);
 	setTilesToBuilding(g, e, sf::IntRect(floor(pos.x), floor(pos.y), 2, 2));

@@ -4,7 +4,7 @@
 #include "Component/Transform/Transform.h"
 #include <SFML/Graphics/VertexArray.hpp>
 
-PolygonClickBox::PolygonClickBox(Polygon p, bool r) : poly(p), relativeToCenter(r) {}
+PolygonClickBox::PolygonClickBox(Polygon p, sf::Vector3f o) : poly(p), worldOffset(o) {}
 
 bool PolygonClickBox::checkIfClicked(sf::Vector2f mouseCoords) {
 	mouseCoords -= this->getOffset();
@@ -56,9 +56,6 @@ void PolygonClickBox::renderClickBox(sf::RenderWindow* window) {
 }
 
 sf::Vector2f PolygonClickBox::getOffset() {
-	sf::Vector3f offset = this->getEntity()->transform->getPosition();
-	if (this->relativeToCenter) {
-		offset += sf::Vector3f(0.5, 0.5, 0);
-	}
+	sf::Vector3f offset = this->getEntity()->transform->getPosition() + this->worldOffset;
 	return this->getEntity()->getGame()->worldToScreenPos(offset);
 }
