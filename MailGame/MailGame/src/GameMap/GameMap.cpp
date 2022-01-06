@@ -113,26 +113,34 @@ void GameMap::render(sf::RenderWindow* window) {
 
 sf::Sprite GameMap::getRoadSprite(Road road, IsoRotation gameRotation, std::vector<std::vector<unsigned int>> heights) {
 	std::string spriteString = "road_";
+	std::map<IsoRotation, std::string> rotationMap = {
+		{IsoRotation::NORTH, "NE"},
+		{IsoRotation::EAST, "SE"},
+		{IsoRotation::SOUTH, "SW"},
+		{IsoRotation::WEST, "NW"}
+	};
 	sf::Vector2f origin;
 	if (heights[0][0] != heights[0][1] || heights[0][0] != heights[1][0]) {
 		// Must be a ramp
 		spriteString += "slantFlat_";
+		IsoRotation rot;
 		origin = sf::Vector2f(255, 304);
 		if (heights[0][0] > heights[0][1]) {
-			spriteString += "SE";
+			rot = IsoRotation::EAST;
 		}
 		else if (heights[0][0] < heights[0][1]) {
-			spriteString += "NW";
+			rot = IsoRotation::WEST;
 		}
 		else if (heights[0][0] > heights[1][0]) {
-			spriteString += "NE";
+			rot = IsoRotation::NORTH;
 		}
 		else if (heights[0][0] < heights[1][0]) {
-			spriteString += "SW";
+			rot = IsoRotation::SOUTH;
 		}
 		else {
 			throw std::runtime_error("Tiles not set up properly for roads");
 		}
+		spriteString += rotationMap[rot + gameRotation];
 	}
 	else {
 		origin = sf::Vector2f(256, 314);
@@ -144,56 +152,68 @@ sf::Sprite GameMap::getRoadSprite(Road road, IsoRotation gameRotation, std::vect
 		}
 		// Check if the road is a 3 way intersection
 		if (c == 3) {
+			IsoRotation rot;
 			spriteString += "intersection_";
 			// Set the sprite name
 			if (!road.hasNorth) {
-				spriteString += "SW";
+				rot = IsoRotation::SOUTH;
 			}
 			else if (!road.hasEast) {
-				spriteString += "NW";
+				rot = IsoRotation::WEST;
 			}
 			else if (!road.hasSouth) {
-				spriteString += "NE";
+				rot = IsoRotation::NORTH;
 			}
 			else {
-				spriteString += "SE";
+				rot = IsoRotation::EAST;
 			}
+			spriteString += rotationMap[rot + gameRotation];
 		}
 		else if (c == 2) {
 			// If the road is straight
+			std::string prefix;
+			IsoRotation rot;
 			if (road.hasNorth && road.hasSouth) {
-				spriteString += "straight_SE";
+				prefix = "straight_";
+				rot = IsoRotation::EAST;
 			}
 			else if (road.hasEast && road.hasWest) {
-				spriteString += "straight_SW";
-			}
-			else if (road.hasNorth && road.hasEast) {
-				spriteString += "bend_NE";
-			}
-			else if (road.hasEast && road.hasSouth) {
-				spriteString += "bend_SE";
-			}
-			else if (road.hasSouth && road.hasWest) {
-				spriteString += "bend_SW";
+				prefix = "straight_";
+				rot = IsoRotation::NORTH;
 			}
 			else {
-				spriteString += "bend_NW";
+				prefix = "bend_";
+				if (road.hasNorth && road.hasEast) {
+					rot = IsoRotation::NORTH;
+				}
+				else if (road.hasEast && road.hasSouth) {
+					rot = IsoRotation::EAST;
+				}
+				else if (road.hasSouth && road.hasWest) {
+					rot = IsoRotation::SOUTH;
+				}
+				else {
+					rot = IsoRotation::WEST;
+				}
 			}
+			spriteString += prefix + rotationMap[rot + gameRotation];
 		}
 		else if (c == 1) {
 			spriteString += "end_";
+			IsoRotation rot;
 			if (road.hasNorth) {
-				spriteString += "SE";
+				rot = IsoRotation::EAST;
 			}
 			else if (road.hasEast) {
-				spriteString += "SW";
+				rot = IsoRotation::SOUTH;
 			}
 			else if (road.hasSouth) {
-				spriteString += "NW";
+				rot = IsoRotation::WEST;
 			}
 			else if (road.hasWest) {
-				spriteString += "NE";
+				rot = IsoRotation::NORTH;
 			}
+			spriteString += rotationMap[rot + gameRotation];
 		}
 	}
 	sf::Sprite spr = ResourceLoader::get()->getIndividualSprite("roadTiles/" + spriteString + ".png");
