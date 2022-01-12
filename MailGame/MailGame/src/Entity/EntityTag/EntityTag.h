@@ -29,7 +29,6 @@
 	F(TrainCar, VehiclePresets::trainCar(g, pos, rot, IsoSprite(sf::Sprite(), sf::Sprite(), sf::Sprite(), sf::Sprite()))) \
 	F(Airport, BuildingPresets::airport(g, pos, rot)) \
 	F(Airplane, VehiclePresets::plane(g, pos, rot, TransitRoute(0, VehicleModel::SlowAirplane), {}, 0))\
-	F(RailwaySwitch, BuildingPresets::railwaySwitch(g, pos, rot))\
 	F(Warehouse, BuildingPresets::warehouse(g, pos, rot))\
 	F(CarDock, BuildingPresets::carDock(g, pos, rot))\
 	F(TrainDock, BuildingPresets::trainDock(g, pos, rot))\

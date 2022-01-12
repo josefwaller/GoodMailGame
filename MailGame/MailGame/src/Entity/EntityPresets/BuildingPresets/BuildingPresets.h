@@ -18,7 +18,6 @@ public:
 	static std::shared_ptr<Entity> cargoTruckDepot(Game* g, sf::Vector3f pos, IsoRotation rot);
 	static std::shared_ptr<Entity> trainStation(Game* g, sf::Vector3f pos, IsoRotation rot);
 	static std::shared_ptr<Entity> airport(Game* g, sf::Vector3f pos, IsoRotation rot);
-	static std::shared_ptr<Entity> railwaySwitch(Game* g, sf::Vector3f pos, IsoRotation rot);
 	static std::shared_ptr<Entity> warehouse(Game* g, sf::Vector3f pos, IsoRotation rot);
 	static std::shared_ptr<Entity> carDock(Game* g, sf::Vector3f pos, IsoRotation rot);
 	static std::shared_ptr<Entity> airplaneDock(Game* g, sf::Vector3f pos, IsoRotation rot);

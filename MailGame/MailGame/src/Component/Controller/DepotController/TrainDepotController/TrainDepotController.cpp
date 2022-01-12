@@ -14,7 +14,7 @@ void TrainDepotController::init() {
 }
 
 void TrainDepotController::spawnVehicleForRoute(TransitRoute route) {
-	gtime_t spawnTime = this->getEntity()->getGame()->getMidnightTime() + Game::UNITS_IN_GAME_HOUR * route.departTime;
+	gtime_t spawnTime = this->getEntity()->getGame()->getMidnightTime() + route.departTime;
 	this->getEntity()->getGame()->addEntity(
 		VehiclePresets::train(
 			this->getEntity()->getGame(),

@@ -72,4 +72,6 @@ private:
 	TransitType type;
 	// This is basically a debug feature, but toggle to show the routes of this station on the UI
 	bool showRoutes;
+	// Last spawn time
+	gtime_t lastSpawnTime;
 };

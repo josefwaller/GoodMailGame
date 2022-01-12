@@ -101,22 +101,6 @@ std::map<EntityTag, ConstructionRecipe> Construction::recipes = {
 			Technology::Airplanes
 		)
 	},
-	{ EntityTag::RailwaySwitch,
-		ConstructionRecipe(
-			"Railway Switch",
-			&BuildingPresets::railwaySwitch,
-			IsoSprite(
-				ResourceLoader::get()->getSprite("buildings/buildings", "railwaySwitch"),
-				ResourceLoader::get()->getSprite("buildings/buildings", "railwaySwitch"),
-				ResourceLoader::get()->getSprite("buildings/buildings", "railwaySwitch"),
-				ResourceLoader::get()->getSprite("buildings/buildings", "railwaySwitch")
-			),
-			ConstructionLayout({
-				{ TileType::Land, TileType::Land }
-			}),
-			Technology::Trains
-		)
-	},
 	{
 		EntityTag::Warehouse,
 		ConstructionRecipe(

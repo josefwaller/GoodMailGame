@@ -78,10 +78,10 @@ bool UiHandler::handleEvent(sf::Event e) {
 		}
 		case UiState::SelectingEntity:
 			// Get the entity
-			for (auto e : this->game->getEntities()) {
-				if (e->clickBox) {
-					if (e->clickBox->checkIfClicked(this->game->getMousePosition())) {
-						this->selectEntityCallback(std::weak_ptr<Entity>(e));
+			for (auto ent : this->game->getEntities()) {
+				if (ent->clickBox) {
+					if (ent->clickBox->checkIfClicked(this->game->getWindowMousePosition())) {
+						this->selectEntityCallback(std::weak_ptr<Entity>(ent));
 					}
 				}
 			}
@@ -436,6 +436,9 @@ void UiHandler::update() {
 		if (ImGui::Button("Tunnel")) {
 			this->changeState(UiState::BuildingTunnel);
 			this->tunnelType = TransitType::Train;
+		}
+		if (ImGui::Button("Railway Signal")) {
+			this->changeState(UiState::BuildingRailwaySignal);
 		}
 		this->isStation = checkbox("Station: ", this->isStation);
 		this->isOneWay = checkbox("One way rail: ", this->isOneWay);

@@ -175,30 +175,6 @@ std::shared_ptr<Entity> BuildingPresets::airport(Game* g, sf::Vector3f pos, IsoR
 	setTilesToBuilding(g, e, sf::IntRect((int)pos.x, (int)pos.y, 1, 1));
 	return e;
 }
-
-std::shared_ptr<Entity> BuildingPresets::railwaySwitch(Game* g, sf::Vector3f pos, IsoRotation rot) {
-	sf::Vector2f unit = rot.getUnitVector();
-	sf::Vector2i tile((int)floor(pos.x + unit.x), (int)floor(pos.y + unit.y));
-	// Add a straight, perpindicular railway
-	g->getGameMap()->addRailTrack((size_t)tile.x, (size_t)tile.y, (rot + 1), (rot - 1), false);
-	// Add the entity
-	return Entity::createEntity(
-		g,
-		EntityTag::RailwaySwitch,
-		new Transform(pos, rot),
-		new IsoSpriteRenderer(
-			IsoSprite(
-				ResourceLoader::get()->getSprite("buildings/buildings", "railwaySwitch"),
-				ResourceLoader::get()->getSprite("buildings/buildings", "railwaySwitch"),
-				ResourceLoader::get()->getSprite("buildings/buildings", "railwaySwitch"),
-				ResourceLoader::get()->getSprite("buildings/buildings", "railwaySwitch")
-			),
-			sf::Vector3f(-0.5f, 0, 0)
-		),
-		new RailwaySwitchController(tile)
-	);
-}
-
 std::shared_ptr<Entity> BuildingPresets::warehouse(Game* g, sf::Vector3f pos, IsoRotation rot) {
 	auto e = Entity::createEntity(
 		g,

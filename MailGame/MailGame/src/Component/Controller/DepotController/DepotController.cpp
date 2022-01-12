@@ -31,15 +31,9 @@ void DepotController::renderUi() {
 			sprintf_s(buf, "Cost: $%d.00 ($%d + %fm * $%d/m)", c, mInfo.getInitialCost(), route.length, mInfo.getCostPerTile());
 			ImGui::Text(buf);
 			// Departure time
-			sprintf_s(buf, "%d:00", route.departTime);
-			if (ImGui::BeginCombo("Departure Time", buf)) {
-				for (int hr = 0; hr < 24; hr++) {
-					sprintf_s(buf, "%d:00", hr);
-					if (ImGui::Selectable(buf, hr == route.departTime)) {
-						this->setRouteDepartTime(route.id, hr);
-					}
-				}
-				ImGui::EndCombo();
+			gtime_t departTime = this->getEntity()->getGame()->getUi()->selectTimeOfDay("Departure Time: ", kvp.second.departTime);
+			if (departTime != kvp.second.departTime) {
+				this->setRouteDepartTime(kvp.first, departTime);
 			}
 			VehicleModelInfo modelInfo = VehicleModelInfo::getModelInfo(route.model);
 			if (ImGui::BeginCombo("Vehicle Model", modelInfo.getName().c_str())) {
@@ -169,6 +163,18 @@ void DepotController::update(float) {
 	}
 	this->toDelete.clear();
 
+	// Check whether to spawn any vehicles
+	gtime_t gtime = this->getEntity()->getGame()->getTimeSinceMidnight();
+	gtime_t spawnInterval = Game::UNITS_IN_GAME_HOUR / 4;
+	if (gtime - this->lastSpawnTime >= spawnInterval) {
+		this->lastSpawnTime += spawnInterval;
+		gtime_t spawnTime = floor(gtime / spawnInterval) * spawnInterval;
+		for (auto it : this->routes) {
+			if (it.second.departTime == spawnTime) {
+				this->spawnVehicleForRoute(it.second);
+			}
+		}	
+	}
 	if (this->showRoutes) {
 		for (auto kv : this->routes) {
 			std::vector<RoutePoint> routePoints;
@@ -237,11 +243,7 @@ void DepotController::update(float) {
 	}
 }
 void DepotController::onHourChange(hour_t newHour) {
-	for (auto it : this->routes) {
-		if (it.second.departTime == newHour) {
-			this->spawnVehicleForRoute(it.second);
-		}
-	}
+
 }
 
 money_t DepotController::getCost() {

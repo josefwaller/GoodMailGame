@@ -6,7 +6,7 @@
 
 BoatDepotController::BoatDepotController() : DepotController(TransitType::Boat, { VehicleModel::SlowBoat, VehicleModel::FastBoat }) {}
 void BoatDepotController::spawnVehicleForRoute(TransitRoute route) {
-	gtime_t spawnTime = this->getEntity()->getGame()->getMidnightTime() + Game::UNITS_IN_GAME_HOUR * route.departTime;
+	gtime_t spawnTime = this->getEntity()->getGame()->getMidnightTime() + route.departTime;
 	this->getEntity()->getGame()->addEntity(VehiclePresets::boat(
 		this->getEntity()->getGame(),
 		this->getEntity()->transform->getPosition(),
