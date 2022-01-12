@@ -128,8 +128,6 @@ std::shared_ptr<Entity> BuildingPresets::cargoTruckDepot(Game* g, sf::Vector3f p
 }
 
 std::shared_ptr<Entity> BuildingPresets::trainStation(Game* g, sf::Vector3f pos, IsoRotation rot) {
-	// Add road into train station
-	addRoadForTransitBuilding(g, sf::Vector3i(pos), rot);
 	TransitStop::CarStop carStop = getDefaultBuildingTransitStop(pos, rot);
 	TransitStop::TrainStop trainStop = {
 		pos,
