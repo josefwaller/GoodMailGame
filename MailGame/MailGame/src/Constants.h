@@ -117,4 +117,5 @@ namespace SaveKeys {
 	const sdkey_t HEIGHT = "height";
 	const sdkey_t TUNNEL = "Tunnel";
 	const sdkey_t IS_LOCKED = "isLocked";
+	const sdkey_t IS_ONE_WAY = "isOneWay";
 }

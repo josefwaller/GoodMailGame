@@ -11,6 +11,7 @@ Railway::Railway(SaveData data) {
 	this->to = data.getIsoRotation(TO);
 	this->isStation = data.getBool(IS_STATION);
 	this->isLocked = false;
+	this->isOneWay = data.getBool(IS_ONE_WAY);
 }
 SaveData Railway::getSaveData() {
 	using namespace SaveKeys;
@@ -18,6 +19,7 @@ SaveData Railway::getSaveData() {
 	data.addIsoRotation(FROM, this->from);
 	data.addIsoRotation(TO, this->to);
 	data.addBool(IS_STATION, this->isStation);
+	data.addBool(IS_ONE_WAY, this->isOneWay);
 	return data;
 }
 
