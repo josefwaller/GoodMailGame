@@ -7,8 +7,8 @@ class SaveData;
 
 class Route {
 public:
-	// The dparture time of the route
-	hour_t departTime;
+	// The departure time of this route, where 0 = midnight and Game::UNITS_IN_GAME_HOUR * n = n o'clock
+	gtime_t departTime;
 	// The model of the vehicle on the route
 	VehicleModel model;
 	// Optionally, the model and number of cargo cars
@@ -18,7 +18,7 @@ public:
 	id_t id;
 	static id_t ROUTE_ID;
 	// Constructor
-	Route(hour_t departTime, VehicleModel model, std::optional<CargoCarModel> cargoCarModel = std::optional<CargoCarModel>(), unsigned int numCargoCars = 0);
+	Route(gtime_t departTime, VehicleModel model, std::optional<CargoCarModel> cargoCarModel = std::optional<CargoCarModel>(), unsigned int numCargoCars = 0);
 	// Constructor from save data
 	Route(SaveData data);
 	// Get save data

@@ -3,7 +3,7 @@
 
 id_t Route::ROUTE_ID = 0;
 
-Route::Route(hour_t departTime, VehicleModel model, std::optional<CargoCarModel> cargoCarModel, unsigned int numCargoCars)
+Route::Route(gtime_t departTime, VehicleModel model, std::optional<CargoCarModel> cargoCarModel, unsigned int numCargoCars)
 
 	: departTime(departTime), model(model), cargoCarModel(cargoCarModel), numCargoCars(numCargoCars), id(ROUTE_ID++) {}
 SaveData Route::getSaveData() {
@@ -19,7 +19,7 @@ SaveData Route::getSaveData() {
 }
 
 Route::Route(SaveData data)
-	: departTime(data.getHourT(SaveKeys::DEPART_TIME)),
+	: departTime(data.getGTimeT(SaveKeys::DEPART_TIME)),
 		model(stringToVehicleModel(data.getString(SaveKeys::VEHICLE_MODEL))),
 		cargoCarModel(data.hasValue(SaveKeys::CARGO_CAR_MODEL) ? stringToCargoCarModel(data.getString(SaveKeys::CARGO_CAR_MODEL)) : std::optional<CargoCarModel>()),
 		numCargoCars((unsigned int)data.getSizeT(SaveKeys::NUM_CARGO_CARS)),

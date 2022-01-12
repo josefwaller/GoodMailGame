@@ -37,6 +37,7 @@ Game::Game(App* a, sf::RenderWindow* w) : time(0), gameMap(this), uiHandler(this
 void Game::generateNew() {
 	// Stuff to generate a new game
 	this->gameMap.generateNew();
+	this->deltaClock.restart();
 }
 void Game::loadFromSaveData(SaveData data) {
 	using namespace SaveKeys;
@@ -74,6 +75,7 @@ void Game::loadFromSaveData(SaveData data) {
 		data.getFloat(CAMERA_Y)
 	));
 	this->isPaused = data.getBool(IS_PAUSED);
+	this->deltaClock.restart();
 }
 
 void Game::update(float delta) {
@@ -137,6 +139,9 @@ void Game::update(float delta) {
 			e->controller->init();
 	}
 	this->toAdd.clear();
+
+	while (this->deltaClock.getElapsedTime().asMilliseconds() < 1000.0f / 200.0f) {}
+	this->deltaClock.restart();
 }
 sf::Vector2f Game::worldToScreenPos(sf::Vector3f pos) {
 	sf::Vector2f pos2D(pos.x, pos.y);
@@ -350,6 +355,10 @@ hour_t Game::getHourAtTime(gtime_t time) {
 }
 gtime_t Game::getMidnightTime() {
 	return this->time - (this->time % (UNITS_IN_GAME_HOUR * 24));
+}
+gtime_t Game::getTimeSinceMidnight() {
+	// ez
+	return this->time - this->getMidnightTime();
 }
 void Game::advanceTime() {
 	// Update mail records

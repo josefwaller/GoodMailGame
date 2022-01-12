@@ -891,10 +891,13 @@ bool UiHandler::checkbox(const char* label, bool value) {
 	return v;
 }
 
-hour_t UiHandler::selectTime(const char* label, hour_t v) {
-	int f = (int)v;
-	ImGui::SliderInt(label, &f, 0, 23, "%d:00");
-	return (hour_t)f;
+gtime_t UiHandler::selectTimeOfDay(const char* label, gtime_t v) {
+	// Currently just allow for 15 minute intervals
+	int f = (int)(v / (Game::UNITS_IN_GAME_HOUR / 4));
+	char buf[200];
+	sprintf_s(buf, "%d:%d", (f / 4), 15 * (f % 4));
+	ImGui::SliderInt(label, &f, 0, 24 * 4 - 1, buf);
+	return (gtime_t)(f * (Game::UNITS_IN_GAME_HOUR / 4));
 }
 
 void UiHandler::beginEntityWindow(std::weak_ptr<Entity> e) {

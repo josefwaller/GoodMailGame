@@ -36,7 +36,7 @@ void PostOfficeController::renderUi() {
 			sprintf_s(buf, "Cost: $%d.00 ($%d.00 + %fm * $%d/m)", this->getRouteCost(*it), mInfo.getInitialCost(), it->length, mInfo.getCostPerTile());
 			ImGui::Text(buf);
 			// Add dropdown for time
-			hour_t routeTime = ui->selectTime("Depart Time", it->departTime);
+			gtime_t routeTime = ui->selectTimeOfDay("Depart Time", it->departTime);
 			if (routeTime != it->departTime) {
 				this->setRouteTime(index, routeTime);
 			}
@@ -121,28 +121,35 @@ void PostOfficeController::update(float) {
 		this->routesToDelete.clear();
 		this->resetPostalCode();
 	}
-}
-void PostOfficeController::onHourChange(hour_t newHour) {
-	// Check if any of the routes depart
-	for (auto it = this->routes.begin(); it != this->routes.end(); it++) {
-		if (it->departTime == newHour && it->stops.size() >= 1) {
-			gtime_t spawnTime = this->getEntity()->getGame()->getMidnightTime() + Game::UNITS_IN_GAME_HOUR * it->departTime;
-			// Spawn a new truck for that route
-			Game* game = this->getEntity()->getGame();
-			auto trans = this->getEntity()->transform;
-			auto transit = this->getEntity()->transitStop;
-			auto truck = VehiclePresets::mailTruck(
-				game,
-				// For right now, just spawn the truck on the tile
-				sf::Vector3f(transit->getCarStop().tile),
-				IsoRotation::NORTH,
-				prepareRouteForTruck(*it),
-				this->getEntity(),
-				spawnTime
-			);
-			game->addEntity(truck);
+	// Check whether to spawn any trucks
+	gtime_t gtime = this->getEntity()->getGame()->getTimeSinceMidnight();
+	gtime_t spawnInterval = Game::UNITS_IN_GAME_HOUR / 4;
+	if (gtime - this->lastTruckSpawnTime >= spawnInterval) {
+		this->lastTruckSpawnTime += spawnInterval;
+		gtime_t spawnTime = floor(gtime / spawnInterval) * spawnInterval;
+		// Check if any of the routes depart
+		for (auto it = this->routes.begin(); it != this->routes.end(); it++) {
+			if (it->departTime == spawnTime && it->stops.size() >= 1) {
+				// Spawn a new truck for that route
+				Game* game = this->getEntity()->getGame();
+				auto trans = this->getEntity()->transform;
+				auto transit = this->getEntity()->transitStop;
+				auto truck = VehiclePresets::mailTruck(
+					game,
+					// For right now, just spawn the truck on the tile
+					sf::Vector3f(transit->getCarStop().tile),
+					IsoRotation::NORTH,
+					prepareRouteForTruck(*it),
+					this->getEntity(),
+					spawnTime
+				);
+				game->addEntity(truck);
+			}
 		}
 	}
+}
+void PostOfficeController::onHourChange(hour_t newHour) {
+
 }
 
 money_t PostOfficeController::getRouteCost(MailTruckRoute r) {
@@ -183,7 +190,7 @@ void PostOfficeController::deleteStop(size_t routeIndex, size_t stopIndex) {
 	}
 	this->routes[routeIndex].length = this->getRouteLength(this->routes[routeIndex]);
 }
-void PostOfficeController::setRouteTime(size_t routeIndex, int time) {
+void PostOfficeController::setRouteTime(size_t routeIndex, gtime_t time) {
 	this->routes[routeIndex].departTime = time;
 }
 void PostOfficeController::setRouteType(size_t routeIndex, bool isDelivering) {

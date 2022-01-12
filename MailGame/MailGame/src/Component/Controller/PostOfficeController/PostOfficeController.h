@@ -19,7 +19,7 @@ public:
 	void addStop(size_t routeIndex, MailTruckRouteStop stop);
 	void setStopTile(size_t routeIndex, size_t stopIndex, sf::Vector2i tilePos);
 	void deleteStop(size_t routeIndex, size_t stopIndex);
-	void setRouteTime(size_t routeIndex, int departTime);
+	void setRouteTime(size_t routeIndex, gtime_t departTime);
 	void setRouteType(size_t routeIndex, bool isDelivering);
 	void addRoute(MailTruckRoute r);
 	void deleteRoute(size_t routeIndex);
@@ -34,6 +34,8 @@ private:
 	// The postal code this postal office manages
 	// TODO eventually, these postal codes won't show up in the UI since the player is not allowed to change them
 	std::optional<id_t> postalCodeId;
+	// The time of day that the postoffice last checked for spawning a truck
+	gtime_t lastTruckSpawnTime;
 	MailTruckRoute prepareRouteForTruck(MailTruckRoute route);
 	// Reset the postal code to all the tiles that this post office delivers to
 	void resetPostalCode();

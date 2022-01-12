@@ -76,6 +76,8 @@ public:
 	// Get the time at midnight of today
 	// Used by vehicles to determine where they should be with their departTime
 	gtime_t getMidnightTime();
+	// Get the time since midnight
+	gtime_t getTimeSinceMidnight();
 	// Go to next hour
 	void advanceTime();
 	// Get a list of the entities in game
@@ -141,4 +143,6 @@ private:
 	money_t expenses;
 	// The game time multiplier
 	float timeMultiplier;
+	// The timer to make sure we are running at most 60 fps
+	sf::Clock deltaClock;
 };
